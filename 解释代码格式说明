@@ -1,0 +1,279 @@
+[MODE: RESEARCH]
+
+这张图是 `ModelExplainer` 类，位置在 `DjangoProject/deep_learning/explainer.py`。它的角色是“模型解释器”：负责把训练好的 `.pt` 深度学习模型重新加载出来，然后用它做预测，并准备前端可视化需要的数据。
+
+核心流程是：
+
+```text
+模型文件路径
+ -> torch.load 读取 checkpoint
+ -> 从 checkpoint 取配置、特征名、标准化器、训练指标
+ -> 根据 model_type 重建 LSTM 或 AttentionLSTM
+ -> 加载模型权重
+ -> 切换到 eval 预测模式
+ -> 后续 predict_with_explanation 做预测和解释
+```
+
+先看类定义：
+
+```python
+class ModelExplainer:
+```
+
+这不是 PyTorch 模型本身，而是一个“外壳工具类”。真正的模型是 `LSTMPredictor` 或 `AttentionLSTM`。`ModelExplainer` 负责管理模型加载、预测、特征重要性、网络结构、粒子流等解释逻辑。
+
+初始化函数：
+
+```python
+def __init__(self, model_path):
+```
+
+创建解释器时，需要传入模型文件路径。比如：
+
+```python
+explainer = ModelExplainer("dl_models/lstm_USDCNYX_20251204.pt")
+```
+
+里面先保存路径：
+
+```python
+self.model_path = model_path
+```
+
+然后指定设备：
+
+```python
+self.device = torch.device('cpu')
+```
+
+这表示这个解释器强制在 CPU 上运行模型。即使机器有 GPU，这里也先用 CPU。这样部署兼容性更强，因为服务器不一定有 CUDA/GPU。
+
+接着：
+
+```python
+self._load_model()
+```
+
+初始化时立刻加载模型。也就是说，创建 `ModelExplainer` 对象后，模型已经准备好了，不需要额外手动加载。
+
+重点是 `_load_model()`：
+
+```python
+def _load_model(self):
+    """加载模型和相关数据"""
+```
+
+第一句：
+
+```python
+checkpoint = torch.load(
+    self.model_path,
+    map_location=self.device,
+    weights_only=False
+)
+```
+
+`torch.load()` 是 PyTorch 读取模型文件的方法。这里读取的不是单纯一组权重，而是一个 `checkpoint` 字典。
+
+`map_location=self.device` 的意思是：不管模型原来训练时保存在 GPU 还是 CPU，现在都加载到 `self.device`，也就是 CPU。这样可以避免“模型是在 GPU 上保存的，但当前机器没有 GPU，所以加载失败”的问题。
+
+`weights_only=False` 表示允许加载完整 checkpoint 内容，而不只是权重。这个项目的模型文件里保存了很多东西，不只是模型参数，所以这里需要 `False`。它通常包含：
+
+```text
+config          模型配置
+feature_names   训练时使用的特征名
+scaler          标准化器
+metrics         训练/评估指标
+history         训练过程记录
+model_state     模型权重
+```
+
+然后这些字段被取出来：
+
+```python
+self.config = checkpoint.get('config', {})
+self.feature_names = checkpoint.get('feature_names', [])
+self.scaler = checkpoint.get('scaler')
+self.metrics = checkpoint.get('metrics', {})
+self.history = checkpoint.get('history', {})
+```
+
+逐个解释。
+
+`self.config` 是训练模型时的配置，比如：
+
+```text
+model_type: lstm 或 attention_lstm
+hidden_size: 64
+num_layers: 2
+dropout: 0.2
+seq_len: 20
+symbols: 使用了哪些金融品种
+target_symbol: 预测哪个目标
+```
+
+`self.feature_names` 是特征名列表。模型输入是纯数字数组，但解释时需要知道每一列数字代表什么，比如：
+
+```text
+USDCNY=X_ret_lag1
+USDCNY=X_rsi
+USDCNY=X_macd_hist
+```
+
+没有 `feature_names`，就算能算出“第 12 个特征最重要”，也不知道第 12 个特征到底是什么。
+
+`self.scaler` 是训练时用的标准化器。前面特征工程生成的各种特征数值范围差异很大，比如 RSI 是 0 到 100，收益率可能是 0.001，价格位置是 0 到 1。训练时会用 scaler 标准化。预测时必须用同一个 scaler，否则模型输入分布就变了。
+
+`self.metrics` 是训练指标和校准信息，比如准确率、F1、是否需要翻转方向、阈值、温度校准参数等。
+
+`self.history` 是训练历史，比如每一轮 epoch 的 loss、验证集指标等，前端可以用它画训练曲线。
+
+接下来是“重建模型结构”：
+
+```python
+input_size = len(self.feature_names)
+hidden_size = self.config.get('hidden_size', 64)
+num_layers = self.config.get('num_layers', 2)
+dropout = self.config.get('dropout', 0.2)
+model_type = self.config.get('model_type', 'lstm')
+```
+
+`input_size` 是输入特征数量。比如训练时有 45 个特征，那么 `input_size=45`。这个值必须和训练时完全一致，否则权重加载不上。
+
+`hidden_size`、`num_layers`、`dropout` 都是模型结构参数。加载模型时，必须先搭一个和训练时一样的“空模型架子”，然后才能把权重塞进去。
+
+然后根据模型类型选择模型类：
+
+```python
+if model_type == 'attention_lstm':
+    self.model = AttentionLSTM(input_size, hidden_size, num_layers, dropout)
+else:
+    self.model = LSTMPredictor(input_size, hidden_size, num_layers, dropout)
+```
+
+如果配置里写的是 `attention_lstm`，就创建带注意力机制的模型。如果不是，就默认创建普通 LSTM 模型。
+
+这里很重要：模型文件通常保存的是“参数”，不是完整 Python 类对象。所以加载时要先重新创建同样结构的模型，再加载参数。
+
+加载参数：
+
+```python
+self.model.load_state_dict(checkpoint['model_state'])
+```
+
+`model_state` 是模型每一层的权重和偏置。比如 LSTM 层的权重、全连接层的权重、LayerNorm 参数等。
+
+可以把它理解成：
+
+```text
+前面创建模型 = 搭好同样形状的空机器
+load_state_dict = 把训练好的零件参数装进去
+```
+
+然后：
+
+```python
+self.model.to(self.device)
+```
+
+把模型移动到 CPU。
+
+```python
+self.model.eval()
+```
+
+切换到预测模式。这个很关键。训练模式和预测模式不一样，尤其是 `Dropout`。训练时 Dropout 会随机关闭一部分神经元；预测时不能随机关闭，否则同一条数据每次预测结果可能不同。`eval()` 会让模型进入稳定预测状态。
+
+最后日志：
+
+```python
+logger.debug(...)
+```
+
+记录模型加载成功，包含路径、模型类型、设备。
+
+下面开始 `predict_with_explanation()`：
+
+```python
+def predict_with_explanation(self, input_data=None):
+```
+
+这个函数负责“预测并生成解释数据”。如果 `input_data` 是 `None`，就自动用最新数据：
+
+```python
+if input_data is None:
+    processor = FinancialDataProcessor(...)
+```
+
+它会重新创建数据处理器，使用模型保存的配置：
+
+```python
+symbols=self.config.get('symbols', ['USDCNY=X', 'DX-Y.NYB'])
+target_symbol=self.config.get('target_symbol', 'USDCNY=X')
+config=self.config
+```
+
+然后把训练时的 scaler 和特征名交给处理器：
+
+```python
+processor.scaler = self.scaler
+processor.feature_names = self.feature_names
+```
+
+这保证最新数据会按照训练时完全相同的方式标准化、排序、取列。
+
+接着：
+
+```python
+seq_len = self.config.get('seq_len', 20)
+input_data = processor.prepare_latest(seq_len)
+```
+
+`seq_len=20` 表示取最近 20 个时间步的数据，整理成 LSTM 输入格式。一般形状是：
+
+```text
+(1, 20, 特征数量)
+```
+
+第一个 `1` 表示只预测一个样本，`20` 表示最近 20 天，最后一维是每天的特征数。
+
+然后把输入转成 PyTorch Tensor：
+
+```python
+if not isinstance(input_data, torch.Tensor):
+    input_data = torch.tensor(input_data, dtype=torch.float32)
+
+input_data = input_data.to(self.device)
+```
+
+模型不能直接吃普通数组，要变成 Tensor。并且数据要和模型在同一个设备上，这里都是 CPU。
+
+截图最后到这里：
+
+```python
+cudnn_was_enabled = torch.backends.cudnn.enabled
+if torch.cuda.is_available():
+    torch.backends.cudnn.enabled = False
+```
+
+这是预测前的兼容性处理。cuDNN 是 GPU 加速库，但 LSTM 的某些解释逻辑和 cuDNN 可能不兼容，所以这里如果检测到 CUDA，会临时关闭 cuDNN。预测结束后，后面的代码会恢复原设置。
+
+所以这张图这一段的核心意义是：
+
+```text
+ModelExplainer 初始化时：
+    加载模型文件
+    读取训练配置、特征名、标准化器、指标、历史记录
+    根据配置重建 LSTM 或 Attention-LSTM
+    加载模型权重
+    切换到预测模式
+
+predict_with_explanation 开始时：
+    如果没传输入，就自动取最新金融数据
+    用训练时相同的特征和标准化方式处理数据
+    转成 Tensor
+    放到 CPU
+    准备执行模型预测
+```
+
+一句话总结：`ModelExplainer` 是连接“已训练模型文件”和“前端解释页面”的桥梁。它不负责训练，而是负责把模型恢复出来，用最新数据做预测，并为后续的特征重要性、网络结构图、粒子流动画准备基础数据。
