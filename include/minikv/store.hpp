@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstddef>
 #include <mutex>
 #include <optional>
@@ -19,11 +20,24 @@ public:
     std::size_t size() const;
     void clear();
 
+    bool expire(std::string_view key, std::chrono::seconds ttl);
+    std::optional<std::chrono::seconds> ttl(std::string_view key) const;
+
     std::vector<std::pair<std::string, std::string>> snapshot() const;
 
 private:
+    using Clock = std::chrono::steady_clock;
+
+    struct Entry {
+        std::string value;
+        std::optional<Clock::time_point> expires_at;
+    };
+
+    static bool is_expired(const Entry& entry, Clock::time_point now);
+    void prune_expired_locked(Clock::time_point now) const;
+
     mutable std::mutex mutex_;
-    std::unordered_map<std::string, std::string> data_;
+    mutable std::unordered_map<std::string, Entry> data_;
 };
 
 } // namespace minikv
