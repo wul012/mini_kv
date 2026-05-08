@@ -40,6 +40,12 @@
 
 09-version-3-tests-docs.md
  -> 第三版测试、README、a/3 归档和整体增删改
+
+10-wal-core.md
+ -> 第四版 WAL：WriteAheadLog、CommandProcessor 写前日志和 EXPIREAT
+
+11-version-4-tests-docs.md
+ -> 第四版入口参数、wal_tests、README、a/4 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -65,6 +71,22 @@ EXPIRE key seconds
 TTL key
  -> Store 检查 key 是否存在、是否过期、是否有 expires_at
  -> CommandProcessor 返回 -2 / -1 / 剩余秒数
+```
+
+第四版增加了 WAL 链路：
+
+```text
+程序启动并传入 wal_path
+ -> WriteAheadLog replay 到 Store
+ -> CommandProcessor 持有 WAL 指针
+
+SET / DEL / EXPIRE
+ -> 先 append WAL
+ -> 再修改 Store
+
+程序下次启动
+ -> replay SET / DEL / EXPIREAT
+ -> 恢复未过期数据
 ```
 
 从运行方式看，它现在有三种入口：
@@ -100,23 +122,27 @@ src/store.cpp
 
 include/minikv/command.hpp
 src/command.cpp
- -> 解析 SET / GET / DEL / EXPIRE / TTL / SIZE / HELP / EXIT 命令
+ -> 解析 SET / GET / DEL / EXPIRE / TTL / SIZE / HELP / EXIT 命令，并在第四版支持可选 WAL
 
 src/main.cpp
- -> 本地命令行交互入口
+ -> 本地命令行交互入口，第四版支持可选 WAL 路径
 
 include/minikv/tcp_server.hpp
 src/tcp_server.cpp
  -> 网络服务端和 socket 通信
 
 src/server_main.cpp
- -> TCP 服务端启动器
+ -> TCP 服务端启动器，第四版支持可选 WAL 路径
 
 src/client_main.cpp
  -> TCP 客户端启动器
 
+include/minikv/wal.hpp
+src/wal.cpp
+ -> 第四版 WAL 持久化模块，负责 append 和 replay
+
 tests/
- -> 验证 Store 和 CommandProcessor 行为
+ -> 验证 Store、CommandProcessor 和 WAL 行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端和测试目标

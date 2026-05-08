@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.3.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.4.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,6 +10,7 @@ add_library(minikv
     src/command.cpp
     src/store.cpp
     src/tcp_server.cpp
+    src/wal.cpp
 )
 
 target_include_directories(minikv
@@ -62,3 +63,11 @@ add_executable(minikv_command_tests
 target_link_libraries(minikv_command_tests PRIVATE minikv)
 
 add_test(NAME command_tests COMMAND minikv_command_tests)
+
+add_executable(minikv_wal_tests
+    tests/wal_tests.cpp
+)
+
+target_link_libraries(minikv_wal_tests PRIVATE minikv)
+
+add_test(NAME wal_tests COMMAND minikv_wal_tests)

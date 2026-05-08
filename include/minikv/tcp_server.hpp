@@ -7,6 +7,8 @@
 
 namespace minikv {
 
+class WriteAheadLog;
+
 class TcpServer {
 public:
     struct Options {
@@ -16,12 +18,14 @@ public:
     };
 
     explicit TcpServer(Store& store, Options options);
+    TcpServer(Store& store, Options options, WriteAheadLog* wal);
 
     void run();
 
 private:
     Store& store_;
     Options options_;
+    WriteAheadLog* wal_ = nullptr;
 };
 
 } // namespace minikv

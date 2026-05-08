@@ -7,6 +7,8 @@
 
 namespace minikv {
 
+class WriteAheadLog;
+
 struct CommandResult {
     std::string response;
     bool should_close = false;
@@ -14,7 +16,7 @@ struct CommandResult {
 
 class CommandProcessor {
 public:
-    explicit CommandProcessor(Store& store);
+    explicit CommandProcessor(Store& store, WriteAheadLog* wal = nullptr);
 
     CommandResult execute(std::string_view line);
 
@@ -22,6 +24,7 @@ public:
 
 private:
     Store& store_;
+    WriteAheadLog* wal_;
 };
 
 } // namespace minikv

@@ -76,6 +76,14 @@ bool Store::expire(std::string_view key, std::chrono::seconds ttl) {
         return false;
     }
 
+    return expire_at(key, Clock::now() + ttl);
+}
+
+bool Store::expire_at(std::string_view key, TimePoint expires_at) {
+    if (key.empty()) {
+        return false;
+    }
+
     std::lock_guard lock(mutex_);
     const auto it = data_.find(std::string{key});
     if (it == data_.end()) {
@@ -88,7 +96,7 @@ bool Store::expire(std::string_view key, std::chrono::seconds ttl) {
         return false;
     }
 
-    it->second.expires_at = now + ttl;
+    it->second.expires_at = expires_at;
     return true;
 }
 
@@ -127,11 +135,11 @@ std::vector<std::pair<std::string, std::string>> Store::snapshot() const {
     return items;
 }
 
-bool Store::is_expired(const Entry& entry, Clock::time_point now) {
+bool Store::is_expired(const Entry& entry, TimePoint now) {
     return entry.expires_at.has_value() && *entry.expires_at <= now;
 }
 
-void Store::prune_expired_locked(Clock::time_point now) const {
+void Store::prune_expired_locked(TimePoint now) const {
     for (auto it = data_.begin(); it != data_.end();) {
         if (is_expired(it->second, now)) {
             it = data_.erase(it);

@@ -1,6 +1,7 @@
 #include "minikv/tcp_server.hpp"
 
 #include "minikv/command.hpp"
+#include "minikv/wal.hpp"
 
 #include <algorithm>
 #include <array>
@@ -154,9 +155,9 @@ bool send_all(SocketHandle socket, std::string_view data) {
     return true;
 }
 
-void serve_client(Store& store, SocketHandle client_socket) {
+void serve_client(Store& store, WriteAheadLog* wal, SocketHandle client_socket) {
     SocketGuard client{client_socket};
-    CommandProcessor processor{store};
+    CommandProcessor processor{store, wal};
     std::string pending;
     std::array<char, 4096> buffer{};
 
@@ -244,7 +245,10 @@ SocketGuard bind_listener(const TcpServer::Options& options) {
 
 } // namespace
 
-TcpServer::TcpServer(Store& store, Options options) : store_(store), options_(std::move(options)) {}
+TcpServer::TcpServer(Store& store, Options options) : TcpServer(store, std::move(options), nullptr) {}
+
+TcpServer::TcpServer(Store& store, Options options, WriteAheadLog* wal)
+    : store_(store), options_(std::move(options)), wal_(wal) {}
 
 void TcpServer::run() {
     NetworkRuntime runtime;
@@ -256,7 +260,7 @@ void TcpServer::run() {
             throw std::runtime_error{socket_error_message("accept failed")};
         }
 
-        std::thread{serve_client, std::ref(store_), client}.detach();
+        std::thread{serve_client, std::ref(store_), wal_, client}.detach();
     }
 }
 

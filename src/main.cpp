@@ -1,31 +1,60 @@
 #include "minikv/command.hpp"
+#include "minikv/wal.hpp"
 
+#include <exception>
 #include <iostream>
+#include <optional>
 #include <string>
 
-int main() {
-    minikv::Store store;
-    minikv::CommandProcessor processor{store};
+namespace {
 
-    std::cout << "mini-kv CLI\n";
-    std::cout << minikv::CommandProcessor::help_text() << '\n';
+void print_usage(const char* program) {
+    std::cerr << "Usage: " << program << " [wal_path]\n";
+}
 
-    std::string line;
-    while (true) {
-        std::cout << "mini-kv> ";
-        if (!std::getline(std::cin, line)) {
-            std::cout << '\n';
-            break;
+} // namespace
+
+int main(int argc, char** argv) {
+    try {
+        if (argc > 2) {
+            print_usage(argv[0]);
+            return 2;
         }
 
-        const auto result = processor.execute(line);
-        if (!result.response.empty()) {
-            std::cout << result.response << '\n';
+        minikv::Store store;
+        std::optional<minikv::WriteAheadLog> wal;
+
+        if (argc == 2) {
+            wal.emplace(argv[1]);
+            const auto replayed = wal->replay(store);
+            std::cout << "WAL: " << wal->path().string() << " (" << replayed << " records replayed)\n";
         }
 
-        if (result.should_close) {
-            break;
+        minikv::CommandProcessor processor{store, wal.has_value() ? &*wal : nullptr};
+
+        std::cout << "mini-kv CLI\n";
+        std::cout << minikv::CommandProcessor::help_text() << '\n';
+
+        std::string line;
+        while (true) {
+            std::cout << "mini-kv> ";
+            if (!std::getline(std::cin, line)) {
+                std::cout << '\n';
+                break;
+            }
+
+            const auto result = processor.execute(line);
+            if (!result.response.empty()) {
+                std::cout << result.response << '\n';
+            }
+
+            if (result.should_close) {
+                break;
+            }
         }
+    } catch (const std::exception& error) {
+        std::cerr << "fatal: " << error.what() << '\n';
+        return 1;
     }
 
     return 0;

@@ -1,5 +1,7 @@
 #include "minikv/command.hpp"
 
+#include "minikv/wal.hpp"
+
 #include <chrono>
 #include <cctype>
 #include <optional>
@@ -38,6 +40,10 @@ CommandResult usage(std::string_view command) {
     return {std::string{"ERR usage: "} + std::string{command}};
 }
 
+CommandResult wal_error() {
+    return {"ERR wal append failed"};
+}
+
 std::optional<std::chrono::seconds> parse_positive_seconds(std::string_view text) {
     std::istringstream input{std::string{text}};
     long long seconds = 0;
@@ -50,9 +56,15 @@ std::optional<std::chrono::seconds> parse_positive_seconds(std::string_view text
     return std::chrono::seconds{seconds};
 }
 
+std::string format_expires_at(std::string_view key, Store::TimePoint expires_at) {
+    const auto epoch_millis =
+        std::chrono::duration_cast<std::chrono::milliseconds>(expires_at.time_since_epoch()).count();
+    return std::string{"EXPIREAT "} + std::string{key} + " " + std::to_string(epoch_millis);
+}
+
 } // namespace
 
-CommandProcessor::CommandProcessor(Store& store) : store_(store) {}
+CommandProcessor::CommandProcessor(Store& store, WriteAheadLog* wal) : store_(store), wal_(wal) {}
 
 CommandResult CommandProcessor::execute(std::string_view line) {
     const std::string trimmed = trim_copy(line);
@@ -75,6 +87,10 @@ CommandResult CommandProcessor::execute(std::string_view line) {
 
         if (key.empty() || value.empty()) {
             return usage("SET key value");
+        }
+
+        if (wal_ != nullptr && !wal_->append(std::string{"SET "} + key + " " + value)) {
+            return wal_error();
         }
 
         const bool inserted = store_.set(key, value);
@@ -105,6 +121,14 @@ CommandResult CommandProcessor::execute(std::string_view line) {
             return usage("DEL key");
         }
 
+        if (!store_.contains(key)) {
+            return {"0"};
+        }
+
+        if (wal_ != nullptr && !wal_->append(std::string{"DEL "} + key)) {
+            return wal_error();
+        }
+
         return {store_.erase(key) ? "1" : "0"};
     }
 
@@ -118,7 +142,16 @@ CommandResult CommandProcessor::execute(std::string_view line) {
             return usage("EXPIRE key seconds");
         }
 
-        return {store_.expire(key, *seconds) ? "1" : "0"};
+        if (!store_.contains(key)) {
+            return {"0"};
+        }
+
+        const auto expires_at = Store::Clock::now() + *seconds;
+        if (wal_ != nullptr && !wal_->append(format_expires_at(key, expires_at))) {
+            return wal_error();
+        }
+
+        return {store_.expire_at(key, expires_at) ? "1" : "0"};
     }
 
     if (command == "TTL") {

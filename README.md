@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 3 is a runnable in-memory KV service with TTL support:
+Version 4 is a runnable in-memory KV service with WAL persistence:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -12,6 +12,7 @@ Version 3 is a runnable in-memory KV service with TTL support:
 - TCP server with one-command-per-line protocol
 - TCP client for connecting to a running server
 - Expiring keys with `EXPIRE` and `TTL`
+- Optional write-ahead log persistence for `SET`, `DEL`, and `EXPIRE`
 - Minimal CTest coverage for store and command behavior
 
 ## Build
@@ -30,10 +31,22 @@ CLI:
 .\build\Debug\minikv_cli.exe
 ```
 
+CLI with WAL:
+
+```powershell
+.\build\Debug\minikv_cli.exe data\mini-kv.wal
+```
+
 TCP server:
 
 ```powershell
 .\build\Debug\minikv_server.exe 6379
+```
+
+TCP server with WAL:
+
+```powershell
+.\build\Debug\minikv_server.exe 6379 127.0.0.1 data\mini-kv.wal
 ```
 
 TCP client:
@@ -65,6 +78,7 @@ After CLion finishes loading CMake, run these targets:
 - `minikv_client`
 - `minikv_store_tests`
 - `minikv_command_tests`
+- `minikv_wal_tests`
 
 ## CLI commands
 
@@ -114,9 +128,20 @@ TTL key             Return -2 when the key is missing, -1 when it has no expirat
 
 `SET` replaces the value and clears any existing TTL for that key. The server keeps all data in memory. Data is lost when the process exits.
 
+## WAL persistence
+
+Pass a WAL path to `minikv_cli` or `minikv_server` to enable persistence. On startup, the program replays the WAL into memory. During runtime, successful write commands append records before applying the mutation:
+
+```text
+SET key value
+DEL key
+EXPIRE key seconds
+```
+
+`EXPIRE` is persisted as an internal absolute expiration record, so expired keys do not come back after restart. Without a WAL path, mini-kv remains an in-memory-only service.
+
 ## Roadmap
 
-1. Add WAL persistence.
-2. Add snapshots.
-3. Add benchmarking and stress tests.
-4. Add a Redis RESP parser.
+1. Add snapshots.
+2. Add benchmarking and stress tests.
+3. Add a Redis RESP parser.

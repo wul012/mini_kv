@@ -1,9 +1,11 @@
 #include "minikv/store.hpp"
 #include "minikv/tcp_server.hpp"
+#include "minikv/wal.hpp"
 
 #include <cstdint>
 #include <exception>
 #include <iostream>
+#include <optional>
 #include <stdexcept>
 #include <string>
 
@@ -18,7 +20,7 @@ std::uint16_t parse_port(const char* text) {
 }
 
 void print_usage(const char* program) {
-    std::cerr << "Usage: " << program << " [port] [host]\n";
+    std::cerr << "Usage: " << program << " [port] [host] [wal_path]\n";
 }
 
 } // namespace
@@ -27,7 +29,7 @@ int main(int argc, char** argv) {
     try {
         minikv::TcpServer::Options options;
 
-        if (argc > 3) {
+        if (argc > 4) {
             print_usage(argv[0]);
             return 2;
         }
@@ -41,7 +43,15 @@ int main(int argc, char** argv) {
         }
 
         minikv::Store store;
-        minikv::TcpServer server{store, options};
+        std::optional<minikv::WriteAheadLog> wal;
+
+        if (argc >= 4) {
+            wal.emplace(argv[3]);
+            const auto replayed = wal->replay(store);
+            std::cout << "WAL: " << wal->path().string() << " (" << replayed << " records replayed)\n";
+        }
+
+        minikv::TcpServer server{store, options, wal.has_value() ? &*wal : nullptr};
 
         std::cout << "mini-kv server listening on " << options.host << ':' << options.port << '\n';
         std::cout << "Protocol: one command per line. Try: SET name mini-kv" << '\n';
