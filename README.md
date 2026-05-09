@@ -4,19 +4,19 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 7 is a runnable in-memory KV service with benchmarks, stress tests, and a RESP parser:
+Version 8 is a runnable in-memory KV service with TCP RESP protocol support:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
 - Interactive command-line client
-- TCP server with one-command-per-line protocol
+- TCP server with inline text and RESP request support
 - TCP client for connecting to a running server
 - Expiring keys with `EXPIRE` and `TTL`
 - Optional write-ahead log persistence for `SET`, `DEL`, and `EXPIRE`
 - Manual snapshots with `SAVE` and `LOAD`
 - Benchmark executable for quick local throughput checks
-- CTest coverage for store, command, WAL, snapshot, and stress behavior
-- Redis RESP parser for array-of-bulk-string requests
+- CTest coverage for store, command, WAL, snapshot, stress, and RESP behavior
+- Redis RESP parser and TCP response formatting
 
 ## Build
 
@@ -116,7 +116,7 @@ Start the server:
 .\cmake-build-debug\minikv_server.exe 6379
 ```
 
-Connect with a TCP client, then send one command per line:
+Connect with a TCP client, then send one inline command per line:
 
 ```text
 SET name mini-kv
@@ -135,6 +135,15 @@ Or use the bundled client:
 ```powershell
 .\cmake-build-debug\minikv_client.exe 127.0.0.1 6379
 ```
+
+The TCP server also accepts Redis-style RESP request arrays:
+
+```text
+*3\r\n$3\r\nSET\r\n$4\r\nname\r\n$7\r\nmini-kv\r\n
+*2\r\n$3\r\nGET\r\n$4\r\nname\r\n
+```
+
+RESP mode returns simple strings, integers, bulk strings, null bulk strings, or errors using RESP framing. Inline mode keeps the original one-line text responses.
 
 TTL commands:
 
@@ -192,17 +201,17 @@ ctest --test-dir cmake-build-debug --output-on-failure
 
 `stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency.
 
-## RESP parser
+## RESP protocol
 
-The RESP parser currently handles Redis-style request arrays made of bulk strings:
+The RESP parser handles Redis-style request arrays made of bulk strings:
 
 ```text
 *3\r\n$3\r\nSET\r\n$4\r\nname\r\n$7\r\nmini-kv\r\n
 ```
 
-It returns the parsed arguments and the number of bytes consumed, so it can be used with pipelined input. The current TCP server still uses the inline text protocol; the RESP parser is ready for the next integration step.
+It returns the parsed arguments and the number of bytes consumed, so the TCP server can process pipelined input. The server auto-detects RESP requests when a buffered request starts with `*`; otherwise it keeps using the inline text protocol.
 
 ## Roadmap
 
-1. Wire the RESP parser into the TCP server.
-2. Add RESP response formatting and protocol hardening.
+1. Add broader RESP compatibility tests and protocol hardening.
+2. Add graceful shutdown and structured logging.

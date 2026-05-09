@@ -28,6 +28,7 @@ class RespParser {
 public:
     static RespParseResult parse_command(std::string_view input);
     static std::string to_inline_command(const RespCommand& command);
+    static std::string to_resp_response(std::string_view response);
 };
 
 } // namespace minikv

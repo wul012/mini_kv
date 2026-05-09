@@ -289,14 +289,7 @@ int main(int argc, char** argv) {
 
         NetworkRuntime runtime;
         SocketGuard socket = connect_to_server(host, port);
-
-        std::string greeting;
-        if (!read_line(socket.get(), greeting)) {
-            std::cerr << "server closed connection before greeting\n";
-            return 1;
-        }
-
-        std::cout << greeting << '\n';
+        std::cout << "connected to mini-kv at " << host << ':' << port << '\n';
 
         std::string line;
         while (true) {

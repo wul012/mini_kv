@@ -2,6 +2,7 @@
 
 #include <charconv>
 #include <cstddef>
+#include <cctype>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -43,6 +44,39 @@ bool parse_integer(std::string_view text, long long& value) {
 
     value = parsed;
     return true;
+}
+
+bool starts_with(std::string_view text, std::string_view prefix) {
+    return text.size() >= prefix.size() && text.substr(0, prefix.size()) == prefix;
+}
+
+bool is_integer_text(std::string_view text) {
+    if (text.empty()) {
+        return false;
+    }
+
+    if (text.front() == '-') {
+        text.remove_prefix(1);
+    }
+
+    if (text.empty()) {
+        return false;
+    }
+
+    for (const char ch : text) {
+        if (std::isdigit(static_cast<unsigned char>(ch)) == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+std::string bulk_string(std::string_view value) {
+    std::string response = "$" + std::to_string(value.size()) + "\r\n";
+    response += value;
+    response += "\r\n";
+    return response;
 }
 
 } // namespace
@@ -132,6 +166,30 @@ std::string RespParser::to_inline_command(const RespCommand& command) {
     }
 
     return line;
+}
+
+std::string RespParser::to_resp_response(std::string_view response) {
+    if (response.empty()) {
+        return {};
+    }
+
+    if (response == "(nil)") {
+        return "$-1\r\n";
+    }
+
+    if (starts_with(response, "ERR ")) {
+        return "-" + std::string{response} + "\r\n";
+    }
+
+    if (is_integer_text(response)) {
+        return ":" + std::string{response} + "\r\n";
+    }
+
+    if (starts_with(response, "OK ") || response == "BYE") {
+        return "+" + std::string{response} + "\r\n";
+    }
+
+    return bulk_string(response);
 }
 
 } // namespace minikv

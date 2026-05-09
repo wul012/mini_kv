@@ -41,6 +41,12 @@ int main() {
     assert(set_result.command.arguments == expected_set);
     assert(set_result.command.consumed == set_request.size());
     assert(minikv::RespParser::to_inline_command(set_result.command) == "SET name mini-kv");
+    assert(minikv::RespParser::to_resp_response("OK inserted") == "+OK inserted\r\n");
+    assert(minikv::RespParser::to_resp_response("mini-kv") == "$7\r\nmini-kv\r\n");
+    assert(minikv::RespParser::to_resp_response("(nil)") == "$-1\r\n");
+    assert(minikv::RespParser::to_resp_response("2") == ":2\r\n");
+    assert(minikv::RespParser::to_resp_response("-2") == ":-2\r\n");
+    assert(minikv::RespParser::to_resp_response("ERR unknown command") == "-ERR unknown command\r\n");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};

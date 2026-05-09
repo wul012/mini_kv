@@ -64,6 +64,12 @@
 
 17-version-7-tests-docs.md
  -> 第七版 resp_tests、CMake、README、a/7 归档和整体增删改
+
+18-tcp-resp-integration.md
+ -> 第八版 TCP server 接入 RESP：自动协议识别、pending 缓冲和 RESP 执行链路
+
+19-version-8-tests-docs.md
+ -> 第八版 RESP 响应格式、client 调整、README、a/8 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -145,6 +151,20 @@ RESP array-of-bulk-strings
  -> 桥接到现有 CommandProcessor
 ```
 
+第八版增加了 TCP RESP 链路：
+
+```text
+TCP server 收到请求
+ -> pending.front() == '*'
+ -> RespParser::parse_command
+ -> CommandProcessor::execute
+ -> RespParser::to_resp_response
+ -> 返回 RESP frame
+
+非 '*' 开头
+ -> 保持 inline 文本协议
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -203,7 +223,7 @@ src/benchmark_main.cpp
 
 include/minikv/resp.hpp
 src/resp.cpp
- -> 第七版 RESP parser，负责把 Redis 风格请求解析成参数列表
+ -> 第七版 RESP parser，负责把 Redis 风格请求解析成参数列表；第八版新增 RESP 响应格式化
 
 include/minikv/wal.hpp
 src/wal.cpp

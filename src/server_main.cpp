@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
         minikv::TcpServer server{store, options, wal.has_value() ? &*wal : nullptr};
 
         std::cout << "mini-kv server listening on " << options.host << ':' << options.port << '\n';
-        std::cout << "Protocol: one command per line. Try: SET name mini-kv" << '\n';
+        std::cout << "Protocol: inline text or RESP array requests. Try: SET name mini-kv" << '\n';
 
         server.run();
     } catch (const std::exception& error) {

@@ -1,6 +1,7 @@
 #include "minikv/tcp_server.hpp"
 
 #include "minikv/command.hpp"
+#include "minikv/resp.hpp"
 #include "minikv/wal.hpp"
 
 #include <algorithm>
@@ -155,15 +156,67 @@ bool send_all(SocketHandle socket, std::string_view data) {
     return true;
 }
 
+bool process_inline_commands(SocketHandle socket, CommandProcessor& processor, std::string& pending, bool& needs_more) {
+    needs_more = false;
+
+    std::size_t newline = std::string::npos;
+    while ((newline = pending.find('\n')) != std::string::npos) {
+        std::string line = pending.substr(0, newline);
+        pending.erase(0, newline + 1);
+
+        const auto result = processor.execute(line);
+        if (!result.response.empty() && !send_all(socket, result.response + "\n")) {
+            return false;
+        }
+
+        if (result.should_close) {
+            return false;
+        }
+
+        if (!pending.empty() && pending.front() == '*') {
+            return true;
+        }
+    }
+
+    needs_more = !pending.empty();
+    return true;
+}
+
+bool process_resp_commands(SocketHandle socket, CommandProcessor& processor, std::string& pending, bool& needs_more) {
+    needs_more = false;
+
+    while (!pending.empty() && pending.front() == '*') {
+        const auto parsed = RespParser::parse_command(pending);
+        if (parsed.status == RespParseStatus::incomplete) {
+            needs_more = true;
+            return true;
+        }
+
+        if (parsed.status == RespParseStatus::error) {
+            send_all(socket, "-ERR " + parsed.error + "\r\n");
+            return false;
+        }
+
+        const auto result = processor.execute(RespParser::to_inline_command(parsed.command));
+        if (!result.response.empty() && !send_all(socket, RespParser::to_resp_response(result.response))) {
+            return false;
+        }
+
+        pending.erase(0, parsed.command.consumed);
+
+        if (result.should_close) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void serve_client(Store& store, WriteAheadLog* wal, SocketHandle client_socket) {
     SocketGuard client{client_socket};
     CommandProcessor processor{store, wal};
     std::string pending;
     std::array<char, 4096> buffer{};
-
-    if (!send_all(client.get(), "mini-kv ready\n")) {
-        return;
-    }
 
     while (true) {
 #ifdef _WIN32
@@ -177,25 +230,26 @@ void serve_client(Store& store, WriteAheadLog* wal, SocketHandle client_socket) 
 
         pending.append(buffer.data(), static_cast<std::size_t>(received));
 
-        std::size_t newline = std::string::npos;
-        while ((newline = pending.find('\n')) != std::string::npos) {
-            std::string line = pending.substr(0, newline);
-            pending.erase(0, newline + 1);
-
-            const auto result = processor.execute(line);
-            if (!result.response.empty()) {
-                if (!send_all(client.get(), result.response + "\n")) {
-                    return;
-                }
+        while (!pending.empty()) {
+            bool needs_more = false;
+            const bool ok = pending.front() == '*'
+                                ? process_resp_commands(client.get(), processor, pending, needs_more)
+                                : process_inline_commands(client.get(), processor, pending, needs_more);
+            if (!ok) {
+                return;
             }
 
-            if (result.should_close) {
-                return;
+            if (pending.empty() || needs_more) {
+                break;
             }
         }
 
         if (pending.size() > 64 * 1024) {
-            send_all(client.get(), "ERR line too long\n");
+            if (!pending.empty() && pending.front() == '*') {
+                send_all(client.get(), "-ERR request too long\r\n");
+            } else {
+                send_all(client.get(), "ERR line too long\n");
+            }
             return;
         }
     }
