@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.6.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.7.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(minikv
     src/command.cpp
+    src/resp.cpp
     src/snapshot.cpp
     src/store.cpp
     src/tcp_server.cpp
@@ -94,3 +95,11 @@ add_executable(minikv_stress_tests
 target_link_libraries(minikv_stress_tests PRIVATE minikv)
 
 add_test(NAME stress_tests COMMAND minikv_stress_tests)
+
+add_executable(minikv_resp_tests
+    tests/resp_tests.cpp
+)
+
+target_link_libraries(minikv_resp_tests PRIVATE minikv)
+
+add_test(NAME resp_tests COMMAND minikv_resp_tests)

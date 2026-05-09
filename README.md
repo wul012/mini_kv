@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 6 is a runnable in-memory KV service with benchmarks and stress tests:
+Version 7 is a runnable in-memory KV service with benchmarks, stress tests, and a RESP parser:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -16,6 +16,7 @@ Version 6 is a runnable in-memory KV service with benchmarks and stress tests:
 - Manual snapshots with `SAVE` and `LOAD`
 - Benchmark executable for quick local throughput checks
 - CTest coverage for store, command, WAL, snapshot, and stress behavior
+- Redis RESP parser for array-of-bulk-string requests
 
 ## Build
 
@@ -90,6 +91,7 @@ After CLion finishes loading CMake, run these targets:
 - `minikv_wal_tests`
 - `minikv_snapshot_tests`
 - `minikv_stress_tests`
+- `minikv_resp_tests`
 
 ## CLI commands
 
@@ -190,6 +192,17 @@ ctest --test-dir cmake-build-debug --output-on-failure
 
 `stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency.
 
+## RESP parser
+
+The RESP parser currently handles Redis-style request arrays made of bulk strings:
+
+```text
+*3\r\n$3\r\nSET\r\n$4\r\nname\r\n$7\r\nmini-kv\r\n
+```
+
+It returns the parsed arguments and the number of bytes consumed, so it can be used with pipelined input. The current TCP server still uses the inline text protocol; the RESP parser is ready for the next integration step.
+
 ## Roadmap
 
-1. Add a Redis RESP parser.
+1. Wire the RESP parser into the TCP server.
+2. Add RESP response formatting and protocol hardening.

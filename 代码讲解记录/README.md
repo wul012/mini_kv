@@ -58,6 +58,12 @@
 
 15-version-6-tests-docs.md
  -> 第六版 stress_tests、CMake、README、a/6 归档和整体增删改
+
+16-resp-parser-core.md
+ -> 第七版 RESP parser 核心：RespParser、complete/incomplete/error 和 consumed
+
+17-version-7-tests-docs.md
+ -> 第七版 resp_tests、CMake、README、a/7 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -129,6 +135,16 @@ stress_tests
  -> 验证 snapshot_items / restore_snapshot 和最终 key 状态
 ```
 
+第七版增加了 RESP Parser 链路：
+
+```text
+RESP array-of-bulk-strings
+ -> RespParser::parse_command
+ -> 得到 arguments 和 consumed
+ -> RespParser::to_inline_command
+ -> 桥接到现有 CommandProcessor
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -185,6 +201,10 @@ src/client_main.cpp
 src/benchmark_main.cpp
  -> 第六版 benchmark 启动器，用于本地吞吐观察
 
+include/minikv/resp.hpp
+src/resp.cpp
+ -> 第七版 RESP parser，负责把 Redis 风格请求解析成参数列表
+
 include/minikv/wal.hpp
 src/wal.cpp
  -> 第四版 WAL 持久化模块，负责 append 和 replay
@@ -194,7 +214,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot 和并发压力行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力和 RESP parser 行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
