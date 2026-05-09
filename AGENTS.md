@@ -20,6 +20,20 @@ a/<version>/解释/
 - 如果启动了服务端或其他后台进程，验证结束后必须停止，并在说明文档中记录。
 - 最终回复中简要说明新增的归档文件、保留文件和清理结果。
 
+## Local Toolchain Environment
+
+本机直接运行 CMake/CTest/测试程序时，优先使用 CLion 捆绑工具链，避免环境变量缺失导致误判。
+
+常用路径：
+
+```powershell
+$cmake = 'D:\CLION\CLion 2025.1.1\bin\cmake\win\x64\bin\cmake.exe'
+$ctest = 'D:\CLION\CLion 2025.1.1\bin\cmake\win\x64\bin\ctest.exe'
+$env:PATH = 'D:\CLION\CLion 2025.1.1\bin\mingw\bin;' + $env:PATH
+```
+
+注意：直接跑 `ctest`、测试 exe、`minikv_cli.exe`、`minikv_server.exe`、`minikv_client.exe` 前，需要先把 `D:\CLION\CLion 2025.1.1\bin\mingw\bin` 加进当前 `PATH`。否则 Windows 可能因为找不到 MinGW 运行时 DLL 报 `0xc0000135`，这属于本机运行环境问题，不代表代码或测试失败。
+
 ## Current Version
 
 当前第一版归档位置：

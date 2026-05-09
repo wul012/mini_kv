@@ -46,6 +46,18 @@
 
 11-version-4-tests-docs.md
  -> 第四版入口参数、wal_tests、README、a/4 归档和整体增删改
+
+12-snapshot-core.md
+ -> 第五版快照核心：SnapshotFile、Store 快照导出恢复和 SAVE / LOAD
+
+13-version-5-tests-docs.md
+ -> 第五版 snapshot_tests、README、a/5 归档、AGENTS 环境规则和整体增删改
+
+14-benchmark-main.md
+ -> 第六版 benchmark_main.cpp：本地吞吐测试入口和结果输出
+
+15-version-6-tests-docs.md
+ -> 第六版 stress_tests、CMake、README、a/6 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -89,7 +101,35 @@ SET / DEL / EXPIRE
  -> 恢复未过期数据
 ```
 
-从运行方式看，它现在有三种入口：
+第五版增加了 Snapshot 链路：
+
+```text
+SAVE path
+ -> SnapshotFile::save
+ -> Store 导出当前有效 key / value / expires_at
+ -> 写入 snapshot 文件
+
+LOAD path
+ -> SnapshotFile::load
+ -> 解析 snapshot 文件
+ -> Store 替换为 snapshot 中仍然有效的数据
+```
+
+第六版增加了 Benchmark 和 Stress Test 链路：
+
+```text
+minikv_benchmark
+ -> 直接测试 Store set/get/erase
+ -> 再测试 CommandProcessor SET/GET
+ -> 输出耗时和 ops/sec
+
+stress_tests
+ -> 多线程共享一个 Store
+ -> 并发 SET / GET / EXPIRE / TTL / erase
+ -> 验证 snapshot_items / restore_snapshot 和最终 key 状态
+```
+
+从运行方式看，它现在有四种入口：
 
 ```text
 CLI 模式
@@ -111,6 +151,11 @@ TCP Client 模式
  -> 读取用户输入
  -> 通过 TCP 发送命令
  -> 打印服务端响应
+
+Benchmark 模式
+ -> benchmark_main.cpp
+ -> 在进程内执行固定读写场景
+ -> 打印耗时和吞吐
 ```
 
 从代码职责看：
@@ -122,7 +167,7 @@ src/store.cpp
 
 include/minikv/command.hpp
 src/command.cpp
- -> 解析 SET / GET / DEL / EXPIRE / TTL / SIZE / HELP / EXIT 命令，并在第四版支持可选 WAL
+ -> 解析 SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照
 
 src/main.cpp
  -> 本地命令行交互入口，第四版支持可选 WAL 路径
@@ -137,13 +182,20 @@ src/server_main.cpp
 src/client_main.cpp
  -> TCP 客户端启动器
 
+src/benchmark_main.cpp
+ -> 第六版 benchmark 启动器，用于本地吞吐观察
+
 include/minikv/wal.hpp
 src/wal.cpp
  -> 第四版 WAL 持久化模块，负责 append 和 replay
 
+include/minikv/snapshot.hpp
+src/snapshot.cpp
+ -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
+
 tests/
- -> 验证 Store、CommandProcessor 和 WAL 行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot 和并发压力行为
 
 CMakeLists.txt
- -> 构建核心库、CLI、服务端、客户端和测试目标
+ -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
 ```

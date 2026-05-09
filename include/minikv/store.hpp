@@ -16,6 +16,12 @@ public:
     using Clock = std::chrono::system_clock;
     using TimePoint = Clock::time_point;
 
+    struct SnapshotItem {
+        std::string key;
+        std::string value;
+        std::optional<TimePoint> expires_at;
+    };
+
     bool set(std::string_view key, std::string_view value);
     std::optional<std::string> get(std::string_view key) const;
     bool erase(std::string_view key);
@@ -28,6 +34,8 @@ public:
     std::optional<std::chrono::seconds> ttl(std::string_view key) const;
 
     std::vector<std::pair<std::string, std::string>> snapshot() const;
+    std::vector<SnapshotItem> snapshot_items() const;
+    void restore_snapshot(std::vector<SnapshotItem> items);
 
 private:
     struct Entry {

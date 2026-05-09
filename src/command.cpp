@@ -1,5 +1,6 @@
 #include "minikv/command.hpp"
 
+#include "minikv/snapshot.hpp"
 #include "minikv/wal.hpp"
 
 #include <chrono>
@@ -42,6 +43,10 @@ CommandResult usage(std::string_view command) {
 
 CommandResult wal_error() {
     return {"ERR wal append failed"};
+}
+
+CommandResult snapshot_error(std::string_view action) {
+    return {std::string{"ERR snapshot "} + std::string{action} + " failed"};
 }
 
 std::optional<std::chrono::seconds> parse_positive_seconds(std::string_view text) {
@@ -178,6 +183,38 @@ CommandResult CommandProcessor::execute(std::string_view line) {
         return {std::to_string(store_.size())};
     }
 
+    if (command == "SAVE") {
+        std::string path;
+        std::getline(input >> std::ws, path);
+
+        if (path.empty()) {
+            return usage("SAVE path");
+        }
+
+        std::size_t saved = 0;
+        if (!SnapshotFile::save(store_, path, &saved)) {
+            return snapshot_error("save");
+        }
+
+        return {std::string{"OK saved "} + std::to_string(saved)};
+    }
+
+    if (command == "LOAD") {
+        std::string path;
+        std::getline(input >> std::ws, path);
+
+        if (path.empty()) {
+            return usage("LOAD path");
+        }
+
+        std::size_t loaded = 0;
+        if (!SnapshotFile::load(store_, path, &loaded)) {
+            return snapshot_error("load");
+        }
+
+        return {std::string{"OK loaded "} + std::to_string(loaded)};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -205,6 +242,8 @@ std::string CommandProcessor::help_text() {
            "  EXPIRE key seconds\n"
            "  TTL key\n"
            "  SIZE\n"
+           "  SAVE path\n"
+           "  LOAD path\n"
            "  HELP\n"
            "  EXIT";
 }

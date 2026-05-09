@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 4 is a runnable in-memory KV service with WAL persistence:
+Version 6 is a runnable in-memory KV service with benchmarks and stress tests:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -13,7 +13,9 @@ Version 4 is a runnable in-memory KV service with WAL persistence:
 - TCP client for connecting to a running server
 - Expiring keys with `EXPIRE` and `TTL`
 - Optional write-ahead log persistence for `SET`, `DEL`, and `EXPIRE`
-- Minimal CTest coverage for store and command behavior
+- Manual snapshots with `SAVE` and `LOAD`
+- Benchmark executable for quick local throughput checks
+- CTest coverage for store, command, WAL, snapshot, and stress behavior
 
 ## Build
 
@@ -55,6 +57,12 @@ TCP client:
 .\build\Debug\minikv_client.exe 127.0.0.1 6379
 ```
 
+Benchmark:
+
+```powershell
+.\build\Debug\minikv_benchmark.exe 100000 10000
+```
+
 For single-config generators, executables may be directly under `build`.
 
 ## CLion
@@ -76,9 +84,12 @@ After CLion finishes loading CMake, run these targets:
 - `minikv_cli`
 - `minikv_server`
 - `minikv_client`
+- `minikv_benchmark`
 - `minikv_store_tests`
 - `minikv_command_tests`
 - `minikv_wal_tests`
+- `minikv_snapshot_tests`
+- `minikv_stress_tests`
 
 ## CLI commands
 
@@ -89,6 +100,8 @@ DEL key
 EXPIRE key seconds
 TTL key
 SIZE
+SAVE path
+LOAD path
 HELP
 EXIT
 ```
@@ -109,7 +122,9 @@ GET name
 EXPIRE name 10
 TTL name
 SIZE
+SAVE data\mini-kv.snapshot
 DEL name
+LOAD data\mini-kv.snapshot
 QUIT
 ```
 
@@ -140,8 +155,41 @@ EXPIRE key seconds
 
 `EXPIRE` is persisted as an internal absolute expiration record, so expired keys do not come back after restart. Without a WAL path, mini-kv remains an in-memory-only service.
 
+## Snapshots
+
+Use snapshots to save the current in-memory dataset to a compact file and load it later:
+
+```text
+SAVE path  Save all currently live keys to a snapshot file.
+LOAD path  Replace the current in-memory dataset with a snapshot file.
+```
+
+Snapshot files preserve values and absolute expiration times. Expired keys are not saved, and expired records are skipped when loading. `LOAD` is a manual state replacement command; pair it with WAL intentionally if you want both baseline snapshots and later write replay.
+
+## Benchmarks and stress tests
+
+Run a quick in-process benchmark:
+
+```powershell
+.\cmake-build-debug\minikv_benchmark.exe 100000 10000
+```
+
+Arguments are optional:
+
+```text
+minikv_benchmark.exe [operations] [key_count]
+```
+
+The benchmark prints elapsed time and operations per second for direct `Store` operations and command-layer `SET` / `GET` operations. It is a lightweight local signal, not a replacement for full production-grade benchmarking.
+
+The stress test is registered with CTest:
+
+```powershell
+ctest --test-dir cmake-build-debug --output-on-failure
+```
+
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency.
+
 ## Roadmap
 
-1. Add snapshots.
-2. Add benchmarking and stress tests.
-3. Add a Redis RESP parser.
+1. Add a Redis RESP parser.

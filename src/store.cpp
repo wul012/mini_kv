@@ -121,18 +121,50 @@ std::optional<std::chrono::seconds> Store::ttl(std::string_view key) const {
 }
 
 std::vector<std::pair<std::string, std::string>> Store::snapshot() const {
+    const auto records = snapshot_items();
+
+    std::vector<std::pair<std::string, std::string>> items;
+    items.reserve(records.size());
+
+    for (const auto& item : records) {
+        items.emplace_back(item.key, item.value);
+    }
+
+    return items;
+}
+
+std::vector<Store::SnapshotItem> Store::snapshot_items() const {
     std::lock_guard lock(mutex_);
     prune_expired_locked(Clock::now());
 
-    std::vector<std::pair<std::string, std::string>> items;
+    std::vector<SnapshotItem> items;
     items.reserve(data_.size());
 
     for (const auto& [key, entry] : data_) {
-        items.emplace_back(key, entry.value);
+        items.push_back(SnapshotItem{key, entry.value, entry.expires_at});
     }
 
-    std::ranges::sort(items, {}, &std::pair<std::string, std::string>::first);
+    std::ranges::sort(items, {}, &SnapshotItem::key);
     return items;
+}
+
+void Store::restore_snapshot(std::vector<SnapshotItem> items) {
+    std::lock_guard lock(mutex_);
+    data_.clear();
+
+    const auto now = Clock::now();
+    for (auto& item : items) {
+        if (item.key.empty()) {
+            continue;
+        }
+
+        Entry entry{std::move(item.value), item.expires_at};
+        if (is_expired(entry, now)) {
+            continue;
+        }
+
+        data_.insert_or_assign(std::move(item.key), std::move(entry));
+    }
 }
 
 bool Store::is_expired(const Entry& entry, TimePoint now) {

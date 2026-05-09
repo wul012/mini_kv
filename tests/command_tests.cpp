@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <chrono>
+#include <filesystem>
 #include <string>
 #include <thread>
 
@@ -68,6 +69,28 @@ int main() {
 
     result = processor.execute("TTL temp extra");
     assert(result.response == "ERR usage: TTL key");
+
+    const auto snapshot_path = std::filesystem::path{"minikv-command-snapshot-test.snap"};
+    std::filesystem::remove(snapshot_path);
+
+    store.clear();
+
+    result = processor.execute("SET snap saved value");
+    assert(result.response == "OK inserted");
+
+    result = processor.execute(std::string{"SAVE "} + snapshot_path.string());
+    assert(result.response == "OK saved 1");
+
+    result = processor.execute("DEL snap");
+    assert(result.response == "1");
+
+    result = processor.execute(std::string{"LOAD "} + snapshot_path.string());
+    assert(result.response == "OK loaded 1");
+
+    result = processor.execute("GET snap");
+    assert(result.response == "saved value");
+
+    std::filesystem::remove(snapshot_path);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");

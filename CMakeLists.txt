@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.4.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.6.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(minikv
     src/command.cpp
+    src/snapshot.cpp
     src/store.cpp
     src/tcp_server.cpp
     src/wal.cpp
@@ -46,6 +47,12 @@ add_executable(minikv_client
 
 target_link_libraries(minikv_client PRIVATE minikv)
 
+add_executable(minikv_benchmark
+    src/benchmark_main.cpp
+)
+
+target_link_libraries(minikv_benchmark PRIVATE minikv)
+
 enable_testing()
 
 add_executable(minikv_store_tests
@@ -71,3 +78,19 @@ add_executable(minikv_wal_tests
 target_link_libraries(minikv_wal_tests PRIVATE minikv)
 
 add_test(NAME wal_tests COMMAND minikv_wal_tests)
+
+add_executable(minikv_snapshot_tests
+    tests/snapshot_tests.cpp
+)
+
+target_link_libraries(minikv_snapshot_tests PRIVATE minikv)
+
+add_test(NAME snapshot_tests COMMAND minikv_snapshot_tests)
+
+add_executable(minikv_stress_tests
+    tests/stress_tests.cpp
+)
+
+target_link_libraries(minikv_stress_tests PRIVATE minikv)
+
+add_test(NAME stress_tests COMMAND minikv_stress_tests)
