@@ -26,6 +26,9 @@ struct RespParseResult {
 
 class RespParser {
 public:
+    static constexpr std::size_t max_arguments = 1024;
+    static constexpr std::size_t max_bulk_length = 64 * 1024;
+
     static RespParseResult parse_command(std::string_view input);
     static std::string to_inline_command(const RespCommand& command);
     static std::string to_resp_response(std::string_view response);

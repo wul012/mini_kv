@@ -17,6 +17,14 @@ int main() {
     assert(result.response.empty());
     assert(!result.should_close);
 
+    result = processor.execute("PING");
+    assert(result.response == "PONG");
+    assert(!result.should_close);
+
+    result = processor.execute("PING hello from ping");
+    assert(result.response == "hello from ping");
+    assert(!result.should_close);
+
     result = processor.execute("SET name mini-kv");
     assert(result.response == "OK inserted");
     assert(!result.should_close);

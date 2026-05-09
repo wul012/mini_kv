@@ -42,6 +42,7 @@ int main() {
     assert(set_result.command.consumed == set_request.size());
     assert(minikv::RespParser::to_inline_command(set_result.command) == "SET name mini-kv");
     assert(minikv::RespParser::to_resp_response("OK inserted") == "+OK inserted\r\n");
+    assert(minikv::RespParser::to_resp_response("PONG") == "+PONG\r\n");
     assert(minikv::RespParser::to_resp_response("mini-kv") == "$7\r\nmini-kv\r\n");
     assert(minikv::RespParser::to_resp_response("(nil)") == "$-1\r\n");
     assert(minikv::RespParser::to_resp_response("2") == ":2\r\n");
@@ -52,6 +53,20 @@ int main() {
     minikv::CommandProcessor processor{store};
     auto response = processor.execute(minikv::RespParser::to_inline_command(set_result.command));
     assert(response.response == "OK inserted");
+
+    const auto ping_request = make_resp_array({"PING"});
+    const auto ping_result = minikv::RespParser::parse_command(ping_request);
+    assert_complete(ping_result);
+    response = processor.execute(minikv::RespParser::to_inline_command(ping_result.command));
+    assert(response.response == "PONG");
+    assert(minikv::RespParser::to_resp_response(response.response) == "+PONG\r\n");
+
+    const auto echo_ping_request = make_resp_array({"PING", "hello from resp ping"});
+    const auto echo_ping_result = minikv::RespParser::parse_command(echo_ping_request);
+    assert_complete(echo_ping_result);
+    response = processor.execute(minikv::RespParser::to_inline_command(echo_ping_result.command));
+    assert(response.response == "hello from resp ping");
+    assert(minikv::RespParser::to_resp_response(response.response) == "$20\r\nhello from resp ping\r\n");
 
     const auto spaced_request = make_resp_array({"SET", "phrase", "hello from resp wire"});
     const auto spaced_result = minikv::RespParser::parse_command(spaced_request);
@@ -91,6 +106,14 @@ int main() {
 
     const auto empty_array = minikv::RespParser::parse_command("*0\r\n");
     assert_error(empty_array);
+
+    const auto too_many_arguments =
+        minikv::RespParser::parse_command("*" + std::to_string(minikv::RespParser::max_arguments + 1) + "\r\n");
+    assert_error(too_many_arguments);
+
+    const auto too_large_bulk =
+        minikv::RespParser::parse_command("*1\r\n$" + std::to_string(minikv::RespParser::max_bulk_length + 1) + "\r\n");
+    assert_error(too_large_bulk);
 
     return 0;
 }

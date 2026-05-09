@@ -105,6 +105,10 @@ RespParseResult RespParser::parse_command(std::string_view input) {
     }
 
     const auto count = static_cast<std::size_t>(count_value);
+    if (count > RespParser::max_arguments) {
+        return error_result("RESP command array has too many arguments");
+    }
+
     std::vector<std::string> arguments;
 
     std::size_t cursor = *count_end + 2;
@@ -132,6 +136,10 @@ RespParseResult RespParser::parse_command(std::string_view input) {
         }
 
         const auto length = static_cast<std::size_t>(length_value);
+        if (length > RespParser::max_bulk_length) {
+            return error_result("RESP bulk string is too large");
+        }
+
         cursor = *length_end + 2;
 
         if (length > input.size() - cursor) {
@@ -185,7 +193,7 @@ std::string RespParser::to_resp_response(std::string_view response) {
         return ":" + std::string{response} + "\r\n";
     }
 
-    if (starts_with(response, "OK ") || response == "BYE") {
+    if (starts_with(response, "OK ") || response == "BYE" || response == "PONG") {
         return "+" + std::string{response} + "\r\n";
     }
 

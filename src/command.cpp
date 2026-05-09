@@ -83,6 +83,13 @@ CommandResult CommandProcessor::execute(std::string_view line) {
     input >> command;
     command = to_upper(command);
 
+    if (command == "PING") {
+        std::string message;
+        std::getline(input >> std::ws, message);
+
+        return {message.empty() ? "PONG" : message};
+    }
+
     if (command == "SET") {
         std::string key;
         input >> key;
@@ -236,6 +243,7 @@ CommandResult CommandProcessor::execute(std::string_view line) {
 
 std::string CommandProcessor::help_text() {
     return "Commands:\n"
+           "  PING [message]\n"
            "  SET key value\n"
            "  GET key\n"
            "  DEL key\n"

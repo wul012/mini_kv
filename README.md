@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 8 is a runnable in-memory KV service with TCP RESP protocol support:
+Version 9 is a runnable in-memory KV service with TCP RESP compatibility hardening:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -17,6 +17,7 @@ Version 8 is a runnable in-memory KV service with TCP RESP protocol support:
 - Benchmark executable for quick local throughput checks
 - CTest coverage for store, command, WAL, snapshot, stress, and RESP behavior
 - Redis RESP parser and TCP response formatting
+- Redis-style `PING [message]` command and RESP parser size limits
 
 ## Build
 
@@ -96,6 +97,7 @@ After CLion finishes loading CMake, run these targets:
 ## CLI commands
 
 ```text
+PING [message]
 SET key value
 GET key
 DEL key
@@ -120,6 +122,7 @@ Connect with a TCP client, then send one inline command per line:
 
 ```text
 SET name mini-kv
+PING
 GET name
 EXPIRE name 10
 TTL name
@@ -140,6 +143,7 @@ The TCP server also accepts Redis-style RESP request arrays:
 
 ```text
 *3\r\n$3\r\nSET\r\n$4\r\nname\r\n$7\r\nmini-kv\r\n
+*1\r\n$4\r\nPING\r\n
 *2\r\n$3\r\nGET\r\n$4\r\nname\r\n
 ```
 
@@ -211,7 +215,16 @@ The RESP parser handles Redis-style request arrays made of bulk strings:
 
 It returns the parsed arguments and the number of bytes consumed, so the TCP server can process pipelined input. The server auto-detects RESP requests when a buffered request starts with `*`; otherwise it keeps using the inline text protocol.
 
+Protocol hardening:
+
+```text
+Maximum RESP arguments: 1024
+Maximum RESP bulk string length: 65536 bytes
+```
+
+Oversized RESP requests return a RESP error instead of waiting indefinitely for huge payloads.
+
 ## Roadmap
 
-1. Add broader RESP compatibility tests and protocol hardening.
-2. Add graceful shutdown and structured logging.
+1. Add graceful shutdown and structured logging.
+2. Add broader network compatibility tests.

@@ -70,6 +70,12 @@
 
 19-version-8-tests-docs.md
  -> 第八版 RESP 响应格式、client 调整、README、a/8 归档和整体增删改
+
+20-ping-resp-hardening.md
+ -> 第九版 PING 命令和 RESP 协议加固：探活命令、参数数量限制、bulk 长度限制和 PONG 编码
+
+21-version-9-tests-docs.md
+ -> 第九版 command_tests、resp_tests、README、a/9 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -165,6 +171,19 @@ TCP server 收到请求
  -> 保持 inline 文本协议
 ```
 
+第九版增加了 PING 和 RESP 加固链路：
+
+```text
+PING [message]
+ -> CommandProcessor 统一处理
+ -> CLI / inline TCP / RESP TCP 都可使用
+
+RESP parser
+ -> 限制 array 参数数量最多 1024
+ -> 限制单个 bulk string 最多 65536 字节
+ -> 超限请求返回 RESP error
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -203,7 +222,7 @@ src/store.cpp
 
 include/minikv/command.hpp
 src/command.cpp
- -> 解析 SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照
+ -> 解析 PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照、第九版支持 PING 探活
 
 src/main.cpp
  -> 本地命令行交互入口，第四版支持可选 WAL 路径
@@ -223,7 +242,7 @@ src/benchmark_main.cpp
 
 include/minikv/resp.hpp
 src/resp.cpp
- -> 第七版 RESP parser，负责把 Redis 风格请求解析成参数列表；第八版新增 RESP 响应格式化
+ -> 第七版 RESP parser，负责把 Redis 风格请求解析成参数列表；第八版新增 RESP 响应格式化；第九版新增参数数量和 bulk string 长度限制
 
 include/minikv/wal.hpp
 src/wal.cpp
@@ -234,7 +253,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力和 RESP parser 行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING 和 RESP parser 行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
