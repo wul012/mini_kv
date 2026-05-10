@@ -139,6 +139,12 @@
 
 42-version-20-ci-docs.md
  -> 第二十版 GitHub Actions CI、README、CMake、a/20 归档和整体增删改
+
+43-client-history-persistence.md
+ -> 第二十一版客户端持久化历史核心：load_from_file、save_to_file 和 --history-file
+
+44-version-21-tests-docs.md
+ -> 第二十一版 client_history_tests、真实历史文件 smoke、README、CMake、a/21 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -412,6 +418,17 @@ snapshot_tests
  -> ctest --test-dir build -C Release --output-on-failure
 ```
 
+第二十一版增加了 TCP client 持久化历史链路：
+
+```text
+minikv_client --history-file path
+ -> parse_options 解析 history_file
+ -> ClientHistory::load_from_file 启动时加载旧命令
+ -> :history / !! / !N 可以使用跨会话历史
+ -> 发送命令并收到响应后 ClientHistory::save_to_file
+ -> 下次客户端启动继续复用同一个历史文件
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -463,14 +480,14 @@ src/server_main.cpp
  -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms；第十八版为 TcpServer logger 加锁，避免并发连接事件输出粘行
 
 src/client_main.cpp
- -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms；第十五版接入本地历史命令
+ -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms；第十五版接入本地历史命令；第二十一版支持 --history-file 持久化历史
 
 src/benchmark_main.cpp
  -> 第六版 benchmark 启动器，用于本地吞吐观察
 
 include/minikv/client_history.hpp
 src/client_history.cpp
- -> 第十五版客户端本地历史模块，负责 :history、!!、!N 和普通输入的 send/local 判定
+ -> 第十五版客户端本地历史模块，负责 :history、!!、!N 和普通输入的 send/local 判定；第二十一版新增历史文件 load_from_file / save_to_file
 
 include/minikv/resp.hpp
 src/resp.cpp
@@ -485,7 +502,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固和客户端本地历史行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

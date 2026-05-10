@@ -1,6 +1,9 @@
 #include "minikv/client_history.hpp"
 
 #include <cassert>
+#include <chrono>
+#include <filesystem>
+#include <fstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -59,6 +62,50 @@ int main() {
         rejected_zero_capacity = true;
     }
     assert(rejected_zero_capacity);
+
+    const auto suffix = std::to_string(std::chrono::steady_clock::now().time_since_epoch().count());
+    const auto temp_dir = std::filesystem::temp_directory_path() / ("minikv-client-history-tests-" + suffix);
+    std::filesystem::remove_all(temp_dir);
+    std::filesystem::create_directories(temp_dir);
+
+    minikv::ClientHistory missing_history{3};
+    assert(missing_history.load_from_file(temp_dir / "missing.history") == 0);
+    assert(missing_history.empty());
+
+    minikv::ClientHistory persistent_history{3};
+    result = minikv::resolve_client_input(persistent_history, "PING one");
+    assert(result.action == minikv::ClientInputAction::send);
+    result = minikv::resolve_client_input(persistent_history, "SET name mini-kv");
+    assert(result.action == minikv::ClientInputAction::send);
+    result = minikv::resolve_client_input(persistent_history, "GET name");
+    assert(result.action == minikv::ClientInputAction::send);
+    result = minikv::resolve_client_input(persistent_history, "SIZE");
+    assert(result.action == minikv::ClientInputAction::send);
+
+    const auto saved_file = temp_dir / "nested" / "client.history";
+    persistent_history.save_to_file(saved_file);
+    assert(std::filesystem::exists(saved_file));
+
+    minikv::ClientHistory restored_history{5};
+    assert(restored_history.load_from_file(saved_file) == 3);
+    assert((restored_history.entries() ==
+            std::vector<std::string>{"SET name mini-kv", "GET name", "SIZE"}));
+
+    const auto manual_file = temp_dir / "manual.history";
+    {
+        std::ofstream manual{manual_file};
+        manual << "PING old\n";
+        manual << "\n";
+        manual << "SET loaded value\r\n";
+        manual << "GET loaded\n";
+        manual << "SIZE\n";
+    }
+
+    minikv::ClientHistory clipped_history{2};
+    assert(clipped_history.load_from_file(manual_file) == 4);
+    assert((clipped_history.entries() == std::vector<std::string>{"GET loaded", "SIZE"}));
+
+    std::filesystem::remove_all(temp_dir);
 
     return 0;
 }

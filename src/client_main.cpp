@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstring>
 #include <exception>
+#include <filesystem>
 #include <iostream>
 #include <limits>
 #include <optional>
@@ -144,6 +145,7 @@ struct ClientOptions {
     std::optional<std::chrono::milliseconds> timeout;
     int connect_retries = 0;
     std::chrono::milliseconds retry_delay{250};
+    std::optional<std::filesystem::path> history_file;
 };
 
 class UsageError : public std::runtime_error {
@@ -353,7 +355,8 @@ SocketGuard connect_with_retries(const ClientOptions& options) {
 
 void print_usage(const char* program) {
     std::cerr << "Usage: " << program
-              << " [host] [port] [timeout_ms] [--connect-retries count] [--retry-delay-ms ms]\n";
+              << " [host] [port] [timeout_ms] [--connect-retries count] [--retry-delay-ms ms]"
+                 " [--history-file path]\n";
 }
 
 bool print_response(SocketHandle socket, std::string_view command) {
@@ -398,6 +401,17 @@ ClientOptions parse_options(int argc, char** argv) {
             continue;
         }
 
+        if (argument == "--history-file") {
+            if (++index >= argc) {
+                throw UsageError{"missing value for --history-file"};
+            }
+            if (argv[index][0] == '\0') {
+                throw UsageError{"history-file must not be empty"};
+            }
+            options.history_file = std::filesystem::path{argv[index]};
+            continue;
+        }
+
         if (!argument.empty() && argument.front() == '-') {
             throw UsageError{"unknown option: " + std::string{argument}};
         }
@@ -435,6 +449,12 @@ int main(int argc, char** argv) {
         }
 
         minikv::ClientHistory history;
+        if (options.history_file.has_value()) {
+            const std::size_t loaded = history.load_from_file(*options.history_file);
+            std::cout << "history file: " << options.history_file->string() << " (" << history.size()
+                      << " entries available, " << loaded << " loaded)\n";
+        }
+
         std::string line;
         while (true) {
             std::cout << "mini-kv@" << options.host << ':' << options.port << "> ";
@@ -463,6 +483,10 @@ int main(int argc, char** argv) {
             if (!print_response(socket.get(), resolved.command)) {
                 std::cerr << "server closed connection\n";
                 return 1;
+            }
+
+            if (options.history_file.has_value()) {
+                history.save_to_file(*options.history_file);
             }
 
             const std::string command = first_token(resolved.command);

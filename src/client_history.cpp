@@ -2,7 +2,10 @@
 
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
+#include <fstream>
 #include <limits>
+#include <system_error>
 #include <stdexcept>
 #include <utility>
 
@@ -106,6 +109,64 @@ std::optional<std::string> ClientHistory::get(std::size_t one_based_index) const
         return std::nullopt;
     }
     return entries_[one_based_index - 1];
+}
+
+std::size_t ClientHistory::load_from_file(const std::filesystem::path& path) {
+    std::error_code error;
+    if (!std::filesystem::exists(path, error)) {
+        if (error) {
+            throw std::runtime_error{"failed to check history file: " + error.message()};
+        }
+        return 0;
+    }
+
+    std::ifstream input{path};
+    if (!input) {
+        throw std::runtime_error{"failed to open history file for reading: " + path.string()};
+    }
+
+    std::size_t loaded = 0;
+    std::string line;
+    while (std::getline(input, line)) {
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+        if (line.empty()) {
+            continue;
+        }
+        add(std::move(line));
+        ++loaded;
+        line.clear();
+    }
+
+    if (input.bad()) {
+        throw std::runtime_error{"failed while reading history file: " + path.string()};
+    }
+
+    return loaded;
+}
+
+void ClientHistory::save_to_file(const std::filesystem::path& path) const {
+    if (const auto parent = path.parent_path(); !parent.empty()) {
+        std::error_code error;
+        std::filesystem::create_directories(parent, error);
+        if (error) {
+            throw std::runtime_error{"failed to create history directory: " + error.message()};
+        }
+    }
+
+    std::ofstream output{path, std::ios::trunc};
+    if (!output) {
+        throw std::runtime_error{"failed to open history file for writing: " + path.string()};
+    }
+
+    for (const auto& entry : entries_) {
+        output << entry << '\n';
+    }
+
+    if (!output) {
+        throw std::runtime_error{"failed while writing history file: " + path.string()};
+    }
 }
 
 ClientInputResult resolve_client_input(ClientHistory& history, std::string_view input) {

@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 20 is a runnable in-memory KV service with cross-platform CMake and CTest CI:
+Version 21 is a runnable in-memory KV service with persistent TCP client command history:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -27,6 +27,7 @@ Version 20 is a runnable in-memory KV service with cross-platform CMake and CTes
 - Broader TCP compatibility tests for `localhost` and address-family agnostic client resolution
 - Configurable bundled TCP client connection retries and retry delay
 - Bundled TCP client local session history with `:history`, `!!`, and `!N`
+- Optional bundled TCP client persistent history via `--history-file`
 - External-client style RESP-over-TCP smoke coverage for pipelined requests
 - RESP-over-TCP compatibility tests for null bulk replies, errors, `DEL`, `EXPIRE`, and `TTL`
 - Concurrent RESP-over-TCP raw-socket client coverage with active and peak connection checks
@@ -104,6 +105,12 @@ TCP client that waits for a server to come online:
 
 ```powershell
 .\build\Debug\minikv_client.exe 127.0.0.1 6379 5000 --connect-retries 10 --retry-delay-ms 250
+```
+
+TCP client with persistent command history:
+
+```powershell
+.\build\Debug\minikv_client.exe 127.0.0.1 6379 --history-file data\client.history
 ```
 
 TCP client local history commands:
@@ -235,11 +242,12 @@ TCP client options:
 
 ```text
 minikv_client.exe [host] [port] [timeout_ms] [--connect-retries count] [--retry-delay-ms ms]
+                  [--history-file path]
 ```
 
 `timeout_ms` sets both receive and send socket timeouts for the bundled client.
 `--connect-retries` controls how many times the client retries after the initial connection attempt fails. `--retry-delay-ms` controls the delay between retries and defaults to 250 ms.
-The bundled client also handles local session history commands before sending data to the server: `:history`, `!!`, and `!N`.
+The bundled client also handles local session history commands before sending data to the server: `:history`, `!!`, and `!N`. When `--history-file` is set, the client loads existing commands from that file at startup and saves the bounded history after each successful sent command.
 
 TTL commands:
 
@@ -295,7 +303,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` session history behavior.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming.
 
 ## RESP protocol
 
@@ -318,5 +326,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add persistent client history or interactive line editing.
+1. Add interactive line editing for the bundled TCP client.
 2. Add WAL checksums or atomic snapshot writes for stronger recovery guarantees.

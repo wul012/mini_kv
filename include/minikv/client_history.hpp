@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <filesystem>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -29,6 +30,8 @@ public:
     const std::vector<std::string>& entries() const;
     std::optional<std::string> last() const;
     std::optional<std::string> get(std::size_t one_based_index) const;
+    std::size_t load_from_file(const std::filesystem::path& path);
+    void save_to_file(const std::filesystem::path& path) const;
 
 private:
     std::size_t max_entries_;
