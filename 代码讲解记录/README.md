@@ -112,6 +112,12 @@
 
 33-version-15-tests-docs.md
  -> 第十五版 client_history_tests、README、CMake、a/15 归档和整体增删改
+
+34-tcp-resp-external-client-tests.md
+ -> 第十六版外部 RESP-over-TCP 测试核心：raw socket、pipeline、精确 RESP frame、连接日志和统计
+
+35-version-16-tests-docs.md
+ -> 第十六版 tcp_resp_tests、README、CMake、a/16 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -300,6 +306,22 @@ minikv_client 读取用户输入
  -> send action 发送 resolved.command
 ```
 
+第十六版增加了外部客户端式 RESP-over-TCP 验证链路：
+
+```text
+tcp_resp_tests
+ -> 启动 TcpServer 临时端口
+ -> raw socket 发送 RESP pipeline
+ -> PING / SET / GET / SIZE / QUIT 连续执行
+ -> 精确比对 RESP 响应帧
+ -> 检查 event=tcp_client_closed 和连接统计
+
+external RESP smoke
+ -> 启动真实 minikv_server.exe
+ -> Python raw socket 发送同样 pipeline
+ -> MATCH True 证明原始响应字节完全符合预期
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -373,7 +395,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为和客户端本地历史行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline 和客户端本地历史行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

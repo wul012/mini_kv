@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 15 is a runnable in-memory KV service with bundled TCP client session history:
+Version 16 is a runnable in-memory KV service with external RESP-over-TCP compatibility coverage:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -24,6 +24,7 @@ Version 15 is a runnable in-memory KV service with bundled TCP client session hi
 - Broader TCP compatibility tests for `localhost` and address-family agnostic client resolution
 - Configurable bundled TCP client connection retries and retry delay
 - Bundled TCP client local session history with `:history`, `!!`, and `!N`
+- External-client style RESP-over-TCP smoke coverage for pipelined requests
 
 ## Build
 
@@ -132,6 +133,7 @@ After CLion finishes loading CMake, run these targets:
 - `minikv_stress_tests`
 - `minikv_resp_tests`
 - `minikv_tcp_server_tests`
+- `minikv_tcp_resp_tests`
 - `minikv_client_history_tests`
 
 ## CLI commands
@@ -275,7 +277,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` session history behavior.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` session history behavior.
 
 ## RESP protocol
 
@@ -298,5 +300,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add more external-client compatibility smoke tests.
-2. Add persistent client history or interactive line editing.
+1. Add persistent client history or interactive line editing.
+2. Add more RESP compatibility cases for additional command/result types.
