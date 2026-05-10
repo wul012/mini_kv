@@ -156,6 +156,11 @@ std::string stats_fields(const TcpServerConnectionStats& stats) {
            " peak_connections=" + std::to_string(stats.peak_connections);
 }
 
+std::string request_limit_fields(std::size_t pending_bytes, std::size_t max_request_bytes) {
+    return "pending_bytes=" + std::to_string(pending_bytes) +
+           " max_request_bytes=" + std::to_string(max_request_bytes);
+}
+
 std::uint16_t socket_bound_port(SocketHandle socket) {
     sockaddr_storage address{};
 #ifdef _WIN32
@@ -389,9 +394,10 @@ void serve_client(Store& store,
                   TcpServer::Options::LogHandler logger,
                   std::string endpoint,
                   std::shared_ptr<TcpServerConnectionTracker> tracker,
-                  std::uint64_t connection_id) {
+                  std::uint64_t connection_id,
+                  std::size_t max_request_bytes) {
     SocketGuard client{client_socket};
-    ConnectionCloseLogger close_logger{std::move(logger), std::move(endpoint), std::move(tracker), connection_id};
+    ConnectionCloseLogger close_logger{logger, endpoint, tracker, connection_id};
     CommandProcessor processor{store, wal};
     std::string pending;
     std::array<char, 4096> buffer{};
@@ -422,7 +428,13 @@ void serve_client(Store& store,
             }
         }
 
-        if (pending.size() > 64 * 1024) {
+        if (pending.size() > max_request_bytes) {
+            if (logger) {
+                logger("event=tcp_request_rejected " + endpoint + " connection_id=" +
+                       std::to_string(connection_id) + " reason=request_too_long " +
+                       request_limit_fields(pending.size(), max_request_bytes));
+            }
+
             if (!pending.empty() && pending.front() == '*') {
                 send_all(client.get(), "-ERR request too long\r\n");
             } else {
@@ -507,7 +519,8 @@ void TcpServer::run() {
     const auto actual_port = socket_bound_port(listener.get());
     bound_port_.store(actual_port);
     const std::string endpoint = endpoint_fields(options_, actual_port);
-    log_event(options_, "event=tcp_listen " + endpoint);
+    log_event(options_, "event=tcp_listen " + endpoint + " max_request_bytes=" +
+                            std::to_string(options_.max_request_bytes));
 
     while (!stop_requested()) {
         if (!wait_for_listener(listener.get(), options_.accept_poll_interval)) {
@@ -535,7 +548,8 @@ void TcpServer::run() {
                     options_.logger,
                     endpoint,
                     connection_tracker_,
-                    snapshot.connection_id}
+                    snapshot.connection_id,
+                    options_.max_request_bytes}
             .detach();
     }
 

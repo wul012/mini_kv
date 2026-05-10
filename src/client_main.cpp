@@ -1,9 +1,12 @@
 #include <algorithm>
 #include <cctype>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <exception>
 #include <iostream>
+#include <limits>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -18,6 +21,7 @@
 #include <cerrno>
 #include <netdb.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 #endif
@@ -139,6 +143,20 @@ std::uint16_t parse_port(const char* text) {
     return static_cast<std::uint16_t>(port);
 }
 
+std::chrono::milliseconds parse_positive_milliseconds(const char* text, std::string_view name) {
+    if (text[0] == '\0' || text[0] == '-') {
+        throw std::out_of_range{std::string{name} + " must be a positive integer"};
+    }
+
+    std::size_t parsed_chars = 0;
+    const long long value = std::stoll(text, &parsed_chars);
+    if (text[parsed_chars] != '\0' || value <= 0) {
+        throw std::out_of_range{std::string{name} + " must be a positive integer"};
+    }
+
+    return std::chrono::milliseconds{value};
+}
+
 std::string to_upper(std::string_view text) {
     std::string result{text};
     for (char& ch : result) {
@@ -183,6 +201,30 @@ bool send_all(SocketHandle socket, std::string_view data) {
     return true;
 }
 
+void set_socket_timeout(SocketHandle socket, std::chrono::milliseconds timeout) {
+#ifdef _WIN32
+    const auto clamped = std::min<long long>(
+        timeout.count(), static_cast<long long>(std::numeric_limits<DWORD>::max()));
+    const DWORD timeout_ms = static_cast<DWORD>(clamped);
+    if (setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&timeout_ms), sizeof(timeout_ms)) !=
+            0 ||
+        setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, reinterpret_cast<const char*>(&timeout_ms), sizeof(timeout_ms)) !=
+            0) {
+        throw std::runtime_error{socket_error_message("setsockopt timeout failed")};
+    }
+#else
+    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(timeout);
+    const auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(timeout - seconds);
+    timeval value{};
+    value.tv_sec = static_cast<long>(seconds.count());
+    value.tv_usec = static_cast<long>(microseconds.count());
+    if (setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, &value, sizeof(value)) != 0 ||
+        setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, &value, sizeof(value)) != 0) {
+        throw std::runtime_error{socket_error_message("setsockopt timeout failed")};
+    }
+#endif
+}
+
 bool read_line(SocketHandle socket, std::string& line) {
     line.clear();
 
@@ -211,7 +253,9 @@ bool read_line(SocketHandle socket, std::string& line) {
     }
 }
 
-SocketGuard connect_to_server(std::string_view host, std::uint16_t port) {
+SocketGuard connect_to_server(std::string_view host,
+                              std::uint16_t port,
+                              std::optional<std::chrono::milliseconds> timeout) {
     addrinfo hints{};
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
@@ -235,6 +279,10 @@ SocketGuard connect_to_server(std::string_view host, std::uint16_t port) {
             continue;
         }
 
+        if (timeout.has_value()) {
+            set_socket_timeout(socket.get(), *timeout);
+        }
+
         if (connect(socket.get(), addr->ai_addr, static_cast<int>(addr->ai_addrlen)) == 0) {
             return socket;
         }
@@ -244,7 +292,7 @@ SocketGuard connect_to_server(std::string_view host, std::uint16_t port) {
 }
 
 void print_usage(const char* program) {
-    std::cerr << "Usage: " << program << " [host] [port]\n";
+    std::cerr << "Usage: " << program << " [host] [port] [timeout_ms]\n";
 }
 
 bool print_response(SocketHandle socket, std::string_view command) {
@@ -271,13 +319,14 @@ bool print_response(SocketHandle socket, std::string_view command) {
 
 int main(int argc, char** argv) {
     try {
-        if (argc > 3) {
+        if (argc > 4) {
             print_usage(argv[0]);
             return 2;
         }
 
         std::string host = "127.0.0.1";
         std::uint16_t port = 6379;
+        std::optional<std::chrono::milliseconds> timeout;
 
         if (argc >= 2) {
             host = argv[1];
@@ -287,9 +336,16 @@ int main(int argc, char** argv) {
             port = parse_port(argv[2]);
         }
 
+        if (argc >= 4) {
+            timeout = parse_positive_milliseconds(argv[3], "timeout_ms");
+        }
+
         NetworkRuntime runtime;
-        SocketGuard socket = connect_to_server(host, port);
+        SocketGuard socket = connect_to_server(host, port, timeout);
         std::cout << "connected to mini-kv at " << host << ':' << port << '\n';
+        if (timeout.has_value()) {
+            std::cout << "socket timeout: " << timeout->count() << " ms\n";
+        }
 
         std::string line;
         while (true) {

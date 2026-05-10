@@ -88,6 +88,12 @@
 
 25-version-11-tests-docs.md
  -> 第十一版 tcp_server_tests、README、a/11 归档和整体增删改
+
+26-server-limits-client-timeout.md
+ -> 第十二版服务端请求上限和客户端超时：max_request_bytes、请求拒绝日志、server 参数和 client timeout
+
+27-version-12-tests-docs.md
+ -> 第十二版 tcp_server_tests、README、a/12 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -226,6 +232,21 @@ client thread exit
  -> event=tcp_client_closed
 ```
 
+第十二版增加了 TCP 请求限制和客户端超时链路：
+
+```text
+minikv_server --max-request-bytes bytes
+ -> TcpServer::Options::max_request_bytes
+ -> serve_client 检查 pending.size()
+ -> 超限返回 ERR line too long / -ERR request too long
+ -> event=tcp_request_rejected
+
+minikv_client timeout_ms
+ -> parse_positive_milliseconds
+ -> set_socket_timeout
+ -> SO_RCVTIMEO / SO_SNDTIMEO
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -271,13 +292,13 @@ src/main.cpp
 
 include/minikv/tcp_server.hpp
 src/tcp_server.cpp
- -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志；第十一版支持 connection_id、active / total / peak 连接指标
+ -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志；第十一版支持 connection_id、active / total / peak 连接指标；第十二版支持可配置请求上限和 event=tcp_request_rejected
 
 src/server_main.cpp
- -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志
+ -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms
 
 src/client_main.cpp
- -> TCP 客户端启动器
+ -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时
 
 src/benchmark_main.cpp
  -> 第六版 benchmark 启动器，用于本地吞吐观察
@@ -295,7 +316,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期和连接指标行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标和请求上限行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

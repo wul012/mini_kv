@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 11 is a runnable in-memory KV service with TCP connection lifecycle tracking and concurrency metrics:
+Version 12 is a runnable in-memory KV service with configurable TCP request limits and client socket timeout tuning:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -20,6 +20,7 @@ Version 11 is a runnable in-memory KV service with TCP connection lifecycle trac
 - Redis-style `PING [message]` command and RESP parser size limits
 - Graceful TCP server stop support and structured `event=...` lifecycle logs
 - TCP connection IDs plus active, total, and peak connection metrics in lifecycle logs
+- Configurable TCP request byte limit and optional client socket timeout
 
 ## Build
 
@@ -55,10 +56,22 @@ TCP server with WAL:
 .\build\Debug\minikv_server.exe 6379 127.0.0.1 data\mini-kv.wal
 ```
 
+TCP server with explicit limits:
+
+```powershell
+.\build\Debug\minikv_server.exe 6379 127.0.0.1 --max-request-bytes 65536 --accept-poll-ms 200
+```
+
 TCP client:
 
 ```powershell
 .\build\Debug\minikv_client.exe 127.0.0.1 6379
+```
+
+TCP client with socket timeout:
+
+```powershell
+.\build\Debug\minikv_client.exe 127.0.0.1 6379 5000
 ```
 
 Benchmark:
@@ -156,14 +169,31 @@ The server prints structured lifecycle logs using key-value fields:
 
 ```text
 event=server_start host=127.0.0.1 port=6379 protocol=inline,resp
-event=tcp_listen host=127.0.0.1 port=6379
+event=tcp_listen host=127.0.0.1 port=6379 max_request_bytes=65536
 event=tcp_client_accepted host=127.0.0.1 port=6379 connection_id=1 active_connections=1 total_connections=1 peak_connections=1
+event=tcp_request_rejected host=127.0.0.1 port=6379 connection_id=1 reason=request_too_long pending_bytes=70000 max_request_bytes=65536
 event=tcp_client_closed host=127.0.0.1 port=6379 connection_id=1 active_connections=0 total_connections=1 peak_connections=1
 event=tcp_stop host=127.0.0.1 port=6379 active_connections=0 total_connections=1 peak_connections=1
 event=server_stopped host=127.0.0.1 port=6379
 ```
 
 Use `Ctrl+C` or `SIGTERM` to request a graceful server stop. The accept loop wakes periodically, observes the stop request, closes the listener, and exits `server.run()`.
+
+TCP server options:
+
+```text
+minikv_server.exe [port] [host] [wal_path] [--max-request-bytes bytes] [--accept-poll-ms ms]
+```
+
+`--max-request-bytes` limits the buffered bytes for one pending TCP request. Inline over-limit requests return `ERR line too long`; RESP over-limit requests return `-ERR request too long`.
+
+TCP client options:
+
+```text
+minikv_client.exe [host] [port] [timeout_ms]
+```
+
+`timeout_ms` sets both receive and send socket timeouts for the bundled client.
 
 TTL commands:
 
@@ -219,7 +249,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts a server on an ephemeral port, sends a real inline TCP request, requests stop through the server API, and checks the structured listen/accept/close/stop log events plus active, total, and peak connection metrics.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts a server on an ephemeral port, sends real inline TCP requests, verifies configurable request-limit rejection, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics.
 
 ## RESP protocol
 
@@ -243,4 +273,4 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 ## Roadmap
 
 1. Add broader network compatibility tests.
-2. Add configurable server limits and client timeout tuning.
+2. Add configurable client reconnect behavior and command history.

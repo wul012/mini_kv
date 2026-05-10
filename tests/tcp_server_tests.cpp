@@ -157,6 +157,7 @@ int main() {
     options.host = "127.0.0.1";
     options.port = 0;
     options.accept_poll_interval = 10ms;
+    options.max_request_bytes = 8;
 
     std::mutex logs_mutex;
     std::vector<std::string> logs;
@@ -219,6 +220,28 @@ int main() {
     assert(stats.active_connections == 0);
     assert(stats.peak_connections == 1);
 
+    const auto too_long_response = exchange_inline(bound_port, "0123456789");
+    assert(too_long_response.find("ERR line too long\n") != std::string::npos);
+
+    bool rejected = false;
+    for (int attempt = 0; attempt < 100; ++attempt) {
+        {
+            std::lock_guard lock{logs_mutex};
+            rejected = contains_log(logs, "event=tcp_request_rejected");
+        }
+        stats = server.connection_stats();
+        if (rejected && stats.active_connections == 0 && stats.total_connections == 2) {
+            break;
+        }
+        std::this_thread::sleep_for(10ms);
+    }
+
+    assert(rejected);
+    stats = server.connection_stats();
+    assert(stats.total_connections == 2);
+    assert(stats.active_connections == 0);
+    assert(stats.peak_connections == 1);
+
     server.request_stop();
     server_thread.join();
 
@@ -232,10 +255,14 @@ int main() {
     assert(contains_log(logs, "event=tcp_listen"));
     assert(contains_log(logs, "event=tcp_client_accepted"));
     assert(contains_log(logs, "event=tcp_client_closed"));
+    assert(contains_log(logs, "event=tcp_request_rejected"));
     assert(contains_log(logs, "connection_id=1"));
+    assert(contains_log(logs, "connection_id=2"));
     assert(contains_log(logs, "active_connections=1"));
     assert(contains_log(logs, "active_connections=0"));
-    assert(contains_log(logs, "total_connections=1"));
+    assert(contains_log(logs, "pending_bytes=10"));
+    assert(contains_log(logs, "max_request_bytes=8"));
+    assert(contains_log(logs, "total_connections=2"));
     assert(contains_log(logs, "peak_connections=1"));
     assert(contains_log(logs, "event=tcp_stop"));
 

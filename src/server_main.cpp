@@ -3,9 +3,12 @@
 #include "minikv/wal.hpp"
 
 #include <csignal>
+#include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <exception>
 #include <iostream>
+#include <limits>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -48,8 +51,28 @@ std::uint16_t parse_port(const char* text) {
     return static_cast<std::uint16_t>(port);
 }
 
+std::size_t parse_positive_size(const char* text, std::string_view name) {
+    if (text[0] == '\0' || text[0] == '-') {
+        throw std::out_of_range{std::string{name} + " must be a positive integer"};
+    }
+
+    std::size_t parsed_chars = 0;
+    const unsigned long long value = std::stoull(text, &parsed_chars);
+    if (text[parsed_chars] != '\0' || value == 0 ||
+        value > static_cast<unsigned long long>(std::numeric_limits<std::size_t>::max())) {
+        throw std::out_of_range{std::string{name} + " must be a positive integer"};
+    }
+    return static_cast<std::size_t>(value);
+}
+
+std::chrono::milliseconds parse_positive_milliseconds(const char* text, std::string_view name) {
+    const auto value = parse_positive_size(text, name);
+    return std::chrono::milliseconds{static_cast<long long>(value)};
+}
+
 void print_usage(const char* program) {
-    std::cerr << "Usage: " << program << " [port] [host] [wal_path]\n";
+    std::cerr << "Usage: " << program
+              << " [port] [host] [wal_path] [--max-request-bytes bytes] [--accept-poll-ms ms]\n";
 }
 
 } // namespace
@@ -65,24 +88,51 @@ int main(int argc, char** argv) {
             std::cout << message << '\n';
         };
 
-        if (argc > 4) {
-            print_usage(argv[0]);
-            return 2;
-        }
+        int positional = 0;
+        std::optional<std::string> wal_path;
+        for (int index = 1; index < argc; ++index) {
+            const std::string_view argument = argv[index];
+            if (argument == "--max-request-bytes") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                options.max_request_bytes = parse_positive_size(argv[index], "max-request-bytes");
+                continue;
+            }
 
-        if (argc >= 2) {
-            options.port = parse_port(argv[1]);
-        }
+            if (argument == "--accept-poll-ms") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                options.accept_poll_interval = parse_positive_milliseconds(argv[index], "accept-poll-ms");
+                continue;
+            }
 
-        if (argc >= 3) {
-            options.host = argv[2];
+            if (!argument.empty() && argument.front() == '-') {
+                print_usage(argv[0]);
+                return 2;
+            }
+
+            ++positional;
+            if (positional == 1) {
+                options.port = parse_port(argv[index]);
+            } else if (positional == 2) {
+                options.host = argv[index];
+            } else if (positional == 3) {
+                wal_path = argv[index];
+            } else {
+                print_usage(argv[0]);
+                return 2;
+            }
         }
 
         minikv::Store store;
         std::optional<minikv::WriteAheadLog> wal;
 
-        if (argc >= 4) {
-            wal.emplace(argv[3]);
+        if (wal_path.has_value()) {
+            wal.emplace(*wal_path);
             const auto replayed = wal->replay(store);
             std::cout << "event=wal_replay path=" << quote_value(wal->path().string()) << " records=" << replayed
                       << '\n';
@@ -93,7 +143,8 @@ int main(int argc, char** argv) {
         install_shutdown_handlers();
 
         std::cout << "event=server_start host=" << options.host << " port=" << options.port
-                  << " protocol=inline,resp" << '\n';
+                  << " protocol=inline,resp max_request_bytes=" << options.max_request_bytes
+                  << " accept_poll_ms=" << options.accept_poll_interval.count() << '\n';
         std::cout << "event=server_hint command=" << quote_value("SET name mini-kv") << '\n';
 
         server.run();
