@@ -145,6 +145,12 @@
 
 44-version-21-tests-docs.md
  -> 第二十一版 client_history_tests、真实历史文件 smoke、README、CMake、a/21 归档和整体增删改
+
+45-snapshot-atomic-save.md
+ -> 第二十二版 Snapshot 原子保存核心：TempSnapshotFile、临时文件写入和目标文件替换
+
+46-version-22-tests-docs.md
+ -> 第二十二版 snapshot_tests、真实 CLI SAVE/LOAD smoke、README、CMake、a/22 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -429,6 +435,20 @@ minikv_client --history-file path
  -> 下次客户端启动继续复用同一个历史文件
 ```
 
+第二十二版增加了 Snapshot 原子保存链路：
+
+```text
+SAVE path
+ -> SnapshotFile::save
+ -> Store::snapshot_items 导出当前有效数据
+ -> 在目标目录生成 .tmp. 临时文件
+ -> 写入 snapshot header 和 ENTRY 行
+ -> flush / close 成功
+ -> Windows 用 MoveFileExW 替换目标文件
+ -> 非 Windows 用 std::filesystem::rename 替换目标文件
+ -> 失败时 TempSnapshotFile 析构清理临时文件
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -499,10 +519,10 @@ src/wal.cpp
 
 include/minikv/snapshot.hpp
 src/snapshot.cpp
- -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store
+ -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store；第二十二版支持临时文件写完整后替换目标 snapshot
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

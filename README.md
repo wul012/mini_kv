@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 21 is a runnable in-memory KV service with persistent TCP client command history:
+Version 22 is a runnable in-memory KV service with atomic snapshot saves:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -16,6 +16,7 @@ Version 21 is a runnable in-memory KV service with persistent TCP client command
 - WAL replay reports applied, skipped, and truncated records
 - Manual snapshots with `SAVE` and `LOAD`
 - Snapshot load rejects corrupt files without replacing the current store
+- Atomic snapshot saves write a temporary file before replacing the target snapshot
 - Benchmark executable for quick local throughput checks
 - CTest coverage for store, command, WAL, snapshot, stress, RESP, and TCP server behavior
 - Redis RESP parser and TCP response formatting
@@ -279,7 +280,7 @@ SAVE path  Save all currently live keys to a snapshot file.
 LOAD path  Replace the current in-memory dataset with a snapshot file.
 ```
 
-Snapshot files preserve values and absolute expiration times. Expired keys are not saved, and expired records are skipped when loading. Corrupt snapshot files are rejected before replacing the current in-memory store. `LOAD` is a manual state replacement command; pair it with WAL intentionally if you want both baseline snapshots and later write replay.
+Snapshot files preserve values and absolute expiration times. Expired keys are not saved, and expired records are skipped when loading. Corrupt snapshot files are rejected before replacing the current in-memory store. `SAVE` writes a temporary file in the target directory and then replaces the target snapshot, avoiding direct truncation of the previous snapshot while the new one is still being written. `LOAD` is a manual state replacement command; pair it with WAL intentionally if you want both baseline snapshots and later write replay.
 
 ## Benchmarks and stress tests
 
@@ -303,7 +304,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming.
 
 ## RESP protocol
 
@@ -327,4 +328,4 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 ## Roadmap
 
 1. Add interactive line editing for the bundled TCP client.
-2. Add WAL checksums or atomic snapshot writes for stronger recovery guarantees.
+2. Add WAL checksums for stronger recovery guarantees.

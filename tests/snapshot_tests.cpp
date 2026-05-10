@@ -52,5 +52,44 @@ int main() {
 
     std::filesystem::remove(corrupt_path);
 
+    const auto atomic_dir = std::filesystem::path{"minikv-snapshot-atomic-test"};
+    const auto atomic_path = atomic_dir / "state.snap";
+    std::filesystem::remove_all(atomic_dir);
+    std::filesystem::create_directories(atomic_dir);
+
+    auto has_temp_snapshot = [&]() {
+        for (const auto& entry : std::filesystem::directory_iterator(atomic_dir)) {
+            if (entry.path().filename().string().find(".tmp.") != std::string::npos) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    minikv::Store first_snapshot;
+    assert(first_snapshot.set("name", "old"));
+    saved = 0;
+    assert(minikv::SnapshotFile::save(first_snapshot, atomic_path, &saved));
+    assert(saved == 1);
+    assert(std::filesystem::exists(atomic_path));
+    assert(!has_temp_snapshot());
+
+    minikv::Store second_snapshot;
+    assert(second_snapshot.set("name", "new"));
+    assert(second_snapshot.set("extra", "value"));
+    saved = 0;
+    assert(minikv::SnapshotFile::save(second_snapshot, atomic_path, &saved));
+    assert(saved == 2);
+    assert(!has_temp_snapshot());
+
+    minikv::Store replaced;
+    loaded = 0;
+    assert(minikv::SnapshotFile::load(replaced, atomic_path, &loaded));
+    assert(loaded == 2);
+    assert(replaced.get("name") == std::optional<std::string>{"new"});
+    assert(replaced.get("extra") == std::optional<std::string>{"value"});
+
+    std::filesystem::remove_all(atomic_dir);
+
     return 0;
 }
