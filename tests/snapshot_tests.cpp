@@ -3,6 +3,7 @@
 #include <cassert>
 #include <chrono>
 #include <filesystem>
+#include <fstream>
 #include <optional>
 #include <string>
 
@@ -30,6 +31,26 @@ int main() {
     assert(restored.get("phrase") == std::optional<std::string>{"hello from snapshot"});
 
     std::filesystem::remove(path);
+
+    const auto corrupt_path = std::filesystem::path{"minikv-snapshot-corrupt-test.snap"};
+    std::filesystem::remove(corrupt_path);
+
+    minikv::Store protected_store;
+    assert(protected_store.set("existing", "survives"));
+
+    {
+        std::ofstream output{corrupt_path};
+        output << "MINIKV_SNAPSHOT 1\n";
+        output << "ENTRY - \"broken\"";
+    }
+
+    loaded = 123;
+    assert(!minikv::SnapshotFile::load(protected_store, corrupt_path, &loaded));
+    assert(loaded == 123);
+    assert(protected_store.get("existing") == std::optional<std::string>{"survives"});
+    assert(protected_store.size() == 1);
+
+    std::filesystem::remove(corrupt_path);
 
     return 0;
 }

@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace minikv {
 namespace {
@@ -78,6 +79,33 @@ bool replay_record(Store& store, std::string_view record) {
     return false;
 }
 
+bool is_blank(std::string_view text) {
+    for (const char ch : text) {
+        if (std::isspace(static_cast<unsigned char>(ch)) == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool has_final_newline(const std::filesystem::path& path) {
+    std::ifstream input{path, std::ios::binary};
+    if (!input) {
+        return true;
+    }
+
+    input.seekg(0, std::ios::end);
+    const auto size = input.tellg();
+    if (size <= 0) {
+        return true;
+    }
+
+    input.seekg(-1, std::ios::end);
+    char last = '\0';
+    input.get(last);
+    return last == '\n';
+}
+
 } // namespace
 
 WriteAheadLog::WriteAheadLog(std::filesystem::path path) : path_(std::move(path)) {}
@@ -104,26 +132,46 @@ bool WriteAheadLog::append(std::string_view record) {
 }
 
 std::size_t WriteAheadLog::replay(Store& store) const {
+    return replay_with_report(store).applied_records;
+}
+
+WalReplayReport WriteAheadLog::replay_with_report(Store& store) const {
     std::lock_guard lock(mutex_);
 
     std::ifstream input{path_};
     if (!input) {
-        return 0;
+        return {};
     }
 
-    std::size_t applied = 0;
+    std::vector<std::string> lines;
     std::string line;
     while (std::getline(input, line)) {
-        if (line.empty()) {
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+        lines.push_back(std::move(line));
+    }
+
+    WalReplayReport report;
+    if (!has_final_newline(path_) && !lines.empty()) {
+        lines.pop_back();
+        ++report.skipped_records;
+        ++report.truncated_records;
+    }
+
+    for (const auto& record : lines) {
+        if (is_blank(record)) {
             continue;
         }
 
-        if (replay_record(store, line)) {
-            ++applied;
+        if (replay_record(store, record)) {
+            ++report.applied_records;
+        } else {
+            ++report.skipped_records;
         }
     }
 
-    return applied;
+    return report;
 }
 
 const std::filesystem::path& WriteAheadLog::path() const {

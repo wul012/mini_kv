@@ -5,6 +5,7 @@
 #include <cassert>
 #include <chrono>
 #include <filesystem>
+#include <fstream>
 #include <optional>
 #include <string>
 #include <thread>
@@ -58,6 +59,33 @@ int main() {
     }
 
     std::filesystem::remove(path);
+
+    const auto corrupt_path =
+        std::filesystem::temp_directory_path() / ("minikv-wal-corrupt-test-" + std::to_string(suffix) + ".wal");
+    std::filesystem::remove(corrupt_path);
+
+    {
+        std::ofstream output{corrupt_path, std::ios::binary};
+        output << "SET kept value\n";
+        output << "GARBAGE record\n";
+        output << "EXPIREAT kept not-a-number\n";
+        output << "SET partial value";
+    }
+
+    {
+        minikv::Store restored;
+        minikv::WriteAheadLog wal{corrupt_path};
+        const auto report = wal.replay_with_report(restored);
+
+        assert(report.applied_records == 1);
+        assert(report.skipped_records == 3);
+        assert(report.truncated_records == 1);
+        assert(restored.get("kept") == std::optional<std::string>{"value"});
+        assert(!restored.get("partial").has_value());
+        assert(wal.replay(restored) == 1);
+    }
+
+    std::filesystem::remove(corrupt_path);
 
     return 0;
 }

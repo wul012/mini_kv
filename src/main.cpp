@@ -26,8 +26,10 @@ int main(int argc, char** argv) {
 
         if (argc == 2) {
             wal.emplace(argv[1]);
-            const auto replayed = wal->replay(store);
-            std::cout << "WAL: " << wal->path().string() << " (" << replayed << " records replayed)\n";
+            const auto replay = wal->replay_with_report(store);
+            std::cout << "WAL: " << wal->path().string() << " (" << replay.applied_records
+                      << " records replayed, " << replay.skipped_records << " skipped, "
+                      << replay.truncated_records << " truncated)\n";
         }
 
         minikv::CommandProcessor processor{store, wal.has_value() ? &*wal : nullptr};

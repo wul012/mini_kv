@@ -130,6 +130,12 @@
 
 39-version-18-tests-docs.md
  -> 第十八版 tcp_resp_concurrency_tests、server_main 日志加锁、README、CMake、a/18 归档和整体增删改
+
+40-wal-replay-report.md
+ -> 第十九版 WAL replay report 和恢复加固：applied / skipped / truncated、坏记录跳过和尾部半条记录保护
+
+41-version-19-tests-docs.md
+ -> 第十九版 wal_tests、snapshot_tests、README、CMake、a/19 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -371,6 +377,26 @@ external RESP concurrency smoke
  -> server_main logger 加锁后并发日志逐行完整输出
 ```
 
+第十九版增加了 WAL / Snapshot 恢复加固链路：
+
+```text
+WriteAheadLog::replay_with_report
+ -> 读取 WAL 所有行
+ -> 跳过空白行
+ -> 坏记录计入 skipped_records
+ -> 末尾无换行记录视为疑似部分写入
+ -> 计入 skipped_records 和 truncated_records
+ -> 返回 applied / skipped / truncated 报告
+
+minikv_cli / minikv_server
+ -> 启动时调用 replay_with_report
+ -> 输出 WAL replayed / skipped / truncated
+
+snapshot_tests
+ -> 坏 snapshot load 返回 false
+ -> 不替换当前 Store
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -437,14 +463,14 @@ src/resp.cpp
 
 include/minikv/wal.hpp
 src/wal.cpp
- -> 第四版 WAL 持久化模块，负责 append 和 replay
+ -> 第四版 WAL 持久化模块，负责 append 和 replay；第十九版新增 WalReplayReport、replay_with_report、坏记录跳过和尾部半条记录保护
 
 include/minikv/snapshot.hpp
 src/snapshot.cpp
- -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
+ -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端和客户端本地历史行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固和客户端本地历史行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

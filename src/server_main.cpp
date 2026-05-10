@@ -136,9 +136,10 @@ int main(int argc, char** argv) {
 
         if (wal_path.has_value()) {
             wal.emplace(*wal_path);
-            const auto replayed = wal->replay(store);
-            std::cout << "event=wal_replay path=" << quote_value(wal->path().string()) << " records=" << replayed
-                      << '\n';
+            const auto replay = wal->replay_with_report(store);
+            std::cout << "event=wal_replay path=" << quote_value(wal->path().string())
+                      << " records=" << replay.applied_records << " skipped=" << replay.skipped_records
+                      << " truncated=" << replay.truncated_records << '\n';
         }
 
         minikv::TcpServer server{store, options, wal.has_value() ? &*wal : nullptr};
