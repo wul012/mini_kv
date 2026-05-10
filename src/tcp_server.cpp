@@ -9,6 +9,7 @@
 #include <chrono>
 #include <cstring>
 #include <functional>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -23,7 +24,9 @@
 #include <ws2tcpip.h>
 #else
 #include <cerrno>
+#include <cstdint>
 #include <netdb.h>
+#include <netinet/in.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -31,6 +34,52 @@
 #endif
 
 namespace minikv {
+
+struct ConnectionSnapshot {
+    std::uint64_t connection_id = 0;
+    std::uint64_t total_connections = 0;
+    std::size_t active_connections = 0;
+    std::size_t peak_connections = 0;
+};
+
+struct TcpServerConnectionTracker {
+    ConnectionSnapshot connected() {
+        ConnectionSnapshot snapshot;
+        snapshot.connection_id = next_connection_id.fetch_add(1);
+        snapshot.total_connections = total_connections.fetch_add(1) + 1;
+        snapshot.active_connections = active_connections.fetch_add(1) + 1;
+        snapshot.peak_connections = update_peak(snapshot.active_connections);
+        return snapshot;
+    }
+
+    ConnectionSnapshot closed(std::uint64_t connection_id) {
+        ConnectionSnapshot snapshot;
+        snapshot.connection_id = connection_id;
+        snapshot.active_connections = active_connections.fetch_sub(1) - 1;
+        snapshot.total_connections = total_connections.load();
+        snapshot.peak_connections = peak_connections.load();
+        return snapshot;
+    }
+
+    TcpServerConnectionStats stats() const {
+        return {total_connections.load(), active_connections.load(), peak_connections.load()};
+    }
+
+    std::atomic<std::uint64_t> next_connection_id{1};
+    std::atomic<std::uint64_t> total_connections{0};
+    std::atomic_size_t active_connections{0};
+    std::atomic_size_t peak_connections{0};
+
+private:
+    std::size_t update_peak(std::size_t active) {
+        std::size_t current_peak = peak_connections.load();
+        while (active > current_peak &&
+               !peak_connections.compare_exchange_weak(current_peak, active)) {
+        }
+        return peak_connections.load();
+    }
+};
+
 namespace {
 
 #ifdef _WIN32
@@ -90,8 +139,45 @@ void log_event(const TcpServer::Options& options, const std::string& message) {
     }
 }
 
-std::string endpoint_fields(const TcpServer::Options& options) {
-    return "host=" + options.host + " port=" + std::to_string(options.port);
+std::string endpoint_fields(const TcpServer::Options& options, std::uint16_t bound_port) {
+    return "host=" + options.host + " port=" + std::to_string(bound_port);
+}
+
+std::string connection_fields(const ConnectionSnapshot& snapshot) {
+    return "connection_id=" + std::to_string(snapshot.connection_id) +
+           " active_connections=" + std::to_string(snapshot.active_connections) +
+           " total_connections=" + std::to_string(snapshot.total_connections) +
+           " peak_connections=" + std::to_string(snapshot.peak_connections);
+}
+
+std::string stats_fields(const TcpServerConnectionStats& stats) {
+    return "active_connections=" + std::to_string(stats.active_connections) +
+           " total_connections=" + std::to_string(stats.total_connections) +
+           " peak_connections=" + std::to_string(stats.peak_connections);
+}
+
+std::uint16_t socket_bound_port(SocketHandle socket) {
+    sockaddr_storage address{};
+#ifdef _WIN32
+    int length = sizeof(address);
+#else
+    socklen_t length = sizeof(address);
+#endif
+    if (getsockname(socket, reinterpret_cast<sockaddr*>(&address), &length) != 0) {
+        throw std::runtime_error{socket_error_message("getsockname failed")};
+    }
+
+    if (address.ss_family == AF_INET) {
+        const auto* ipv4 = reinterpret_cast<const sockaddr_in*>(&address);
+        return ntohs(ipv4->sin_port);
+    }
+
+    if (address.ss_family == AF_INET6) {
+        const auto* ipv6 = reinterpret_cast<const sockaddr_in6*>(&address);
+        return ntohs(ipv6->sin6_port);
+    }
+
+    throw std::runtime_error{"getsockname returned an unsupported address family"};
 }
 
 timeval to_timeval(std::chrono::milliseconds timeout) {
@@ -209,6 +295,38 @@ bool send_all(SocketHandle socket, std::string_view data) {
     return true;
 }
 
+class ConnectionCloseLogger {
+public:
+    ConnectionCloseLogger(TcpServer::Options::LogHandler logger,
+                          std::string endpoint,
+                          std::shared_ptr<TcpServerConnectionTracker> tracker,
+                          std::uint64_t connection_id)
+        : logger_(std::move(logger)),
+          endpoint_(std::move(endpoint)),
+          tracker_(std::move(tracker)),
+          connection_id_(connection_id) {}
+
+    ~ConnectionCloseLogger() {
+        if (!tracker_) {
+            return;
+        }
+
+        const auto snapshot = tracker_->closed(connection_id_);
+        if (logger_) {
+            logger_("event=tcp_client_closed " + endpoint_ + " " + connection_fields(snapshot));
+        }
+    }
+
+    ConnectionCloseLogger(const ConnectionCloseLogger&) = delete;
+    ConnectionCloseLogger& operator=(const ConnectionCloseLogger&) = delete;
+
+private:
+    TcpServer::Options::LogHandler logger_;
+    std::string endpoint_;
+    std::shared_ptr<TcpServerConnectionTracker> tracker_;
+    std::uint64_t connection_id_ = 0;
+};
+
 bool process_inline_commands(SocketHandle socket, CommandProcessor& processor, std::string& pending, bool& needs_more) {
     needs_more = false;
 
@@ -265,8 +383,15 @@ bool process_resp_commands(SocketHandle socket, CommandProcessor& processor, std
     return true;
 }
 
-void serve_client(Store& store, WriteAheadLog* wal, SocketHandle client_socket) {
+void serve_client(Store& store,
+                  WriteAheadLog* wal,
+                  SocketHandle client_socket,
+                  TcpServer::Options::LogHandler logger,
+                  std::string endpoint,
+                  std::shared_ptr<TcpServerConnectionTracker> tracker,
+                  std::uint64_t connection_id) {
     SocketGuard client{client_socket};
+    ConnectionCloseLogger close_logger{std::move(logger), std::move(endpoint), std::move(tracker), connection_id};
     CommandProcessor processor{store, wal};
     std::string pending;
     std::array<char, 4096> buffer{};
@@ -355,7 +480,10 @@ SocketGuard bind_listener(const TcpServer::Options& options) {
 TcpServer::TcpServer(Store& store, Options options) : TcpServer(store, std::move(options), nullptr) {}
 
 TcpServer::TcpServer(Store& store, Options options, WriteAheadLog* wal)
-    : store_(store), options_(std::move(options)), wal_(wal) {}
+    : store_(store),
+      options_(std::move(options)),
+      wal_(wal),
+      connection_tracker_(std::make_shared<TcpServerConnectionTracker>()) {}
 
 void TcpServer::request_stop() {
     stop_requested_.store(true);
@@ -365,10 +493,21 @@ bool TcpServer::stop_requested() const {
     return stop_requested_.load() || (options_.should_stop && options_.should_stop());
 }
 
+std::uint16_t TcpServer::bound_port() const {
+    return bound_port_.load();
+}
+
+TcpServerConnectionStats TcpServer::connection_stats() const {
+    return connection_tracker_->stats();
+}
+
 void TcpServer::run() {
     NetworkRuntime runtime;
     SocketGuard listener = bind_listener(options_);
-    log_event(options_, "event=tcp_listen " + endpoint_fields(options_));
+    const auto actual_port = socket_bound_port(listener.get());
+    bound_port_.store(actual_port);
+    const std::string endpoint = endpoint_fields(options_, actual_port);
+    log_event(options_, "event=tcp_listen " + endpoint);
 
     while (!stop_requested()) {
         if (!wait_for_listener(listener.get(), options_.accept_poll_interval)) {
@@ -387,11 +526,20 @@ void TcpServer::run() {
             throw std::runtime_error{socket_error_message("accept failed")};
         }
 
-        log_event(options_, "event=tcp_client_accepted " + endpoint_fields(options_));
-        std::thread{serve_client, std::ref(store_), wal_, client}.detach();
+        const auto snapshot = connection_tracker_->connected();
+        log_event(options_, "event=tcp_client_accepted " + endpoint + " " + connection_fields(snapshot));
+        std::thread{serve_client,
+                    std::ref(store_),
+                    wal_,
+                    client,
+                    options_.logger,
+                    endpoint,
+                    connection_tracker_,
+                    snapshot.connection_id}
+            .detach();
     }
 
-    log_event(options_, "event=tcp_stop " + endpoint_fields(options_));
+    log_event(options_, "event=tcp_stop " + endpoint + " " + stats_fields(connection_tracker_->stats()));
 }
 
 } // namespace minikv

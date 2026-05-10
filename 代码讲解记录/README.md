@@ -82,6 +82,12 @@
 
 23-version-10-tests-docs.md
  -> 第十版 tcp_server_tests、CMake、README、a/10 归档和整体增删改
+
+24-connection-metrics.md
+ -> 第十一版 TCP 连接生命周期追踪：connection_id、active / total / peak 指标和关闭日志
+
+25-version-11-tests-docs.md
+ -> 第十一版 tcp_server_tests、README、a/11 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -204,6 +210,22 @@ server_main
  -> 输出 event=server_start / event=server_stopped
 ```
 
+第十一版增加了 TCP 连接观测链路：
+
+```text
+TCP client accepted
+ -> TcpServerConnectionTracker 分配 connection_id
+ -> active_connections +1
+ -> total_connections +1
+ -> 更新 peak_connections
+ -> event=tcp_client_accepted
+
+client thread exit
+ -> ConnectionCloseLogger 析构
+ -> active_connections -1
+ -> event=tcp_client_closed
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -249,7 +271,7 @@ src/main.cpp
 
 include/minikv/tcp_server.hpp
 src/tcp_server.cpp
- -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志
+ -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志；第十一版支持 connection_id、active / total / peak 连接指标
 
 src/server_main.cpp
  -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志
@@ -273,7 +295,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser 和 TCP server 生命周期行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期和连接指标行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

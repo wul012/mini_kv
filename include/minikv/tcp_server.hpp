@@ -4,13 +4,22 @@
 
 #include <atomic>
 #include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <string>
 
 namespace minikv {
 
 class WriteAheadLog;
+struct TcpServerConnectionTracker;
+
+struct TcpServerConnectionStats {
+    std::uint64_t total_connections = 0;
+    std::size_t active_connections = 0;
+    std::size_t peak_connections = 0;
+};
 
 class TcpServer {
 public:
@@ -32,12 +41,16 @@ public:
     void run();
     void request_stop();
     bool stop_requested() const;
+    std::uint16_t bound_port() const;
+    TcpServerConnectionStats connection_stats() const;
 
 private:
     Store& store_;
     Options options_;
     WriteAheadLog* wal_ = nullptr;
     std::atomic_bool stop_requested_{false};
+    std::atomic<std::uint16_t> bound_port_{0};
+    std::shared_ptr<TcpServerConnectionTracker> connection_tracker_;
 };
 
 } // namespace minikv
