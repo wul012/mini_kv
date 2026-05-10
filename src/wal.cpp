@@ -328,6 +328,21 @@ bool WriteAheadLog::compact(const Store& store, std::size_t* compacted) {
     return true;
 }
 
+bool WriteAheadLog::repair(Store& store, WalRepairReport* repair) {
+    const auto replay = replay_with_report(store);
+
+    std::size_t compacted_keys = 0;
+    if (!compact(store, &compacted_keys)) {
+        return false;
+    }
+
+    if (repair != nullptr) {
+        repair->replay = replay;
+        repair->compacted_keys = compacted_keys;
+    }
+    return true;
+}
+
 std::size_t WriteAheadLog::replay(Store& store) const {
     return replay_with_report(store).applied_records;
 }

@@ -202,5 +202,101 @@ int main() {
 
     std::filesystem::remove(compact_path);
 
+    const auto repair_path =
+        std::filesystem::temp_directory_path() / ("minikv-wal-repair-test-" + std::to_string(suffix) + ".wal");
+    std::filesystem::remove(repair_path);
+
+    const auto future_expiration =
+        std::chrono::duration_cast<std::chrono::milliseconds>((minikv::Store::Clock::now() + 60s).time_since_epoch())
+            .count();
+
+    {
+        minikv::WriteAheadLog wal{repair_path};
+        assert(wal.append("SET good value"));
+        assert(wal.append("SET bad original"));
+        assert(wal.append("SET gone old"));
+        assert(wal.append("DEL gone"));
+        assert(wal.append("SET ttl keep"));
+        assert(wal.append("EXPIREAT ttl " + std::to_string(future_expiration)));
+    }
+
+    {
+        std::ifstream input{repair_path, std::ios::binary};
+        std::string contents{std::istreambuf_iterator<char>{input}, std::istreambuf_iterator<char>{}};
+        const auto position = contents.find("SET bad original");
+        assert(position != std::string::npos);
+        contents.replace(position, std::string{"SET bad original"}.size(), "SET bad tampered");
+        contents += "SET legacy old\n";
+        contents += "GARBAGE record\n";
+        contents += "SET partial value";
+
+        std::ofstream output{repair_path, std::ios::binary | std::ios::trunc};
+        output << contents;
+    }
+
+    {
+        minikv::Store repaired_store;
+        minikv::WriteAheadLog wal{repair_path};
+        minikv::WalRepairReport repair;
+        assert(wal.repair(repaired_store, &repair));
+
+        assert(repair.replay.applied_records == 6);
+        assert(repair.replay.skipped_records == 3);
+        assert(repair.replay.truncated_records == 1);
+        assert(repair.replay.checksum_failed_records == 1);
+        assert(repair.compacted_keys == 3);
+        assert(repaired_store.get("good") == std::optional<std::string>{"value"});
+        assert(repaired_store.get("legacy") == std::optional<std::string>{"old"});
+        assert(repaired_store.get("ttl") == std::optional<std::string>{"keep"});
+        assert(repaired_store.ttl("ttl").has_value());
+        assert(!repaired_store.get("bad").has_value());
+        assert(!repaired_store.get("gone").has_value());
+        assert(!repaired_store.get("partial").has_value());
+    }
+
+    {
+        std::ifstream input{repair_path};
+        std::vector<std::string> lines;
+        std::string line;
+        while (std::getline(input, line)) {
+            lines.push_back(line);
+        }
+
+        assert(lines.size() == 4);
+        std::string contents;
+        for (const auto& record : lines) {
+            assert(record.rfind("WAL2 ", 0) == 0);
+            contents += record;
+            contents += '\n';
+        }
+
+        assert(contents.find("SET good value") != std::string::npos);
+        assert(contents.find("SET legacy old") != std::string::npos);
+        assert(contents.find("SET ttl keep") != std::string::npos);
+        assert(contents.find("EXPIREAT ttl ") != std::string::npos);
+        assert(contents.find("SET bad") == std::string::npos);
+        assert(contents.find("gone") == std::string::npos);
+        assert(contents.find("GARBAGE") == std::string::npos);
+        assert(contents.find("partial") == std::string::npos);
+    }
+
+    {
+        minikv::Store restored;
+        minikv::WriteAheadLog wal{repair_path};
+        const auto report = wal.replay_with_report(restored);
+
+        assert(report.applied_records == 4);
+        assert(report.skipped_records == 0);
+        assert(report.truncated_records == 0);
+        assert(report.checksum_failed_records == 0);
+        assert(restored.get("good") == std::optional<std::string>{"value"});
+        assert(restored.get("legacy") == std::optional<std::string>{"old"});
+        assert(restored.get("ttl") == std::optional<std::string>{"keep"});
+        assert(!restored.get("bad").has_value());
+        assert(!restored.get("gone").has_value());
+    }
+
+    std::filesystem::remove(repair_path);
+
     return 0;
 }

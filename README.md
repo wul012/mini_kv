@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 24 is a runnable in-memory KV service with manual WAL compaction:
+Version 25 is a runnable in-memory KV service with startup WAL repair:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -16,6 +16,7 @@ Version 24 is a runnable in-memory KV service with manual WAL compaction:
 - WAL records include checksums while replay remains compatible with older plain records
 - WAL replay reports applied, skipped, truncated, and checksum-failed records
 - Manual WAL compaction rewrites the log from the current live store state
+- Startup WAL repair can rebuild damaged logs with `--repair-wal`
 - Manual snapshots with `SAVE` and `LOAD`
 - Snapshot load rejects corrupt files without replacing the current store
 - Atomic snapshot saves write a temporary file before replacing the target snapshot
@@ -68,6 +69,12 @@ CLI with WAL:
 .\build\Debug\minikv_cli.exe data\mini-kv.wal
 ```
 
+CLI with WAL repair:
+
+```powershell
+.\build\Debug\minikv_cli.exe data\mini-kv.wal --repair-wal
+```
+
 TCP server:
 
 ```powershell
@@ -78,6 +85,12 @@ TCP server with WAL:
 
 ```powershell
 .\build\Debug\minikv_server.exe 6379 127.0.0.1 data\mini-kv.wal
+```
+
+TCP server with WAL repair:
+
+```powershell
+.\build\Debug\minikv_server.exe 6379 127.0.0.1 data\mini-kv.wal --repair-wal
 ```
 
 TCP server with explicit limits:
@@ -238,7 +251,7 @@ Use `Ctrl+C` or `SIGTERM` to request a graceful server stop. The accept loop wak
 TCP server options:
 
 ```text
-minikv_server.exe [port] [host] [wal_path] [--max-request-bytes bytes] [--accept-poll-ms ms]
+minikv_server.exe [port] [host] [wal_path] [--repair-wal] [--max-request-bytes bytes] [--accept-poll-ms ms]
 ```
 
 `--max-request-bytes` limits the buffered bytes for one pending TCP request. Inline over-limit requests return `ERR line too long`; RESP over-limit requests return `-ERR request too long`.
@@ -273,7 +286,7 @@ DEL key
 EXPIRE key seconds
 ```
 
-`EXPIRE` is persisted as an internal absolute expiration record, so expired keys do not come back after restart. New WAL records are stored as `WAL2 <checksum> <record>` lines; replay still accepts older plain `SET` / `DEL` / `EXPIREAT` lines. WAL replay skips malformed records, skips checksum mismatches, detects a final unterminated record as a probable partial write, and reports applied, skipped, truncated, and checksum-failed counts during startup. `COMPACT` is available when a WAL path is configured; it rewrites the log to the current live key set using checksummed `SET` and `EXPIREAT` records, dropping overwritten, deleted, and expired history. Without a WAL path, mini-kv remains an in-memory-only service.
+`EXPIRE` is persisted as an internal absolute expiration record, so expired keys do not come back after restart. New WAL records are stored as `WAL2 <checksum> <record>` lines; replay still accepts older plain `SET` / `DEL` / `EXPIREAT` lines. WAL replay skips malformed records, skips checksum mismatches, detects a final unterminated record as a probable partial write, and reports applied, skipped, truncated, and checksum-failed counts during startup. `COMPACT` is available when a WAL path is configured; it rewrites the log to the current live key set using checksummed `SET` and `EXPIREAT` records, dropping overwritten, deleted, and expired history. Start `minikv_cli` or `minikv_server` with `--repair-wal` to replay the recoverable records and immediately rewrite the WAL to a clean compacted WAL2 file before serving commands. Without a WAL path, mini-kv remains an in-memory-only service.
 
 ## Snapshots
 
@@ -308,7 +321,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, and compacted WAL replay. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, and WAL repair rewriting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming.
 
 ## RESP protocol
 
@@ -332,4 +345,4 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 ## Roadmap
 
 1. Add interactive line editing for the bundled TCP client.
-2. Add WAL startup repair tooling for damaged logs.
+2. Add WAL size reporting and automatic compact hints for long-running logs.

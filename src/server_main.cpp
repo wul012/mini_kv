@@ -73,7 +73,22 @@ std::chrono::milliseconds parse_positive_milliseconds(const char* text, std::str
 
 void print_usage(const char* program) {
     std::cerr << "Usage: " << program
-              << " [port] [host] [wal_path] [--max-request-bytes bytes] [--accept-poll-ms ms]\n";
+              << " [port] [host] [wal_path] [--repair-wal] [--max-request-bytes bytes] [--accept-poll-ms ms]\n";
+}
+
+void log_wal_replay(const minikv::WriteAheadLog& wal, const minikv::WalReplayReport& replay) {
+    std::cout << "event=wal_replay path=" << quote_value(wal.path().string())
+              << " records=" << replay.applied_records << " skipped=" << replay.skipped_records
+              << " truncated=" << replay.truncated_records
+              << " checksum_failed=" << replay.checksum_failed_records << '\n';
+}
+
+void log_wal_repair(const minikv::WriteAheadLog& wal, const minikv::WalRepairReport& repair) {
+    std::cout << "event=wal_repair path=" << quote_value(wal.path().string())
+              << " records=" << repair.replay.applied_records << " skipped=" << repair.replay.skipped_records
+              << " truncated=" << repair.replay.truncated_records
+              << " checksum_failed=" << repair.replay.checksum_failed_records
+              << " compacted_keys=" << repair.compacted_keys << '\n';
 }
 
 } // namespace
@@ -93,6 +108,7 @@ int main(int argc, char** argv) {
 
         int positional = 0;
         std::optional<std::string> wal_path;
+        bool repair_wal = false;
         for (int index = 1; index < argc; ++index) {
             const std::string_view argument = argv[index];
             if (argument == "--max-request-bytes") {
@@ -110,6 +126,11 @@ int main(int argc, char** argv) {
                     return 2;
                 }
                 options.accept_poll_interval = parse_positive_milliseconds(argv[index], "accept-poll-ms");
+                continue;
+            }
+
+            if (argument == "--repair-wal") {
+                repair_wal = true;
                 continue;
             }
 
@@ -131,16 +152,26 @@ int main(int argc, char** argv) {
             }
         }
 
+        if (repair_wal && !wal_path.has_value()) {
+            print_usage(argv[0]);
+            return 2;
+        }
+
         minikv::Store store;
         std::optional<minikv::WriteAheadLog> wal;
 
         if (wal_path.has_value()) {
             wal.emplace(*wal_path);
-            const auto replay = wal->replay_with_report(store);
-            std::cout << "event=wal_replay path=" << quote_value(wal->path().string())
-                      << " records=" << replay.applied_records << " skipped=" << replay.skipped_records
-                      << " truncated=" << replay.truncated_records
-                      << " checksum_failed=" << replay.checksum_failed_records << '\n';
+            if (repair_wal) {
+                minikv::WalRepairReport repair;
+                if (!wal->repair(store, &repair)) {
+                    std::cerr << "fatal: WAL repair failed\n";
+                    return 1;
+                }
+                log_wal_repair(*wal, repair);
+            } else {
+                log_wal_replay(*wal, wal->replay_with_report(store));
+            }
         }
 
         minikv::TcpServer server{store, options, wal.has_value() ? &*wal : nullptr};

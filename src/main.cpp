@@ -5,18 +5,66 @@
 #include <iostream>
 #include <optional>
 #include <string>
+#include <string_view>
 
 namespace {
 
+struct CliOptions {
+    std::optional<std::string> wal_path;
+    bool repair_wal = false;
+};
+
 void print_usage(const char* program) {
-    std::cerr << "Usage: " << program << " [wal_path]\n";
+    std::cerr << "Usage: " << program << " [wal_path] [--repair-wal]\n";
+}
+
+std::optional<CliOptions> parse_options(int argc, char** argv) {
+    CliOptions options;
+
+    for (int index = 1; index < argc; ++index) {
+        const std::string_view argument = argv[index];
+        if (argument == "--repair-wal") {
+            options.repair_wal = true;
+            continue;
+        }
+
+        if (!argument.empty() && argument.front() == '-') {
+            return std::nullopt;
+        }
+
+        if (options.wal_path.has_value()) {
+            return std::nullopt;
+        }
+        options.wal_path = std::string{argument};
+    }
+
+    if (options.repair_wal && !options.wal_path.has_value()) {
+        return std::nullopt;
+    }
+
+    return options;
+}
+
+void print_wal_replay(const minikv::WriteAheadLog& wal, const minikv::WalReplayReport& replay) {
+    std::cout << "WAL: " << wal.path().string() << " (" << replay.applied_records
+              << " records replayed, " << replay.skipped_records << " skipped, "
+              << replay.truncated_records << " truncated, " << replay.checksum_failed_records
+              << " checksum failed)\n";
+}
+
+void print_wal_repair(const minikv::WriteAheadLog& wal, const minikv::WalRepairReport& repair) {
+    std::cout << "WAL: " << wal.path().string() << " (" << repair.replay.applied_records
+              << " records replayed, " << repair.replay.skipped_records << " skipped, "
+              << repair.replay.truncated_records << " truncated, " << repair.replay.checksum_failed_records
+              << " checksum failed; repaired to " << repair.compacted_keys << " keys)\n";
 }
 
 } // namespace
 
 int main(int argc, char** argv) {
     try {
-        if (argc > 2) {
+        const auto options = parse_options(argc, argv);
+        if (!options.has_value()) {
             print_usage(argv[0]);
             return 2;
         }
@@ -24,13 +72,18 @@ int main(int argc, char** argv) {
         minikv::Store store;
         std::optional<minikv::WriteAheadLog> wal;
 
-        if (argc == 2) {
-            wal.emplace(argv[1]);
-            const auto replay = wal->replay_with_report(store);
-            std::cout << "WAL: " << wal->path().string() << " (" << replay.applied_records
-                      << " records replayed, " << replay.skipped_records << " skipped, "
-                      << replay.truncated_records << " truncated, " << replay.checksum_failed_records
-                      << " checksum failed)\n";
+        if (options->wal_path.has_value()) {
+            wal.emplace(*options->wal_path);
+            if (options->repair_wal) {
+                minikv::WalRepairReport repair;
+                if (!wal->repair(store, &repair)) {
+                    std::cerr << "fatal: WAL repair failed\n";
+                    return 1;
+                }
+                print_wal_repair(*wal, repair);
+            } else {
+                print_wal_replay(*wal, wal->replay_with_report(store));
+            }
         }
 
         minikv::CommandProcessor processor{store, wal.has_value() ? &*wal : nullptr};
