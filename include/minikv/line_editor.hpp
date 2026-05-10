@@ -43,8 +43,23 @@ private:
     bool draft_saved_ = false;
 };
 
+class LineEditorCompletion {
+public:
+    explicit LineEditorCompletion(std::vector<std::string> candidates);
+
+    std::optional<std::string> complete(std::string_view text, std::size_t cursor) const;
+
+private:
+    std::vector<std::string> candidates_;
+};
+
 bool read_client_line(std::string_view prompt,
                       const std::vector<std::string>& history_entries,
+                      std::string& line);
+
+bool read_client_line(std::string_view prompt,
+                      const std::vector<std::string>& history_entries,
+                      const std::vector<std::string>& completion_candidates,
                       std::string& line);
 
 } // namespace minikv

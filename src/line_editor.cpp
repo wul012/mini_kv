@@ -1,6 +1,11 @@
 #include "minikv/line_editor.hpp"
 
+#include <algorithm>
+#include <cctype>
 #include <iostream>
+#include <string>
+#include <string_view>
+#include <utility>
 
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -14,6 +19,18 @@
 #endif
 
 namespace minikv {
+
+namespace {
+
+std::string to_upper_copy(std::string_view text) {
+    std::string result{text};
+    for (char& ch : result) {
+        ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
+    }
+    return result;
+}
+
+} // namespace
 
 void LineEditorBuffer::clear() {
     text_.clear();
@@ -125,10 +142,87 @@ std::optional<std::string> LineEditorHistoryNavigator::next() {
     return entries_[index_];
 }
 
+LineEditorCompletion::LineEditorCompletion(std::vector<std::string> candidates)
+    : candidates_(std::move(candidates)) {}
+
+std::optional<std::string> LineEditorCompletion::complete(std::string_view text, std::size_t cursor) const {
+    if (cursor > text.size() || candidates_.empty()) {
+        return std::nullopt;
+    }
+
+    std::size_t token_start = 0;
+    while (token_start < text.size() && std::isspace(static_cast<unsigned char>(text[token_start])) != 0) {
+        ++token_start;
+    }
+
+    if (cursor < token_start) {
+        return std::nullopt;
+    }
+
+    std::size_t token_end = token_start;
+    while (token_end < text.size() && std::isspace(static_cast<unsigned char>(text[token_end])) == 0) {
+        ++token_end;
+    }
+
+    if (cursor != token_end) {
+        return std::nullopt;
+    }
+
+    const std::string prefix = to_upper_copy(text.substr(token_start, cursor - token_start));
+    std::vector<std::string_view> matches;
+    for (const auto& candidate : candidates_) {
+        const std::string upper_candidate = to_upper_copy(candidate);
+        if (upper_candidate.rfind(prefix, 0) == 0) {
+            matches.push_back(candidate);
+        }
+    }
+
+    if (matches.empty()) {
+        return std::nullopt;
+    }
+
+    std::string replacement = std::string{matches.front()};
+    if (matches.size() > 1) {
+        std::string common_prefix = to_upper_copy(matches.front());
+        for (std::size_t index = 1; index < matches.size(); ++index) {
+            const std::string next = to_upper_copy(matches[index]);
+            std::size_t length = 0;
+            while (length < common_prefix.size() && length < next.size() && common_prefix[length] == next[length]) {
+                ++length;
+            }
+            common_prefix.resize(length);
+        }
+
+        if (common_prefix.size() <= prefix.size()) {
+            return std::nullopt;
+        }
+        replacement = common_prefix;
+    }
+
+    std::string completed{text.substr(0, token_start)};
+    completed += replacement;
+    const bool has_trailing_text = cursor < text.size();
+    completed += text.substr(cursor);
+    if (matches.size() == 1 && !has_trailing_text && (completed.empty() || completed.back() != ' ')) {
+        completed.push_back(' ');
+    }
+
+    if (completed == text) {
+        return std::nullopt;
+    }
+    return completed;
+}
+
 namespace {
+
+std::vector<std::string> default_completion_candidates() {
+    return {"PING",    "SET",   "GET",    "DEL",   "EXPIRE", "TTL",  "SIZE", "SAVE", "LOAD",
+            "COMPACT", "WALINFO", "STATS", "HEALTH", "HELP",   "EXIT", "QUIT", ":history"};
+}
 
 enum class KeyKind {
     character,
+    tab,
     enter,
     backspace,
     delete_forward,
@@ -233,6 +327,9 @@ KeyEvent read_key() {
     if (ch == '\b') {
         return {KeyKind::backspace, '\0'};
     }
+    if (ch == '\t') {
+        return {KeyKind::tab, '\0'};
+    }
 
     if (ch == 0 || ch == 224) {
         const int code = _getch();
@@ -335,6 +432,9 @@ KeyEvent read_key() {
     if (ch == 8 || ch == 127) {
         return {KeyKind::backspace, '\0'};
     }
+    if (ch == '\t') {
+        return {KeyKind::tab, '\0'};
+    }
     if (ch == '\x1b') {
         return read_escape_sequence();
     }
@@ -349,6 +449,13 @@ KeyEvent read_key() {
 
 bool read_client_line(std::string_view prompt,
                       const std::vector<std::string>& history_entries,
+                      std::string& line) {
+    return read_client_line(prompt, history_entries, default_completion_candidates(), line);
+}
+
+bool read_client_line(std::string_view prompt,
+                      const std::vector<std::string>& history_entries,
+                      const std::vector<std::string>& completion_candidates,
                       std::string& line) {
     line.clear();
 
@@ -369,6 +476,7 @@ bool read_client_line(std::string_view prompt,
 
     LineEditorBuffer buffer;
     LineEditorHistoryNavigator navigator{history_entries};
+    LineEditorCompletion completion{completion_candidates};
     redraw_line(prompt, buffer);
 
     while (true) {
@@ -379,6 +487,12 @@ bool read_client_line(std::string_view prompt,
         case KeyKind::character:
             buffer.insert(key.character);
             changed = true;
+            break;
+        case KeyKind::tab:
+            if (const auto completed = completion.complete(buffer.text(), buffer.cursor())) {
+                buffer.set_text(*completed);
+                changed = true;
+            }
             break;
         case KeyKind::enter:
             line = buffer.text();

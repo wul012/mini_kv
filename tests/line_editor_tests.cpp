@@ -72,5 +72,18 @@ int main() {
     assert(!empty_navigator.previous("draft").has_value());
     assert(!empty_navigator.next().has_value());
 
+    minikv::LineEditorCompletion completion{
+        {"PING", "SET", "GET", "SAVE", "SIZE", "STATS", "HELP", "HEALTH", "EXIT", "EXPIRE", ":history"}};
+    assert(completion.complete("", 0) == std::nullopt);
+    assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
+    assert(completion.complete("  pi", 4) == std::optional<std::string>{"  PING "});
+    assert(completion.complete(":h", 2) == std::optional<std::string>{":history "});
+    assert(completion.complete("HEA", 3) == std::optional<std::string>{"HEALTH "});
+    assert(completion.complete("E", 1) == std::optional<std::string>{"EX"});
+    assert(!completion.complete("S", 1).has_value());
+    assert(!completion.complete("BAD", 3).has_value());
+    assert(!completion.complete("PING name", 6).has_value());
+    assert(!completion.complete("PING", 2).has_value());
+
     return 0;
 }

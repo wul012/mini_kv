@@ -952,3 +952,73 @@ server_metrics
 tcp_stop
  -> 服务停止时的最终连接统计和命令指标快照
 ```
+
+## 第三十四版讲解索引补充
+
+```text
+69-client-command-completion.md
+ -> 第三十四版客户端命令补全核心：LineEditorCompletion、Tab KeyKind、默认补全候选和 read_client_line 接入补全
+
+70-version-34-tests-docs.md
+ -> 第三十四版 line_editor_tests、真实 client completion smoke、README、CMake、a/34 归档和整体增删改
+```
+
+## 第三十四版补充理解
+
+第三十四版把客户端交互链路继续补齐：
+
+```text
+read_client_line
+ -> terminal_input_available 判断交互终端
+ -> 非交互输入继续 fallback_read_line
+ -> 交互终端创建 LineEditorBuffer
+ -> 创建 LineEditorHistoryNavigator
+ -> 创建 LineEditorCompletion
+ -> 按键循环中识别 Tab
+ -> completion.complete(buffer.text(), buffer.cursor())
+ -> 成功时 set_text 并 redraw_line
+```
+
+`LineEditorCompletion` 只负责纯补全逻辑：
+
+```text
+输入当前文本和光标位置
+只补第一个 token
+只在光标位于 token 末尾时补
+大小写不敏感匹配
+唯一匹配补完整命令并加空格
+多匹配只扩展最长公共前缀
+不能补全时返回 nullopt
+```
+
+默认候选包括：
+
+```text
+PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD
+COMPACT / WALINFO / STATS / HEALTH / HELP / EXIT / QUIT
+:history
+```
+
+第三十四版后，客户端输入体验变成：
+
+```text
+Tab
+ -> 命令补全
+
+Up / Down
+ -> 历史浏览
+
+Left / Right / Home / End
+ -> 光标移动
+
+Backspace / Delete
+ -> 当前行编辑
+```
+
+重定向输入仍然保持脚本友好：
+
+```text
+stdin 或 stdout 不是终端
+ -> 不启用按键编辑
+ -> std::getline 逐行读取
+```
