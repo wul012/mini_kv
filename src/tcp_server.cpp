@@ -551,6 +551,7 @@ CommandProcessorMetrics TcpServer::command_metrics() const {
 
 void TcpServer::run() {
     NetworkRuntime runtime;
+    (void)runtime;
     SocketGuard listener = bind_listener(options_);
     const auto actual_port = socket_bound_port(listener.get());
     bound_port_.store(actual_port);

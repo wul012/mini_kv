@@ -103,8 +103,10 @@ int main() {
 
     {
         minikv::WriteAheadLog wal{checksum_path};
-        assert(wal.append("SET checked ok"));
-        assert(wal.append("SET another value"));
+        const bool appended_checked = wal.append("SET checked ok");
+        const bool appended_another = wal.append("SET another value");
+        assert(appended_checked);
+        assert(appended_another);
     }
 
     {
@@ -212,12 +214,18 @@ int main() {
 
     {
         minikv::WriteAheadLog wal{repair_path};
-        assert(wal.append("SET good value"));
-        assert(wal.append("SET bad original"));
-        assert(wal.append("SET gone old"));
-        assert(wal.append("DEL gone"));
-        assert(wal.append("SET ttl keep"));
-        assert(wal.append("EXPIREAT ttl " + std::to_string(future_expiration)));
+        const bool appended_good = wal.append("SET good value");
+        const bool appended_bad = wal.append("SET bad original");
+        const bool appended_gone = wal.append("SET gone old");
+        const bool appended_del_gone = wal.append("DEL gone");
+        const bool appended_ttl = wal.append("SET ttl keep");
+        const bool appended_expiration = wal.append("EXPIREAT ttl " + std::to_string(future_expiration));
+        assert(appended_good);
+        assert(appended_bad);
+        assert(appended_gone);
+        assert(appended_del_gone);
+        assert(appended_ttl);
+        assert(appended_expiration);
     }
 
     {
@@ -238,7 +246,8 @@ int main() {
         minikv::Store repaired_store;
         minikv::WriteAheadLog wal{repair_path};
         minikv::WalRepairReport repair;
-        assert(wal.repair(repaired_store, &repair));
+        const bool repaired = wal.repair(repaired_store, &repair);
+        assert(repaired);
 
         assert(repair.replay.applied_records == 6);
         assert(repair.replay.skipped_records == 3);
@@ -368,7 +377,8 @@ int main() {
         assert(result.response.find("compact_recommended=no") != std::string::npos);
 
         minikv::WalAutoCompactReport skipped_compact;
-        assert(wal.compact_if_recommended(store, &skipped_compact));
+        const bool compact_checked = wal.compact_if_recommended(store, &skipped_compact);
+        assert(compact_checked);
         assert(!skipped_compact.compacted);
         assert(skipped_compact.before.records == 1);
         assert(skipped_compact.after.records == 1);

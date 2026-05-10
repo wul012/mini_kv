@@ -60,7 +60,7 @@ GitHub Actions runs the same CMake build and CTest flow on Linux, macOS, and Win
 .github/workflows/ci.yml
 ```
 
-Each CI job configures the project, builds every target, and runs the registered CTest suite with failure output enabled.
+Each CI job configures a Debug build, builds every target, and runs the registered CTest suite with failure output enabled. The test suite is assert-driven, so CI intentionally keeps assertions enabled.
 
 ## Run
 
