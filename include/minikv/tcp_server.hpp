@@ -1,5 +1,6 @@
 #pragma once
 
+#include "minikv/command.hpp"
 #include "minikv/store.hpp"
 
 #include <atomic>
@@ -46,6 +47,7 @@ public:
     bool stop_requested() const;
     std::uint16_t bound_port() const;
     TcpServerConnectionStats connection_stats() const;
+    CommandProcessorMetrics command_metrics() const;
 
 private:
     Store& store_;
@@ -54,6 +56,7 @@ private:
     std::atomic_bool stop_requested_{false};
     std::atomic<std::uint16_t> bound_port_{0};
     std::shared_ptr<TcpServerConnectionTracker> connection_tracker_;
+    std::shared_ptr<CommandMetricsTracker> command_metrics_tracker_;
 };
 
 } // namespace minikv

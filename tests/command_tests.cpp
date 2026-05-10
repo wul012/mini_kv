@@ -150,6 +150,41 @@ int main() {
     assert(result.response.find("connection_stats_available=yes") != std::string::npos);
     assert(result.response.find("active_connections=2") != std::string::npos);
 
+    minikv::Store metrics_store;
+    minikv::CommandProcessor metrics_processor{metrics_store};
+    assert(metrics_processor.metrics().total_commands == 0);
+    assert(metrics_processor.metrics().successful_commands == 0);
+    assert(metrics_processor.metrics().error_commands == 0);
+
+    result = metrics_processor.execute("");
+    assert(result.response.empty());
+    assert(metrics_processor.metrics().total_commands == 0);
+
+    result = metrics_processor.execute("PING");
+    assert(result.response == "PONG");
+    assert(metrics_processor.metrics().total_commands == 1);
+    assert(metrics_processor.metrics().successful_commands == 1);
+    assert(metrics_processor.metrics().error_commands == 0);
+
+    result = metrics_processor.execute("GET name extra");
+    assert(result.response == "ERR usage: GET key");
+    assert(metrics_processor.metrics().total_commands == 2);
+    assert(metrics_processor.metrics().successful_commands == 1);
+    assert(metrics_processor.metrics().error_commands == 1);
+
+    result = metrics_processor.execute("STATS");
+    assert(result.response.find("total_commands=2") != std::string::npos);
+    assert(result.response.find("successful_commands=1") != std::string::npos);
+    assert(result.response.find("error_commands=1") != std::string::npos);
+    assert(metrics_processor.metrics().total_commands == 3);
+    assert(metrics_processor.metrics().successful_commands == 2);
+    assert(metrics_processor.metrics().error_commands == 1);
+
+    result = metrics_processor.execute("HEALTH");
+    assert(result.response.find("total_commands=3") != std::string::npos);
+    assert(result.response.find("successful_commands=2") != std::string::npos);
+    assert(result.response.find("error_commands=1") != std::string::npos);
+
     result = processor.execute("HELP");
     assert(result.response.find("COMPACT") != std::string::npos);
     assert(result.response.find("WALINFO") != std::string::npos);

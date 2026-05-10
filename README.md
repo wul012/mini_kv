@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 31 is a runnable in-memory KV service with bundled TCP client line editing:
+Version 32 is a runnable in-memory KV service with runtime command counters:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -20,8 +20,8 @@ Version 31 is a runnable in-memory KV service with bundled TCP client line editi
 - WAL maintenance reporting exposes log bytes, record count, live keys, and compact hints
 - Optional automatic WAL compaction can rewrite long-running logs at startup and after WAL-backed writes
 - WAL compaction thresholds are configurable, and `WALINFO` reports compact counters and saved work
-- Runtime `STATS` and `HEALTH` commands expose live keys, WAL maintenance state, and server connection counters
-- Optional `--metrics-interval-ms` emits periodic structured `event=server_metrics` connection counters
+- Runtime `STATS` and `HEALTH` commands expose live keys, WAL maintenance state, server connection counters, and command counters
+- Optional `--metrics-interval-ms` emits periodic structured `event=server_metrics` connection and command counters
 - Manual snapshots with `SAVE` and `LOAD`
 - Snapshot load rejects corrupt files without replacing the current store
 - Atomic snapshot saves write a temporary file before replacing the target snapshot
@@ -38,6 +38,7 @@ Version 31 is a runnable in-memory KV service with bundled TCP client line editi
 - Bundled TCP client local session history with `:history`, `!!`, and `!N`
 - Optional bundled TCP client persistent history via `--history-file`
 - Bundled TCP client terminal line editing with arrow-key history navigation and cursor editing
+- Command execution counters track total, successful, and error command results
 - External-client style RESP-over-TCP smoke coverage for pipelined requests
 - RESP-over-TCP compatibility tests for null bulk replies, errors, `DEL`, `EXPIRE`, and `TTL`
 - Concurrent RESP-over-TCP raw-socket client coverage with active and peak connection checks
@@ -279,7 +280,7 @@ The TCP server also accepts Redis-style RESP request arrays:
 
 RESP mode returns simple strings, integers, bulk strings, null bulk strings, or errors using RESP framing. Inline mode keeps the original one-line text responses.
 
-`STATS` returns a compact key-value status line with live key count, WAL maintenance details when enabled, and TCP connection counters when executed through the server. `HEALTH` returns an `OK ...` line for quick liveness checks with the same WAL and connection signals.
+`STATS` returns a compact key-value status line with live key count, command counters, WAL maintenance details when enabled, and TCP connection counters when executed through the server. `HEALTH` returns an `OK ...` line for quick liveness checks with the same WAL, command counter, and connection signals.
 
 The server prints structured lifecycle logs using key-value fields:
 
@@ -287,10 +288,10 @@ The server prints structured lifecycle logs using key-value fields:
 event=server_start host=127.0.0.1 port=6379 protocol=inline,resp max_request_bytes=65536 accept_poll_ms=200 metrics_interval_ms=0 auto_compact_wal=false
 event=tcp_listen host=127.0.0.1 port=6379 max_request_bytes=65536
 event=tcp_client_accepted host=127.0.0.1 port=6379 connection_id=1 active_connections=1 total_connections=1 peak_connections=1
-event=server_metrics host=127.0.0.1 port=6379 active_connections=1 total_connections=1 peak_connections=1 metrics_interval_ms=10000
+event=server_metrics host=127.0.0.1 port=6379 active_connections=1 total_connections=1 peak_connections=1 total_commands=10 successful_commands=9 error_commands=1 metrics_interval_ms=10000
 event=tcp_request_rejected host=127.0.0.1 port=6379 connection_id=1 reason=request_too_long pending_bytes=70000 max_request_bytes=65536
 event=tcp_client_closed host=127.0.0.1 port=6379 connection_id=1 active_connections=0 total_connections=1 peak_connections=1
-event=tcp_stop host=127.0.0.1 port=6379 active_connections=0 total_connections=1 peak_connections=1
+event=tcp_stop host=127.0.0.1 port=6379 active_connections=0 total_connections=1 peak_connections=1 total_commands=10 successful_commands=9 error_commands=1
 event=server_stopped host=127.0.0.1 port=6379
 ```
 
@@ -383,7 +384,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs and active, total, and peak connection metrics surfaced through `STATS` / `HEALTH`. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming. `line_editor_tests` verifies the line editing buffer operations and Up/Down history navigation used by the interactive bundled TCP client.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, error counters, `STATS` / `HEALTH`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs and active, total, peak, command, and error counters surfaced through `STATS` / `HEALTH`. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming. `line_editor_tests` verifies the line editing buffer operations and Up/Down history navigation used by the interactive bundled TCP client.
 
 ## RESP protocol
 
@@ -406,5 +407,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add command execution counters and error counters.
+1. Add per-command breakdown and latency counters.
 2. Add interactive command completion for the bundled TCP client.

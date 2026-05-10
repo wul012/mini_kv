@@ -5,10 +5,12 @@
 
 #include <chrono>
 #include <cctype>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <sstream>
 #include <string>
+#include <utility>
 
 namespace minikv {
 namespace {
@@ -117,9 +119,16 @@ std::string format_connection_stats(const CommandConnectionStats& stats) {
            " peak_connections=" + std::to_string(stats.peak_connections);
 }
 
+std::string format_command_metrics(const CommandProcessorMetrics& metrics) {
+    return " total_commands=" + std::to_string(metrics.total_commands) +
+           " successful_commands=" + std::to_string(metrics.successful_commands) +
+           " error_commands=" + std::to_string(metrics.error_commands);
+}
+
 std::string format_stats(std::size_t live_keys,
                          WriteAheadLog* wal,
                          const std::optional<WalMaintenanceReport>& wal_report,
+                         const CommandProcessorMetrics& command_metrics,
                          const CommandConnectionStats& stats) {
     std::string response = "live_keys=" + std::to_string(live_keys) +
                            " wal_enabled=" + format_yes_no(wal != nullptr);
@@ -140,6 +149,7 @@ std::string format_stats(std::size_t live_keys,
                     " bytes_saved=" + std::to_string(wal_report->compaction_stats.bytes_saved);
     }
 
+    response += format_command_metrics(command_metrics);
     response += format_connection_stats(stats);
     return response;
 }
@@ -147,6 +157,7 @@ std::string format_stats(std::size_t live_keys,
 std::string format_health(std::size_t live_keys,
                           WriteAheadLog* wal,
                           const std::optional<WalMaintenanceReport>& wal_report,
+                          const CommandProcessorMetrics& command_metrics,
                           const CommandConnectionStats& stats) {
     std::string response = "OK live_keys=" + std::to_string(live_keys) +
                            " wal_enabled=" + format_yes_no(wal != nullptr);
@@ -157,14 +168,33 @@ std::string format_health(std::size_t live_keys,
         response += " compact_recommended=na";
     }
 
+    response += format_command_metrics(command_metrics);
     response += format_connection_stats(stats);
     return response;
 }
 
 } // namespace
 
+void CommandMetricsTracker::record(const CommandResult& result) {
+    total_commands_.fetch_add(1);
+    if (result.response.rfind("ERR ", 0) == 0) {
+        error_commands_.fetch_add(1);
+        return;
+    }
+
+    successful_commands_.fetch_add(1);
+}
+
+CommandProcessorMetrics CommandMetricsTracker::stats() const {
+    return {total_commands_.load(), successful_commands_.load(), error_commands_.load()};
+}
+
 CommandProcessor::CommandProcessor(Store& store, WriteAheadLog* wal, CommandProcessorOptions options)
-    : store_(store), wal_(wal), options_(options) {}
+    : store_(store),
+      wal_(wal),
+      options_(std::move(options)),
+      metrics_tracker_(options_.metrics_tracker ? options_.metrics_tracker : std::make_shared<CommandMetricsTracker>()) {
+}
 
 void CommandProcessor::auto_compact_wal_if_needed() {
     if (wal_ == nullptr || !options_.auto_compact_wal) {
@@ -180,7 +210,17 @@ CommandResult CommandProcessor::execute(std::string_view line) {
         return {};
     }
 
-    std::istringstream input{trimmed};
+    CommandResult result = execute_trimmed(trimmed);
+    metrics_tracker_->record(result);
+    return result;
+}
+
+CommandProcessorMetrics CommandProcessor::metrics() const {
+    return metrics_tracker_->stats();
+}
+
+CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
+    std::istringstream input{std::string{trimmed}};
 
     std::string command;
     input >> command;
@@ -400,7 +440,7 @@ CommandResult CommandProcessor::execute(std::string_view line) {
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_stats(live_keys, wal_, wal_report, connection_stats(options_))};
+        return {format_stats(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
     if (command == "HEALTH") {
@@ -415,7 +455,7 @@ CommandResult CommandProcessor::execute(std::string_view line) {
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_health(live_keys, wal_, wal_report, connection_stats(options_))};
+        return {format_health(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
     if (command == "HELP") {

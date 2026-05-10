@@ -205,6 +205,12 @@
 
 64-version-31-tests-docs.md
  -> 第三十一版 line_editor_tests、真实 client line editor smoke、README、CMake、a/31 归档和整体增删改
+
+65-command-metrics-core.md
+ -> 第三十二版命令执行计数核心：CommandProcessorMetrics、CommandMetricsTracker、STATS/HEALTH counters、TCP server 共享 tracker 和 server_metrics counters
+
+66-version-32-tests-docs.md
+ -> 第三十二版 command_tests、tcp_server_tests、真实 command metrics smoke、README、CMake、a/32 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -640,14 +646,14 @@ src/store.cpp
 
 include/minikv/command.hpp
 src/command.cpp
- -> 解析 PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / COMPACT / WALINFO / STATS / HEALTH / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照、第九版支持 PING 探活、第二十四版支持 WAL compact、第二十六版支持 WAL maintenance 查询、第二十七版支持 CommandProcessorOptions::auto_compact_wal 和写命令后的自动 WAL compact、第二十八版扩展 WALINFO 输出 compact 阈值和统计字段、第二十九版支持运行期 STATS / HEALTH 和 CommandProcessorOptions::connection_stats
+ -> 解析 PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / COMPACT / WALINFO / STATS / HEALTH / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照、第九版支持 PING 探活、第二十四版支持 WAL compact、第二十六版支持 WAL maintenance 查询、第二十七版支持 CommandProcessorOptions::auto_compact_wal 和写命令后的自动 WAL compact、第二十八版扩展 WALINFO 输出 compact 阈值和统计字段、第二十九版支持运行期 STATS / HEALTH 和 CommandProcessorOptions::connection_stats、第三十二版支持 CommandProcessorMetrics / CommandMetricsTracker 并在 STATS / HEALTH 输出 total_commands、successful_commands、error_commands
 
 src/main.cpp
  -> 本地命令行交互入口，第四版支持可选 WAL 路径；第二十五版支持 --repair-wal 启动期修复 WAL；第二十六版启动后输出 WAL stats 和 WAL hint；第二十七版支持 --auto-compact-wal 和启动期自动 WAL compact；第二十八版支持 --wal-compact-min-records、--wal-compact-record-ratio、--wal-compact-min-bytes
 
 include/minikv/tcp_server.hpp
 src/tcp_server.cpp
- -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志；第十一版支持 connection_id、active / total / peak 连接指标；第十二版支持可配置请求上限和 event=tcp_request_rejected；第二十七版把 auto_compact_wal 传给每个连接的 CommandProcessor；第二十九版把 connection stats provider 注入每个连接的 CommandProcessor，让 STATS / HEALTH 能返回 active / total / peak 连接统计
+ -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志；第十一版支持 connection_id、active / total / peak 连接指标；第十二版支持可配置请求上限和 event=tcp_request_rejected；第二十七版把 auto_compact_wal 传给每个连接的 CommandProcessor；第二十九版把 connection stats provider 注入每个连接的 CommandProcessor，让 STATS / HEALTH 能返回 active / total / peak 连接统计；第三十二版为所有连接共享 CommandMetricsTracker，并在 server_metrics / tcp_stop 输出 command counters
 
 src/server_main.cpp
  -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms；第十八版为 TcpServer logger 加锁，避免并发连接事件输出粘行；第二十五版支持 --repair-wal 和 event=wal_repair；第二十六版支持 event=wal_stats 和 event=wal_compact_hint；第二十七版支持 --auto-compact-wal、event=wal_auto_compact 和 event=wal_auto_compact_skipped；第二十八版支持 WAL compact 阈值参数，并在 event=wal_stats 中输出阈值和 compact counters
@@ -679,7 +685,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store；第二十二版支持临时文件写完整后替换目标 snapshot
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、WAL checksum、WAL compact、WAL repair、WAL maintenance、WAL 自动 compact、WAL compact 阈值配置、WAL compact counters、STATS / HEALTH、TCP connection stats provider、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史、持久化历史文件行为和客户端行编辑核心逻辑
+ -> 验证 Store、CommandProcessor、CommandMetricsTracker、WAL、WAL checksum、WAL compact、WAL repair、WAL maintenance、WAL 自动 compact、WAL compact 阈值配置、WAL compact counters、STATS / HEALTH、TCP connection stats provider、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史、持久化历史文件行为和客户端行编辑核心逻辑
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
@@ -797,4 +803,68 @@ ClientHistory
 
 client_main
  -> 把最终 line 发送给 server，并在响应成功后保存历史
+```
+
+## 第三十二版补充理解
+
+第三十二版新增 command metrics 链路：
+
+```text
+CommandProcessor::execute
+ -> trim 输入
+ -> 空行直接返回，不计数
+ -> 非空命令调用 execute_trimmed
+ -> 返回 CommandResult 后交给 CommandMetricsTracker::record
+ -> response 以 ERR 开头则 error_commands +1
+ -> 其他响应则 successful_commands +1
+ -> total_commands 始终 +1
+```
+
+STATS / HEALTH 现在会读取同一个 tracker：
+
+```text
+STATS
+ -> live_keys / WAL 状态
+ -> total_commands / successful_commands / error_commands
+ -> connection_stats
+
+HEALTH
+ -> OK / WAL compact signal
+ -> total_commands / successful_commands / error_commands
+ -> connection_stats
+```
+
+TCP server 中所有连接共享同一个 command metrics tracker：
+
+```text
+TcpServer 构造
+ -> 创建 command_metrics_tracker_
+
+serve_client
+ -> CommandProcessorOptions::metrics_tracker = command_metrics_tracker_
+
+每个 client CommandProcessor
+ -> record 到同一个 tracker
+
+server_metrics / tcp_stop
+ -> 输出 total_commands / successful_commands / error_commands
+```
+
+到第三十二版为止，运行期观测入口变成：
+
+```text
+WALINFO
+ -> WAL maintenance 细节
+
+STATS
+ -> Store、WAL、command counters、TCP 连接统计
+
+HEALTH
+ -> OK 探活、compact signal、command counters、连接统计
+
+server_metrics
+ -> 周期性连接统计和命令统计
+
+tcp_stop
+ -> 服务停止时的最终连接统计和命令统计
 ```

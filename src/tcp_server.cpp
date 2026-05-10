@@ -156,6 +156,12 @@ std::string stats_fields(const TcpServerConnectionStats& stats) {
            " peak_connections=" + std::to_string(stats.peak_connections);
 }
 
+std::string command_metrics_fields(const CommandProcessorMetrics& metrics) {
+    return "total_commands=" + std::to_string(metrics.total_commands) +
+           " successful_commands=" + std::to_string(metrics.successful_commands) +
+           " error_commands=" + std::to_string(metrics.error_commands);
+}
+
 bool metrics_logging_enabled(const TcpServer::Options& options) {
     return options.metrics_log_interval > std::chrono::milliseconds::zero();
 }
@@ -167,8 +173,11 @@ std::chrono::milliseconds listener_wait_interval(const TcpServer::Options& optio
     return options.accept_poll_interval;
 }
 
-std::string metrics_fields(const TcpServerConnectionStats& stats, std::chrono::milliseconds interval) {
-    return stats_fields(stats) + " metrics_interval_ms=" + std::to_string(interval.count());
+std::string metrics_fields(const TcpServerConnectionStats& stats,
+                           const CommandProcessorMetrics& command_metrics,
+                           std::chrono::milliseconds interval) {
+    return stats_fields(stats) + " " + command_metrics_fields(command_metrics) +
+           " metrics_interval_ms=" + std::to_string(interval.count());
 }
 
 std::string request_limit_fields(std::size_t pending_bytes, std::size_t max_request_bytes) {
@@ -409,6 +418,7 @@ void serve_client(Store& store,
                   TcpServer::Options::LogHandler logger,
                   std::string endpoint,
                   std::shared_ptr<TcpServerConnectionTracker> tracker,
+                  std::shared_ptr<CommandMetricsTracker> command_metrics_tracker,
                   std::uint64_t connection_id,
                   std::size_t max_request_bytes,
                   bool auto_compact_wal) {
@@ -420,6 +430,7 @@ void serve_client(Store& store,
         const auto stats = tracker->stats();
         return CommandConnectionStats{true, stats.total_connections, stats.active_connections, stats.peak_connections};
     };
+    command_options.metrics_tracker = std::move(command_metrics_tracker);
     CommandProcessor processor{store, wal, command_options};
     std::string pending;
     std::array<char, 4096> buffer{};
@@ -517,7 +528,8 @@ TcpServer::TcpServer(Store& store, Options options, WriteAheadLog* wal)
     : store_(store),
       options_(std::move(options)),
       wal_(wal),
-      connection_tracker_(std::make_shared<TcpServerConnectionTracker>()) {}
+      connection_tracker_(std::make_shared<TcpServerConnectionTracker>()),
+      command_metrics_tracker_(std::make_shared<CommandMetricsTracker>()) {}
 
 void TcpServer::request_stop() {
     stop_requested_.store(true);
@@ -533,6 +545,10 @@ std::uint16_t TcpServer::bound_port() const {
 
 TcpServerConnectionStats TcpServer::connection_stats() const {
     return connection_tracker_->stats();
+}
+
+CommandProcessorMetrics TcpServer::command_metrics() const {
+    return command_metrics_tracker_->stats();
 }
 
 void TcpServer::run() {
@@ -551,7 +567,9 @@ void TcpServer::run() {
             const auto now = std::chrono::steady_clock::now();
             if (now >= next_metrics_log) {
                 log_event(options_, "event=server_metrics " + endpoint + " " +
-                                        metrics_fields(connection_tracker_->stats(), options_.metrics_log_interval));
+                                        metrics_fields(connection_tracker_->stats(),
+                                                       command_metrics_tracker_->stats(),
+                                                       options_.metrics_log_interval));
                 do {
                     next_metrics_log += options_.metrics_log_interval;
                 } while (next_metrics_log <= now);
@@ -583,13 +601,15 @@ void TcpServer::run() {
                     options_.logger,
                     endpoint,
                     connection_tracker_,
+                    command_metrics_tracker_,
                     snapshot.connection_id,
                     options_.max_request_bytes,
                     options_.auto_compact_wal}
             .detach();
     }
 
-    log_event(options_, "event=tcp_stop " + endpoint + " " + stats_fields(connection_tracker_->stats()));
+    log_event(options_, "event=tcp_stop " + endpoint + " " + stats_fields(connection_tracker_->stats()) +
+                            " " + command_metrics_fields(command_metrics_tracker_->stats()));
 }
 
 } // namespace minikv

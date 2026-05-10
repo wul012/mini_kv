@@ -291,6 +291,9 @@ int main() {
     assert(response.find("active_connections=1") != std::string::npos);
     assert(response.find("total_connections=1") != std::string::npos);
     assert(response.find("peak_connections=1") != std::string::npos);
+    assert(response.find("total_commands=1") != std::string::npos);
+    assert(response.find("successful_commands=1") != std::string::npos);
+    assert(response.find("error_commands=0") != std::string::npos);
     assert(response.find("OK live_keys=0") != std::string::npos);
     assert(response.find("BYE\n") != std::string::npos);
 
@@ -312,6 +315,10 @@ int main() {
     assert(stats.total_connections == 1);
     assert(stats.active_connections == 0);
     assert(stats.peak_connections == 1);
+    auto command_metrics = server.command_metrics();
+    assert(command_metrics.total_commands == 4);
+    assert(command_metrics.successful_commands == 4);
+    assert(command_metrics.error_commands == 0);
 
     const auto too_long_response = exchange_inline("127.0.0.1", bound_port, "0123456789");
     assert(too_long_response.find("ERR line too long\n") != std::string::npos);
@@ -334,6 +341,10 @@ int main() {
     assert(stats.total_connections == 2);
     assert(stats.active_connections == 0);
     assert(stats.peak_connections == 1);
+    command_metrics = server.command_metrics();
+    assert(command_metrics.total_commands == 4);
+    assert(command_metrics.successful_commands == 4);
+    assert(command_metrics.error_commands == 0);
 
     server.request_stop();
     server_thread.join();
@@ -359,6 +370,8 @@ int main() {
     assert(contains_log(logs, "peak_connections=1"));
     assert(contains_log(logs, "event=server_metrics"));
     assert(contains_log(logs, "metrics_interval_ms=20"));
+    assert(contains_log(logs, "total_commands="));
+    assert(contains_log(logs, "error_commands="));
     assert(contains_log(logs, "event=tcp_stop"));
 
     minikv::Store localhost_store;
