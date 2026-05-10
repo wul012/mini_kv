@@ -33,6 +33,109 @@ std::string to_upper_copy(std::string_view text) {
     return result;
 }
 
+bool is_space(char ch) {
+    return std::isspace(static_cast<unsigned char>(ch)) != 0;
+}
+
+std::size_t skip_spaces(std::string_view text, std::size_t cursor) {
+    while (cursor < text.size() && is_space(text[cursor])) {
+        ++cursor;
+    }
+    return cursor;
+}
+
+std::size_t token_end(std::string_view text, std::size_t cursor) {
+    while (cursor < text.size() && !is_space(text[cursor])) {
+        ++cursor;
+    }
+    return cursor;
+}
+
+bool is_key_completion_command(std::string_view command) {
+    const std::string upper = to_upper_copy(command);
+    return upper == "GET" || upper == "DEL" || upper == "EXPIRE" || upper == "TTL" || upper == "SET";
+}
+
+std::size_t common_prefix_length(std::string_view left, std::string_view right, bool case_insensitive) {
+    std::size_t length = 0;
+    while (length < left.size() && length < right.size()) {
+        char left_ch = left[length];
+        char right_ch = right[length];
+        if (case_insensitive) {
+            left_ch = static_cast<char>(std::toupper(static_cast<unsigned char>(left_ch)));
+            right_ch = static_cast<char>(std::toupper(static_cast<unsigned char>(right_ch)));
+        }
+        if (left_ch != right_ch) {
+            break;
+        }
+        ++length;
+    }
+    return length;
+}
+
+bool candidate_matches(std::string_view candidate, std::string_view prefix, bool case_insensitive) {
+    if (candidate.size() < prefix.size()) {
+        return false;
+    }
+
+    return common_prefix_length(candidate.substr(0, prefix.size()), prefix, case_insensitive) == prefix.size();
+}
+
+std::optional<std::string> complete_token(std::string_view text,
+                                          std::size_t cursor,
+                                          std::size_t token_start,
+                                          std::size_t token_end,
+                                          const std::vector<std::string>& candidates,
+                                          bool case_insensitive) {
+    if (cursor != token_end || candidates.empty()) {
+        return std::nullopt;
+    }
+
+    const std::string prefix{text.substr(token_start, cursor - token_start)};
+    std::vector<std::string_view> matches;
+    for (const auto& candidate : candidates) {
+        if (candidate_matches(candidate, prefix, case_insensitive)) {
+            matches.push_back(candidate);
+        }
+    }
+
+    if (matches.empty()) {
+        return std::nullopt;
+    }
+
+    std::string replacement = std::string{matches.front()};
+    if (matches.size() > 1) {
+        std::size_t prefix_length = matches.front().size();
+        for (std::size_t index = 1; index < matches.size(); ++index) {
+            prefix_length = std::min(prefix_length,
+                                     common_prefix_length(matches.front().substr(0, prefix_length),
+                                                          matches[index],
+                                                          case_insensitive));
+        }
+
+        if (prefix_length <= prefix.size()) {
+            return std::nullopt;
+        }
+        replacement = std::string{matches.front().substr(0, prefix_length)};
+        if (case_insensitive) {
+            replacement = to_upper_copy(replacement);
+        }
+    }
+
+    std::string completed{text.substr(0, token_start)};
+    completed += replacement;
+    const bool has_trailing_text = cursor < text.size();
+    completed += text.substr(cursor);
+    if (matches.size() == 1 && !has_trailing_text && (completed.empty() || completed.back() != ' ')) {
+        completed.push_back(' ');
+    }
+
+    if (completed == text) {
+        return std::nullopt;
+    }
+    return completed;
+}
+
 } // namespace
 
 void LineEditorBuffer::clear() {
@@ -145,84 +248,45 @@ std::optional<std::string> LineEditorHistoryNavigator::next() {
     return entries_[index_];
 }
 
-LineEditorCompletion::LineEditorCompletion(std::vector<std::string> candidates)
-    : candidates_(std::move(candidates)) {}
+LineEditorCompletion::LineEditorCompletion(std::vector<std::string> candidates) {
+    options_.command_candidates = std::move(candidates);
+}
+
+LineEditorCompletion::LineEditorCompletion(LineEditorCompletionOptions options)
+    : options_(std::move(options)) {}
 
 std::optional<std::string> LineEditorCompletion::complete(std::string_view text, std::size_t cursor) const {
-    if (cursor > text.size() || candidates_.empty()) {
+    if (cursor > text.size()) {
         return std::nullopt;
     }
 
-    std::size_t token_start = 0;
-    while (token_start < text.size() && std::isspace(static_cast<unsigned char>(text[token_start])) != 0) {
-        ++token_start;
-    }
-
-    if (cursor < token_start) {
+    const std::size_t first_start = skip_spaces(text, 0);
+    if (cursor < first_start) {
         return std::nullopt;
     }
 
-    std::size_t token_end = token_start;
-    while (token_end < text.size() && std::isspace(static_cast<unsigned char>(text[token_end])) == 0) {
-        ++token_end;
+    const std::size_t first_end = token_end(text, first_start);
+    if (cursor <= first_end) {
+        return complete_token(text, cursor, first_start, first_end, options_.command_candidates, true);
     }
 
-    if (cursor != token_end) {
+    if (first_end == text.size() || !is_key_completion_command(text.substr(first_start, first_end - first_start))) {
         return std::nullopt;
     }
 
-    const std::string prefix = to_upper_copy(text.substr(token_start, cursor - token_start));
-    std::vector<std::string_view> matches;
-    for (const auto& candidate : candidates_) {
-        const std::string upper_candidate = to_upper_copy(candidate);
-        if (upper_candidate.rfind(prefix, 0) == 0) {
-            matches.push_back(candidate);
-        }
-    }
-
-    if (matches.empty()) {
+    const std::size_t second_start = skip_spaces(text, first_end);
+    if (cursor < second_start) {
         return std::nullopt;
     }
 
-    std::string replacement = std::string{matches.front()};
-    if (matches.size() > 1) {
-        std::string common_prefix = to_upper_copy(matches.front());
-        for (std::size_t index = 1; index < matches.size(); ++index) {
-            const std::string next = to_upper_copy(matches[index]);
-            std::size_t length = 0;
-            while (length < common_prefix.size() && length < next.size() && common_prefix[length] == next[length]) {
-                ++length;
-            }
-            common_prefix.resize(length);
-        }
-
-        if (common_prefix.size() <= prefix.size()) {
-            return std::nullopt;
-        }
-        replacement = common_prefix;
-    }
-
-    std::string completed{text.substr(0, token_start)};
-    completed += replacement;
-    const bool has_trailing_text = cursor < text.size();
-    completed += text.substr(cursor);
-    if (matches.size() == 1 && !has_trailing_text && (completed.empty() || completed.back() != ' ')) {
-        completed.push_back(' ');
-    }
-
-    if (completed == text) {
+    const std::size_t second_end = token_end(text, second_start);
+    if (second_end < text.size()) {
         return std::nullopt;
     }
-    return completed;
+    return complete_token(text, cursor, second_start, second_end, options_.key_candidates, false);
 }
 
 namespace {
-
-std::vector<std::string> default_completion_candidates() {
-    return {"PING",    "SET",   "GET",    "DEL",   "EXPIRE", "TTL",  "SIZE", "SAVE", "LOAD",
-            "COMPACT", "WALINFO", "STATS", "STATSJSON", "RESETSTATS", "HEALTH", "HELP", "EXIT",
-            "QUIT",    ":history"};
-}
 
 enum class KeyKind {
     character,
@@ -451,15 +515,32 @@ KeyEvent read_key() {
 
 } // namespace
 
+LineEditorCompletionOptions default_client_completion_options() {
+    LineEditorCompletionOptions options;
+    options.command_candidates = {"PING",    "SET",   "GET",    "DEL",   "EXPIRE", "TTL",  "SIZE", "SAVE", "LOAD",
+                                  "COMPACT", "WALINFO", "STATS", "STATSJSON", "RESETSTATS", "HEALTH", "HELP", "EXIT",
+                                  "QUIT",    ":history"};
+    return options;
+}
+
 bool read_client_line(std::string_view prompt,
                       const std::vector<std::string>& history_entries,
                       std::string& line) {
-    return read_client_line(prompt, history_entries, default_completion_candidates(), line);
+    return read_client_line(prompt, history_entries, default_client_completion_options(), line);
 }
 
 bool read_client_line(std::string_view prompt,
                       const std::vector<std::string>& history_entries,
                       const std::vector<std::string>& completion_candidates,
+                      std::string& line) {
+    LineEditorCompletionOptions options;
+    options.command_candidates = completion_candidates;
+    return read_client_line(prompt, history_entries, options, line);
+}
+
+bool read_client_line(std::string_view prompt,
+                      const std::vector<std::string>& history_entries,
+                      const LineEditorCompletionOptions& completion_options,
                       std::string& line) {
     line.clear();
 
@@ -480,7 +561,7 @@ bool read_client_line(std::string_view prompt,
 
     LineEditorBuffer buffer;
     LineEditorHistoryNavigator navigator{history_entries};
-    LineEditorCompletion completion{completion_candidates};
+    LineEditorCompletion completion{completion_options};
     redraw_line(prompt, buffer);
 
     while (true) {

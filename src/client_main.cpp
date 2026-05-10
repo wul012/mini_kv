@@ -11,10 +11,12 @@
 #include <iostream>
 #include <limits>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
 #include <thread>
+#include <vector>
 
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -219,6 +221,53 @@ bool is_blank(std::string_view line) {
     });
 }
 
+std::optional<std::string> key_argument(std::string_view line) {
+    std::istringstream input{std::string{line}};
+    std::string command;
+    std::string key;
+    input >> command >> key;
+    if (key.empty()) {
+        return std::nullopt;
+    }
+    return key;
+}
+
+void add_known_key(std::vector<std::string>& keys, const std::string& key) {
+    if (key.empty() || std::ranges::find(keys, key) != keys.end()) {
+        return;
+    }
+    keys.push_back(key);
+}
+
+void remove_known_key(std::vector<std::string>& keys, const std::string& key) {
+    const auto it = std::ranges::find(keys, key);
+    if (it != keys.end()) {
+        keys.erase(it);
+    }
+}
+
+void update_known_keys(std::vector<std::string>& keys, std::string_view command_line, std::string_view response) {
+    const std::string command = first_token(command_line);
+
+    if (command == "SET" && response.rfind("OK ", 0) == 0) {
+        if (const auto key = key_argument(command_line)) {
+            add_known_key(keys, *key);
+        }
+        return;
+    }
+
+    if (command == "DEL" && (response == "1" || response == "0")) {
+        if (const auto key = key_argument(command_line)) {
+            remove_known_key(keys, *key);
+        }
+        return;
+    }
+
+    if (command == "LOAD" && response.rfind("OK loaded ", 0) == 0) {
+        keys.clear();
+    }
+}
+
 bool send_all(SocketHandle socket, std::string_view data) {
     while (!data.empty()) {
         const std::size_t chunk_size = std::min<std::size_t>(data.size(), 4096);
@@ -363,12 +412,15 @@ void print_usage(const char* program) {
                  " [--history-file path]\n";
 }
 
-bool print_response(SocketHandle socket, std::string_view command) {
+bool print_response(SocketHandle socket, std::string_view command, std::string* first_response = nullptr) {
     std::string response;
     if (!read_line(socket, response)) {
         return false;
     }
 
+    if (first_response != nullptr) {
+        *first_response = response;
+    }
     std::cout << response << '\n';
 
     if (first_token(command) == "HELP" && response == "Commands:") {
@@ -453,6 +505,7 @@ int main(int argc, char** argv) {
         }
 
         minikv::ClientHistory history;
+        std::vector<std::string> known_keys;
         if (options.history_file.has_value()) {
             const std::size_t loaded = history.load_from_file(*options.history_file);
             std::cout << "history file: " << options.history_file->string() << " (" << history.size()
@@ -462,7 +515,9 @@ int main(int argc, char** argv) {
         std::string line;
         while (true) {
             const std::string prompt = "mini-kv@" + options.host + ':' + std::to_string(options.port) + "> ";
-            if (!minikv::read_client_line(prompt, history.entries(), line)) {
+            minikv::LineEditorCompletionOptions completion_options = minikv::default_client_completion_options();
+            completion_options.key_candidates = known_keys;
+            if (!minikv::read_client_line(prompt, history.entries(), completion_options, line)) {
                 std::cout << '\n';
                 break;
             }
@@ -484,10 +539,13 @@ int main(int argc, char** argv) {
                 return 1;
             }
 
-            if (!print_response(socket.get(), resolved.command)) {
+            std::string response;
+            if (!print_response(socket.get(), resolved.command, &response)) {
                 std::cerr << "server closed connection\n";
                 return 1;
             }
+
+            update_known_keys(known_keys, resolved.command, response);
 
             if (options.history_file.has_value()) {
                 history.save_to_file(*options.history_file);

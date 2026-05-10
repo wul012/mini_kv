@@ -90,5 +90,20 @@ int main() {
     assert(!completion.complete("PING name", 6).has_value());
     assert(!completion.complete("PING", 2).has_value());
 
+    minikv::LineEditorCompletionOptions contextual_options;
+    contextual_options.command_candidates =
+        {"PING", "SET", "GET", "DEL", "EXPIRE", "TTL", "STATS", "STATSJSON", "RESETSTATS"};
+    contextual_options.key_candidates = {"alpha", "alpine", "name", "user:1"};
+    minikv::LineEditorCompletion contextual_completion{contextual_options};
+    assert(contextual_completion.complete("GET na", 6) == std::optional<std::string>{"GET name "});
+    assert(contextual_completion.complete("GET al", 6) == std::optional<std::string>{"GET alp"});
+    assert(contextual_completion.complete("SET na", 6) == std::optional<std::string>{"SET name "});
+    assert(contextual_completion.complete("EXPIRE na", 9) == std::optional<std::string>{"EXPIRE name "});
+    assert(contextual_completion.complete("TTL user:", 9) == std::optional<std::string>{"TTL user:1 "});
+    assert(!contextual_completion.complete("GET AL", 6).has_value());
+    assert(!contextual_completion.complete("PING na", 7).has_value());
+    assert(!contextual_completion.complete("GET name now", 8).has_value());
+    assert(!contextual_completion.complete("GET name", 5).has_value());
+
     return 0;
 }

@@ -1034,6 +1034,12 @@ stdin 或 stdout 不是终端
 
 73-windows-ci-nominmax-fix.md
  -> Windows CI 的 NOMINMAX 修复：阻止 Windows 头文件 min/max 宏污染 std::numeric_limits 和 std::min / std::max
+
+74-client-key-completion.md
+ -> 第三十六版客户端 Key 补全核心：LineEditorCompletionOptions、key_candidates、key-oriented command 第二 token 补全和 client_main known_keys
+
+75-version-36-tests-docs.md
+ -> 第三十六版 line_editor_tests、真实 client key smoke、README、CMake、a/36 归档和整体增删改
 ```
 
 ## 第三十五版补充理解
@@ -1154,3 +1160,66 @@ CMakeLists.txt
 ```
 
 这样 CMake 目标和直接编译单文件两条路径都有保护。
+
+## 第三十六版讲解索引补充
+
+```text
+74-client-key-completion.md
+ -> 第三十六版客户端 Key 补全核心：LineEditorCompletionOptions、key_candidates、key-oriented command 第二 token 补全和 client_main known_keys
+
+75-version-36-tests-docs.md
+ -> 第三十六版 line_editor_tests、真实 client key smoke、README、CMake、a/36 归档和整体增删改
+```
+
+## 第三十六版补充理解
+
+第三十六版继续完善客户端交互体验：
+
+```text
+命令补全
+ -> 第一个 token
+
+key 补全
+ -> GET / SET / DEL / EXPIRE / TTL 的第二个 token
+```
+
+补全候选现在拆成：
+
+```text
+command_candidates
+ -> PING / SET / GET / STATSJSON / ...
+
+key_candidates
+ -> 客户端本会话观察到的 key
+```
+
+客户端维护 key 候选的规则：
+
+```text
+SET key value 成功
+ -> 记住 key
+
+DEL key 返回 1 或 0
+ -> 移除 key
+
+LOAD path 成功
+ -> 清空候选
+```
+
+key 补全保持保守：
+
+```text
+只补第二个 token
+key 大小写敏感
+光标在 token 中间不补
+第二个 token 后已有文本不补
+非 key-oriented command 不补 key
+```
+
+非交互输入不变：
+
+```text
+stdin 或 stdout 不是终端
+ -> fallback_read_line
+ -> std::getline
+```

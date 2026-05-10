@@ -43,15 +43,23 @@ private:
     bool draft_saved_ = false;
 };
 
+struct LineEditorCompletionOptions {
+    std::vector<std::string> command_candidates;
+    std::vector<std::string> key_candidates;
+};
+
 class LineEditorCompletion {
 public:
     explicit LineEditorCompletion(std::vector<std::string> candidates);
+    explicit LineEditorCompletion(LineEditorCompletionOptions options);
 
     std::optional<std::string> complete(std::string_view text, std::size_t cursor) const;
 
 private:
-    std::vector<std::string> candidates_;
+    LineEditorCompletionOptions options_;
 };
+
+LineEditorCompletionOptions default_client_completion_options();
 
 bool read_client_line(std::string_view prompt,
                       const std::vector<std::string>& history_entries,
@@ -60,6 +68,11 @@ bool read_client_line(std::string_view prompt,
 bool read_client_line(std::string_view prompt,
                       const std::vector<std::string>& history_entries,
                       const std::vector<std::string>& completion_candidates,
+                      std::string& line);
+
+bool read_client_line(std::string_view prompt,
+                      const std::vector<std::string>& history_entries,
+                      const LineEditorCompletionOptions& completion_options,
                       std::string& line);
 
 } // namespace minikv
