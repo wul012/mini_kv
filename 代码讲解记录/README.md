@@ -995,7 +995,7 @@ read_client_line
 
 ```text
 PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD
-COMPACT / WALINFO / STATS / HEALTH / HELP / EXIT / QUIT
+COMPACT / WALINFO / STATS / STATSJSON / RESETSTATS / HEALTH / HELP / EXIT / QUIT
 :history
 ```
 
@@ -1021,4 +1021,107 @@ Backspace / Delete
 stdin 或 stdout 不是终端
  -> 不启用按键编辑
  -> std::getline 逐行读取
+```
+
+## 第三十五版讲解索引补充
+
+```text
+71-command-metrics-export-reset.md
+ -> 第三十五版指标导出与重置核心：CommandMetricsTracker::reset、STATSJSON、RESETSTATS、JSON 格式化和客户端补全候选同步
+
+72-version-35-tests-docs.md
+ -> 第三十五版 command_tests、tcp_server_tests、line_editor_tests、真实 statsjson/reset smoke、README、CMake、a/35 归档和整体增删改
+```
+
+## 第三十五版补充理解
+
+第三十五版继续完善运行期观测链路：
+
+```text
+STATS
+ -> 人看的 key-value 快照
+
+STATSJSON
+ -> 脚本看的 JSON 快照
+
+RESETSTATS
+ -> 清空 command metrics，重新开始观察下一段命令窗口
+```
+
+`CommandMetricsTracker` 新增：
+
+```text
+reset()
+ -> 加锁
+ -> totals_ 清零
+ -> breakdown_ 清空
+```
+
+成功的 `RESETSTATS` 有特殊计数规则：
+
+```text
+RESETSTATS 成功
+ -> 清空指标
+ -> 不把 RESETSTATS 自己写入新窗口
+
+RESETSTATS usage error
+ -> 正常计入错误命令
+```
+
+`STATSJSON` 和 `STATS` 使用同一份快照来源：
+
+```text
+Store live_keys
+WAL maintenance report
+CommandProcessorMetrics
+CommandConnectionStats
+```
+
+区别只在输出格式：
+
+```text
+STATS
+ -> 一行 key-value
+
+STATSJSON
+ -> JSON object
+```
+
+TCP server 中，所有连接共享同一个 `CommandMetricsTracker`：
+
+```text
+TcpServer
+ -> command_metrics_tracker_
+ -> serve_client 注入每个 CommandProcessor
+```
+
+所以任意连接执行成功的 `RESETSTATS`，都会清空 server 级命令指标窗口。
+
+客户端补全也同步认识新命令：
+
+```text
+R
+ -> RESETSTATS 后带一个补全空格
+
+STATSJ
+ -> STATSJSON 后带一个补全空格
+```
+
+到第三十五版为止，运行期观测入口变成：
+
+```text
+WALINFO
+ -> WAL 维护状态
+
+STATS
+ -> 人读状态快照
+
+STATSJSON
+ -> 机器读状态快照
+
+RESETSTATS
+ -> 重置命令指标观察窗口
+
+HEALTH
+ -> 快速探活
 ```

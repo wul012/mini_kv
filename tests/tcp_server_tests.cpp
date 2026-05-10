@@ -366,6 +366,46 @@ int main() {
     assert(find_command_metrics(command_metrics, "HEALTH") != nullptr);
     assert(find_command_metrics(command_metrics, "QUIT") != nullptr);
 
+    const auto reset_response = exchange_inline("127.0.0.1",
+                                                bound_port,
+                                                "STATSJSON\nRESETSTATS\nSTATS\nQUIT\n");
+    assert(reset_response.find("\"connection_stats\":{\"available\":true") != std::string::npos);
+    assert(reset_response.find("\"active_connections\":1") != std::string::npos);
+    assert(reset_response.find("\"total_connections\":3") != std::string::npos);
+    assert(reset_response.find("\"commands\":{\"total_commands\":4") != std::string::npos);
+    assert(reset_response.find("OK stats reset\n") != std::string::npos);
+    assert(reset_response.find("total_commands=0") != std::string::npos);
+    assert(reset_response.find("successful_commands=0") != std::string::npos);
+    assert(reset_response.find("error_commands=0") != std::string::npos);
+
+    bool reset_closed = false;
+    for (int attempt = 0; attempt < 100; ++attempt) {
+        {
+            std::lock_guard lock{logs_mutex};
+            reset_closed = contains_log(logs, "connection_id=3") &&
+                           contains_log(logs, "event=tcp_client_closed");
+        }
+        stats = server.connection_stats();
+        if (reset_closed && stats.active_connections == 0 && stats.total_connections == 3) {
+            break;
+        }
+        std::this_thread::sleep_for(10ms);
+    }
+
+    assert(reset_closed);
+    stats = server.connection_stats();
+    assert(stats.total_connections == 3);
+    assert(stats.active_connections == 0);
+    assert(stats.peak_connections == 1);
+    command_metrics = server.command_metrics();
+    assert(command_metrics.total_commands == 2);
+    assert(command_metrics.successful_commands == 2);
+    assert(command_metrics.error_commands == 0);
+    assert(find_command_metrics(command_metrics, "STATS") != nullptr);
+    assert(find_command_metrics(command_metrics, "QUIT") != nullptr);
+    assert(find_command_metrics(command_metrics, "RESETSTATS") == nullptr);
+    assert(find_command_metrics(command_metrics, "PING") == nullptr);
+
     server.request_stop();
     server_thread.join();
 
@@ -382,11 +422,12 @@ int main() {
     assert(contains_log(logs, "event=tcp_request_rejected"));
     assert(contains_log(logs, "connection_id=1"));
     assert(contains_log(logs, "connection_id=2"));
+    assert(contains_log(logs, "connection_id=3"));
     assert(contains_log(logs, "active_connections=1"));
     assert(contains_log(logs, "active_connections=0"));
     assert(contains_log(logs, "pending_bytes=10"));
     assert(contains_log(logs, "max_request_bytes=8"));
-    assert(contains_log(logs, "total_connections=2"));
+    assert(contains_log(logs, "total_connections=3"));
     assert(contains_log(logs, "peak_connections=1"));
     assert(contains_log(logs, "event=server_metrics"));
     assert(contains_log(logs, "metrics_interval_ms=20"));

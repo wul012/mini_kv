@@ -217,7 +217,8 @@ namespace {
 
 std::vector<std::string> default_completion_candidates() {
     return {"PING",    "SET",   "GET",    "DEL",   "EXPIRE", "TTL",  "SIZE", "SAVE", "LOAD",
-            "COMPACT", "WALINFO", "STATS", "HEALTH", "HELP",   "EXIT", "QUIT", ":history"};
+            "COMPACT", "WALINFO", "STATS", "STATSJSON", "RESETSTATS", "HEALTH", "HELP", "EXIT",
+            "QUIT",    ":history"};
 }
 
 enum class KeyKind {

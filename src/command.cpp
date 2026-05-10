@@ -47,7 +47,8 @@ bool is_known_command(std::string_view command) {
     return command == "PING" || command == "SET" || command == "GET" || command == "DEL" ||
            command == "EXPIRE" || command == "TTL" || command == "SIZE" || command == "SAVE" ||
            command == "LOAD" || command == "COMPACT" || command == "WALINFO" || command == "STATS" ||
-           command == "HEALTH" || command == "HELP" || command == "EXIT" || command == "QUIT";
+           command == "STATSJSON" || command == "RESETSTATS" || command == "HEALTH" ||
+           command == "HELP" || command == "EXIT" || command == "QUIT";
 }
 
 std::string metrics_command_name(std::string_view command) {
@@ -108,6 +109,51 @@ std::string format_expires_at(std::string_view key, Store::TimePoint expires_at)
 
 std::string format_yes_no(bool value) {
     return value ? "yes" : "no";
+}
+
+std::string format_json_bool(bool value) {
+    return value ? "true" : "false";
+}
+
+std::string json_string(std::string_view value) {
+    constexpr char hex[] = "0123456789ABCDEF";
+    std::string result = "\"";
+    for (const unsigned char ch : value) {
+        switch (ch) {
+        case '"':
+            result += "\\\"";
+            break;
+        case '\\':
+            result += "\\\\";
+            break;
+        case '\b':
+            result += "\\b";
+            break;
+        case '\f':
+            result += "\\f";
+            break;
+        case '\n':
+            result += "\\n";
+            break;
+        case '\r':
+            result += "\\r";
+            break;
+        case '\t':
+            result += "\\t";
+            break;
+        default:
+            if (ch < 0x20) {
+                result += "\\u00";
+                result.push_back(hex[(ch >> 4) & 0x0F]);
+                result.push_back(hex[ch & 0x0F]);
+            } else {
+                result.push_back(static_cast<char>(ch));
+            }
+            break;
+        }
+    }
+    result.push_back('"');
+    return result;
 }
 
 std::string format_walinfo(const WalMaintenanceReport& report) {
@@ -190,6 +236,77 @@ std::string format_health(std::size_t live_keys,
     return response;
 }
 
+std::string format_command_metrics_json(const CommandProcessorMetrics& metrics) {
+    const std::uint64_t average_latency_ns =
+        metrics.total_commands == 0 ? 0 : metrics.total_latency_ns / metrics.total_commands;
+
+    std::string response = "\"commands\":{\"total_commands\":" + std::to_string(metrics.total_commands) +
+                           ",\"successful_commands\":" + std::to_string(metrics.successful_commands) +
+                           ",\"error_commands\":" + std::to_string(metrics.error_commands) +
+                           ",\"total_latency_ns\":" + std::to_string(metrics.total_latency_ns) +
+                           ",\"avg_latency_ns\":" + std::to_string(average_latency_ns) +
+                           ",\"max_latency_ns\":" + std::to_string(metrics.max_latency_ns) +
+                           ",\"breakdown\":[";
+
+    bool first = true;
+    for (const auto& command_metrics : metrics.command_breakdown) {
+        const std::uint64_t command_average_latency_ns =
+            command_metrics.total_commands == 0 ? 0 : command_metrics.total_latency_ns / command_metrics.total_commands;
+        if (!first) {
+            response += ",";
+        }
+        first = false;
+
+        response += "{\"command\":" + json_string(command_metrics.command) +
+                    ",\"total_commands\":" + std::to_string(command_metrics.total_commands) +
+                    ",\"successful_commands\":" + std::to_string(command_metrics.successful_commands) +
+                    ",\"error_commands\":" + std::to_string(command_metrics.error_commands) +
+                    ",\"total_latency_ns\":" + std::to_string(command_metrics.total_latency_ns) +
+                    ",\"avg_latency_ns\":" + std::to_string(command_average_latency_ns) +
+                    ",\"max_latency_ns\":" + std::to_string(command_metrics.max_latency_ns) + "}";
+    }
+
+    response += "]}";
+    return response;
+}
+
+std::string format_stats_json(std::size_t live_keys,
+                              WriteAheadLog* wal,
+                              const std::optional<WalMaintenanceReport>& wal_report,
+                              const CommandProcessorMetrics& command_metrics,
+                              const CommandConnectionStats& stats) {
+    std::string response = "{\"live_keys\":" + std::to_string(live_keys) +
+                           ",\"wal_enabled\":" + format_json_bool(wal != nullptr);
+
+    if (wal_report.has_value()) {
+        response += ",\"wal\":{\"bytes\":" + std::to_string(wal_report->bytes) +
+                    ",\"records\":" + std::to_string(wal_report->records) +
+                    ",\"live_keys\":" + std::to_string(wal_report->live_keys) +
+                    ",\"compact_recommended\":" + format_json_bool(wal_report->compact_recommended) +
+                    ",\"compact_min_records\":" + std::to_string(wal_report->options.compact_min_records) +
+                    ",\"compact_record_ratio\":" + std::to_string(wal_report->options.compact_record_ratio) +
+                    ",\"compact_min_bytes\":" + std::to_string(wal_report->options.compact_min_bytes) +
+                    ",\"manual_compactions\":" + std::to_string(wal_report->compaction_stats.manual_compactions) +
+                    ",\"auto_compactions\":" + std::to_string(wal_report->compaction_stats.auto_compactions) +
+                    ",\"repair_compactions\":" + std::to_string(wal_report->compaction_stats.repair_compactions) +
+                    ",\"compacted_keys\":" + std::to_string(wal_report->compaction_stats.compacted_keys) +
+                    ",\"records_removed\":" + std::to_string(wal_report->compaction_stats.records_removed) +
+                    ",\"bytes_saved\":" + std::to_string(wal_report->compaction_stats.bytes_saved) + "}";
+    } else {
+        response += ",\"wal\":null";
+    }
+
+    response += "," + format_command_metrics_json(command_metrics);
+    response += ",\"connection_stats\":{\"available\":" + format_json_bool(stats.available);
+    if (stats.available) {
+        response += ",\"active_connections\":" + std::to_string(stats.active_connections) +
+                    ",\"total_connections\":" + std::to_string(stats.total_connections) +
+                    ",\"peak_connections\":" + std::to_string(stats.peak_connections);
+    }
+    response += "}}";
+    return response;
+}
+
 } // namespace
 
 void CommandMetricsTracker::record(const CommandResult& result) {
@@ -226,6 +343,12 @@ void CommandMetricsTracker::record(std::string_view command, const CommandResult
 
     ++totals_.successful_commands;
     ++bucket.successful_commands;
+}
+
+void CommandMetricsTracker::reset() {
+    std::lock_guard lock{mutex_};
+    totals_ = {};
+    breakdown_.clear();
 }
 
 CommandProcessorMetrics CommandMetricsTracker::stats() const {
@@ -300,7 +423,10 @@ CommandResult CommandProcessor::execute(std::string_view line) {
     CommandResult result = execute_trimmed(trimmed);
     const auto elapsed_ns =
         std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - started_at).count();
-    metrics_tracker_->record(command, result, static_cast<std::uint64_t>(elapsed_ns));
+    const bool reset_succeeded = command == "RESETSTATS" && result.response == "OK stats reset";
+    if (!reset_succeeded) {
+        metrics_tracker_->record(command, result, static_cast<std::uint64_t>(elapsed_ns));
+    }
     return result;
 }
 
@@ -532,6 +658,30 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_stats(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
+    if (command == "STATSJSON") {
+        if (has_extra_token(input)) {
+            return usage("STATSJSON");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_stats_json(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+    }
+
+    if (command == "RESETSTATS") {
+        if (has_extra_token(input)) {
+            return usage("RESETSTATS");
+        }
+
+        metrics_tracker_->reset();
+        return {"OK stats reset"};
+    }
+
     if (command == "HEALTH") {
         if (has_extra_token(input)) {
             return usage("HEALTH");
@@ -580,6 +730,8 @@ std::string CommandProcessor::help_text() {
            "  COMPACT\n"
            "  WALINFO\n"
            "  STATS\n"
+           "  STATSJSON\n"
+           "  RESETSTATS\n"
            "  HEALTH\n"
            "  HELP\n"
            "  EXIT";

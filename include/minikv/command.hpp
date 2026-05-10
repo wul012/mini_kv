@@ -50,6 +50,7 @@ class CommandMetricsTracker {
 public:
     void record(const CommandResult& result);
     void record(std::string_view command, const CommandResult& result, std::uint64_t elapsed_ns);
+    void reset();
     CommandProcessorMetrics stats() const;
 
 private:

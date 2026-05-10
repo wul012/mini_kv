@@ -244,10 +244,48 @@ int main() {
     assert(result.response.find("error_commands=2") != std::string::npos);
     assert(result.response.find("STATS:1/1/0/") != std::string::npos);
 
+    result = metrics_processor.execute("STATSJSON");
+    assert(result.response.find("\"live_keys\":0") != std::string::npos);
+    assert(result.response.find("\"wal_enabled\":false") != std::string::npos);
+    assert(result.response.find("\"wal\":null") != std::string::npos);
+    assert(result.response.find("\"commands\":{\"total_commands\":5") != std::string::npos);
+    assert(result.response.find("\"successful_commands\":3") != std::string::npos);
+    assert(result.response.find("\"error_commands\":2") != std::string::npos);
+    assert(result.response.find("\"command\":\"PING\"") != std::string::npos);
+    assert(result.response.find("\"command\":\"UNKNOWN\"") != std::string::npos);
+    assert(result.response.find("\"connection_stats\":{\"available\":false}") != std::string::npos);
+    assert(metrics_processor.metrics().total_commands == 6);
+    metrics = metrics_processor.metrics();
+    const auto* statsjson_metrics = find_command_metrics(metrics, "STATSJSON");
+    assert(statsjson_metrics != nullptr);
+    assert(statsjson_metrics->total_commands == 1);
+    assert(statsjson_metrics->successful_commands == 1);
+
+    result = metrics_processor.execute("RESETSTATS extra");
+    assert(result.response == "ERR usage: RESETSTATS");
+    assert(metrics_processor.metrics().total_commands == 7);
+    assert(metrics_processor.metrics().error_commands == 3);
+
+    result = metrics_processor.execute("RESETSTATS");
+    assert(result.response == "OK stats reset");
+    assert(metrics_processor.metrics().total_commands == 0);
+    assert(metrics_processor.metrics().successful_commands == 0);
+    assert(metrics_processor.metrics().error_commands == 0);
+    assert(metrics_processor.metrics().command_breakdown.empty());
+
+    result = metrics_processor.execute("STATS");
+    assert(result.response.find("total_commands=0") != std::string::npos);
+    assert(result.response.find("successful_commands=0") != std::string::npos);
+    assert(result.response.find("error_commands=0") != std::string::npos);
+    assert(result.response.find("command_breakdown=none") != std::string::npos);
+    assert(metrics_processor.metrics().total_commands == 1);
+
     result = processor.execute("HELP");
     assert(result.response.find("COMPACT") != std::string::npos);
     assert(result.response.find("WALINFO") != std::string::npos);
     assert(result.response.find("STATS") != std::string::npos);
+    assert(result.response.find("STATSJSON") != std::string::npos);
+    assert(result.response.find("RESETSTATS") != std::string::npos);
     assert(result.response.find("HEALTH") != std::string::npos);
 
     result = processor.execute("GET name extra");
