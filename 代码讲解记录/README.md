@@ -76,6 +76,12 @@
 
 21-version-9-tests-docs.md
  -> 第九版 command_tests、resp_tests、README、a/9 归档和整体增删改
+
+22-tcp-server-lifecycle.md
+ -> 第十版 TCP Server 生命周期：request_stop、select 轮询、信号停止和结构化日志
+
+23-version-10-tests-docs.md
+ -> 第十版 tcp_server_tests、CMake、README、a/10 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -184,6 +190,20 @@ RESP parser
  -> 超限请求返回 RESP error
 ```
 
+第十版增加了 TCP Server 生命周期管理链路：
+
+```text
+TcpServer::request_stop
+ -> 设置 atomic 停止标记
+ -> accept loop 周期性醒来检查 stop_requested
+ -> run() 退出并记录 event=tcp_stop
+
+server_main
+ -> 安装 Ctrl+C / SIGTERM 信号处理
+ -> 把 should_stop 和 logger 注入 TcpServer::Options
+ -> 输出 event=server_start / event=server_stopped
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -229,10 +249,10 @@ src/main.cpp
 
 include/minikv/tcp_server.hpp
 src/tcp_server.cpp
- -> 网络服务端和 socket 通信
+ -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志
 
 src/server_main.cpp
- -> TCP 服务端启动器，第四版支持可选 WAL 路径
+ -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志
 
 src/client_main.cpp
  -> TCP 客户端启动器
@@ -253,7 +273,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING 和 RESP parser 行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser 和 TCP server 生命周期行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

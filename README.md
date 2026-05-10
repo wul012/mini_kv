@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 9 is a runnable in-memory KV service with TCP RESP compatibility hardening:
+Version 10 is a runnable in-memory KV service with graceful TCP shutdown and structured lifecycle logging:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -15,9 +15,10 @@ Version 9 is a runnable in-memory KV service with TCP RESP compatibility hardeni
 - Optional write-ahead log persistence for `SET`, `DEL`, and `EXPIRE`
 - Manual snapshots with `SAVE` and `LOAD`
 - Benchmark executable for quick local throughput checks
-- CTest coverage for store, command, WAL, snapshot, stress, and RESP behavior
+- CTest coverage for store, command, WAL, snapshot, stress, RESP, and TCP server behavior
 - Redis RESP parser and TCP response formatting
 - Redis-style `PING [message]` command and RESP parser size limits
+- Graceful TCP server stop support and structured `event=...` lifecycle logs
 
 ## Build
 
@@ -93,6 +94,7 @@ After CLion finishes loading CMake, run these targets:
 - `minikv_snapshot_tests`
 - `minikv_stress_tests`
 - `minikv_resp_tests`
+- `minikv_tcp_server_tests`
 
 ## CLI commands
 
@@ -149,6 +151,18 @@ The TCP server also accepts Redis-style RESP request arrays:
 
 RESP mode returns simple strings, integers, bulk strings, null bulk strings, or errors using RESP framing. Inline mode keeps the original one-line text responses.
 
+The server prints structured lifecycle logs using key-value fields:
+
+```text
+event=server_start host=127.0.0.1 port=6379 protocol=inline,resp
+event=tcp_listen host=127.0.0.1 port=6379
+event=tcp_client_accepted host=127.0.0.1 port=6379
+event=tcp_stop host=127.0.0.1 port=6379
+event=server_stopped host=127.0.0.1 port=6379
+```
+
+Use `Ctrl+C` or `SIGTERM` to request a graceful server stop. The accept loop wakes periodically, observes the stop request, closes the listener, and exits `server.run()`.
+
 TTL commands:
 
 ```text
@@ -203,7 +217,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts a server on an ephemeral port, requests stop through the server API, and checks the structured listen/stop log events.
 
 ## RESP protocol
 
@@ -226,5 +240,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add graceful shutdown and structured logging.
-2. Add broader network compatibility tests.
+1. Add broader network compatibility tests.
+2. Add connection lifecycle tracking and client concurrency metrics.

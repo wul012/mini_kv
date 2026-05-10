@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstring>
 #include <functional>
 #include <stdexcept>
@@ -23,6 +24,7 @@
 #else
 #include <cerrno>
 #include <netdb.h>
+#include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -81,6 +83,57 @@ std::string socket_error_message(std::string_view prefix) {
     return std::string{prefix} + ": " + std::strerror(errno);
 }
 #endif
+
+void log_event(const TcpServer::Options& options, const std::string& message) {
+    if (options.logger) {
+        options.logger(message);
+    }
+}
+
+std::string endpoint_fields(const TcpServer::Options& options) {
+    return "host=" + options.host + " port=" + std::to_string(options.port);
+}
+
+timeval to_timeval(std::chrono::milliseconds timeout) {
+    if (timeout < std::chrono::milliseconds::zero()) {
+        timeout = std::chrono::milliseconds::zero();
+    }
+
+    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(timeout);
+    const auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(timeout - seconds);
+
+    timeval value{};
+    value.tv_sec = static_cast<long>(seconds.count());
+    value.tv_usec = static_cast<long>(microseconds.count());
+    return value;
+}
+
+bool wait_for_listener(SocketHandle listener, std::chrono::milliseconds timeout) {
+    fd_set read_fds;
+    FD_ZERO(&read_fds);
+    FD_SET(listener, &read_fds);
+
+    timeval wait_time = to_timeval(timeout);
+#ifdef _WIN32
+    const int result = select(0, &read_fds, nullptr, nullptr, &wait_time);
+#else
+    const int result = select(listener + 1, &read_fds, nullptr, nullptr, &wait_time);
+#endif
+    if (result < 0) {
+#ifdef _WIN32
+        if (WSAGetLastError() == WSAEINTR) {
+            return false;
+        }
+#else
+        if (errno == EINTR) {
+            return false;
+        }
+#endif
+        throw std::runtime_error{socket_error_message("select failed")};
+    }
+
+    return result > 0 && FD_ISSET(listener, &read_fds);
+}
 
 class SocketGuard {
 public:
@@ -304,18 +357,41 @@ TcpServer::TcpServer(Store& store, Options options) : TcpServer(store, std::move
 TcpServer::TcpServer(Store& store, Options options, WriteAheadLog* wal)
     : store_(store), options_(std::move(options)), wal_(wal) {}
 
+void TcpServer::request_stop() {
+    stop_requested_.store(true);
+}
+
+bool TcpServer::stop_requested() const {
+    return stop_requested_.load() || (options_.should_stop && options_.should_stop());
+}
+
 void TcpServer::run() {
     NetworkRuntime runtime;
     SocketGuard listener = bind_listener(options_);
+    log_event(options_, "event=tcp_listen " + endpoint_fields(options_));
 
-    while (true) {
+    while (!stop_requested()) {
+        if (!wait_for_listener(listener.get(), options_.accept_poll_interval)) {
+            continue;
+        }
+
+        if (stop_requested()) {
+            break;
+        }
+
         SocketHandle client = accept(listener.get(), nullptr, nullptr);
         if (client == invalid_socket) {
+            if (stop_requested()) {
+                break;
+            }
             throw std::runtime_error{socket_error_message("accept failed")};
         }
 
+        log_event(options_, "event=tcp_client_accepted " + endpoint_fields(options_));
         std::thread{serve_client, std::ref(store_), wal_, client}.detach();
     }
+
+    log_event(options_, "event=tcp_stop " + endpoint_fields(options_));
 }
 
 } // namespace minikv
