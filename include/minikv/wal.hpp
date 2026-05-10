@@ -13,6 +13,7 @@ struct WalReplayReport {
     std::size_t applied_records = 0;
     std::size_t skipped_records = 0;
     std::size_t truncated_records = 0;
+    std::size_t checksum_failed_records = 0;
 };
 
 class WriteAheadLog {

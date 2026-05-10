@@ -151,6 +151,12 @@
 
 46-version-22-tests-docs.md
  -> 第二十二版 snapshot_tests、真实 CLI SAVE/LOAD smoke、README、CMake、a/22 归档和整体增删改
+
+47-wal-checksum-core.md
+ -> 第二十三版 WAL checksum 核心：WAL2、FNV-1a、checksum_failed_records 和旧格式兼容
+
+48-version-23-tests-docs.md
+ -> 第二十三版 wal_tests、真实 CLI WAL checksum smoke、README、CMake、a/23 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -449,6 +455,18 @@ SAVE path
  -> 失败时 TempSnapshotFile 析构清理临时文件
 ```
 
+第二十三版增加了 WAL checksum 链路：
+
+```text
+SET / DEL / EXPIRE
+ -> CommandProcessor 调用 WriteAheadLog::append
+ -> append 把原始 WAL record 编码为 WAL2 <checksum> <record>
+ -> replay 时 WAL2 先验证 checksum
+ -> checksum mismatch 计入 skipped_records 和 checksum_failed_records
+ -> 旧格式 SET / DEL / EXPIREAT 裸记录仍然兼容 replay
+ -> CLI / server 启动输出 checksum failure 统计
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -515,14 +533,14 @@ src/resp.cpp
 
 include/minikv/wal.hpp
 src/wal.cpp
- -> 第四版 WAL 持久化模块，负责 append 和 replay；第十九版新增 WalReplayReport、replay_with_report、坏记录跳过和尾部半条记录保护
+ -> 第四版 WAL 持久化模块，负责 append 和 replay；第十九版新增 WalReplayReport、replay_with_report、坏记录跳过和尾部半条记录保护；第二十三版新增 WAL2 checksum、checksum mismatch 跳过和 checksum_failed_records
 
 include/minikv/snapshot.hpp
 src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store；第二十二版支持临时文件写完整后替换目标 snapshot
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
+ -> 验证 Store、CommandProcessor、WAL、WAL checksum、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

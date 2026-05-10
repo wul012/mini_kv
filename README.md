@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 22 is a runnable in-memory KV service with atomic snapshot saves:
+Version 23 is a runnable in-memory KV service with checksummed WAL records:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -13,7 +13,8 @@ Version 22 is a runnable in-memory KV service with atomic snapshot saves:
 - TCP client for connecting to a running server
 - Expiring keys with `EXPIRE` and `TTL`
 - Optional write-ahead log persistence for `SET`, `DEL`, and `EXPIRE`
-- WAL replay reports applied, skipped, and truncated records
+- WAL records include checksums while replay remains compatible with older plain records
+- WAL replay reports applied, skipped, truncated, and checksum-failed records
 - Manual snapshots with `SAVE` and `LOAD`
 - Snapshot load rejects corrupt files without replacing the current store
 - Atomic snapshot saves write a temporary file before replacing the target snapshot
@@ -269,7 +270,7 @@ DEL key
 EXPIRE key seconds
 ```
 
-`EXPIRE` is persisted as an internal absolute expiration record, so expired keys do not come back after restart. WAL replay skips malformed records, detects a final unterminated record as a probable partial write, and reports applied, skipped, and truncated counts during startup. Without a WAL path, mini-kv remains an in-memory-only service.
+`EXPIRE` is persisted as an internal absolute expiration record, so expired keys do not come back after restart. New WAL records are stored as `WAL2 <checksum> <record>` lines; replay still accepts older plain `SET` / `DEL` / `EXPIREAT` lines. WAL replay skips malformed records, skips checksum mismatches, detects a final unterminated record as a probable partial write, and reports applied, skipped, truncated, and checksum-failed counts during startup. Without a WAL path, mini-kv remains an in-memory-only service.
 
 ## Snapshots
 
@@ -328,4 +329,4 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 ## Roadmap
 
 1. Add interactive line editing for the bundled TCP client.
-2. Add WAL checksums for stronger recovery guarantees.
+2. Add WAL compaction or startup repair tooling for long-running logs.

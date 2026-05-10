@@ -29,7 +29,8 @@ int main(int argc, char** argv) {
             const auto replay = wal->replay_with_report(store);
             std::cout << "WAL: " << wal->path().string() << " (" << replay.applied_records
                       << " records replayed, " << replay.skipped_records << " skipped, "
-                      << replay.truncated_records << " truncated)\n";
+                      << replay.truncated_records << " truncated, " << replay.checksum_failed_records
+                      << " checksum failed)\n";
         }
 
         minikv::CommandProcessor processor{store, wal.has_value() ? &*wal : nullptr};

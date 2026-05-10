@@ -6,6 +6,7 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include <optional>
 #include <string>
 #include <thread>
@@ -47,6 +48,13 @@ int main() {
     }
 
     {
+        std::ifstream input{path};
+        std::string first_line;
+        assert(std::getline(input, first_line));
+        assert(first_line.rfind("WAL2 ", 0) == 0);
+    }
+
+    {
         minikv::Store restored;
         minikv::WriteAheadLog wal{path};
         const auto applied = wal.replay(restored);
@@ -80,12 +88,50 @@ int main() {
         assert(report.applied_records == 1);
         assert(report.skipped_records == 3);
         assert(report.truncated_records == 1);
+        assert(report.checksum_failed_records == 0);
         assert(restored.get("kept") == std::optional<std::string>{"value"});
         assert(!restored.get("partial").has_value());
         assert(wal.replay(restored) == 1);
     }
 
     std::filesystem::remove(corrupt_path);
+
+    const auto checksum_path =
+        std::filesystem::temp_directory_path() / ("minikv-wal-checksum-test-" + std::to_string(suffix) + ".wal");
+    std::filesystem::remove(checksum_path);
+
+    {
+        minikv::WriteAheadLog wal{checksum_path};
+        assert(wal.append("SET checked ok"));
+        assert(wal.append("SET another value"));
+    }
+
+    {
+        std::ifstream input{checksum_path, std::ios::binary};
+        std::string contents{std::istreambuf_iterator<char>{input}, std::istreambuf_iterator<char>{}};
+        const auto position = contents.find("SET checked ok");
+        assert(position != std::string::npos);
+        contents.replace(position, std::string{"SET checked ok"}.size(), "SET checked tampered");
+
+        std::ofstream output{checksum_path, std::ios::binary | std::ios::trunc};
+        output << contents;
+    }
+
+    {
+        minikv::Store restored;
+        minikv::WriteAheadLog wal{checksum_path};
+        const auto report = wal.replay_with_report(restored);
+
+        assert(report.applied_records == 1);
+        assert(report.skipped_records == 1);
+        assert(report.truncated_records == 0);
+        assert(report.checksum_failed_records == 1);
+        assert(!restored.get("checked").has_value());
+        assert(restored.get("another") == std::optional<std::string>{"value"});
+        assert(wal.replay(restored) == 1);
+    }
+
+    std::filesystem::remove(checksum_path);
 
     return 0;
 }

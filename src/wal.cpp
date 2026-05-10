@@ -2,7 +2,10 @@
 
 #include <chrono>
 #include <cctype>
+#include <cstdint>
 #include <fstream>
+#include <iomanip>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -11,12 +14,87 @@
 namespace minikv {
 namespace {
 
+constexpr std::string_view wal2_prefix = "WAL2 ";
+constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
+constexpr std::uint64_t fnv_prime = 1099511628211ull;
+
+struct DecodedWalRecord {
+    bool valid = false;
+    bool checksum_failed = false;
+    std::string record;
+};
+
 std::string to_upper(std::string_view text) {
     std::string result{text};
     for (char& ch : result) {
         ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
     }
     return result;
+}
+
+std::uint64_t wal_checksum(std::string_view text) {
+    std::uint64_t hash = fnv_offset_basis;
+    for (const unsigned char ch : text) {
+        hash ^= static_cast<std::uint64_t>(ch);
+        hash *= fnv_prime;
+    }
+    return hash;
+}
+
+std::string format_checksum(std::uint64_t checksum) {
+    std::ostringstream output;
+    output << std::hex << std::nouppercase << std::setfill('0') << std::setw(16) << checksum;
+    return output.str();
+}
+
+std::optional<std::uint64_t> parse_checksum(std::string_view text) {
+    if (text.size() != 16) {
+        return std::nullopt;
+    }
+
+    std::uint64_t value = 0;
+    for (const char ch : text) {
+        unsigned digit = 0;
+        if (ch >= '0' && ch <= '9') {
+            digit = static_cast<unsigned>(ch - '0');
+        } else if (ch >= 'a' && ch <= 'f') {
+            digit = static_cast<unsigned>(ch - 'a' + 10);
+        } else if (ch >= 'A' && ch <= 'F') {
+            digit = static_cast<unsigned>(ch - 'A' + 10);
+        } else {
+            return std::nullopt;
+        }
+
+        value = (value << 4) | digit;
+    }
+    return value;
+}
+
+std::string encode_wal_record(std::string_view record) {
+    return std::string{wal2_prefix} + format_checksum(wal_checksum(record)) + " " + std::string{record};
+}
+
+DecodedWalRecord decode_wal_record(std::string_view line) {
+    if (line.substr(0, wal2_prefix.size()) != wal2_prefix) {
+        return DecodedWalRecord{true, false, std::string{line}};
+    }
+
+    const auto payload = line.substr(wal2_prefix.size());
+    if (payload.size() < 17 || payload[16] != ' ') {
+        return DecodedWalRecord{false, true, {}};
+    }
+
+    const auto expected = parse_checksum(payload.substr(0, 16));
+    if (!expected.has_value()) {
+        return DecodedWalRecord{false, true, {}};
+    }
+
+    std::string record{payload.substr(17)};
+    if (wal_checksum(record) != *expected) {
+        return DecodedWalRecord{false, true, {}};
+    }
+
+    return DecodedWalRecord{true, false, std::move(record)};
 }
 
 bool has_extra_token(std::istringstream& input) {
@@ -126,7 +204,7 @@ bool WriteAheadLog::append(std::string_view record) {
         return false;
     }
 
-    output << record << '\n';
+    output << encode_wal_record(record) << '\n';
     output.flush();
     return static_cast<bool>(output);
 }
@@ -164,7 +242,16 @@ WalReplayReport WriteAheadLog::replay_with_report(Store& store) const {
             continue;
         }
 
-        if (replay_record(store, record)) {
+        const auto decoded = decode_wal_record(record);
+        if (!decoded.valid) {
+            ++report.skipped_records;
+            if (decoded.checksum_failed) {
+                ++report.checksum_failed_records;
+            }
+            continue;
+        }
+
+        if (replay_record(store, decoded.record)) {
             ++report.applied_records;
         } else {
             ++report.skipped_records;
