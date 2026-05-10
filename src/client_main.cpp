@@ -1,3 +1,5 @@
+#include "minikv/client_history.hpp"
+
 #include <algorithm>
 #include <cctype>
 #include <chrono>
@@ -432,6 +434,7 @@ int main(int argc, char** argv) {
                       << ", retry delay: " << options.retry_delay.count() << " ms\n";
         }
 
+        minikv::ClientHistory history;
         std::string line;
         while (true) {
             std::cout << "mini-kv@" << options.host << ':' << options.port << "> ";
@@ -444,17 +447,25 @@ int main(int argc, char** argv) {
                 continue;
             }
 
-            if (!send_all(socket.get(), line + "\n")) {
+            const auto resolved = minikv::resolve_client_input(history, line);
+            for (const auto& message : resolved.messages) {
+                std::cout << message << '\n';
+            }
+            if (resolved.action == minikv::ClientInputAction::local) {
+                continue;
+            }
+
+            if (!send_all(socket.get(), resolved.command + "\n")) {
                 std::cerr << "failed to send command\n";
                 return 1;
             }
 
-            if (!print_response(socket.get(), line)) {
+            if (!print_response(socket.get(), resolved.command)) {
                 std::cerr << "server closed connection\n";
                 return 1;
             }
 
-            const std::string command = first_token(line);
+            const std::string command = first_token(resolved.command);
             if (command == "QUIT" || command == "EXIT") {
                 break;
             }

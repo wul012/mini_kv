@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 14 is a runnable in-memory KV service with configurable TCP client connection retries:
+Version 15 is a runnable in-memory KV service with bundled TCP client session history:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -23,6 +23,7 @@ Version 14 is a runnable in-memory KV service with configurable TCP client conne
 - Configurable TCP request byte limit and optional client socket timeout
 - Broader TCP compatibility tests for `localhost` and address-family agnostic client resolution
 - Configurable bundled TCP client connection retries and retry delay
+- Bundled TCP client local session history with `:history`, `!!`, and `!N`
 
 ## Build
 
@@ -88,6 +89,14 @@ TCP client that waits for a server to come online:
 .\build\Debug\minikv_client.exe 127.0.0.1 6379 5000 --connect-retries 10 --retry-delay-ms 250
 ```
 
+TCP client local history commands:
+
+```text
+:history  Show commands sent during the current client session.
+!!        Repeat the previous sent command.
+!N        Repeat history entry N, using 1-based indexing.
+```
+
 Benchmark:
 
 ```powershell
@@ -123,6 +132,7 @@ After CLion finishes loading CMake, run these targets:
 - `minikv_stress_tests`
 - `minikv_resp_tests`
 - `minikv_tcp_server_tests`
+- `minikv_client_history_tests`
 
 ## CLI commands
 
@@ -209,6 +219,7 @@ minikv_client.exe [host] [port] [timeout_ms] [--connect-retries count] [--retry-
 
 `timeout_ms` sets both receive and send socket timeouts for the bundled client.
 `--connect-retries` controls how many times the client retries after the initial connection attempt fails. `--retry-delay-ms` controls the delay between retries and defaults to 250 ms.
+The bundled client also handles local session history commands before sending data to the server: `:history`, `!!`, and `!N`.
 
 TTL commands:
 
@@ -264,7 +275,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` session history behavior.
 
 ## RESP protocol
 
@@ -287,5 +298,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add command history for the bundled TCP client.
-2. Add more external-client compatibility smoke tests.
+1. Add more external-client compatibility smoke tests.
+2. Add persistent client history or interactive line editing.

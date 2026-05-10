@@ -106,6 +106,12 @@
 
 31-version-14-tests-docs.md
  -> 第十四版 README、CMake、a/14 归档、真实 retry smoke 和整体增删改
+
+32-client-history-core.md
+ -> 第十五版客户端本地历史核心：ClientHistory、resolve_client_input、:history、!! 和 !N
+
+33-version-15-tests-docs.md
+ -> 第十五版 client_history_tests、README、CMake、a/15 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -282,6 +288,18 @@ minikv_client --connect-retries count --retry-delay-ms ms
  -> 服务端上线后重试连接成功
 ```
 
+第十五版增加了 TCP client 本地历史链路：
+
+```text
+minikv_client 读取用户输入
+ -> resolve_client_input
+ -> :history 本地打印历史
+ -> !! 重复上一条已发送命令
+ -> !N 重复第 N 条历史命令
+ -> local action 不发给服务端
+ -> send action 发送 resolved.command
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -333,10 +351,14 @@ src/server_main.cpp
  -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms
 
 src/client_main.cpp
- -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms
+ -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms；第十五版接入本地历史命令
 
 src/benchmark_main.cpp
  -> 第六版 benchmark 启动器，用于本地吞吐观察
+
+include/minikv/client_history.hpp
+src/client_history.cpp
+ -> 第十五版客户端本地历史模块，负责 :history、!!、!N 和普通输入的 send/local 判定
 
 include/minikv/resp.hpp
 src/resp.cpp
@@ -351,7 +373,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限和 localhost / hostname 网络兼容行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为和客户端本地历史行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.14.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.15.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(minikv
+    src/client_history.cpp
     src/command.cpp
     src/resp.cpp
     src/snapshot.cpp
@@ -111,3 +112,11 @@ add_executable(minikv_tcp_server_tests
 target_link_libraries(minikv_tcp_server_tests PRIVATE minikv)
 
 add_test(NAME tcp_server_tests COMMAND minikv_tcp_server_tests)
+
+add_executable(minikv_client_history_tests
+    tests/client_history_tests.cpp
+)
+
+target_link_libraries(minikv_client_history_tests PRIVATE minikv)
+
+add_test(NAME client_history_tests COMMAND minikv_client_history_tests)
