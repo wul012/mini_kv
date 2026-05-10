@@ -59,6 +59,19 @@ void print_wal_repair(const minikv::WriteAheadLog& wal, const minikv::WalRepairR
               << " checksum failed; repaired to " << repair.compacted_keys << " keys)\n";
 }
 
+const char* yes_no(bool value) {
+    return value ? "yes" : "no";
+}
+
+void print_wal_maintenance(const minikv::WalMaintenanceReport& report) {
+    std::cout << "WAL stats: bytes=" << report.bytes << " records=" << report.records
+              << " live_keys=" << report.live_keys
+              << " compact_recommended=" << yes_no(report.compact_recommended) << '\n';
+    if (report.compact_recommended) {
+        std::cout << "WAL hint: run COMPACT to rewrite long-running log history.\n";
+    }
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -84,6 +97,7 @@ int main(int argc, char** argv) {
             } else {
                 print_wal_replay(*wal, wal->replay_with_report(store));
             }
+            print_wal_maintenance(wal->maintenance_report(store));
         }
 
         minikv::CommandProcessor processor{store, wal.has_value() ? &*wal : nullptr};

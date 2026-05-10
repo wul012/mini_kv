@@ -28,6 +28,9 @@ namespace {
 constexpr std::string_view wal2_prefix = "WAL2 ";
 constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
 constexpr std::uint64_t fnv_prime = 1099511628211ull;
+constexpr std::size_t compact_hint_min_records = 8;
+constexpr std::size_t compact_hint_record_ratio = 4;
+constexpr std::uintmax_t compact_hint_min_bytes = 64 * 1024;
 
 struct DecodedWalRecord {
     bool valid = false;
@@ -256,6 +259,44 @@ bool has_final_newline(const std::filesystem::path& path) {
     return last == '\n';
 }
 
+std::uintmax_t file_size_or_zero(const std::filesystem::path& path) {
+    std::error_code error;
+    const auto size = std::filesystem::file_size(path, error);
+    if (error) {
+        return 0;
+    }
+    return size;
+}
+
+std::size_t count_wal_records(const std::filesystem::path& path) {
+    std::ifstream input{path};
+    if (!input) {
+        return 0;
+    }
+
+    std::size_t records = 0;
+    std::string line;
+    while (std::getline(input, line)) {
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+        if (!is_blank(line)) {
+            ++records;
+        }
+    }
+
+    return records;
+}
+
+bool should_recommend_compaction(const WalMaintenanceReport& report) {
+    if (report.bytes >= compact_hint_min_bytes) {
+        return true;
+    }
+
+    const auto expected_records = report.live_keys * compact_hint_record_ratio;
+    return report.records >= compact_hint_min_records && report.records > expected_records;
+}
+
 } // namespace
 
 WriteAheadLog::WriteAheadLog(std::filesystem::path path) : path_(std::move(path)) {}
@@ -341,6 +382,17 @@ bool WriteAheadLog::repair(Store& store, WalRepairReport* repair) {
         repair->compacted_keys = compacted_keys;
     }
     return true;
+}
+
+WalMaintenanceReport WriteAheadLog::maintenance_report(const Store& store) const {
+    std::lock_guard lock(mutex_);
+
+    WalMaintenanceReport report;
+    report.bytes = file_size_or_zero(path_);
+    report.records = count_wal_records(path_);
+    report.live_keys = store.size();
+    report.compact_recommended = should_recommend_compaction(report);
+    return report;
 }
 
 std::size_t WriteAheadLog::replay(Store& store) const {

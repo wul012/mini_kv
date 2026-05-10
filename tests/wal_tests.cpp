@@ -298,5 +298,47 @@ int main() {
 
     std::filesystem::remove(repair_path);
 
+    const auto info_path =
+        std::filesystem::temp_directory_path() / ("minikv-wal-info-test-" + std::to_string(suffix) + ".wal");
+    std::filesystem::remove(info_path);
+
+    {
+        minikv::Store store;
+        minikv::WriteAheadLog wal{info_path};
+        minikv::CommandProcessor processor{store, &wal};
+
+        for (int index = 0; index < 10; ++index) {
+            auto result = processor.execute("SET hot value" + std::to_string(index));
+            assert(result.response.rfind("OK ", 0) == 0);
+        }
+
+        auto result = processor.execute("WALINFO");
+        assert(result.response.find("wal_records=10") != std::string::npos);
+        assert(result.response.find("live_keys=1") != std::string::npos);
+        assert(result.response.find("compact_recommended=yes") != std::string::npos);
+
+        auto report = wal.maintenance_report(store);
+        assert(report.records == 10);
+        assert(report.live_keys == 1);
+        assert(report.bytes > 0);
+        assert(report.compact_recommended);
+
+        result = processor.execute("COMPACT");
+        assert(result.response == "OK compacted 1");
+
+        result = processor.execute("WALINFO");
+        assert(result.response.find("wal_records=1") != std::string::npos);
+        assert(result.response.find("live_keys=1") != std::string::npos);
+        assert(result.response.find("compact_recommended=no") != std::string::npos);
+
+        report = wal.maintenance_report(store);
+        assert(report.records == 1);
+        assert(report.live_keys == 1);
+        assert(report.bytes > 0);
+        assert(!report.compact_recommended);
+    }
+
+    std::filesystem::remove(info_path);
+
     return 0;
 }

@@ -106,8 +106,15 @@ int main() {
     result = processor.execute("COMPACT");
     assert(result.response == "ERR WAL not enabled");
 
+    result = processor.execute("WALINFO extra");
+    assert(result.response == "ERR usage: WALINFO");
+
+    result = processor.execute("WALINFO");
+    assert(result.response == "ERR WAL not enabled");
+
     result = processor.execute("HELP");
     assert(result.response.find("COMPACT") != std::string::npos);
+    assert(result.response.find("WALINFO") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");

@@ -91,6 +91,23 @@ void log_wal_repair(const minikv::WriteAheadLog& wal, const minikv::WalRepairRep
               << " compacted_keys=" << repair.compacted_keys << '\n';
 }
 
+const char* true_false(bool value) {
+    return value ? "true" : "false";
+}
+
+void log_wal_maintenance(const minikv::WriteAheadLog& wal, const minikv::WalMaintenanceReport& report) {
+    std::cout << "event=wal_stats path=" << quote_value(wal.path().string())
+              << " wal_bytes=" << report.bytes << " wal_records=" << report.records
+              << " live_keys=" << report.live_keys
+              << " compact_recommended=" << true_false(report.compact_recommended) << '\n';
+
+    if (report.compact_recommended) {
+        std::cout << "event=wal_compact_hint path=" << quote_value(wal.path().string())
+                  << " wal_bytes=" << report.bytes << " wal_records=" << report.records
+                  << " live_keys=" << report.live_keys << '\n';
+    }
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -172,6 +189,7 @@ int main(int argc, char** argv) {
             } else {
                 log_wal_replay(*wal, wal->replay_with_report(store));
             }
+            log_wal_maintenance(*wal, wal->maintenance_report(store));
         }
 
         minikv::TcpServer server{store, options, wal.has_value() ? &*wal : nullptr};

@@ -81,6 +81,16 @@ std::string format_expires_at(std::string_view key, Store::TimePoint expires_at)
     return std::string{"EXPIREAT "} + std::string{key} + " " + std::to_string(epoch_millis);
 }
 
+std::string format_yes_no(bool value) {
+    return value ? "yes" : "no";
+}
+
+std::string format_walinfo(const WalMaintenanceReport& report) {
+    return "wal_bytes=" + std::to_string(report.bytes) + " wal_records=" + std::to_string(report.records) +
+           " live_keys=" + std::to_string(report.live_keys) +
+           " compact_recommended=" + format_yes_no(report.compact_recommended);
+}
+
 } // namespace
 
 CommandProcessor::CommandProcessor(Store& store, WriteAheadLog* wal) : store_(store), wal_(wal) {}
@@ -281,6 +291,19 @@ CommandResult CommandProcessor::execute(std::string_view line) {
         return {std::string{"OK compacted "} + std::to_string(compacted)};
     }
 
+    if (command == "WALINFO") {
+        if (has_extra_token(input)) {
+            return usage("WALINFO");
+        }
+
+        if (wal_ == nullptr) {
+            return wal_disabled_error();
+        }
+
+        std::lock_guard lock(wal_command_mutex());
+        return {format_walinfo(wal_->maintenance_report(store_))};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -312,6 +335,7 @@ std::string CommandProcessor::help_text() {
            "  SAVE path\n"
            "  LOAD path\n"
            "  COMPACT\n"
+           "  WALINFO\n"
            "  HELP\n"
            "  EXIT";
 }

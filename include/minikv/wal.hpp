@@ -3,6 +3,7 @@
 #include "minikv/store.hpp"
 
 #include <cstddef>
+#include <cstdint>
 #include <filesystem>
 #include <mutex>
 #include <string_view>
@@ -21,6 +22,13 @@ struct WalRepairReport {
     std::size_t compacted_keys = 0;
 };
 
+struct WalMaintenanceReport {
+    std::uintmax_t bytes = 0;
+    std::size_t records = 0;
+    std::size_t live_keys = 0;
+    bool compact_recommended = false;
+};
+
 class WriteAheadLog {
 public:
     explicit WriteAheadLog(std::filesystem::path path);
@@ -28,6 +36,7 @@ public:
     bool append(std::string_view record);
     bool compact(const Store& store, std::size_t* compacted = nullptr);
     bool repair(Store& store, WalRepairReport* repair = nullptr);
+    WalMaintenanceReport maintenance_report(const Store& store) const;
     std::size_t replay(Store& store) const;
     WalReplayReport replay_with_report(Store& store) const;
 
