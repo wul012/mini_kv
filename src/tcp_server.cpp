@@ -156,6 +156,21 @@ std::string stats_fields(const TcpServerConnectionStats& stats) {
            " peak_connections=" + std::to_string(stats.peak_connections);
 }
 
+bool metrics_logging_enabled(const TcpServer::Options& options) {
+    return options.metrics_log_interval > std::chrono::milliseconds::zero();
+}
+
+std::chrono::milliseconds listener_wait_interval(const TcpServer::Options& options) {
+    if (metrics_logging_enabled(options) && options.metrics_log_interval < options.accept_poll_interval) {
+        return options.metrics_log_interval;
+    }
+    return options.accept_poll_interval;
+}
+
+std::string metrics_fields(const TcpServerConnectionStats& stats, std::chrono::milliseconds interval) {
+    return stats_fields(stats) + " metrics_interval_ms=" + std::to_string(interval.count());
+}
+
 std::string request_limit_fields(std::size_t pending_bytes, std::size_t max_request_bytes) {
     return "pending_bytes=" + std::to_string(pending_bytes) +
            " max_request_bytes=" + std::to_string(max_request_bytes);
@@ -528,9 +543,22 @@ void TcpServer::run() {
     const std::string endpoint = endpoint_fields(options_, actual_port);
     log_event(options_, "event=tcp_listen " + endpoint + " max_request_bytes=" +
                             std::to_string(options_.max_request_bytes));
+    const bool metrics_enabled = metrics_logging_enabled(options_);
+    auto next_metrics_log = std::chrono::steady_clock::now() + options_.metrics_log_interval;
 
     while (!stop_requested()) {
-        if (!wait_for_listener(listener.get(), options_.accept_poll_interval)) {
+        if (metrics_enabled) {
+            const auto now = std::chrono::steady_clock::now();
+            if (now >= next_metrics_log) {
+                log_event(options_, "event=server_metrics " + endpoint + " " +
+                                        metrics_fields(connection_tracker_->stats(), options_.metrics_log_interval));
+                do {
+                    next_metrics_log += options_.metrics_log_interval;
+                } while (next_metrics_log <= now);
+            }
+        }
+
+        if (!wait_for_listener(listener.get(), listener_wait_interval(options_))) {
             continue;
         }
 

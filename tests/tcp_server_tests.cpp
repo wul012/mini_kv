@@ -230,6 +230,7 @@ int main() {
     options.host = "127.0.0.1";
     options.port = 0;
     options.accept_poll_interval = 10ms;
+    options.metrics_log_interval = 20ms;
     options.max_request_bytes = 8;
 
     std::mutex logs_mutex;
@@ -269,6 +270,20 @@ int main() {
     assert(stats.total_connections == 0);
     assert(stats.active_connections == 0);
     assert(stats.peak_connections == 0);
+
+    bool metrics_logged = false;
+    for (int attempt = 0; attempt < 100; ++attempt) {
+        {
+            std::lock_guard lock{logs_mutex};
+            metrics_logged = contains_log(logs, "event=server_metrics");
+        }
+        if (metrics_logged) {
+            break;
+        }
+        std::this_thread::sleep_for(10ms);
+    }
+
+    assert(metrics_logged);
 
     const auto response = exchange_inline("127.0.0.1", bound_port, "PING\nSTATS\nHEALTH\nQUIT\n");
     assert(response.find("PONG\n") != std::string::npos);
@@ -342,6 +357,8 @@ int main() {
     assert(contains_log(logs, "max_request_bytes=8"));
     assert(contains_log(logs, "total_connections=2"));
     assert(contains_log(logs, "peak_connections=1"));
+    assert(contains_log(logs, "event=server_metrics"));
+    assert(contains_log(logs, "metrics_interval_ms=20"));
     assert(contains_log(logs, "event=tcp_stop"));
 
     minikv::Store localhost_store;

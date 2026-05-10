@@ -31,6 +31,7 @@ public:
         std::uint16_t port = 6379;
         int backlog = 64;
         std::chrono::milliseconds accept_poll_interval{200};
+        std::chrono::milliseconds metrics_log_interval{0};
         std::size_t max_request_bytes = 64 * 1024;
         bool auto_compact_wal = false;
         StopPredicate should_stop;

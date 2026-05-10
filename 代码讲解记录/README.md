@@ -193,6 +193,12 @@
 
 60-version-29-tests-docs.md
  -> 第二十九版 command_tests、wal_tests、tcp_server_tests、真实 CLI/server STATS HEALTH smoke、README、CMake、a/29 归档和整体增删改
+
+61-server-metrics-logging-core.md
+ -> 第三十版周期性 server metrics 日志核心：metrics_log_interval、listener_wait_interval、event=server_metrics 和 --metrics-interval-ms
+
+62-version-30-tests-docs.md
+ -> 第三十版 tcp_server_tests、真实 server metrics smoke、README、CMake、a/30 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -708,4 +714,36 @@ HEALTH
 
 server event logs
  -> 观察生命周期、连接、拒绝请求、WAL replay / repair / compact 事件
+```
+
+## 第三十版补充理解
+
+第三十版新增周期性 server metrics 日志链路：
+
+```text
+minikv_server --metrics-interval-ms ms
+ -> server_main 解析为 TcpServer::Options::metrics_log_interval
+ -> TcpServer::run 使用 steady_clock 计算 next_metrics_log
+ -> 监听循环到点读取 connection_tracker_->stats()
+ -> 输出 event=server_metrics
+ -> 日志包含 active_connections / total_connections / peak_connections / metrics_interval_ms
+```
+
+到第三十版为止，运行期观测入口变成：
+
+```text
+WALINFO
+ -> WAL maintenance 细节
+
+STATS
+ -> Store、WAL 和 TCP 连接统计
+
+HEALTH
+ -> OK 探活和关键运行信号
+
+server event logs
+ -> 生命周期、连接、拒绝请求、WAL replay / repair / compact 事件
+
+server_metrics
+ -> 周期性连接统计日志，适合长时间运行和压力调试观察
 ```
