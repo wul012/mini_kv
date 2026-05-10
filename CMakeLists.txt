@@ -29,6 +29,7 @@ else()
 endif()
 
 if(WIN32)
+    target_compile_definitions(minikv PUBLIC NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(minikv PUBLIC ws2_32)
 endif()
 

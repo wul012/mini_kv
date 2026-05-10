@@ -1031,6 +1031,9 @@ stdin 或 stdout 不是终端
 
 72-version-35-tests-docs.md
  -> 第三十五版 command_tests、tcp_server_tests、line_editor_tests、真实 statsjson/reset smoke、README、CMake、a/35 归档和整体增删改
+
+73-windows-ci-nominmax-fix.md
+ -> Windows CI 的 NOMINMAX 修复：阻止 Windows 头文件 min/max 宏污染 std::numeric_limits 和 std::min / std::max
 ```
 
 ## 第三十五版补充理解
@@ -1125,3 +1128,29 @@ RESETSTATS
 HEALTH
  -> 快速探活
 ```
+
+## Windows CI 补充修复
+
+第三十五版推到 GitHub 后，Linux 和 macOS 通过，但 Windows 在 Build 阶段失败。
+
+失败点集中在：
+
+```text
+src/client_main.cpp
+std::numeric_limits<int>::max()
+std::numeric_limits<DWORD>::max()
+```
+
+根因是 Windows 头文件可能定义 `max` 宏，MSVC 预处理后破坏了标准库调用。
+
+补充修复为：
+
+```text
+CMakeLists.txt
+ -> Windows 下给 minikv PUBLIC 定义 NOMINMAX 和 WIN32_LEAN_AND_MEAN
+
+所有直接包含 Windows 头文件的 .cpp
+ -> 在 include 前源码级定义 NOMINMAX
+```
+
+这样 CMake 目标和直接编译单文件两条路径都有保护。
