@@ -124,6 +124,12 @@
 
 37-version-17-tests-docs.md
  -> 第十七版 tcp_resp_compat_tests、README、CMake、a/17 归档和整体增删改
+
+38-tcp-resp-concurrency-tests.md
+ -> 第十八版并发 RESP-over-TCP 测试核心：4 个 raw socket 客户端、active / total / peak 连接统计和精确响应校验
+
+39-version-18-tests-docs.md
+ -> 第十八版 tcp_resp_concurrency_tests、server_main 日志加锁、README、CMake、a/18 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -345,6 +351,26 @@ external RESP compat smoke
  -> MATCH protocol_error True
 ```
 
+第十八版增加了并发 RESP-over-TCP 客户端验证链路：
+
+```text
+tcp_resp_concurrency_tests
+ -> 启动 TcpServer 临时端口
+ -> 4 个 raw socket 客户端先同时连接并保持打开
+ -> 等待 active_connections=4
+ -> 统一放行客户端发送 SET / GET / PING / TTL / DEL / GET / QUIT pipeline
+ -> 每个客户端精确比对自己的 RESP 响应
+ -> 检查 total_connections=4、active_connections=0、peak_connections=4
+ -> 检查 Store 最终回到空
+
+external RESP concurrency smoke
+ -> 启动真实 minikv_server.exe
+ -> Python 启动 4 个 raw socket RESP 客户端
+ -> MATCH concurrent_clients True
+ -> 服务端日志出现 peak_connections=4
+ -> server_main logger 加锁后并发日志逐行完整输出
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -393,7 +419,7 @@ src/tcp_server.cpp
  -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志；第十一版支持 connection_id、active / total / peak 连接指标；第十二版支持可配置请求上限和 event=tcp_request_rejected
 
 src/server_main.cpp
- -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms
+ -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms；第十八版为 TcpServer logger 加锁，避免并发连接事件输出粘行
 
 src/client_main.cpp
  -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms；第十五版接入本地历史命令
@@ -418,7 +444,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界和客户端本地历史行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端和客户端本地历史行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

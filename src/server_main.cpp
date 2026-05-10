@@ -10,6 +10,7 @@
 #include <iostream>
 #include <limits>
 #include <optional>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -84,7 +85,9 @@ int main(int argc, char** argv) {
 
         minikv::TcpServer::Options options;
         options.should_stop = should_stop;
-        options.logger = [](const std::string& message) {
+        std::mutex log_mutex;
+        options.logger = [&log_mutex](const std::string& message) {
+            std::lock_guard lock{log_mutex};
             std::cout << message << '\n';
         };
 

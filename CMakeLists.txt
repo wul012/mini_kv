@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.17.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.18.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -128,6 +128,14 @@ add_executable(minikv_tcp_resp_compat_tests
 target_link_libraries(minikv_tcp_resp_compat_tests PRIVATE minikv)
 
 add_test(NAME tcp_resp_compat_tests COMMAND minikv_tcp_resp_compat_tests)
+
+add_executable(minikv_tcp_resp_concurrency_tests
+    tests/tcp_resp_concurrency_tests.cpp
+)
+
+target_link_libraries(minikv_tcp_resp_concurrency_tests PRIVATE minikv)
+
+add_test(NAME tcp_resp_concurrency_tests COMMAND minikv_tcp_resp_concurrency_tests)
 
 add_executable(minikv_client_history_tests
     tests/client_history_tests.cpp

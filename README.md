@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 17 is a runnable in-memory KV service with broader RESP-over-TCP compatibility coverage:
+Version 18 is a runnable in-memory KV service with concurrent RESP-over-TCP client coverage:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -20,12 +20,14 @@ Version 17 is a runnable in-memory KV service with broader RESP-over-TCP compati
 - Redis-style `PING [message]` command and RESP parser size limits
 - Graceful TCP server stop support and structured `event=...` lifecycle logs
 - TCP connection IDs plus active, total, and peak connection metrics in lifecycle logs
+- Thread-safe server stdout logging for concurrent connection events
 - Configurable TCP request byte limit and optional client socket timeout
 - Broader TCP compatibility tests for `localhost` and address-family agnostic client resolution
 - Configurable bundled TCP client connection retries and retry delay
 - Bundled TCP client local session history with `:history`, `!!`, and `!N`
 - External-client style RESP-over-TCP smoke coverage for pipelined requests
 - RESP-over-TCP compatibility tests for null bulk replies, errors, `DEL`, `EXPIRE`, and `TTL`
+- Concurrent RESP-over-TCP raw-socket client coverage with active and peak connection checks
 
 ## Build
 
@@ -136,6 +138,7 @@ After CLion finishes loading CMake, run these targets:
 - `minikv_tcp_server_tests`
 - `minikv_tcp_resp_tests`
 - `minikv_tcp_resp_compat_tests`
+- `minikv_tcp_resp_concurrency_tests`
 - `minikv_client_history_tests`
 
 ## CLI commands
@@ -279,7 +282,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` session history behavior.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` session history behavior.
 
 ## RESP protocol
 
@@ -303,4 +306,4 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 ## Roadmap
 
 1. Add persistent client history or interactive line editing.
-2. Add concurrent RESP client stress coverage.
+2. Harden WAL and snapshot recovery for partial or corrupt files.
