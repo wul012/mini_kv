@@ -150,6 +150,16 @@ bool contains_log(const std::vector<std::string>& logs, std::string_view needle)
     });
 }
 
+const minikv::CommandBreakdownMetrics* find_command_metrics(const minikv::CommandProcessorMetrics& metrics,
+                                                            std::string_view command) {
+    for (const auto& command_metrics : metrics.command_breakdown) {
+        if (command_metrics.command == command) {
+            return &command_metrics;
+        }
+    }
+    return nullptr;
+}
+
 TestSocketGuard connect_test_socket(std::string_view host, std::uint16_t port) {
     addrinfo hints{};
     hints.ai_family = AF_UNSPEC;
@@ -294,6 +304,10 @@ int main() {
     assert(response.find("total_commands=1") != std::string::npos);
     assert(response.find("successful_commands=1") != std::string::npos);
     assert(response.find("error_commands=0") != std::string::npos);
+    assert(response.find("total_latency_ns=") != std::string::npos);
+    assert(response.find("avg_latency_ns=") != std::string::npos);
+    assert(response.find("max_latency_ns=") != std::string::npos);
+    assert(response.find("command_breakdown=PING:1/1/0/") != std::string::npos);
     assert(response.find("OK live_keys=0") != std::string::npos);
     assert(response.find("BYE\n") != std::string::npos);
 
@@ -345,6 +359,12 @@ int main() {
     assert(command_metrics.total_commands == 4);
     assert(command_metrics.successful_commands == 4);
     assert(command_metrics.error_commands == 0);
+    assert(command_metrics.total_latency_ns > 0);
+    assert(command_metrics.max_latency_ns > 0);
+    assert(find_command_metrics(command_metrics, "PING") != nullptr);
+    assert(find_command_metrics(command_metrics, "STATS") != nullptr);
+    assert(find_command_metrics(command_metrics, "HEALTH") != nullptr);
+    assert(find_command_metrics(command_metrics, "QUIT") != nullptr);
 
     server.request_stop();
     server_thread.join();
@@ -372,6 +392,8 @@ int main() {
     assert(contains_log(logs, "metrics_interval_ms=20"));
     assert(contains_log(logs, "total_commands="));
     assert(contains_log(logs, "error_commands="));
+    assert(contains_log(logs, "avg_latency_ns="));
+    assert(contains_log(logs, "command_breakdown="));
     assert(contains_log(logs, "event=tcp_stop"));
 
     minikv::Store localhost_store;

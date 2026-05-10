@@ -868,3 +868,87 @@ server_metrics
 tcp_stop
  -> 服务停止时的最终连接统计和命令统计
 ```
+
+## 第三十三版讲解索引补充
+
+```text
+67-command-breakdown-latency.md
+ -> 第三十三版命令分项与延迟指标核心：CommandBreakdownMetrics、latency counters、UNKNOWN 命令桶、format_command_metrics 和 TCP server 复用指标格式
+
+68-version-33-tests-docs.md
+ -> 第三十三版 command_tests、tcp_server_tests、真实 command breakdown latency smoke、README、CMake、a/33 归档和整体增删改
+```
+
+## 第三十三版补充理解
+
+第三十三版把 v32 的 command counters 升级成 command metrics：
+
+```text
+CommandProcessor::execute
+ -> trim 输入
+ -> 空输入不计数
+ -> command_token 提取第一个命令词并转成大写
+ -> steady_clock 记录 started_at
+ -> execute_trimmed 执行原有命令逻辑
+ -> 计算 elapsed_ns
+ -> CommandMetricsTracker::record(command, result, elapsed_ns)
+```
+
+`CommandMetricsTracker` 现在维护两层数据：
+
+```text
+totals_
+ -> total_commands
+ -> successful_commands
+ -> error_commands
+ -> total_latency_ns
+ -> max_latency_ns
+
+breakdown_
+ -> PING / GET / SET / ...
+ -> UNKNOWN
+ -> 每个命令桶自己的 total / success / error / latency
+```
+
+v33 选择用 mutex，而不是继续堆 atomic：
+
+```text
+record 时一次性更新 totals_ 和 breakdown_
+stats 时一次性复制总计和每个命令桶
+```
+
+这样 `STATS`、`HEALTH`、`server_metrics` 和 `tcp_stop` 看到的是一致快照。
+
+未知命令不会按原始输入无限建桶，而是统一归到：
+
+```text
+UNKNOWN
+```
+
+输出格式统一由 `format_command_metrics` 生成：
+
+```text
+total_commands=...
+successful_commands=...
+error_commands=...
+total_latency_ns=...
+avg_latency_ns=...
+max_latency_ns=...
+command_breakdown=COMMAND:total/success/error/total_latency_ns/avg_latency_ns/max_latency_ns;...
+```
+
+到第三十三版为止，运行时观测入口变成：
+
+```text
+STATS
+ -> Store、WAL、command metrics、TCP connection stats
+
+HEALTH
+ -> OK 探活、compact signal、command metrics、connection stats
+
+server_metrics
+ -> 周期性连接统计、命令总计、错误数、延迟和命令桶
+
+tcp_stop
+ -> 服务停止时的最终连接统计和命令指标快照
+```

@@ -2,13 +2,15 @@
 
 #include "minikv/store.hpp"
 
-#include <atomic>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace minikv {
 
@@ -26,22 +28,37 @@ struct CommandConnectionStats {
     std::size_t peak_connections = 0;
 };
 
+struct CommandBreakdownMetrics {
+    std::string command;
+    std::uint64_t total_commands = 0;
+    std::uint64_t successful_commands = 0;
+    std::uint64_t error_commands = 0;
+    std::uint64_t total_latency_ns = 0;
+    std::uint64_t max_latency_ns = 0;
+};
+
 struct CommandProcessorMetrics {
     std::uint64_t total_commands = 0;
     std::uint64_t successful_commands = 0;
     std::uint64_t error_commands = 0;
+    std::uint64_t total_latency_ns = 0;
+    std::uint64_t max_latency_ns = 0;
+    std::vector<CommandBreakdownMetrics> command_breakdown;
 };
 
 class CommandMetricsTracker {
 public:
     void record(const CommandResult& result);
+    void record(std::string_view command, const CommandResult& result, std::uint64_t elapsed_ns);
     CommandProcessorMetrics stats() const;
 
 private:
-    std::atomic<std::uint64_t> total_commands_{0};
-    std::atomic<std::uint64_t> successful_commands_{0};
-    std::atomic<std::uint64_t> error_commands_{0};
+    mutable std::mutex mutex_;
+    CommandProcessorMetrics totals_;
+    std::map<std::string, CommandBreakdownMetrics> breakdown_;
 };
+
+std::string format_command_metrics(const CommandProcessorMetrics& metrics);
 
 struct CommandProcessorOptions {
     using ConnectionStatsProvider = std::function<CommandConnectionStats()>;

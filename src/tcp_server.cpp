@@ -157,9 +157,7 @@ std::string stats_fields(const TcpServerConnectionStats& stats) {
 }
 
 std::string command_metrics_fields(const CommandProcessorMetrics& metrics) {
-    return "total_commands=" + std::to_string(metrics.total_commands) +
-           " successful_commands=" + std::to_string(metrics.successful_commands) +
-           " error_commands=" + std::to_string(metrics.error_commands);
+    return format_command_metrics(metrics);
 }
 
 bool metrics_logging_enabled(const TcpServer::Options& options) {

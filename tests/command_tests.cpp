@@ -5,7 +5,22 @@
 #include <chrono>
 #include <filesystem>
 #include <string>
+#include <string_view>
 #include <thread>
+
+namespace {
+
+const minikv::CommandBreakdownMetrics* find_command_metrics(const minikv::CommandProcessorMetrics& metrics,
+                                                            std::string_view command) {
+    for (const auto& command_metrics : metrics.command_breakdown) {
+        if (command_metrics.command == command) {
+            return &command_metrics;
+        }
+    }
+    return nullptr;
+}
+
+} // namespace
 
 int main() {
     using namespace std::chrono_literals;
@@ -155,6 +170,9 @@ int main() {
     assert(metrics_processor.metrics().total_commands == 0);
     assert(metrics_processor.metrics().successful_commands == 0);
     assert(metrics_processor.metrics().error_commands == 0);
+    assert(metrics_processor.metrics().total_latency_ns == 0);
+    assert(metrics_processor.metrics().max_latency_ns == 0);
+    assert(metrics_processor.metrics().command_breakdown.empty());
 
     result = metrics_processor.execute("");
     assert(result.response.empty());
@@ -165,25 +183,66 @@ int main() {
     assert(metrics_processor.metrics().total_commands == 1);
     assert(metrics_processor.metrics().successful_commands == 1);
     assert(metrics_processor.metrics().error_commands == 0);
+    auto metrics = metrics_processor.metrics();
+    assert(metrics.total_latency_ns > 0);
+    assert(metrics.max_latency_ns > 0);
+    const auto* ping_metrics = find_command_metrics(metrics, "PING");
+    assert(ping_metrics != nullptr);
+    assert(ping_metrics->total_commands == 1);
+    assert(ping_metrics->successful_commands == 1);
+    assert(ping_metrics->error_commands == 0);
+    assert(ping_metrics->total_latency_ns > 0);
+    assert(ping_metrics->max_latency_ns > 0);
 
     result = metrics_processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");
     assert(metrics_processor.metrics().total_commands == 2);
     assert(metrics_processor.metrics().successful_commands == 1);
     assert(metrics_processor.metrics().error_commands == 1);
+    metrics = metrics_processor.metrics();
+    const auto* get_metrics = find_command_metrics(metrics, "GET");
+    assert(get_metrics != nullptr);
+    assert(get_metrics->total_commands == 1);
+    assert(get_metrics->successful_commands == 0);
+    assert(get_metrics->error_commands == 1);
+
+    result = metrics_processor.execute("BADCOMMAND");
+    assert(result.response == "ERR unknown command");
+    assert(metrics_processor.metrics().total_commands == 3);
+    assert(metrics_processor.metrics().successful_commands == 1);
+    assert(metrics_processor.metrics().error_commands == 2);
+    metrics = metrics_processor.metrics();
+    const auto* unknown_metrics = find_command_metrics(metrics, "UNKNOWN");
+    assert(unknown_metrics != nullptr);
+    assert(unknown_metrics->total_commands == 1);
+    assert(unknown_metrics->successful_commands == 0);
+    assert(unknown_metrics->error_commands == 1);
 
     result = metrics_processor.execute("STATS");
-    assert(result.response.find("total_commands=2") != std::string::npos);
+    assert(result.response.find("total_commands=3") != std::string::npos);
     assert(result.response.find("successful_commands=1") != std::string::npos);
-    assert(result.response.find("error_commands=1") != std::string::npos);
-    assert(metrics_processor.metrics().total_commands == 3);
+    assert(result.response.find("error_commands=2") != std::string::npos);
+    assert(result.response.find("total_latency_ns=") != std::string::npos);
+    assert(result.response.find("avg_latency_ns=") != std::string::npos);
+    assert(result.response.find("max_latency_ns=") != std::string::npos);
+    assert(result.response.find("command_breakdown=GET:1/0/1/") != std::string::npos);
+    assert(result.response.find("PING:1/1/0/") != std::string::npos);
+    assert(result.response.find("UNKNOWN:1/0/1/") != std::string::npos);
+    assert(metrics_processor.metrics().total_commands == 4);
     assert(metrics_processor.metrics().successful_commands == 2);
-    assert(metrics_processor.metrics().error_commands == 1);
+    assert(metrics_processor.metrics().error_commands == 2);
+    metrics = metrics_processor.metrics();
+    const auto* stats_metrics = find_command_metrics(metrics, "STATS");
+    assert(stats_metrics != nullptr);
+    assert(stats_metrics->total_commands == 1);
+    assert(stats_metrics->successful_commands == 1);
+    assert(stats_metrics->error_commands == 0);
 
     result = metrics_processor.execute("HEALTH");
-    assert(result.response.find("total_commands=3") != std::string::npos);
+    assert(result.response.find("total_commands=4") != std::string::npos);
     assert(result.response.find("successful_commands=2") != std::string::npos);
-    assert(result.response.find("error_commands=1") != std::string::npos);
+    assert(result.response.find("error_commands=2") != std::string::npos);
+    assert(result.response.find("STATS:1/1/0/") != std::string::npos);
 
     result = processor.execute("HELP");
     assert(result.response.find("COMPACT") != std::string::npos);

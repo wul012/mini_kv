@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <cctype>
+#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -33,6 +34,28 @@ std::string to_upper(std::string_view text) {
         ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
     }
     return result;
+}
+
+std::string command_token(std::string_view text) {
+    std::istringstream input{std::string{text}};
+    std::string command;
+    input >> command;
+    return to_upper(command);
+}
+
+bool is_known_command(std::string_view command) {
+    return command == "PING" || command == "SET" || command == "GET" || command == "DEL" ||
+           command == "EXPIRE" || command == "TTL" || command == "SIZE" || command == "SAVE" ||
+           command == "LOAD" || command == "COMPACT" || command == "WALINFO" || command == "STATS" ||
+           command == "HEALTH" || command == "HELP" || command == "EXIT" || command == "QUIT";
+}
+
+std::string metrics_command_name(std::string_view command) {
+    std::string name = to_upper(command);
+    if (name.empty() || !is_known_command(name)) {
+        return "UNKNOWN";
+    }
+    return name;
 }
 
 bool has_extra_token(std::istringstream& input) {
@@ -119,12 +142,6 @@ std::string format_connection_stats(const CommandConnectionStats& stats) {
            " peak_connections=" + std::to_string(stats.peak_connections);
 }
 
-std::string format_command_metrics(const CommandProcessorMetrics& metrics) {
-    return " total_commands=" + std::to_string(metrics.total_commands) +
-           " successful_commands=" + std::to_string(metrics.successful_commands) +
-           " error_commands=" + std::to_string(metrics.error_commands);
-}
-
 std::string format_stats(std::size_t live_keys,
                          WriteAheadLog* wal,
                          const std::optional<WalMaintenanceReport>& wal_report,
@@ -149,7 +166,7 @@ std::string format_stats(std::size_t live_keys,
                     " bytes_saved=" + std::to_string(wal_report->compaction_stats.bytes_saved);
     }
 
-    response += format_command_metrics(command_metrics);
+    response += " " + format_command_metrics(command_metrics);
     response += format_connection_stats(stats);
     return response;
 }
@@ -168,7 +185,7 @@ std::string format_health(std::size_t live_keys,
         response += " compact_recommended=na";
     }
 
-    response += format_command_metrics(command_metrics);
+    response += " " + format_command_metrics(command_metrics);
     response += format_connection_stats(stats);
     return response;
 }
@@ -176,17 +193,85 @@ std::string format_health(std::size_t live_keys,
 } // namespace
 
 void CommandMetricsTracker::record(const CommandResult& result) {
-    total_commands_.fetch_add(1);
-    if (result.response.rfind("ERR ", 0) == 0) {
-        error_commands_.fetch_add(1);
+    record("UNKNOWN", result, 0);
+}
+
+void CommandMetricsTracker::record(std::string_view command, const CommandResult& result, std::uint64_t elapsed_ns) {
+    const std::string bucket_name = metrics_command_name(command);
+    const bool is_error = result.response.rfind("ERR ", 0) == 0;
+    if (elapsed_ns == 0) {
+        elapsed_ns = 1;
+    }
+
+    std::lock_guard lock{mutex_};
+    ++totals_.total_commands;
+    totals_.total_latency_ns += elapsed_ns;
+    if (elapsed_ns > totals_.max_latency_ns) {
+        totals_.max_latency_ns = elapsed_ns;
+    }
+
+    auto& bucket = breakdown_[bucket_name];
+    bucket.command = bucket_name;
+    ++bucket.total_commands;
+    bucket.total_latency_ns += elapsed_ns;
+    if (elapsed_ns > bucket.max_latency_ns) {
+        bucket.max_latency_ns = elapsed_ns;
+    }
+
+    if (is_error) {
+        ++totals_.error_commands;
+        ++bucket.error_commands;
         return;
     }
 
-    successful_commands_.fetch_add(1);
+    ++totals_.successful_commands;
+    ++bucket.successful_commands;
 }
 
 CommandProcessorMetrics CommandMetricsTracker::stats() const {
-    return {total_commands_.load(), successful_commands_.load(), error_commands_.load()};
+    std::lock_guard lock{mutex_};
+    CommandProcessorMetrics snapshot = totals_;
+    snapshot.command_breakdown.clear();
+    snapshot.command_breakdown.reserve(breakdown_.size());
+    for (const auto& [_, metrics] : breakdown_) {
+        snapshot.command_breakdown.push_back(metrics);
+    }
+    return snapshot;
+}
+
+std::string format_command_metrics(const CommandProcessorMetrics& metrics) {
+    const std::uint64_t average_latency_ns =
+        metrics.total_commands == 0 ? 0 : metrics.total_latency_ns / metrics.total_commands;
+
+    std::string result = "total_commands=" + std::to_string(metrics.total_commands) +
+                         " successful_commands=" + std::to_string(metrics.successful_commands) +
+                         " error_commands=" + std::to_string(metrics.error_commands) +
+                         " total_latency_ns=" + std::to_string(metrics.total_latency_ns) +
+                         " avg_latency_ns=" + std::to_string(average_latency_ns) +
+                         " max_latency_ns=" + std::to_string(metrics.max_latency_ns) +
+                         " command_breakdown=";
+
+    if (metrics.command_breakdown.empty()) {
+        return result + "none";
+    }
+
+    bool first = true;
+    for (const auto& command_metrics : metrics.command_breakdown) {
+        const std::uint64_t command_average_latency_ns =
+            command_metrics.total_commands == 0 ? 0 : command_metrics.total_latency_ns / command_metrics.total_commands;
+        if (!first) {
+            result += ";";
+        }
+        first = false;
+        result += command_metrics.command + ":" + std::to_string(command_metrics.total_commands) + "/" +
+                  std::to_string(command_metrics.successful_commands) + "/" +
+                  std::to_string(command_metrics.error_commands) + "/" +
+                  std::to_string(command_metrics.total_latency_ns) + "/" +
+                  std::to_string(command_average_latency_ns) + "/" +
+                  std::to_string(command_metrics.max_latency_ns);
+    }
+
+    return result;
 }
 
 CommandProcessor::CommandProcessor(Store& store, WriteAheadLog* wal, CommandProcessorOptions options)
@@ -210,8 +295,12 @@ CommandResult CommandProcessor::execute(std::string_view line) {
         return {};
     }
 
+    const std::string command = command_token(trimmed);
+    const auto started_at = std::chrono::steady_clock::now();
     CommandResult result = execute_trimmed(trimmed);
-    metrics_tracker_->record(result);
+    const auto elapsed_ns =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - started_at).count();
+    metrics_tracker_->record(command, result, static_cast<std::uint64_t>(elapsed_ns));
     return result;
 }
 
