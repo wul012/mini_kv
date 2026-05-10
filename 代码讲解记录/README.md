@@ -118,6 +118,12 @@
 
 35-version-16-tests-docs.md
  -> 第十六版 tcp_resp_tests、README、CMake、a/16 归档和整体增删改
+
+36-tcp-resp-compat-tests.md
+ -> 第十七版 RESP-over-TCP 兼容测试核心：null bulk、integer、command error、usage error 和 protocol error
+
+37-version-17-tests-docs.md
+ -> 第十七版 tcp_resp_compat_tests、README、CMake、a/17 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -322,6 +328,23 @@ external RESP smoke
  -> MATCH True 证明原始响应字节完全符合预期
 ```
 
+第十七版增加了 RESP-over-TCP 兼容边界验证链路：
+
+```text
+tcp_resp_compat_tests
+ -> raw socket 发送 GET missing / SET / TTL / EXPIRE / DEL / NOPE / GET extra / QUIT
+ -> 精确比对 $-1 / :-1 / :1 / :-2 / -ERR / +BYE
+ -> 第二条连接发送非法 null bulk 参数
+ -> 精确比对 protocol error
+ -> 检查 total_connections=2 和 peak_connections=1
+
+external RESP compat smoke
+ -> 启动真实 minikv_server.exe
+ -> Python raw socket 复跑 compatibility pipeline 和 protocol error
+ -> MATCH compatibility True
+ -> MATCH protocol_error True
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -395,7 +418,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline 和客户端本地历史行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界和客户端本地历史行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
