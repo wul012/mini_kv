@@ -199,6 +199,12 @@
 
 62-version-30-tests-docs.md
  -> 第三十版 tcp_server_tests、真实 server metrics smoke、README、CMake、a/30 归档和整体增删改
+
+63-line-editor-core.md
+ -> 第三十一版客户端行编辑核心：LineEditorBuffer、LineEditorHistoryNavigator、read_client_line、终端按键读取和非交互 fallback
+
+64-version-31-tests-docs.md
+ -> 第三十一版 line_editor_tests、真实 client line editor smoke、README、CMake、a/31 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -647,7 +653,7 @@ src/server_main.cpp
  -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms；第十八版为 TcpServer logger 加锁，避免并发连接事件输出粘行；第二十五版支持 --repair-wal 和 event=wal_repair；第二十六版支持 event=wal_stats 和 event=wal_compact_hint；第二十七版支持 --auto-compact-wal、event=wal_auto_compact 和 event=wal_auto_compact_skipped；第二十八版支持 WAL compact 阈值参数，并在 event=wal_stats 中输出阈值和 compact counters
 
 src/client_main.cpp
- -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms；第十五版接入本地历史命令；第二十一版支持 --history-file 持久化历史
+ -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms；第十五版接入本地历史命令；第二十一版支持 --history-file 持久化历史；第三十一版接入 read_client_line，在交互终端支持行编辑和历史浏览，在重定向 stdin 时保持 getline 行为
 
 src/benchmark_main.cpp
  -> 第六版 benchmark 启动器，用于本地吞吐观察
@@ -655,6 +661,10 @@ src/benchmark_main.cpp
 include/minikv/client_history.hpp
 src/client_history.cpp
  -> 第十五版客户端本地历史模块，负责 :history、!!、!N 和普通输入的 send/local 判定；第二十一版新增历史文件 load_from_file / save_to_file
+
+include/minikv/line_editor.hpp
+src/line_editor.cpp
+ -> 第三十一版客户端行编辑模块，负责 LineEditorBuffer、LineEditorHistoryNavigator、read_client_line、Windows / Unix-like 按键读取、ANSI 行重绘和非交互 getline fallback
 
 include/minikv/resp.hpp
 src/resp.cpp
@@ -669,7 +679,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store；第二十二版支持临时文件写完整后替换目标 snapshot
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、WAL checksum、WAL compact、WAL repair、WAL maintenance、WAL 自动 compact、WAL compact 阈值配置、WAL compact counters、STATS / HEALTH、TCP connection stats provider、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
+ -> 验证 Store、CommandProcessor、WAL、WAL checksum、WAL compact、WAL repair、WAL maintenance、WAL 自动 compact、WAL compact 阈值配置、WAL compact counters、STATS / HEALTH、TCP connection stats provider、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史、持久化历史文件行为和客户端行编辑核心逻辑
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
@@ -746,4 +756,45 @@ server event logs
 
 server_metrics
  -> 周期性连接统计日志，适合长时间运行和压力调试观察
+```
+
+## 第三十一版补充理解
+
+第三十一版新增 bundled TCP client 行编辑链路：
+
+```text
+minikv_client 主循环
+ -> 构造 mini-kv@host:port> prompt
+ -> read_client_line(prompt, history.entries(), line)
+ -> 交互终端下启用 LineEditorBuffer 和 LineEditorHistoryNavigator
+ -> 普通字符、Backspace、Delete、Left / Right、Home / End 修改当前行
+ -> Up / Down 浏览 ClientHistory 中的历史命令
+ -> 回车后把完整 line 返回给 client_main
+ -> client_main 继续调用 resolve_client_input、send_all 和 print_response
+```
+
+非交互输入保持旧行为：
+
+```text
+stdin 或 stdout 不是终端
+ -> read_client_line 调用 fallback_read_line
+ -> fallback_read_line 打印 prompt
+ -> std::getline(std::cin, line)
+ -> 管道输入、重定向 stdin 和 smoke test 继续可用
+```
+
+到第三十一版为止，客户端体验链路变成：
+
+```text
+LineEditorBuffer
+ -> 当前行文本和光标位置
+
+LineEditorHistoryNavigator
+ -> Up / Down 历史浏览和草稿恢复
+
+ClientHistory
+ -> :history / !! / !N / --history-file
+
+client_main
+ -> 把最终 line 发送给 server，并在响应成功后保存历史
 ```
