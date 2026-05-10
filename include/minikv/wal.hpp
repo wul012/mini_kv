@@ -21,6 +21,7 @@ public:
     explicit WriteAheadLog(std::filesystem::path path);
 
     bool append(std::string_view record);
+    bool compact(const Store& store, std::size_t* compacted = nullptr);
     std::size_t replay(Store& store) const;
     WalReplayReport replay_with_report(Store& store) const;
 

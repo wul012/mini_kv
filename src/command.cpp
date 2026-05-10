@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <cctype>
+#include <mutex>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -45,8 +46,21 @@ CommandResult wal_error() {
     return {"ERR wal append failed"};
 }
 
+CommandResult wal_disabled_error() {
+    return {"ERR WAL not enabled"};
+}
+
+CommandResult wal_compact_error() {
+    return {"ERR wal compact failed"};
+}
+
 CommandResult snapshot_error(std::string_view action) {
     return {std::string{"ERR snapshot "} + std::string{action} + " failed"};
+}
+
+std::mutex& wal_command_mutex() {
+    static std::mutex mutex;
+    return mutex;
 }
 
 std::optional<std::chrono::seconds> parse_positive_seconds(std::string_view text) {
@@ -101,8 +115,14 @@ CommandResult CommandProcessor::execute(std::string_view line) {
             return usage("SET key value");
         }
 
-        if (wal_ != nullptr && !wal_->append(std::string{"SET "} + key + " " + value)) {
-            return wal_error();
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            if (!wal_->append(std::string{"SET "} + key + " " + value)) {
+                return wal_error();
+            }
+
+            const bool inserted = store_.set(key, value);
+            return {inserted ? "OK inserted" : "OK updated"};
         }
 
         const bool inserted = store_.set(key, value);
@@ -133,12 +153,21 @@ CommandResult CommandProcessor::execute(std::string_view line) {
             return usage("DEL key");
         }
 
-        if (!store_.contains(key)) {
-            return {"0"};
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            if (!store_.contains(key)) {
+                return {"0"};
+            }
+
+            if (!wal_->append(std::string{"DEL "} + key)) {
+                return wal_error();
+            }
+
+            return {store_.erase(key) ? "1" : "0"};
         }
 
-        if (wal_ != nullptr && !wal_->append(std::string{"DEL "} + key)) {
-            return wal_error();
+        if (!store_.contains(key)) {
+            return {"0"};
         }
 
         return {store_.erase(key) ? "1" : "0"};
@@ -154,15 +183,25 @@ CommandResult CommandProcessor::execute(std::string_view line) {
             return usage("EXPIRE key seconds");
         }
 
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            if (!store_.contains(key)) {
+                return {"0"};
+            }
+
+            const auto expires_at = Store::Clock::now() + *seconds;
+            if (!wal_->append(format_expires_at(key, expires_at))) {
+                return wal_error();
+            }
+
+            return {store_.expire_at(key, expires_at) ? "1" : "0"};
+        }
+
         if (!store_.contains(key)) {
             return {"0"};
         }
 
         const auto expires_at = Store::Clock::now() + *seconds;
-        if (wal_ != nullptr && !wal_->append(format_expires_at(key, expires_at))) {
-            return wal_error();
-        }
-
         return {store_.expire_at(key, expires_at) ? "1" : "0"};
     }
 
@@ -222,6 +261,26 @@ CommandResult CommandProcessor::execute(std::string_view line) {
         return {std::string{"OK loaded "} + std::to_string(loaded)};
     }
 
+    if (command == "COMPACT") {
+        if (has_extra_token(input)) {
+            return usage("COMPACT");
+        }
+
+        if (wal_ == nullptr) {
+            return wal_disabled_error();
+        }
+
+        std::size_t compacted = 0;
+        {
+            std::lock_guard lock(wal_command_mutex());
+            if (!wal_->compact(store_, &compacted)) {
+                return wal_compact_error();
+            }
+        }
+
+        return {std::string{"OK compacted "} + std::to_string(compacted)};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -252,6 +311,7 @@ std::string CommandProcessor::help_text() {
            "  SIZE\n"
            "  SAVE path\n"
            "  LOAD path\n"
+           "  COMPACT\n"
            "  HELP\n"
            "  EXIT";
 }

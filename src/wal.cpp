@@ -8,8 +8,19 @@
 #include <optional>
 #include <sstream>
 #include <string>
+#include <system_error>
 #include <utility>
 #include <vector>
+
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 
 namespace minikv {
 namespace {
@@ -22,6 +33,35 @@ struct DecodedWalRecord {
     bool valid = false;
     bool checksum_failed = false;
     std::string record;
+};
+
+class TempWalFile {
+public:
+    explicit TempWalFile(std::filesystem::path path) : path_(std::move(path)) {}
+
+    ~TempWalFile() {
+        if (!active_) {
+            return;
+        }
+
+        std::error_code error;
+        std::filesystem::remove(path_, error);
+    }
+
+    TempWalFile(const TempWalFile&) = delete;
+    TempWalFile& operator=(const TempWalFile&) = delete;
+
+    const std::filesystem::path& path() const {
+        return path_;
+    }
+
+    void release() {
+        active_ = false;
+    }
+
+private:
+    std::filesystem::path path_;
+    bool active_ = true;
 };
 
 std::string to_upper(std::string_view text) {
@@ -72,6 +112,38 @@ std::optional<std::uint64_t> parse_checksum(std::string_view text) {
 
 std::string encode_wal_record(std::string_view record) {
     return std::string{wal2_prefix} + format_checksum(wal_checksum(record)) + " " + std::string{record};
+}
+
+std::filesystem::path make_temp_wal_path(const std::filesystem::path& path) {
+    const auto parent = path.parent_path();
+    const std::string filename = path.filename().empty() ? "wal" : path.filename().string();
+    const auto stamp = std::chrono::steady_clock::now().time_since_epoch().count();
+
+    for (int attempt = 0; attempt < 100; ++attempt) {
+        auto candidate = parent / (filename + ".compact.tmp." + std::to_string(stamp) + "." + std::to_string(attempt));
+        std::error_code error;
+        if (!std::filesystem::exists(candidate, error)) {
+            return candidate;
+        }
+    }
+
+    return parent / (filename + ".compact.tmp." + std::to_string(stamp) + ".fallback");
+}
+
+bool replace_file_atomically(const std::filesystem::path& source, const std::filesystem::path& target) {
+#ifdef _WIN32
+    return MoveFileExW(source.c_str(), target.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
+#else
+    std::error_code error;
+    std::filesystem::rename(source, target, error);
+    return !error;
+#endif
+}
+
+std::string format_expires_at(std::string_view key, Store::TimePoint expires_at) {
+    const auto epoch_millis =
+        std::chrono::duration_cast<std::chrono::milliseconds>(expires_at.time_since_epoch()).count();
+    return std::string{"EXPIREAT "} + std::string{key} + " " + std::to_string(epoch_millis);
 }
 
 DecodedWalRecord decode_wal_record(std::string_view line) {
@@ -207,6 +279,53 @@ bool WriteAheadLog::append(std::string_view record) {
     output << encode_wal_record(record) << '\n';
     output.flush();
     return static_cast<bool>(output);
+}
+
+bool WriteAheadLog::compact(const Store& store, std::size_t* compacted) {
+    std::lock_guard lock(mutex_);
+
+    const auto items = store.snapshot_items();
+
+    if (path_.has_parent_path()) {
+        std::error_code error;
+        std::filesystem::create_directories(path_.parent_path(), error);
+        if (error) {
+            return false;
+        }
+    }
+
+    TempWalFile temp_file{make_temp_wal_path(path_)};
+    std::ofstream output{temp_file.path(), std::ios::trunc};
+    if (!output) {
+        return false;
+    }
+
+    for (const auto& item : items) {
+        output << encode_wal_record(std::string{"SET "} + item.key + " " + item.value) << '\n';
+        if (item.expires_at.has_value()) {
+            output << encode_wal_record(format_expires_at(item.key, *item.expires_at)) << '\n';
+        }
+    }
+
+    output.flush();
+    if (!output) {
+        return false;
+    }
+
+    output.close();
+    if (!output) {
+        return false;
+    }
+
+    if (!replace_file_atomically(temp_file.path(), path_)) {
+        return false;
+    }
+    temp_file.release();
+
+    if (compacted != nullptr) {
+        *compacted = items.size();
+    }
+    return true;
 }
 
 std::size_t WriteAheadLog::replay(Store& store) const {

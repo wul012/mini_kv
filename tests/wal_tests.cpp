@@ -10,6 +10,7 @@
 #include <optional>
 #include <string>
 #include <thread>
+#include <vector>
 
 int main() {
     using namespace std::chrono_literals;
@@ -132,6 +133,74 @@ int main() {
     }
 
     std::filesystem::remove(checksum_path);
+
+    const auto compact_path =
+        std::filesystem::temp_directory_path() / ("minikv-wal-compact-test-" + std::to_string(suffix) + ".wal");
+    std::filesystem::remove(compact_path);
+
+    {
+        minikv::Store store;
+        minikv::WriteAheadLog wal{compact_path};
+        minikv::CommandProcessor processor{store, &wal};
+
+        auto result = processor.execute("SET keep value");
+        assert(result.response == "OK inserted");
+
+        result = processor.execute("EXPIRE keep 60");
+        assert(result.response == "1");
+
+        result = processor.execute("SET phrase hello from compact");
+        assert(result.response == "OK inserted");
+
+        result = processor.execute("SET gone remove");
+        assert(result.response == "OK inserted");
+
+        result = processor.execute("DEL gone");
+        assert(result.response == "1");
+
+        result = processor.execute("COMPACT");
+        assert(result.response == "OK compacted 2");
+    }
+
+    {
+        std::ifstream input{compact_path};
+        std::vector<std::string> lines;
+        std::string line;
+        while (std::getline(input, line)) {
+            lines.push_back(line);
+        }
+
+        assert(lines.size() == 3);
+        std::string contents;
+        for (const auto& record : lines) {
+            assert(record.rfind("WAL2 ", 0) == 0);
+            contents += record;
+            contents += '\n';
+        }
+
+        assert(contents.find("SET keep value") != std::string::npos);
+        assert(contents.find("EXPIREAT keep ") != std::string::npos);
+        assert(contents.find("SET phrase hello from compact") != std::string::npos);
+        assert(contents.find("DEL gone") == std::string::npos);
+        assert(contents.find("SET gone remove") == std::string::npos);
+    }
+
+    {
+        minikv::Store restored;
+        minikv::WriteAheadLog wal{compact_path};
+        const auto report = wal.replay_with_report(restored);
+
+        assert(report.applied_records == 3);
+        assert(report.skipped_records == 0);
+        assert(report.truncated_records == 0);
+        assert(report.checksum_failed_records == 0);
+        assert(restored.get("keep") == std::optional<std::string>{"value"});
+        assert(restored.ttl("keep").has_value());
+        assert(restored.get("phrase") == std::optional<std::string>{"hello from compact"});
+        assert(!restored.get("gone").has_value());
+    }
+
+    std::filesystem::remove(compact_path);
 
     return 0;
 }

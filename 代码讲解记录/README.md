@@ -157,6 +157,12 @@
 
 48-version-23-tests-docs.md
  -> 第二十三版 wal_tests、真实 CLI WAL checksum smoke、README、CMake、a/23 归档和整体增删改
+
+49-wal-compaction-core.md
+ -> 第二十四版 WAL compact 核心：WriteAheadLog::compact、TempWalFile、COMPACT 命令和命令层 WAL 互斥
+
+50-version-24-tests-docs.md
+ -> 第二十四版 wal_tests、command_tests、真实 CLI WAL compact smoke、README、CMake、a/24 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -467,6 +473,21 @@ SET / DEL / EXPIRE
  -> CLI / server 启动输出 checksum failure 统计
 ```
 
+第二十四版增加了 WAL compact 链路：
+
+```text
+COMPACT
+ -> CommandProcessor 检查参数和 WAL 是否启用
+ -> wal_command_mutex 阻止同进程 WAL 写入交错
+ -> WriteAheadLog::compact
+ -> Store::snapshot_items 导出当前 live key / value / expires_at
+ -> 写临时 WAL 文件
+ -> 每个 live key 写 WAL2 SET
+ -> 有 TTL 的 key 再写 WAL2 EXPIREAT
+ -> 替换目标 WAL
+ -> 下次启动 replay compact 后的短 WAL
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -505,7 +526,7 @@ src/store.cpp
 
 include/minikv/command.hpp
 src/command.cpp
- -> 解析 PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照、第九版支持 PING 探活
+ -> 解析 PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / COMPACT / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照、第九版支持 PING 探活、第二十四版支持 WAL compact
 
 src/main.cpp
  -> 本地命令行交互入口，第四版支持可选 WAL 路径
@@ -533,14 +554,14 @@ src/resp.cpp
 
 include/minikv/wal.hpp
 src/wal.cpp
- -> 第四版 WAL 持久化模块，负责 append 和 replay；第十九版新增 WalReplayReport、replay_with_report、坏记录跳过和尾部半条记录保护；第二十三版新增 WAL2 checksum、checksum mismatch 跳过和 checksum_failed_records
+ -> 第四版 WAL 持久化模块，负责 append 和 replay；第十九版新增 WalReplayReport、replay_with_report、坏记录跳过和尾部半条记录保护；第二十三版新增 WAL2 checksum、checksum mismatch 跳过和 checksum_failed_records；第二十四版新增 WriteAheadLog::compact，用当前 live state 重写短 WAL
 
 include/minikv/snapshot.hpp
 src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store；第二十二版支持临时文件写完整后替换目标 snapshot
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、WAL checksum、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
+ -> 验证 Store、CommandProcessor、WAL、WAL checksum、WAL compact、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
