@@ -1,4 +1,5 @@
 #include "minikv/client_history.hpp"
+#include "minikv/line_editor.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -457,8 +458,8 @@ int main(int argc, char** argv) {
 
         std::string line;
         while (true) {
-            std::cout << "mini-kv@" << options.host << ':' << options.port << "> ";
-            if (!std::getline(std::cin, line)) {
+            const std::string prompt = "mini-kv@" + options.host + ':' + std::to_string(options.port) + "> ";
+            if (!minikv::read_client_line(prompt, history.entries(), line)) {
                 std::cout << '\n';
                 break;
             }

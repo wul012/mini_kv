@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.30.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.31.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(minikv
     src/client_history.cpp
     src/command.cpp
+    src/line_editor.cpp
     src/resp.cpp
     src/snapshot.cpp
     src/store.cpp
@@ -144,3 +145,11 @@ add_executable(minikv_client_history_tests
 target_link_libraries(minikv_client_history_tests PRIVATE minikv)
 
 add_test(NAME client_history_tests COMMAND minikv_client_history_tests)
+
+add_executable(minikv_line_editor_tests
+    tests/line_editor_tests.cpp
+)
+
+target_link_libraries(minikv_line_editor_tests PRIVATE minikv)
+
+add_test(NAME line_editor_tests COMMAND minikv_line_editor_tests)
