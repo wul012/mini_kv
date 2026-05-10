@@ -28,14 +28,17 @@ namespace {
 constexpr std::string_view wal2_prefix = "WAL2 ";
 constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
 constexpr std::uint64_t fnv_prime = 1099511628211ull;
-constexpr std::size_t compact_hint_min_records = 8;
-constexpr std::size_t compact_hint_record_ratio = 4;
-constexpr std::uintmax_t compact_hint_min_bytes = 64 * 1024;
 
 struct DecodedWalRecord {
     bool valid = false;
     bool checksum_failed = false;
     std::string record;
+};
+
+enum class CompactionKind {
+    manual,
+    automatic,
+    repair,
 };
 
 class TempWalFile {
@@ -288,18 +291,124 @@ std::size_t count_wal_records(const std::filesystem::path& path) {
     return records;
 }
 
-bool should_recommend_compaction(const WalMaintenanceReport& report) {
-    if (report.bytes >= compact_hint_min_bytes) {
+WalMaintenanceOptions normalize_options(WalMaintenanceOptions options) {
+    if (options.compact_min_records == 0) {
+        options.compact_min_records = 1;
+    }
+
+    if (options.compact_record_ratio == 0) {
+        options.compact_record_ratio = 1;
+    }
+
+    if (options.compact_min_bytes == 0) {
+        options.compact_min_bytes = 1;
+    }
+
+    return options;
+}
+
+bool should_recommend_compaction(const WalMaintenanceReport& report, const WalMaintenanceOptions& options) {
+    if (report.bytes >= options.compact_min_bytes) {
         return true;
     }
 
-    const auto expected_records = report.live_keys * compact_hint_record_ratio;
-    return report.records >= compact_hint_min_records && report.records > expected_records;
+    const auto expected_records = report.live_keys * options.compact_record_ratio;
+    return report.records >= options.compact_min_records && report.records > expected_records;
+}
+
+WalMaintenanceReport make_maintenance_report(const std::filesystem::path& path,
+                                             const Store& store,
+                                             const WalMaintenanceOptions& options,
+                                             const WalCompactionStats& stats) {
+    WalMaintenanceReport report;
+    report.bytes = file_size_or_zero(path);
+    report.records = count_wal_records(path);
+    report.live_keys = store.size();
+    report.options = options;
+    report.compaction_stats = stats;
+    report.compact_recommended = should_recommend_compaction(report, options);
+    return report;
+}
+
+std::uintmax_t saved_bytes(const WalMaintenanceReport& before, const WalMaintenanceReport& after) {
+    return before.bytes > after.bytes ? before.bytes - after.bytes : 0;
+}
+
+std::size_t removed_records(const WalMaintenanceReport& before, const WalMaintenanceReport& after) {
+    return before.records > after.records ? before.records - after.records : 0;
+}
+
+void record_compaction(WalCompactionStats& stats,
+                       CompactionKind kind,
+                       const WalMaintenanceReport& before,
+                       const WalMaintenanceReport& after,
+                       std::size_t compacted_keys) {
+    switch (kind) {
+    case CompactionKind::manual:
+        ++stats.manual_compactions;
+        break;
+    case CompactionKind::automatic:
+        ++stats.auto_compactions;
+        break;
+    case CompactionKind::repair:
+        ++stats.repair_compactions;
+        break;
+    }
+
+    stats.compacted_keys += compacted_keys;
+    stats.records_removed += removed_records(before, after);
+    stats.bytes_saved += saved_bytes(before, after);
+}
+
+bool compact_wal_file(const std::filesystem::path& path, const Store& store, std::size_t* compacted) {
+    const auto items = store.snapshot_items();
+
+    if (path.has_parent_path()) {
+        std::error_code error;
+        std::filesystem::create_directories(path.parent_path(), error);
+        if (error) {
+            return false;
+        }
+    }
+
+    TempWalFile temp_file{make_temp_wal_path(path)};
+    std::ofstream output{temp_file.path(), std::ios::trunc};
+    if (!output) {
+        return false;
+    }
+
+    for (const auto& item : items) {
+        output << encode_wal_record(std::string{"SET "} + item.key + " " + item.value) << '\n';
+        if (item.expires_at.has_value()) {
+            output << encode_wal_record(format_expires_at(item.key, *item.expires_at)) << '\n';
+        }
+    }
+
+    output.flush();
+    if (!output) {
+        return false;
+    }
+
+    output.close();
+    if (!output) {
+        return false;
+    }
+
+    if (!replace_file_atomically(temp_file.path(), path)) {
+        return false;
+    }
+    temp_file.release();
+
+    if (compacted != nullptr) {
+        *compacted = items.size();
+    }
+    return true;
 }
 
 } // namespace
 
-WriteAheadLog::WriteAheadLog(std::filesystem::path path) : path_(std::move(path)) {}
+WriteAheadLog::WriteAheadLog(std::filesystem::path path, WalMaintenanceOptions options)
+    : path_(std::move(path)), options_(normalize_options(options)) {}
 
 bool WriteAheadLog::append(std::string_view record) {
     std::lock_guard lock(mutex_);
@@ -325,46 +434,50 @@ bool WriteAheadLog::append(std::string_view record) {
 bool WriteAheadLog::compact(const Store& store, std::size_t* compacted) {
     std::lock_guard lock(mutex_);
 
-    const auto items = store.snapshot_items();
+    const auto before = make_maintenance_report(path_, store, options_, compaction_stats_);
 
-    if (path_.has_parent_path()) {
-        std::error_code error;
-        std::filesystem::create_directories(path_.parent_path(), error);
-        if (error) {
-            return false;
-        }
-    }
-
-    TempWalFile temp_file{make_temp_wal_path(path_)};
-    std::ofstream output{temp_file.path(), std::ios::trunc};
-    if (!output) {
+    std::size_t compacted_keys = 0;
+    if (!compact_wal_file(path_, store, &compacted_keys)) {
         return false;
     }
 
-    for (const auto& item : items) {
-        output << encode_wal_record(std::string{"SET "} + item.key + " " + item.value) << '\n';
-        if (item.expires_at.has_value()) {
-            output << encode_wal_record(format_expires_at(item.key, *item.expires_at)) << '\n';
-        }
-    }
-
-    output.flush();
-    if (!output) {
-        return false;
-    }
-
-    output.close();
-    if (!output) {
-        return false;
-    }
-
-    if (!replace_file_atomically(temp_file.path(), path_)) {
-        return false;
-    }
-    temp_file.release();
+    const auto after = make_maintenance_report(path_, store, options_, compaction_stats_);
+    record_compaction(compaction_stats_, CompactionKind::manual, before, after, compacted_keys);
 
     if (compacted != nullptr) {
-        *compacted = items.size();
+        *compacted = compacted_keys;
+    }
+    return true;
+}
+
+bool WriteAheadLog::compact_if_recommended(const Store& store, WalAutoCompactReport* report) {
+    std::lock_guard lock(mutex_);
+
+    WalAutoCompactReport local_report;
+    local_report.before = make_maintenance_report(path_, store, options_, compaction_stats_);
+    local_report.after = local_report.before;
+
+    if (!local_report.before.compact_recommended) {
+        if (report != nullptr) {
+            *report = local_report;
+        }
+        return true;
+    }
+
+    if (!compact_wal_file(path_, store, &local_report.compacted_keys)) {
+        return false;
+    }
+
+    local_report.compacted = true;
+    const auto after = make_maintenance_report(path_, store, options_, compaction_stats_);
+    record_compaction(compaction_stats_,
+                      CompactionKind::automatic,
+                      local_report.before,
+                      after,
+                      local_report.compacted_keys);
+    local_report.after = make_maintenance_report(path_, store, options_, compaction_stats_);
+    if (report != nullptr) {
+        *report = local_report;
     }
     return true;
 }
@@ -373,8 +486,15 @@ bool WriteAheadLog::repair(Store& store, WalRepairReport* repair) {
     const auto replay = replay_with_report(store);
 
     std::size_t compacted_keys = 0;
-    if (!compact(store, &compacted_keys)) {
-        return false;
+    {
+        std::lock_guard lock(mutex_);
+        const auto before = make_maintenance_report(path_, store, options_, compaction_stats_);
+        if (!compact_wal_file(path_, store, &compacted_keys)) {
+            return false;
+        }
+
+        const auto after = make_maintenance_report(path_, store, options_, compaction_stats_);
+        record_compaction(compaction_stats_, CompactionKind::repair, before, after, compacted_keys);
     }
 
     if (repair != nullptr) {
@@ -387,12 +507,7 @@ bool WriteAheadLog::repair(Store& store, WalRepairReport* repair) {
 WalMaintenanceReport WriteAheadLog::maintenance_report(const Store& store) const {
     std::lock_guard lock(mutex_);
 
-    WalMaintenanceReport report;
-    report.bytes = file_size_or_zero(path_);
-    report.records = count_wal_records(path_);
-    report.live_keys = store.size();
-    report.compact_recommended = should_recommend_compaction(report);
-    return report;
+    return make_maintenance_report(path_, store, options_, compaction_stats_);
 }
 
 std::size_t WriteAheadLog::replay(Store& store) const {

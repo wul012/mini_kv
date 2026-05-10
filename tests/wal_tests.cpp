@@ -252,6 +252,14 @@ int main() {
         assert(!repaired_store.get("bad").has_value());
         assert(!repaired_store.get("gone").has_value());
         assert(!repaired_store.get("partial").has_value());
+
+        const auto maintenance = wal.maintenance_report(repaired_store);
+        assert(maintenance.compaction_stats.manual_compactions == 0);
+        assert(maintenance.compaction_stats.auto_compactions == 0);
+        assert(maintenance.compaction_stats.repair_compactions == 1);
+        assert(maintenance.compaction_stats.compacted_keys == 3);
+        assert(maintenance.compaction_stats.records_removed > 0);
+        assert(maintenance.compaction_stats.bytes_saved > 0);
     }
 
     {
@@ -322,6 +330,9 @@ int main() {
         assert(report.live_keys == 1);
         assert(report.bytes > 0);
         assert(report.compact_recommended);
+        assert(report.options.compact_min_records == 8);
+        assert(report.options.compact_record_ratio == 4);
+        assert(report.options.compact_min_bytes == 64 * 1024);
 
         result = processor.execute("COMPACT");
         assert(result.response == "OK compacted 1");
@@ -336,9 +347,118 @@ int main() {
         assert(report.live_keys == 1);
         assert(report.bytes > 0);
         assert(!report.compact_recommended);
+        assert(report.compaction_stats.manual_compactions == 1);
+        assert(report.compaction_stats.auto_compactions == 0);
+        assert(report.compaction_stats.repair_compactions == 0);
+        assert(report.compaction_stats.compacted_keys == 1);
+        assert(report.compaction_stats.records_removed == 9);
+        assert(report.compaction_stats.bytes_saved > 0);
+
+        result = processor.execute("STATS");
+        assert(result.response.find("live_keys=1") != std::string::npos);
+        assert(result.response.find("wal_enabled=yes") != std::string::npos);
+        assert(result.response.find("wal_records=1") != std::string::npos);
+        assert(result.response.find("compact_recommended=no") != std::string::npos);
+        assert(result.response.find("manual_compactions=1") != std::string::npos);
+        assert(result.response.find("connection_stats_available=no") != std::string::npos);
+
+        result = processor.execute("HEALTH");
+        assert(result.response.find("OK live_keys=1") != std::string::npos);
+        assert(result.response.find("wal_enabled=yes") != std::string::npos);
+        assert(result.response.find("compact_recommended=no") != std::string::npos);
+
+        minikv::WalAutoCompactReport skipped_compact;
+        assert(wal.compact_if_recommended(store, &skipped_compact));
+        assert(!skipped_compact.compacted);
+        assert(skipped_compact.before.records == 1);
+        assert(skipped_compact.after.records == 1);
+        assert(skipped_compact.after.compaction_stats.manual_compactions == 1);
+        assert(skipped_compact.after.compaction_stats.auto_compactions == 0);
     }
 
     std::filesystem::remove(info_path);
+
+    const auto auto_compact_path =
+        std::filesystem::temp_directory_path() / ("minikv-wal-auto-compact-test-" + std::to_string(suffix) + ".wal");
+    std::filesystem::remove(auto_compact_path);
+
+    {
+        minikv::Store store;
+        minikv::WriteAheadLog wal{auto_compact_path};
+        minikv::CommandProcessorOptions options;
+        options.auto_compact_wal = true;
+        minikv::CommandProcessor processor{store, &wal, options};
+
+        for (int index = 0; index < 8; ++index) {
+            auto result = processor.execute("SET hot value" + std::to_string(index));
+            assert(result.response.rfind("OK ", 0) == 0);
+        }
+
+        auto result = processor.execute("GET hot");
+        assert(result.response == "value7");
+
+        result = processor.execute("WALINFO");
+        assert(result.response.find("wal_records=1") != std::string::npos);
+        assert(result.response.find("live_keys=1") != std::string::npos);
+        assert(result.response.find("compact_recommended=no") != std::string::npos);
+
+        const auto report = wal.maintenance_report(store);
+        assert(report.records == 1);
+        assert(report.live_keys == 1);
+        assert(report.bytes > 0);
+        assert(!report.compact_recommended);
+        assert(report.compaction_stats.manual_compactions == 0);
+        assert(report.compaction_stats.auto_compactions == 1);
+        assert(report.compaction_stats.repair_compactions == 0);
+        assert(report.compaction_stats.compacted_keys == 1);
+        assert(report.compaction_stats.records_removed == 7);
+        assert(report.compaction_stats.bytes_saved > 0);
+    }
+
+    std::filesystem::remove(auto_compact_path);
+
+    const auto custom_compact_path =
+        std::filesystem::temp_directory_path() / ("minikv-wal-custom-compact-test-" + std::to_string(suffix) + ".wal");
+    std::filesystem::remove(custom_compact_path);
+
+    {
+        minikv::Store store;
+        minikv::WalMaintenanceOptions maintenance_options;
+        maintenance_options.compact_min_records = 4;
+        maintenance_options.compact_record_ratio = 2;
+        maintenance_options.compact_min_bytes = 1024 * 1024;
+
+        minikv::WriteAheadLog wal{custom_compact_path, maintenance_options};
+        minikv::CommandProcessorOptions command_options;
+        command_options.auto_compact_wal = true;
+        minikv::CommandProcessor processor{store, &wal, command_options};
+
+        for (int index = 0; index < 4; ++index) {
+            auto result = processor.execute("SET tuned value" + std::to_string(index));
+            assert(result.response.rfind("OK ", 0) == 0);
+        }
+
+        auto result = processor.execute("WALINFO");
+        assert(result.response.find("wal_records=1") != std::string::npos);
+        assert(result.response.find("compact_min_records=4") != std::string::npos);
+        assert(result.response.find("compact_record_ratio=2") != std::string::npos);
+        assert(result.response.find("compact_min_bytes=1048576") != std::string::npos);
+        assert(result.response.find("auto_compactions=1") != std::string::npos);
+        assert(result.response.find("records_removed=3") != std::string::npos);
+
+        const auto report = wal.maintenance_report(store);
+        assert(report.records == 1);
+        assert(report.live_keys == 1);
+        assert(report.options.compact_min_records == 4);
+        assert(report.options.compact_record_ratio == 2);
+        assert(report.options.compact_min_bytes == 1024 * 1024);
+        assert(report.compaction_stats.auto_compactions == 1);
+        assert(report.compaction_stats.compacted_keys == 1);
+        assert(report.compaction_stats.records_removed == 3);
+        assert(report.compaction_stats.bytes_saved > 0);
+    }
+
+    std::filesystem::remove(custom_compact_path);
 
     return 0;
 }

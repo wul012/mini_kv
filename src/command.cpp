@@ -88,12 +88,91 @@ std::string format_yes_no(bool value) {
 std::string format_walinfo(const WalMaintenanceReport& report) {
     return "wal_bytes=" + std::to_string(report.bytes) + " wal_records=" + std::to_string(report.records) +
            " live_keys=" + std::to_string(report.live_keys) +
-           " compact_recommended=" + format_yes_no(report.compact_recommended);
+           " compact_recommended=" + format_yes_no(report.compact_recommended) +
+           " compact_min_records=" + std::to_string(report.options.compact_min_records) +
+           " compact_record_ratio=" + std::to_string(report.options.compact_record_ratio) +
+           " compact_min_bytes=" + std::to_string(report.options.compact_min_bytes) +
+           " manual_compactions=" + std::to_string(report.compaction_stats.manual_compactions) +
+           " auto_compactions=" + std::to_string(report.compaction_stats.auto_compactions) +
+           " repair_compactions=" + std::to_string(report.compaction_stats.repair_compactions) +
+           " compacted_keys=" + std::to_string(report.compaction_stats.compacted_keys) +
+           " records_removed=" + std::to_string(report.compaction_stats.records_removed) +
+           " bytes_saved=" + std::to_string(report.compaction_stats.bytes_saved);
+}
+
+CommandConnectionStats connection_stats(const CommandProcessorOptions& options) {
+    if (options.connection_stats) {
+        return options.connection_stats();
+    }
+    return {};
+}
+
+std::string format_connection_stats(const CommandConnectionStats& stats) {
+    if (!stats.available) {
+        return " connection_stats_available=no";
+    }
+
+    return " connection_stats_available=yes active_connections=" + std::to_string(stats.active_connections) +
+           " total_connections=" + std::to_string(stats.total_connections) +
+           " peak_connections=" + std::to_string(stats.peak_connections);
+}
+
+std::string format_stats(std::size_t live_keys,
+                         WriteAheadLog* wal,
+                         const std::optional<WalMaintenanceReport>& wal_report,
+                         const CommandConnectionStats& stats) {
+    std::string response = "live_keys=" + std::to_string(live_keys) +
+                           " wal_enabled=" + format_yes_no(wal != nullptr);
+
+    if (wal_report.has_value()) {
+        response += " wal_bytes=" + std::to_string(wal_report->bytes) +
+                    " wal_records=" + std::to_string(wal_report->records) +
+                    " wal_live_keys=" + std::to_string(wal_report->live_keys) +
+                    " compact_recommended=" + format_yes_no(wal_report->compact_recommended) +
+                    " compact_min_records=" + std::to_string(wal_report->options.compact_min_records) +
+                    " compact_record_ratio=" + std::to_string(wal_report->options.compact_record_ratio) +
+                    " compact_min_bytes=" + std::to_string(wal_report->options.compact_min_bytes) +
+                    " manual_compactions=" + std::to_string(wal_report->compaction_stats.manual_compactions) +
+                    " auto_compactions=" + std::to_string(wal_report->compaction_stats.auto_compactions) +
+                    " repair_compactions=" + std::to_string(wal_report->compaction_stats.repair_compactions) +
+                    " compacted_keys=" + std::to_string(wal_report->compaction_stats.compacted_keys) +
+                    " records_removed=" + std::to_string(wal_report->compaction_stats.records_removed) +
+                    " bytes_saved=" + std::to_string(wal_report->compaction_stats.bytes_saved);
+    }
+
+    response += format_connection_stats(stats);
+    return response;
+}
+
+std::string format_health(std::size_t live_keys,
+                          WriteAheadLog* wal,
+                          const std::optional<WalMaintenanceReport>& wal_report,
+                          const CommandConnectionStats& stats) {
+    std::string response = "OK live_keys=" + std::to_string(live_keys) +
+                           " wal_enabled=" + format_yes_no(wal != nullptr);
+
+    if (wal_report.has_value()) {
+        response += " compact_recommended=" + format_yes_no(wal_report->compact_recommended);
+    } else {
+        response += " compact_recommended=na";
+    }
+
+    response += format_connection_stats(stats);
+    return response;
 }
 
 } // namespace
 
-CommandProcessor::CommandProcessor(Store& store, WriteAheadLog* wal) : store_(store), wal_(wal) {}
+CommandProcessor::CommandProcessor(Store& store, WriteAheadLog* wal, CommandProcessorOptions options)
+    : store_(store), wal_(wal), options_(options) {}
+
+void CommandProcessor::auto_compact_wal_if_needed() {
+    if (wal_ == nullptr || !options_.auto_compact_wal) {
+        return;
+    }
+
+    (void)wal_->compact_if_recommended(store_);
+}
 
 CommandResult CommandProcessor::execute(std::string_view line) {
     const std::string trimmed = trim_copy(line);
@@ -132,6 +211,7 @@ CommandResult CommandProcessor::execute(std::string_view line) {
             }
 
             const bool inserted = store_.set(key, value);
+            auto_compact_wal_if_needed();
             return {inserted ? "OK inserted" : "OK updated"};
         }
 
@@ -173,7 +253,9 @@ CommandResult CommandProcessor::execute(std::string_view line) {
                 return wal_error();
             }
 
-            return {store_.erase(key) ? "1" : "0"};
+            const bool erased = store_.erase(key);
+            auto_compact_wal_if_needed();
+            return {erased ? "1" : "0"};
         }
 
         if (!store_.contains(key)) {
@@ -204,7 +286,9 @@ CommandResult CommandProcessor::execute(std::string_view line) {
                 return wal_error();
             }
 
-            return {store_.expire_at(key, expires_at) ? "1" : "0"};
+            const bool updated = store_.expire_at(key, expires_at);
+            auto_compact_wal_if_needed();
+            return {updated ? "1" : "0"};
         }
 
         if (!store_.contains(key)) {
@@ -304,6 +388,36 @@ CommandResult CommandProcessor::execute(std::string_view line) {
         return {format_walinfo(wal_->maintenance_report(store_))};
     }
 
+    if (command == "STATS") {
+        if (has_extra_token(input)) {
+            return usage("STATS");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_stats(live_keys, wal_, wal_report, connection_stats(options_))};
+    }
+
+    if (command == "HEALTH") {
+        if (has_extra_token(input)) {
+            return usage("HEALTH");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_health(live_keys, wal_, wal_report, connection_stats(options_))};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -336,6 +450,8 @@ std::string CommandProcessor::help_text() {
            "  LOAD path\n"
            "  COMPACT\n"
            "  WALINFO\n"
+           "  STATS\n"
+           "  HEALTH\n"
            "  HELP\n"
            "  EXIT";
 }

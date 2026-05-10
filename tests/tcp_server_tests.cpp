@@ -270,8 +270,13 @@ int main() {
     assert(stats.active_connections == 0);
     assert(stats.peak_connections == 0);
 
-    const auto response = exchange_inline("127.0.0.1", bound_port, "PING\nQUIT\n");
+    const auto response = exchange_inline("127.0.0.1", bound_port, "PING\nSTATS\nHEALTH\nQUIT\n");
     assert(response.find("PONG\n") != std::string::npos);
+    assert(response.find("connection_stats_available=yes") != std::string::npos);
+    assert(response.find("active_connections=1") != std::string::npos);
+    assert(response.find("total_connections=1") != std::string::npos);
+    assert(response.find("peak_connections=1") != std::string::npos);
+    assert(response.find("OK live_keys=0") != std::string::npos);
     assert(response.find("BYE\n") != std::string::npos);
 
     bool closed = false;

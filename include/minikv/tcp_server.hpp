@@ -32,6 +32,7 @@ public:
         int backlog = 64;
         std::chrono::milliseconds accept_poll_interval{200};
         std::size_t max_request_bytes = 64 * 1024;
+        bool auto_compact_wal = false;
         StopPredicate should_stop;
         LogHandler logger;
     };

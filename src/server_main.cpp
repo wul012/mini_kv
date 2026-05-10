@@ -73,7 +73,10 @@ std::chrono::milliseconds parse_positive_milliseconds(const char* text, std::str
 
 void print_usage(const char* program) {
     std::cerr << "Usage: " << program
-              << " [port] [host] [wal_path] [--repair-wal] [--max-request-bytes bytes] [--accept-poll-ms ms]\n";
+              << " [port] [host] [wal_path] [--repair-wal] [--auto-compact-wal]"
+                 " [--wal-compact-min-records count] [--wal-compact-record-ratio ratio]"
+                 " [--wal-compact-min-bytes bytes] [--max-request-bytes bytes]"
+                 " [--accept-poll-ms ms]\n";
 }
 
 void log_wal_replay(const minikv::WriteAheadLog& wal, const minikv::WalReplayReport& replay) {
@@ -99,13 +102,41 @@ void log_wal_maintenance(const minikv::WriteAheadLog& wal, const minikv::WalMain
     std::cout << "event=wal_stats path=" << quote_value(wal.path().string())
               << " wal_bytes=" << report.bytes << " wal_records=" << report.records
               << " live_keys=" << report.live_keys
-              << " compact_recommended=" << true_false(report.compact_recommended) << '\n';
+              << " compact_recommended=" << true_false(report.compact_recommended)
+              << " compact_min_records=" << report.options.compact_min_records
+              << " compact_record_ratio=" << report.options.compact_record_ratio
+              << " compact_min_bytes=" << report.options.compact_min_bytes
+              << " manual_compactions=" << report.compaction_stats.manual_compactions
+              << " auto_compactions=" << report.compaction_stats.auto_compactions
+              << " repair_compactions=" << report.compaction_stats.repair_compactions
+              << " compacted_keys=" << report.compaction_stats.compacted_keys
+              << " records_removed=" << report.compaction_stats.records_removed
+              << " bytes_saved=" << report.compaction_stats.bytes_saved << '\n';
 
     if (report.compact_recommended) {
         std::cout << "event=wal_compact_hint path=" << quote_value(wal.path().string())
                   << " wal_bytes=" << report.bytes << " wal_records=" << report.records
                   << " live_keys=" << report.live_keys << '\n';
     }
+}
+
+void log_wal_auto_compact(const minikv::WriteAheadLog& wal, const minikv::WalAutoCompactReport& report) {
+    if (!report.compacted) {
+        std::cout << "event=wal_auto_compact_skipped path=" << quote_value(wal.path().string())
+                  << " reason=not_recommended"
+                  << " wal_bytes=" << report.before.bytes
+                  << " wal_records=" << report.before.records
+                  << " live_keys=" << report.before.live_keys << '\n';
+        return;
+    }
+
+    std::cout << "event=wal_auto_compact path=" << quote_value(wal.path().string())
+              << " compacted_keys=" << report.compacted_keys
+              << " before_wal_bytes=" << report.before.bytes
+              << " after_wal_bytes=" << report.after.bytes
+              << " before_wal_records=" << report.before.records
+              << " after_wal_records=" << report.after.records
+              << " live_keys=" << report.after.live_keys << '\n';
 }
 
 } // namespace
@@ -126,6 +157,9 @@ int main(int argc, char** argv) {
         int positional = 0;
         std::optional<std::string> wal_path;
         bool repair_wal = false;
+        bool auto_compact_wal = false;
+        bool custom_wal_options = false;
+        minikv::WalMaintenanceOptions wal_options;
         for (int index = 1; index < argc; ++index) {
             const std::string_view argument = argv[index];
             if (argument == "--max-request-bytes") {
@@ -151,6 +185,42 @@ int main(int argc, char** argv) {
                 continue;
             }
 
+            if (argument == "--auto-compact-wal") {
+                auto_compact_wal = true;
+                options.auto_compact_wal = true;
+                continue;
+            }
+
+            if (argument == "--wal-compact-min-records") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                wal_options.compact_min_records = parse_positive_size(argv[index], "wal-compact-min-records");
+                custom_wal_options = true;
+                continue;
+            }
+
+            if (argument == "--wal-compact-record-ratio") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                wal_options.compact_record_ratio = parse_positive_size(argv[index], "wal-compact-record-ratio");
+                custom_wal_options = true;
+                continue;
+            }
+
+            if (argument == "--wal-compact-min-bytes") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                wal_options.compact_min_bytes = parse_positive_size(argv[index], "wal-compact-min-bytes");
+                custom_wal_options = true;
+                continue;
+            }
+
             if (!argument.empty() && argument.front() == '-') {
                 print_usage(argv[0]);
                 return 2;
@@ -169,7 +239,7 @@ int main(int argc, char** argv) {
             }
         }
 
-        if (repair_wal && !wal_path.has_value()) {
+        if ((repair_wal || auto_compact_wal || custom_wal_options) && !wal_path.has_value()) {
             print_usage(argv[0]);
             return 2;
         }
@@ -178,7 +248,7 @@ int main(int argc, char** argv) {
         std::optional<minikv::WriteAheadLog> wal;
 
         if (wal_path.has_value()) {
-            wal.emplace(*wal_path);
+            wal.emplace(*wal_path, wal_options);
             if (repair_wal) {
                 minikv::WalRepairReport repair;
                 if (!wal->repair(store, &repair)) {
@@ -189,6 +259,14 @@ int main(int argc, char** argv) {
             } else {
                 log_wal_replay(*wal, wal->replay_with_report(store));
             }
+            if (auto_compact_wal) {
+                minikv::WalAutoCompactReport compact;
+                if (!wal->compact_if_recommended(store, &compact)) {
+                    std::cerr << "fatal: WAL auto compact failed\n";
+                    return 1;
+                }
+                log_wal_auto_compact(*wal, compact);
+            }
             log_wal_maintenance(*wal, wal->maintenance_report(store));
         }
 
@@ -198,7 +276,8 @@ int main(int argc, char** argv) {
 
         std::cout << "event=server_start host=" << options.host << " port=" << options.port
                   << " protocol=inline,resp max_request_bytes=" << options.max_request_bytes
-                  << " accept_poll_ms=" << options.accept_poll_interval.count() << '\n';
+                  << " accept_poll_ms=" << options.accept_poll_interval.count()
+                  << " auto_compact_wal=" << true_false(options.auto_compact_wal) << '\n';
         std::cout << "event=server_hint command=" << quote_value("SET name mini-kv") << '\n';
 
         server.run();

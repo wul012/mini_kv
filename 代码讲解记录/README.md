@@ -175,6 +175,24 @@
 
 54-version-26-tests-docs.md
  -> 第二十六版 wal_tests、command_tests、真实 CLI/server WALINFO smoke、README、CMake、a/26 归档和整体增删改
+
+55-wal-auto-compact-core.md
+ -> 第二十七版 WAL auto compact 核心：WalAutoCompactReport、compact_if_recommended、CommandProcessorOptions 和 --auto-compact-wal
+
+56-version-27-tests-docs.md
+ -> 第二十七版 wal_tests、真实 CLI/server auto compact smoke、README、CMake、a/27 归档和整体增删改
+
+57-wal-maintenance-options-stats.md
+ -> 第二十八版 WAL maintenance options 和 compact stats 核心：WalMaintenanceOptions、WalCompactionStats、可配置阈值和 WALINFO 统计字段
+
+58-version-28-tests-docs.md
+ -> 第二十八版 wal_tests、真实 CLI/server custom thresholds smoke、README、CMake、a/28 归档和整体增删改
+
+59-runtime-stats-health-core.md
+ -> 第二十九版运行期 STATS / HEALTH 核心：CommandConnectionStats、ConnectionStatsProvider、STATS、HEALTH 和 TCP 连接统计注入
+
+60-version-29-tests-docs.md
+ -> 第二十九版 command_tests、wal_tests、tcp_server_tests、真实 CLI/server STATS HEALTH smoke、README、CMake、a/29 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -530,6 +548,48 @@ CLI / server 启动
  -> compact_recommended=true 时输出 compact hint
 ```
 
+第二十七版增加了自动 WAL compact 链路：
+
+```text
+WriteAheadLog::compact_if_recommended
+ -> 先生成 before WalMaintenanceReport
+ -> compact_recommended=false 时不动作
+ -> compact_recommended=true 时复用 compact_wal_file 重写短 WAL
+ -> 再生成 after WalMaintenanceReport
+ -> 通过 WalAutoCompactReport 返回 compact 前后状态
+
+CommandProcessorOptions::auto_compact_wal
+ -> CLI / server 显式开启 --auto-compact-wal 后置为 true
+ -> WAL 模式 SET / DEL / EXPIRE 成功后触发 compact_if_recommended
+
+CLI / server 启动
+ -> replay 或 repair 后可先执行启动期 auto compact
+ -> CLI 输出 WAL auto compact
+ -> server 输出 event=wal_auto_compact 或 event=wal_auto_compact_skipped
+```
+
+第二十八版增加了 WAL maintenance options 和 compact stats 链路：
+
+```text
+WalMaintenanceOptions
+ -> compact_min_records
+ -> compact_record_ratio
+ -> compact_min_bytes
+ -> 控制 compact_recommended 的判断阈值
+
+WalCompactionStats
+ -> manual_compactions
+ -> auto_compactions
+ -> repair_compactions
+ -> compacted_keys / records_removed / bytes_saved
+ -> 统计本进程内 compact 做过多少维护工作
+
+WALINFO / WAL stats / event=wal_stats
+ -> 输出当前 WAL 状态
+ -> 输出当前 compact 阈值
+ -> 输出当前 compact counters
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -568,17 +628,17 @@ src/store.cpp
 
 include/minikv/command.hpp
 src/command.cpp
- -> 解析 PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / COMPACT / WALINFO / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照、第九版支持 PING 探活、第二十四版支持 WAL compact、第二十六版支持 WAL maintenance 查询
+ -> 解析 PING / SET / GET / DEL / EXPIRE / TTL / SIZE / SAVE / LOAD / COMPACT / WALINFO / STATS / HEALTH / HELP / EXIT 命令，并在第四版支持可选 WAL、第五版支持手动快照、第九版支持 PING 探活、第二十四版支持 WAL compact、第二十六版支持 WAL maintenance 查询、第二十七版支持 CommandProcessorOptions::auto_compact_wal 和写命令后的自动 WAL compact、第二十八版扩展 WALINFO 输出 compact 阈值和统计字段、第二十九版支持运行期 STATS / HEALTH 和 CommandProcessorOptions::connection_stats
 
 src/main.cpp
- -> 本地命令行交互入口，第四版支持可选 WAL 路径；第二十五版支持 --repair-wal 启动期修复 WAL；第二十六版启动后输出 WAL stats 和 WAL hint
+ -> 本地命令行交互入口，第四版支持可选 WAL 路径；第二十五版支持 --repair-wal 启动期修复 WAL；第二十六版启动后输出 WAL stats 和 WAL hint；第二十七版支持 --auto-compact-wal 和启动期自动 WAL compact；第二十八版支持 --wal-compact-min-records、--wal-compact-record-ratio、--wal-compact-min-bytes
 
 include/minikv/tcp_server.hpp
 src/tcp_server.cpp
- -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志；第十一版支持 connection_id、active / total / peak 连接指标；第十二版支持可配置请求上限和 event=tcp_request_rejected
+ -> 网络服务端和 socket 通信；第八版接入 RESP；第十版支持 request_stop、select 轮询停止和结构化生命周期日志；第十一版支持 connection_id、active / total / peak 连接指标；第十二版支持可配置请求上限和 event=tcp_request_rejected；第二十七版把 auto_compact_wal 传给每个连接的 CommandProcessor；第二十九版把 connection stats provider 注入每个连接的 CommandProcessor，让 STATS / HEALTH 能返回 active / total / peak 连接统计
 
 src/server_main.cpp
- -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms；第十八版为 TcpServer logger 加锁，避免并发连接事件输出粘行；第二十五版支持 --repair-wal 和 event=wal_repair；第二十六版支持 event=wal_stats 和 event=wal_compact_hint
+ -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms；第十八版为 TcpServer logger 加锁，避免并发连接事件输出粘行；第二十五版支持 --repair-wal 和 event=wal_repair；第二十六版支持 event=wal_stats 和 event=wal_compact_hint；第二十七版支持 --auto-compact-wal、event=wal_auto_compact 和 event=wal_auto_compact_skipped；第二十八版支持 WAL compact 阈值参数，并在 event=wal_stats 中输出阈值和 compact counters
 
 src/client_main.cpp
  -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms；第十五版接入本地历史命令；第二十一版支持 --history-file 持久化历史
@@ -596,18 +656,56 @@ src/resp.cpp
 
 include/minikv/wal.hpp
 src/wal.cpp
- -> 第四版 WAL 持久化模块，负责 append 和 replay；第十九版新增 WalReplayReport、replay_with_report、坏记录跳过和尾部半条记录保护；第二十三版新增 WAL2 checksum、checksum mismatch 跳过和 checksum_failed_records；第二十四版新增 WriteAheadLog::compact，用当前 live state 重写短 WAL；第二十五版新增 WalRepairReport 和 WriteAheadLog::repair，启动时可把 damaged WAL 重写为干净 WAL2；第二十六版新增 WalMaintenanceReport 和 maintenance_report，用于 WALINFO 和 compact hint
+ -> 第四版 WAL 持久化模块，负责 append 和 replay；第十九版新增 WalReplayReport、replay_with_report、坏记录跳过和尾部半条记录保护；第二十三版新增 WAL2 checksum、checksum mismatch 跳过和 checksum_failed_records；第二十四版新增 WriteAheadLog::compact，用当前 live state 重写短 WAL；第二十五版新增 WalRepairReport 和 WriteAheadLog::repair，启动时可把 damaged WAL 重写为干净 WAL2；第二十六版新增 WalMaintenanceReport 和 maintenance_report，用于 WALINFO 和 compact hint；第二十七版新增 WalAutoCompactReport 和 compact_if_recommended，用于可选自动 WAL compact；第二十八版新增 WalMaintenanceOptions 和 WalCompactionStats，用于可配置 compact 阈值和 manual/auto/repair compact 统计
 
 include/minikv/snapshot.hpp
 src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集；第十九版通过测试确认坏 snapshot 不会替换当前 Store；第二十二版支持临时文件写完整后替换目标 snapshot
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、WAL checksum、WAL compact、WAL repair、WAL maintenance、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
+ -> 验证 Store、CommandProcessor、WAL、WAL checksum、WAL compact、WAL repair、WAL maintenance、WAL 自动 compact、WAL compact 阈值配置、WAL compact counters、STATS / HEALTH、TCP connection stats provider、Snapshot、Snapshot 原子保存、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限、localhost / hostname 网络兼容行为、外部客户端式 RESP-over-TCP pipeline、RESP-over-TCP 兼容边界、并发 RESP-over-TCP 客户端、持久化恢复加固、客户端本地历史和持久化历史文件行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
 
 .github/workflows/ci.yml
  -> 第二十版 GitHub Actions 跨平台 CI，负责在 Linux、macOS、Windows 上执行 CMake build 和 CTest
+```
+
+## 第二十九版补充理解
+
+第二十九版新增运行期观测链路：
+
+```text
+STATS
+ -> CommandProcessor 收集 Store live_keys
+ -> 有 WAL 时读取 WalMaintenanceReport
+ -> 有 connection_stats provider 时读取 active / total / peak 连接指标
+ -> 返回一行完整 key-value 状态
+
+HEALTH
+ -> 复用同一套 Store / WAL / connection stats 信息
+ -> 返回以 OK 开头的短状态行
+ -> 适合快速探活
+
+TcpServer
+ -> 每个 client thread 已经持有 TcpServerConnectionTracker
+ -> v29 把 tracker 包成 CommandProcessorOptions::connection_stats
+ -> STATS / HEALTH 因此可以在真实 TCP 连接中返回连接统计
+```
+
+到第二十九版为止，运行期观察入口变成：
+
+```text
+WALINFO
+ -> 观察 WAL maintenance 细节
+
+STATS
+ -> 观察 Store、WAL 和 TCP 连接统计
+
+HEALTH
+ -> 快速确认服务可响应和关键状态
+
+server event logs
+ -> 观察生命周期、连接、拒绝请求、WAL replay / repair / compact 事件
 ```

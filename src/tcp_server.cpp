@@ -395,10 +395,17 @@ void serve_client(Store& store,
                   std::string endpoint,
                   std::shared_ptr<TcpServerConnectionTracker> tracker,
                   std::uint64_t connection_id,
-                  std::size_t max_request_bytes) {
+                  std::size_t max_request_bytes,
+                  bool auto_compact_wal) {
     SocketGuard client{client_socket};
     ConnectionCloseLogger close_logger{logger, endpoint, tracker, connection_id};
-    CommandProcessor processor{store, wal};
+    CommandProcessorOptions command_options;
+    command_options.auto_compact_wal = auto_compact_wal;
+    command_options.connection_stats = [tracker] {
+        const auto stats = tracker->stats();
+        return CommandConnectionStats{true, stats.total_connections, stats.active_connections, stats.peak_connections};
+    };
+    CommandProcessor processor{store, wal, command_options};
     std::string pending;
     std::array<char, 4096> buffer{};
 
@@ -549,7 +556,8 @@ void TcpServer::run() {
                     endpoint,
                     connection_tracker_,
                     snapshot.connection_id,
-                    options_.max_request_bytes}
+                    options_.max_request_bytes,
+                    options_.auto_compact_wal}
             .detach();
     }
 

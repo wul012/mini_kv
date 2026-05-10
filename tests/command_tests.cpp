@@ -112,9 +112,49 @@ int main() {
     result = processor.execute("WALINFO");
     assert(result.response == "ERR WAL not enabled");
 
+    result = processor.execute("STATS extra");
+    assert(result.response == "ERR usage: STATS");
+
+    result = processor.execute("STATS");
+    assert(result.response.find("live_keys=1") != std::string::npos);
+    assert(result.response.find("wal_enabled=no") != std::string::npos);
+    assert(result.response.find("connection_stats_available=no") != std::string::npos);
+
+    result = processor.execute("HEALTH extra");
+    assert(result.response == "ERR usage: HEALTH");
+
+    result = processor.execute("HEALTH");
+    assert(result.response.find("OK live_keys=1") != std::string::npos);
+    assert(result.response.find("wal_enabled=no") != std::string::npos);
+    assert(result.response.find("compact_recommended=na") != std::string::npos);
+    assert(result.response.find("connection_stats_available=no") != std::string::npos);
+
+    minikv::CommandProcessorOptions stats_options;
+    stats_options.connection_stats = [] {
+        minikv::CommandConnectionStats stats;
+        stats.available = true;
+        stats.total_connections = 7;
+        stats.active_connections = 2;
+        stats.peak_connections = 3;
+        return stats;
+    };
+    minikv::CommandProcessor stats_processor{store, nullptr, stats_options};
+
+    result = stats_processor.execute("STATS");
+    assert(result.response.find("connection_stats_available=yes") != std::string::npos);
+    assert(result.response.find("active_connections=2") != std::string::npos);
+    assert(result.response.find("total_connections=7") != std::string::npos);
+    assert(result.response.find("peak_connections=3") != std::string::npos);
+
+    result = stats_processor.execute("HEALTH");
+    assert(result.response.find("connection_stats_available=yes") != std::string::npos);
+    assert(result.response.find("active_connections=2") != std::string::npos);
+
     result = processor.execute("HELP");
     assert(result.response.find("COMPACT") != std::string::npos);
     assert(result.response.find("WALINFO") != std::string::npos);
+    assert(result.response.find("STATS") != std::string::npos);
+    assert(result.response.find("HEALTH") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");
