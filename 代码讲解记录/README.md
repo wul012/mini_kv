@@ -94,6 +94,18 @@
 
 27-version-12-tests-docs.md
  -> 第十二版 tcp_server_tests、README、a/12 归档和整体增删改
+
+28-localhost-network-tests.md
+ -> 第十三版 localhost 网络兼容测试：getaddrinfo(AF_UNSPEC)、测试 socket RAII 和 hostname 场景
+
+29-version-13-tests-docs.md
+ -> 第十三版 README、CMake、a/13 归档和整体增删改
+
+30-client-retry-core.md
+ -> 第十四版客户端连接重试核心：ClientOptions、parse_options、connect_with_retries 和错误码保存
+
+31-version-14-tests-docs.md
+ -> 第十四版 README、CMake、a/14 归档、真实 retry smoke 和整体增删改
 ```
 
 ## 项目整体理解
@@ -247,6 +259,29 @@ minikv_client timeout_ms
  -> SO_RCVTIMEO / SO_SNDTIMEO
 ```
 
+第十三版增加了 TCP hostname 兼容测试链路：
+
+```text
+tcp_server_tests
+ -> exchange_inline(host, port, payload)
+ -> connect_test_socket
+ -> getaddrinfo(AF_UNSPEC)
+ -> 依次尝试系统返回的 IPv4 / IPv6 / hostname 候选地址
+ -> localhost server / localhost client 场景
+```
+
+第十四版增加了 TCP client 连接重试链路：
+
+```text
+minikv_client --connect-retries count --retry-delay-ms ms
+ -> parse_options
+ -> ClientOptions
+ -> connect_with_retries
+ -> connect_to_server 失败后打印 connect attempt
+ -> sleep retry_delay
+ -> 服务端上线后重试连接成功
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -298,7 +333,7 @@ src/server_main.cpp
  -> TCP 服务端启动器，第四版支持可选 WAL 路径；第十版支持 Ctrl+C / SIGTERM 停止标记和结构化启动日志；第十二版支持 --max-request-bytes 和 --accept-poll-ms
 
 src/client_main.cpp
- -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时
+ -> TCP 客户端启动器；第十二版支持可选 timeout_ms 设置 socket 收发超时；第十四版支持 --connect-retries 和 --retry-delay-ms
 
 src/benchmark_main.cpp
  -> 第六版 benchmark 启动器，用于本地吞吐观察
@@ -316,7 +351,7 @@ src/snapshot.cpp
  -> 第五版 Snapshot 持久化模块，负责保存和加载完整数据集
 
 tests/
- -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标和请求上限行为
+ -> 验证 Store、CommandProcessor、WAL、Snapshot、并发压力、PING、RESP parser、TCP server 生命周期、连接指标、请求上限和 localhost / hostname 网络兼容行为
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标

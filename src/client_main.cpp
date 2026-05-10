@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <thread>
 
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -135,6 +136,19 @@ private:
     addrinfo* info_;
 };
 
+struct ClientOptions {
+    std::string host = "127.0.0.1";
+    std::uint16_t port = 6379;
+    std::optional<std::chrono::milliseconds> timeout;
+    int connect_retries = 0;
+    std::chrono::milliseconds retry_delay{250};
+};
+
+class UsageError : public std::runtime_error {
+public:
+    using std::runtime_error::runtime_error;
+};
+
 std::uint16_t parse_port(const char* text) {
     const int port = std::stoi(text);
     if (port < 1 || port > 65535) {
@@ -155,6 +169,20 @@ std::chrono::milliseconds parse_positive_milliseconds(const char* text, std::str
     }
 
     return std::chrono::milliseconds{value};
+}
+
+int parse_nonnegative_int(const char* text, std::string_view name) {
+    if (text[0] == '\0' || text[0] == '-') {
+        throw std::out_of_range{std::string{name} + " must be a non-negative integer"};
+    }
+
+    std::size_t parsed_chars = 0;
+    const long long value = std::stoll(text, &parsed_chars);
+    if (text[parsed_chars] != '\0' || value < 0 || value > std::numeric_limits<int>::max()) {
+        throw std::out_of_range{std::string{name} + " must be a non-negative integer"};
+    }
+
+    return static_cast<int>(value);
 }
 
 std::string to_upper(std::string_view text) {
@@ -272,6 +300,7 @@ SocketGuard connect_to_server(std::string_view host,
     }
 
     AddrInfoGuard addresses{raw_info};
+    std::string last_connect_error;
 
     for (addrinfo* addr = addresses.get(); addr != nullptr; addr = addr->ai_next) {
         SocketGuard socket{::socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol)};
@@ -286,13 +315,43 @@ SocketGuard connect_to_server(std::string_view host,
         if (connect(socket.get(), addr->ai_addr, static_cast<int>(addr->ai_addrlen)) == 0) {
             return socket;
         }
+
+        last_connect_error = socket_error_message("connect failed");
     }
 
-    throw std::runtime_error{socket_error_message("connect failed")};
+    if (last_connect_error.empty()) {
+        last_connect_error = socket_error_message("connect failed");
+    }
+    throw std::runtime_error{last_connect_error};
+}
+
+SocketGuard connect_with_retries(const ClientOptions& options) {
+    const int total_attempts = options.connect_retries + 1;
+    std::string last_error;
+
+    for (int attempt = 1; attempt <= total_attempts; ++attempt) {
+        try {
+            return connect_to_server(options.host, options.port, options.timeout);
+        } catch (const std::exception& error) {
+            last_error = error.what();
+            if (attempt == total_attempts) {
+                break;
+            }
+
+            std::cerr << "connect attempt " << attempt << '/' << total_attempts << " failed: " << error.what()
+                      << '\n';
+            std::cerr << "retrying in " << options.retry_delay.count() << " ms\n";
+            std::this_thread::sleep_for(options.retry_delay);
+        }
+    }
+
+    throw std::runtime_error{"connect failed after " + std::to_string(total_attempts) +
+                             " attempt(s): " + last_error};
 }
 
 void print_usage(const char* program) {
-    std::cerr << "Usage: " << program << " [host] [port] [timeout_ms]\n";
+    std::cerr << "Usage: " << program
+              << " [host] [port] [timeout_ms] [--connect-retries count] [--retry-delay-ms ms]\n";
 }
 
 bool print_response(SocketHandle socket, std::string_view command) {
@@ -315,41 +374,67 @@ bool print_response(SocketHandle socket, std::string_view command) {
     return true;
 }
 
+ClientOptions parse_options(int argc, char** argv) {
+    ClientOptions options;
+    int positional = 0;
+
+    for (int index = 1; index < argc; ++index) {
+        const std::string_view argument = argv[index];
+        if (argument == "--connect-retries") {
+            if (++index >= argc) {
+                throw UsageError{"missing value for --connect-retries"};
+            }
+            options.connect_retries = parse_nonnegative_int(argv[index], "connect-retries");
+            continue;
+        }
+
+        if (argument == "--retry-delay-ms") {
+            if (++index >= argc) {
+                throw UsageError{"missing value for --retry-delay-ms"};
+            }
+            options.retry_delay = parse_positive_milliseconds(argv[index], "retry-delay-ms");
+            continue;
+        }
+
+        if (!argument.empty() && argument.front() == '-') {
+            throw UsageError{"unknown option: " + std::string{argument}};
+        }
+
+        ++positional;
+        if (positional == 1) {
+            options.host = argv[index];
+        } else if (positional == 2) {
+            options.port = parse_port(argv[index]);
+        } else if (positional == 3) {
+            options.timeout = parse_positive_milliseconds(argv[index], "timeout_ms");
+        } else {
+            throw UsageError{"too many positional arguments"};
+        }
+    }
+
+    return options;
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
     try {
-        if (argc > 4) {
-            print_usage(argv[0]);
-            return 2;
-        }
-
-        std::string host = "127.0.0.1";
-        std::uint16_t port = 6379;
-        std::optional<std::chrono::milliseconds> timeout;
-
-        if (argc >= 2) {
-            host = argv[1];
-        }
-
-        if (argc >= 3) {
-            port = parse_port(argv[2]);
-        }
-
-        if (argc >= 4) {
-            timeout = parse_positive_milliseconds(argv[3], "timeout_ms");
-        }
+        const ClientOptions options = parse_options(argc, argv);
 
         NetworkRuntime runtime;
-        SocketGuard socket = connect_to_server(host, port, timeout);
-        std::cout << "connected to mini-kv at " << host << ':' << port << '\n';
-        if (timeout.has_value()) {
-            std::cout << "socket timeout: " << timeout->count() << " ms\n";
+        SocketGuard socket = connect_with_retries(options);
+        std::cout << "connected to mini-kv at " << options.host << ':' << options.port << '\n';
+        if (options.timeout.has_value()) {
+            std::cout << "socket timeout: " << options.timeout->count() << " ms\n";
+        }
+        if (options.connect_retries > 0) {
+            std::cout << "connect retries: " << options.connect_retries
+                      << ", retry delay: " << options.retry_delay.count() << " ms\n";
         }
 
         std::string line;
         while (true) {
-            std::cout << "mini-kv@" << host << ':' << port << "> ";
+            std::cout << "mini-kv@" << options.host << ':' << options.port << "> ";
             if (!std::getline(std::cin, line)) {
                 std::cout << '\n';
                 break;
@@ -374,6 +459,10 @@ int main(int argc, char** argv) {
                 break;
             }
         }
+    } catch (const UsageError& error) {
+        std::cerr << "fatal: " << error.what() << '\n';
+        print_usage(argv[0]);
+        return 2;
     } catch (const std::exception& error) {
         std::cerr << "fatal: " << error.what() << '\n';
         return 1;

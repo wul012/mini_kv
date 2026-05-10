@@ -23,6 +23,7 @@
 #else
 #include <arpa/inet.h>
 #include <cerrno>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -59,6 +60,10 @@ std::string socket_error_message(std::string_view prefix) {
     return std::string{prefix} + ": WSA error " + std::to_string(WSAGetLastError());
 }
 
+std::string address_error_message(int result) {
+    return "getaddrinfo failed: " + std::to_string(result);
+}
+
 #else
 using TestSocket = int;
 constexpr TestSocket invalid_test_socket = -1;
@@ -77,7 +82,67 @@ void close_test_socket(TestSocket socket) {
 std::string socket_error_message(std::string_view prefix) {
     return std::string{prefix} + ": " + std::strerror(errno);
 }
+
+std::string address_error_message(int result) {
+    return std::string{"getaddrinfo failed: "} + gai_strerror(result);
+}
 #endif
+
+class TestSocketGuard {
+public:
+    explicit TestSocketGuard(TestSocket socket = invalid_test_socket) : socket_(socket) {}
+
+    ~TestSocketGuard() {
+        close_test_socket(socket_);
+    }
+
+    TestSocketGuard(const TestSocketGuard&) = delete;
+    TestSocketGuard& operator=(const TestSocketGuard&) = delete;
+
+    TestSocketGuard(TestSocketGuard&& other) noexcept : socket_(other.release()) {}
+
+    TestSocketGuard& operator=(TestSocketGuard&& other) noexcept {
+        if (this != &other) {
+            close_test_socket(socket_);
+            socket_ = other.release();
+        }
+        return *this;
+    }
+
+    TestSocket get() const {
+        return socket_;
+    }
+
+private:
+    TestSocket release() {
+        const TestSocket socket = socket_;
+        socket_ = invalid_test_socket;
+        return socket;
+    }
+
+    TestSocket socket_;
+};
+
+class TestAddrInfoGuard {
+public:
+    explicit TestAddrInfoGuard(addrinfo* info) : info_(info) {}
+
+    ~TestAddrInfoGuard() {
+        if (info_ != nullptr) {
+            freeaddrinfo(info_);
+        }
+    }
+
+    TestAddrInfoGuard(const TestAddrInfoGuard&) = delete;
+    TestAddrInfoGuard& operator=(const TestAddrInfoGuard&) = delete;
+
+    addrinfo* get() const {
+        return info_;
+    }
+
+private:
+    addrinfo* info_;
+};
 
 bool contains_log(const std::vector<std::string>& logs, std::string_view needle) {
     return std::any_of(logs.begin(), logs.end(), [needle](const std::string& line) {
@@ -85,56 +150,65 @@ bool contains_log(const std::vector<std::string>& logs, std::string_view needle)
     });
 }
 
-std::string exchange_inline(std::uint16_t port, std::string_view payload) {
+TestSocketGuard connect_test_socket(std::string_view host, std::uint16_t port) {
+    addrinfo hints{};
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+
+    addrinfo* raw_info = nullptr;
+    const std::string port_text = std::to_string(port);
+    const int result = getaddrinfo(std::string{host}.c_str(), port_text.c_str(), &hints, &raw_info);
+    if (result != 0) {
+        throw std::runtime_error{address_error_message(result)};
+    }
+
+    TestAddrInfoGuard addresses{raw_info};
+    for (addrinfo* address = addresses.get(); address != nullptr; address = address->ai_next) {
+        TestSocketGuard socket{::socket(address->ai_family, address->ai_socktype, address->ai_protocol)};
+        if (socket.get() == invalid_test_socket) {
+            continue;
+        }
+
+        if (connect(socket.get(), address->ai_addr, static_cast<int>(address->ai_addrlen)) == 0) {
+            return socket;
+        }
+    }
+
+    throw std::runtime_error{socket_error_message("connect failed")};
+}
+
+std::string exchange_inline(std::string_view host, std::uint16_t port, std::string_view payload) {
     TestNetworkRuntime runtime;
-    TestSocket socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (socket == invalid_test_socket) {
-        throw std::runtime_error{socket_error_message("socket failed")};
-    }
-
-    sockaddr_in address{};
-    address.sin_family = AF_INET;
-    address.sin_port = htons(port);
-    if (inet_pton(AF_INET, "127.0.0.1", &address.sin_addr) != 1) {
-        close_test_socket(socket);
-        throw std::runtime_error{"inet_pton failed"};
-    }
-
-    if (connect(socket, reinterpret_cast<sockaddr*>(&address), sizeof(address)) != 0) {
-        close_test_socket(socket);
-        throw std::runtime_error{socket_error_message("connect failed")};
-    }
+    TestSocketGuard socket = connect_test_socket(host, port);
 
     std::string_view remaining = payload;
     while (!remaining.empty()) {
 #ifdef _WIN32
-        const int sent = send(socket, remaining.data(), static_cast<int>(remaining.size()), 0);
+        const int sent = send(socket.get(), remaining.data(), static_cast<int>(remaining.size()), 0);
 #else
-        const auto sent = send(socket, remaining.data(), remaining.size(), 0);
+        const auto sent = send(socket.get(), remaining.data(), remaining.size(), 0);
 #endif
         if (sent <= 0) {
-            close_test_socket(socket);
             throw std::runtime_error{socket_error_message("send failed")};
         }
         remaining.remove_prefix(static_cast<std::size_t>(sent));
     }
 
 #ifdef _WIN32
-    shutdown(socket, SD_SEND);
+    shutdown(socket.get(), SD_SEND);
 #else
-    shutdown(socket, SHUT_WR);
+    shutdown(socket.get(), SHUT_WR);
 #endif
 
     std::string response;
     char buffer[256]{};
     while (true) {
 #ifdef _WIN32
-        const int received = recv(socket, buffer, static_cast<int>(sizeof(buffer)), 0);
+        const int received = recv(socket.get(), buffer, static_cast<int>(sizeof(buffer)), 0);
 #else
-        const auto received = recv(socket, buffer, sizeof(buffer), 0);
+        const auto received = recv(socket.get(), buffer, sizeof(buffer), 0);
 #endif
         if (received < 0) {
-            close_test_socket(socket);
             throw std::runtime_error{socket_error_message("recv failed")};
         }
         if (received == 0) {
@@ -143,7 +217,6 @@ std::string exchange_inline(std::uint16_t port, std::string_view payload) {
         response.append(buffer, static_cast<std::size_t>(received));
     }
 
-    close_test_socket(socket);
     return response;
 }
 
@@ -197,7 +270,7 @@ int main() {
     assert(stats.active_connections == 0);
     assert(stats.peak_connections == 0);
 
-    const auto response = exchange_inline(bound_port, "PING\nQUIT\n");
+    const auto response = exchange_inline("127.0.0.1", bound_port, "PING\nQUIT\n");
     assert(response.find("PONG\n") != std::string::npos);
     assert(response.find("BYE\n") != std::string::npos);
 
@@ -220,7 +293,7 @@ int main() {
     assert(stats.active_connections == 0);
     assert(stats.peak_connections == 1);
 
-    const auto too_long_response = exchange_inline(bound_port, "0123456789");
+    const auto too_long_response = exchange_inline("127.0.0.1", bound_port, "0123456789");
     assert(too_long_response.find("ERR line too long\n") != std::string::npos);
 
     bool rejected = false;
@@ -265,6 +338,67 @@ int main() {
     assert(contains_log(logs, "total_connections=2"));
     assert(contains_log(logs, "peak_connections=1"));
     assert(contains_log(logs, "event=tcp_stop"));
+
+    minikv::Store localhost_store;
+    minikv::TcpServer::Options localhost_options;
+    localhost_options.host = "localhost";
+    localhost_options.port = 0;
+    localhost_options.accept_poll_interval = 10ms;
+
+    std::mutex localhost_logs_mutex;
+    std::vector<std::string> localhost_logs;
+    localhost_options.logger = [&](const std::string& message) {
+        std::lock_guard localhost_lock{localhost_logs_mutex};
+        localhost_logs.push_back(message);
+    };
+
+    minikv::TcpServer localhost_server{localhost_store, localhost_options};
+    std::exception_ptr localhost_failure;
+    std::thread localhost_thread{[&] {
+        try {
+            localhost_server.run();
+        } catch (...) {
+            localhost_failure = std::current_exception();
+        }
+    }};
+
+    bool localhost_started = false;
+    for (int attempt = 0; attempt < 100; ++attempt) {
+        {
+            std::lock_guard localhost_lock{localhost_logs_mutex};
+            localhost_started = contains_log(localhost_logs, "event=tcp_listen");
+        }
+        if (localhost_started) {
+            break;
+        }
+        std::this_thread::sleep_for(10ms);
+    }
+
+    assert(localhost_started);
+    const auto localhost_port = localhost_server.bound_port();
+    assert(localhost_port > 0);
+    const auto localhost_response = exchange_inline("localhost", localhost_port, "PING localhost\nQUIT\n");
+    assert(localhost_response.find("localhost\n") != std::string::npos);
+    assert(localhost_response.find("BYE\n") != std::string::npos);
+
+    localhost_server.request_stop();
+    localhost_thread.join();
+
+    if (localhost_failure) {
+        std::rethrow_exception(localhost_failure);
+    }
+
+    const auto localhost_stats = localhost_server.connection_stats();
+    assert(localhost_stats.total_connections == 1);
+    assert(localhost_stats.active_connections == 0);
+    assert(localhost_stats.peak_connections == 1);
+
+    std::lock_guard localhost_lock{localhost_logs_mutex};
+    assert(contains_log(localhost_logs, "event=tcp_listen"));
+    assert(contains_log(localhost_logs, "host=localhost"));
+    assert(contains_log(localhost_logs, "event=tcp_client_accepted"));
+    assert(contains_log(localhost_logs, "event=tcp_client_closed"));
+    assert(contains_log(localhost_logs, "event=tcp_stop"));
 
     return 0;
 }

@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 12 is a runnable in-memory KV service with configurable TCP request limits and client socket timeout tuning:
+Version 14 is a runnable in-memory KV service with configurable TCP client connection retries:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -21,6 +21,8 @@ Version 12 is a runnable in-memory KV service with configurable TCP request limi
 - Graceful TCP server stop support and structured `event=...` lifecycle logs
 - TCP connection IDs plus active, total, and peak connection metrics in lifecycle logs
 - Configurable TCP request byte limit and optional client socket timeout
+- Broader TCP compatibility tests for `localhost` and address-family agnostic client resolution
+- Configurable bundled TCP client connection retries and retry delay
 
 ## Build
 
@@ -62,6 +64,12 @@ TCP server with explicit limits:
 .\build\Debug\minikv_server.exe 6379 127.0.0.1 --max-request-bytes 65536 --accept-poll-ms 200
 ```
 
+TCP server bound through hostname resolution:
+
+```powershell
+.\build\Debug\minikv_server.exe 6379 localhost --max-request-bytes 65536
+```
+
 TCP client:
 
 ```powershell
@@ -72,6 +80,12 @@ TCP client with socket timeout:
 
 ```powershell
 .\build\Debug\minikv_client.exe 127.0.0.1 6379 5000
+```
+
+TCP client that waits for a server to come online:
+
+```powershell
+.\build\Debug\minikv_client.exe 127.0.0.1 6379 5000 --connect-retries 10 --retry-delay-ms 250
 ```
 
 Benchmark:
@@ -190,10 +204,11 @@ minikv_server.exe [port] [host] [wal_path] [--max-request-bytes bytes] [--accept
 TCP client options:
 
 ```text
-minikv_client.exe [host] [port] [timeout_ms]
+minikv_client.exe [host] [port] [timeout_ms] [--connect-retries count] [--retry-delay-ms ms]
 ```
 
 `timeout_ms` sets both receive and send socket timeouts for the bundled client.
+`--connect-retries` controls how many times the client retries after the initial connection attempt fails. `--retry-delay-ms` controls the delay between retries and defaults to 250 ms.
 
 TTL commands:
 
@@ -249,7 +264,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts a server on an ephemeral port, sends real inline TCP requests, verifies configurable request-limit rejection, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus active, total, and peak connection metrics.
 
 ## RESP protocol
 
@@ -272,5 +287,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add broader network compatibility tests.
-2. Add configurable client reconnect behavior and command history.
+1. Add command history for the bundled TCP client.
+2. Add more external-client compatibility smoke tests.
