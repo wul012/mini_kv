@@ -136,6 +136,9 @@
 
 41-version-19-tests-docs.md
  -> 第十九版 wal_tests、snapshot_tests、README、CMake、a/19 归档和整体增删改
+
+42-version-20-ci-docs.md
+ -> 第二十版 GitHub Actions CI、README、CMake、a/20 归档和整体增删改
 ```
 
 ## 项目整体理解
@@ -397,6 +400,18 @@ snapshot_tests
  -> 不替换当前 Store
 ```
 
+第二十版增加了跨平台 CI 链路：
+
+```text
+.github/workflows/ci.yml
+ -> GitHub Actions 触发 push / pull_request / workflow_dispatch
+ -> ubuntu-latest / macos-latest / windows-latest 矩阵展开
+ -> actions/checkout@v4 检出代码
+ -> cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+ -> cmake --build build --config Release --parallel
+ -> ctest --test-dir build -C Release --output-on-failure
+```
+
 从运行方式看，它现在有四种入口：
 
 ```text
@@ -474,4 +489,7 @@ tests/
 
 CMakeLists.txt
  -> 构建核心库、CLI、服务端、客户端、benchmark 和测试目标
+
+.github/workflows/ci.yml
+ -> 第二十版 GitHub Actions 跨平台 CI，负责在 Linux、macOS、Windows 上执行 CMake build 和 CTest
 ```

@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 19 is a runnable in-memory KV service with WAL and snapshot recovery hardening:
+Version 20 is a runnable in-memory KV service with cross-platform CMake and CTest CI:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -30,6 +30,7 @@ Version 19 is a runnable in-memory KV service with WAL and snapshot recovery har
 - External-client style RESP-over-TCP smoke coverage for pipelined requests
 - RESP-over-TCP compatibility tests for null bulk replies, errors, `DEL`, `EXPIRE`, and `TTL`
 - Concurrent RESP-over-TCP raw-socket client coverage with active and peak connection checks
+- GitHub Actions CI for Linux, macOS, and Windows CMake build plus CTest
 
 ## Build
 
@@ -38,6 +39,16 @@ cmake -S . -B build
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
+
+## CI
+
+GitHub Actions runs the same CMake build and CTest flow on Linux, macOS, and Windows:
+
+```text
+.github/workflows/ci.yml
+```
+
+Each CI job configures the project, builds every target, and runs the registered CTest suite with failure output enabled.
 
 ## Run
 
@@ -308,4 +319,4 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 ## Roadmap
 
 1. Add persistent client history or interactive line editing.
-2. Add CI coverage for build and CTest.
+2. Add WAL checksums or atomic snapshot writes for stronger recovery guarantees.
