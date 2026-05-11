@@ -238,7 +238,8 @@ int main() {
     result = processor.execute("EXPLAINJSON SET orderops:1 value");
     assert(result.response == "{\"command\":\"SET\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true,"
                               "\"key\":\"orderops:1\",\"requires_value\":true,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":true,\"warnings\":[]}");
+                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_write\",\"wal_append_when_enabled\"],"
+                              "\"warnings\":[]}");
 
     result = processor.execute("GET orderops:1");
     assert(result.response == "(nil)");
@@ -246,22 +247,65 @@ int main() {
     result = processor.execute("EXPLAINJSON GET orderops:1");
     assert(result.response == "{\"command\":\"GET\",\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false,"
                               "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":true,\"warnings\":[]}");
+                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_read\"],\"warnings\":[]}");
 
     result = processor.execute("EXPLAINJSON EXPIRE orderops:1 60");
     assert(result.response == "{\"command\":\"EXPIRE\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true,"
                               "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":true,"
-                              "\"allowed_by_parser\":true,\"warnings\":[]}");
+                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_ttl_update\",\"wal_append_when_enabled\"],"
+                              "\"warnings\":[]}");
 
     result = processor.execute("EXPLAINJSON GET orderops:1 extra");
     assert(result.response == "{\"command\":\"GET\",\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false,"
                               "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":false,\"warnings\":[\"usage: GET key\"]}");
+                              "\"allowed_by_parser\":false,\"side_effects\":[\"store_read\"],"
+                              "\"warnings\":[\"usage: GET key\"]}");
 
     result = processor.execute("EXPLAINJSON NOPE orderops:1");
     assert(result.response == "{\"command\":\"NOPE\",\"category\":\"unknown\",\"mutates_store\":false,"
                               "\"touches_wal\":false,\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":false,\"warnings\":[\"unknown command\"]}");
+                              "\"allowed_by_parser\":false,\"side_effects\":[],\"warnings\":[\"unknown command\"]}");
+
+    result = processor.execute("EXPLAINJSON TTL orderops:1");
+    assert(result.response == "{\"command\":\"TTL\",\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false,"
+                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":true,"
+                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_read\"],\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON DEL orderops:1");
+    assert(result.response == "{\"command\":\"DEL\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true,"
+                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":false,"
+                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_write\",\"wal_append_when_enabled\"],"
+                              "\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON SAVE data/snap.txt");
+    assert(result.response == "{\"command\":\"SAVE\",\"category\":\"admin\",\"mutates_store\":false,\"touches_wal\":false,"
+                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
+                              "\"side_effects\":[\"snapshot_file_write\"],\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON LOAD data/snap.txt");
+    assert(result.response == "{\"command\":\"LOAD\",\"category\":\"admin\",\"mutates_store\":true,\"touches_wal\":false,"
+                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
+                              "\"side_effects\":[\"store_replace_from_snapshot\"],\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON COMPACT");
+    assert(result.response == "{\"command\":\"COMPACT\",\"category\":\"admin\",\"mutates_store\":false,\"touches_wal\":true,"
+                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
+                              "\"side_effects\":[\"wal_rewrite_when_enabled\"],\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON RESETSTATS");
+    assert(result.response == "{\"command\":\"RESETSTATS\",\"category\":\"admin\",\"mutates_store\":false,"
+                              "\"touches_wal\":false,\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,"
+                              "\"allowed_by_parser\":true,\"side_effects\":[\"metrics_reset\"],\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON INFO");
+    assert(result.response == "{\"command\":\"INFO\",\"category\":\"meta\",\"mutates_store\":false,\"touches_wal\":false,"
+                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
+                              "\"side_effects\":[\"metadata_read\"],\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON QUIT");
+    assert(result.response == "{\"command\":\"QUIT\",\"category\":\"meta\",\"mutates_store\":false,\"touches_wal\":false,"
+                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
+                              "\"side_effects\":[\"connection_close\"],\"warnings\":[]}");
 
     minikv::Store inventory_store;
     minikv::CommandProcessor inventory_processor{inventory_store};

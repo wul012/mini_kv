@@ -314,6 +314,7 @@ struct CommandExplain {
     bool requires_value = false;
     bool ttl_sensitive = false;
     bool allowed_by_parser = false;
+    std::vector<std::string> side_effects;
     std::vector<std::string> warnings;
 };
 
@@ -331,6 +332,7 @@ std::string format_explain_json(const CommandExplain& explain) {
     response += ",\"requires_value\":" + format_json_bool(explain.requires_value) +
                 ",\"ttl_sensitive\":" + format_json_bool(explain.ttl_sensitive) +
                 ",\"allowed_by_parser\":" + format_json_bool(explain.allowed_by_parser) +
+                ",\"side_effects\":" + format_json_string_array(explain.side_effects) +
                 ",\"warnings\":" + format_json_string_array(explain.warnings) + "}";
     return response;
 }
@@ -366,10 +368,13 @@ CommandExplain explain_command(std::string_view line) {
     explain.allowed_by_parser = true;
 
     if (explain.command == "PING") {
+        explain.side_effects.push_back("metadata_read");
         return explain;
     }
 
     if (explain.command == "SET") {
+        explain.side_effects.push_back("store_write");
+        explain.side_effects.push_back("wal_append_when_enabled");
         std::string key;
         input >> key;
         std::string value;
@@ -384,6 +389,12 @@ CommandExplain explain_command(std::string_view line) {
     }
 
     if (explain.command == "GET" || explain.command == "DEL" || explain.command == "TTL") {
+        if (explain.command == "GET" || explain.command == "TTL") {
+            explain.side_effects.push_back("store_read");
+        } else {
+            explain.side_effects.push_back("store_write");
+            explain.side_effects.push_back("wal_append_when_enabled");
+        }
         std::string key;
         input >> key;
         if (!key.empty()) {
@@ -396,6 +407,8 @@ CommandExplain explain_command(std::string_view line) {
     }
 
     if (explain.command == "EXPIRE") {
+        explain.side_effects.push_back("store_ttl_update");
+        explain.side_effects.push_back("wal_append_when_enabled");
         std::string key;
         std::string seconds_text;
         input >> key >> seconds_text;
@@ -409,6 +422,7 @@ CommandExplain explain_command(std::string_view line) {
     }
 
     if (explain.command == "KEYS" || explain.command == "KEYSJSON") {
+        explain.side_effects.push_back("store_read");
         std::string prefix;
         if (input >> prefix && has_extra_token(input)) {
             mark_usage_warning(explain, explain.command + " [prefix]");
@@ -417,6 +431,11 @@ CommandExplain explain_command(std::string_view line) {
     }
 
     if (explain.command == "SAVE" || explain.command == "LOAD") {
+        if (explain.command == "SAVE") {
+            explain.side_effects.push_back("snapshot_file_write");
+        } else {
+            explain.side_effects.push_back("store_replace_from_snapshot");
+        }
         std::string path;
         std::getline(input >> std::ws, path);
         if (path.empty()) {
@@ -426,12 +445,25 @@ CommandExplain explain_command(std::string_view line) {
     }
 
     if (explain.command == "EXPLAINJSON") {
+        explain.side_effects.push_back("metadata_read");
         std::string nested_command;
         input >> nested_command;
         if (nested_command.empty()) {
             mark_usage_warning(explain, "EXPLAINJSON command");
         }
         return explain;
+    }
+
+    if (explain.command == "COMPACT") {
+        explain.side_effects.push_back("wal_rewrite_when_enabled");
+    } else if (explain.command == "RESETSTATS") {
+        explain.side_effects.push_back("metrics_reset");
+    } else if (explain.command == "EXIT" || explain.command == "QUIT") {
+        explain.side_effects.push_back("connection_close");
+    } else if (explain.category == "read") {
+        explain.side_effects.push_back("metadata_read");
+    } else {
+        explain.side_effects.push_back("metadata_read");
     }
 
     if (has_extra_token(input)) {

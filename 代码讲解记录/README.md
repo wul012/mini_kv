@@ -1834,3 +1834,50 @@ warnings
 ```
 
 这样 Node v61 以后可以在 operation execution preview 里解释 mini-kv raw command 的风险，但仍然不能绕过 mini-kv 自己的执行边界。
+
+## 第四十九版讲解索引补充
+```text
+100-explainjson-side-effects-hardening-core.md
+ -> 第四十九版 EXPLAINJSON side effects 覆盖加固核心：TTL / EXPIRE、admin / meta 命令和具体副作用标签
+
+101-version-49-tests-docs.md
+ -> 第四十九版 command_tests、真实 EXPLAINJSON side_effects smoke、README、a/49 归档和整体增删改
+```
+
+## 第四十九版补充理解
+第四十九版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v59-post-preflight-control-roadmap.md
+```
+
+计划合理点在于：
+
+```text
+mini-kv v49 只补 EXPLAINJSON 覆盖增强
+不新增事务
+不新增 ACL
+不让 mini-kv 承担订单权威存储
+```
+
+v49 新增解释字段：
+
+```text
+side_effects
+```
+
+典型标签：
+
+```text
+store_write
+store_ttl_update
+wal_append_when_enabled
+snapshot_file_write
+store_replace_from_snapshot
+wal_rewrite_when_enabled
+metrics_reset
+connection_close
+metadata_read
+```
+
+这样 Node v65 以后可以接入更完整的 approval evidence，但 mini-kv 仍然只负责解释自身命令语义，不负责审批和真实业务执行。
