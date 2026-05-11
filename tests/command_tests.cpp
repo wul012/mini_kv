@@ -193,6 +193,29 @@ int main() {
     assert(result.response.find("\"wal\":{\"enabled\":false}") != std::string::npos);
     assert(result.response.find("\"metrics\":{\"enabled\":false}") != std::string::npos);
 
+    result = processor.execute("COMMANDS extra");
+    assert(result.response == "ERR usage: COMMANDS");
+
+    result = processor.execute("COMMANDS");
+    assert(result.response.find("command_count=23") != std::string::npos);
+    assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
+    assert(result.response.find("GET(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find("COMPACT(category=admin,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
+    assert(result.response.find("COMMANDSJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+
+    result = processor.execute("COMMANDSJSON extra");
+    assert(result.response == "ERR usage: COMMANDSJSON");
+
+    result = processor.execute("COMMANDSJSON");
+    assert(result.response.find("\"commands\":[") != std::string::npos);
+    assert(result.response.find("\"name\":\"PING\",\"category\":\"meta\",\"mutates_store\":false") != std::string::npos);
+    assert(result.response.find("\"name\":\"SET\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true") != std::string::npos);
+    assert(result.response.find("\"name\":\"GET\",\"category\":\"read\",\"mutates_store\":false") != std::string::npos);
+    assert(result.response.find("\"name\":\"LOAD\",\"category\":\"admin\",\"mutates_store\":true") != std::string::npos);
+    assert(result.response.find("\"name\":\"COMMANDSJSON\",\"category\":\"meta\"") != std::string::npos);
+    assert(result.response.find("\"description\":\"Read command catalog as JSON\"") != std::string::npos);
+
     minikv::CommandProcessorOptions stats_options;
     stats_options.connection_stats = [] {
         minikv::CommandConnectionStats stats;
@@ -355,6 +378,8 @@ int main() {
     assert(result.response.find("HEALTH") != std::string::npos);
     assert(result.response.find("INFO") != std::string::npos);
     assert(result.response.find("INFOJSON") != std::string::npos);
+    assert(result.response.find("COMMANDS") != std::string::npos);
+    assert(result.response.find("COMMANDSJSON") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");

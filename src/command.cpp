@@ -44,12 +44,52 @@ std::string command_token(std::string_view text) {
     return to_upper(command);
 }
 
+struct CommandCatalogEntry {
+    std::string_view name;
+    std::string_view category;
+    bool mutates_store;
+    bool touches_wal;
+    bool stable;
+    std::string_view description;
+};
+
+constexpr CommandCatalogEntry command_catalog[] = {
+    {"PING", "meta", false, false, true, "Liveness check with optional echo message"},
+    {"SET", "write", true, true, true, "Set or update a key value"},
+    {"GET", "read", false, false, true, "Read a key value"},
+    {"DEL", "write", true, true, true, "Delete a key"},
+    {"EXPIRE", "write", true, true, true, "Set a positive TTL on an existing key"},
+    {"TTL", "read", false, false, true, "Read a key TTL state"},
+    {"SIZE", "read", false, false, true, "Return the live key count"},
+    {"KEYS", "read", false, false, true, "List live keys, optionally filtered by prefix"},
+    {"SAVE", "admin", false, false, true, "Save a snapshot file"},
+    {"LOAD", "admin", true, false, true, "Load a snapshot file into the store"},
+    {"COMPACT", "admin", false, true, true, "Compact the write-ahead log"},
+    {"WALINFO", "read", false, true, true, "Read write-ahead log maintenance details"},
+    {"STATS", "meta", false, true, true, "Read command and connection metrics as text"},
+    {"STATSJSON", "meta", false, true, true, "Read command and connection metrics as JSON"},
+    {"RESETSTATS", "admin", false, false, true, "Reset command metrics"},
+    {"HEALTH", "meta", false, true, true, "Read liveness and maintenance health"},
+    {"INFO", "meta", false, false, true, "Read server identity metadata as text"},
+    {"INFOJSON", "meta", false, false, true, "Read server identity metadata as JSON"},
+    {"COMMANDS", "meta", false, false, true, "Read command catalog as text"},
+    {"COMMANDSJSON", "meta", false, false, true, "Read command catalog as JSON"},
+    {"HELP", "meta", false, false, true, "Show command help"},
+    {"EXIT", "meta", false, false, true, "Close the current client session"},
+    {"QUIT", "meta", false, false, true, "Close the current client session"},
+};
+
+const CommandCatalogEntry* find_command_catalog_entry(std::string_view command) {
+    for (const auto& entry : command_catalog) {
+        if (entry.name == command) {
+            return &entry;
+        }
+    }
+    return nullptr;
+}
+
 bool is_known_command(std::string_view command) {
-    return command == "PING" || command == "SET" || command == "GET" || command == "DEL" ||
-           command == "EXPIRE" || command == "TTL" || command == "SIZE" || command == "KEYS" || command == "SAVE" ||
-           command == "LOAD" || command == "COMPACT" || command == "WALINFO" || command == "STATS" ||
-           command == "STATSJSON" || command == "RESETSTATS" || command == "HEALTH" || command == "INFO" ||
-           command == "INFOJSON" || command == "HELP" || command == "EXIT" || command == "QUIT";
+    return find_command_catalog_entry(command) != nullptr;
 }
 
 std::string metrics_command_name(std::string_view command) {
@@ -181,6 +221,42 @@ std::string json_string(std::string_view value) {
     }
     result.push_back('"');
     return result;
+}
+
+std::string format_commands() {
+    std::string response = "command_count=" + std::to_string(std::size(command_catalog)) + " commands=";
+    bool first = true;
+    for (const auto& entry : command_catalog) {
+        if (!first) {
+            response.push_back(';');
+        }
+        first = false;
+        response += std::string{entry.name} + "(" +
+                    "category=" + std::string{entry.category} +
+                    ",mutates_store=" + format_yes_no(entry.mutates_store) +
+                    ",touches_wal=" + format_yes_no(entry.touches_wal) +
+                    ",stable=" + format_yes_no(entry.stable) + ")";
+    }
+    return response;
+}
+
+std::string format_commands_json() {
+    std::string response = "{\"commands\":[";
+    bool first = true;
+    for (const auto& entry : command_catalog) {
+        if (!first) {
+            response += ",";
+        }
+        first = false;
+        response += "{\"name\":" + json_string(entry.name) +
+                    ",\"category\":" + json_string(entry.category) +
+                    ",\"mutates_store\":" + format_json_bool(entry.mutates_store) +
+                    ",\"touches_wal\":" + format_json_bool(entry.touches_wal) +
+                    ",\"stable\":" + format_json_bool(entry.stable) +
+                    ",\"description\":" + json_string(entry.description) + "}";
+    }
+    response += "]}";
+    return response;
 }
 
 std::string format_walinfo(const WalMaintenanceReport& report) {
@@ -812,6 +888,22 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_info_json(store_.size(), wal_, options_.runtime_info)};
     }
 
+    if (command == "COMMANDS") {
+        if (has_extra_token(input)) {
+            return usage("COMMANDS");
+        }
+
+        return {format_commands()};
+    }
+
+    if (command == "COMMANDSJSON") {
+        if (has_extra_token(input)) {
+            return usage("COMMANDSJSON");
+        }
+
+        return {format_commands_json()};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -851,8 +943,11 @@ std::string CommandProcessor::help_text() {
            "  HEALTH\n"
            "  INFO\n"
            "  INFOJSON\n"
+           "  COMMANDS\n"
+           "  COMMANDSJSON\n"
            "  HELP\n"
-           "  EXIT";
+           "  EXIT\n"
+           "  QUIT";
 }
 
 } // namespace minikv

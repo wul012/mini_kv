@@ -1676,3 +1676,60 @@ STATSJSON
 ```
 
 这样 v45 可以独立验证，后续 Node v54 再消费这个稳定字段。
+
+## 第四十六版讲解索引补充
+```text
+94-command-catalog-core.md
+ -> 第四十六版 COMMANDS / COMMANDSJSON 命令分级核心：CommandCatalogEntry、统一命令表、text catalog 和 JSON catalog
+
+95-version-46-tests-docs.md
+ -> 第四十六版 command/line_editor_tests、真实 COMMANDSJSON smoke、README、a/46 归档和整体增删改
+```
+
+## 第四十六版补充理解
+第四十六版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v54-post-infojson-roadmap.md
+```
+
+计划合理点在于：
+
+```text
+mini-kv v46 只补自身命令能力描述
+不做 ACL
+不做用户权限
+不改 Node
+不改变现有命令语义
+```
+
+v46 的核心输出是：
+
+```text
+COMMANDS
+ -> text 命令能力摘要
+
+COMMANDSJSON
+ -> JSON 命令能力 catalog
+```
+
+字段包括：
+
+```text
+name
+category
+mutates_store
+touches_wal
+stable
+description
+```
+
+这让后续 Node v55 可以只读判断：
+
+```text
+write command count
+admin command count
+command catalog available
+```
+
+但 mini-kv 自己仍然保持基础设施实验位，不承担订单、库存、支付的权威存储。
