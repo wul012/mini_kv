@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 41 is a runnable in-memory KV service with client key cache refresh from `KEYS`:
+Version 42 is a runnable in-memory KV service with optional JSONL metrics file export:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -25,6 +25,7 @@ Version 41 is a runnable in-memory KV service with client key cache refresh from
 - Runtime `KEYS` returns a sorted one-line list of currently live keys for scripts and client cache refresh
 - Optional `--metrics-interval-ms` emits periodic structured `event=server_metrics` connection, command, and latency counters
 - Optional `--metrics-file` mirrors periodic server metrics and final stop metrics to a dedicated file for longer runs
+- Optional `--metrics-file-format jsonl` writes metrics export records as schema-stable JSON Lines while keeping stdout lifecycle logs in text form
 - Optional `--metrics-file-max-bytes` and `--metrics-file-keep` rotate and retain bounded metrics export files
 - Manual snapshots with `SAVE` and `LOAD`
 - Snapshot load rejects corrupt files without replacing the current store
@@ -147,6 +148,12 @@ TCP server with metrics file export:
 
 ```powershell
 .\build\Debug\minikv_server.exe 6379 127.0.0.1 --metrics-interval-ms 10000 --metrics-file data\server.metrics.log
+```
+
+TCP server with JSONL metrics file export:
+
+```powershell
+.\build\Debug\minikv_server.exe 6379 127.0.0.1 --metrics-interval-ms 10000 --metrics-file data\server.metrics.jsonl --metrics-file-format jsonl
 ```
 
 TCP server with rotated metrics file export:
@@ -317,7 +324,7 @@ RESP mode returns simple strings, integers, bulk strings, null bulk strings, or 
 The server prints structured lifecycle logs using key-value fields:
 
 ```text
-event=server_start host=127.0.0.1 port=6379 protocol=inline,resp max_request_bytes=65536 accept_poll_ms=200 metrics_interval_ms=0 metrics_file="none" metrics_file_max_bytes=0 metrics_file_keep=0 auto_compact_wal=false
+event=server_start host=127.0.0.1 port=6379 protocol=inline,resp max_request_bytes=65536 accept_poll_ms=200 metrics_interval_ms=0 metrics_file="none" metrics_file_format=text metrics_file_max_bytes=0 metrics_file_keep=0 auto_compact_wal=false
 event=tcp_listen host=127.0.0.1 port=6379 max_request_bytes=65536
 event=tcp_client_accepted host=127.0.0.1 port=6379 connection_id=1 active_connections=1 total_connections=1 peak_connections=1
 event=server_metrics host=127.0.0.1 port=6379 active_connections=1 total_connections=1 peak_connections=1 total_commands=10 successful_commands=9 error_commands=1 total_latency_ns=900000 avg_latency_ns=90000 max_latency_ns=250000 command_breakdown=GET:4/4/0/160000/40000/70000;PING:5/5/0/50000/10000/15000;UNKNOWN:1/0/1/690000/690000/690000 metrics_interval_ms=10000
@@ -336,12 +343,14 @@ minikv_server.exe [port] [host] [wal_path] [--repair-wal] [--auto-compact-wal]
                   [--wal-compact-min-records count] [--wal-compact-record-ratio ratio]
                   [--wal-compact-min-bytes bytes] [--max-request-bytes bytes]
                   [--accept-poll-ms ms] [--metrics-interval-ms ms] [--metrics-file path]
+                  [--metrics-file-format text|jsonl]
                   [--metrics-file-max-bytes bytes] [--metrics-file-keep count]
 ```
 
 `--max-request-bytes` limits the buffered bytes for one pending TCP request. Inline over-limit requests return `ERR line too long`; RESP over-limit requests return `-ERR request too long`.
 `--metrics-interval-ms` enables periodic `event=server_metrics` logs. It is disabled by default and reports active, total, and peak connection counters plus command totals, error totals, latency counters, and per-command breakdown when enabled.
 `--metrics-file` writes the same periodic `event=server_metrics` lines, plus the final `event=tcp_stop` snapshot, to a dedicated file. The file is truncated when the server starts and flushed after each exported metrics line.
+`--metrics-file-format` controls only the metrics file output format. `text` is the default and preserves the existing key-value lines. `jsonl` writes one JSON object per exported metrics event with `event`, `host`, `port`, `connection_stats`, `commands`, and `metrics_interval_ms` on periodic samples. Stdout lifecycle logs stay in the original text format. The option requires `--metrics-file`.
 `--metrics-file-max-bytes` rotates the metrics file before the next exported line would exceed the configured size. `--metrics-file-keep` controls how many rotated files are retained as `<path>.1`, `<path>.2`, and so on; it defaults to 3 when a metrics file is configured and may be set to 0 to discard old metrics instead of keeping rotated files. Both options require `--metrics-file`.
 
 TCP client options:
@@ -420,7 +429,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, `KEYS`, `STATS` / `STATSJSON` / `RESETSTATS` / `HEALTH`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs, metrics exporter output, active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save, persistent key cache load/save, duplicate filtering, capacity trimming, full cache replacement, and `KEYS` response parsing. `line_editor_tests` verifies the line editing buffer operations, command Tab completion including `KEYS`, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client. `metrics_file_tests` verifies metrics file truncation, max-byte rotation, retained suffix files, discard-old mode, and invalid option rejection.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, `KEYS`, `STATS` / `STATSJSON` / `RESETSTATS` / `HEALTH`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs, text and JSONL metrics exporter output, active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save, persistent key cache load/save, duplicate filtering, capacity trimming, full cache replacement, and `KEYS` response parsing. `line_editor_tests` verifies the line editing buffer operations, command Tab completion including `KEYS`, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client. `metrics_file_tests` verifies metrics file truncation, max-byte rotation, retained suffix files, discard-old mode, and invalid option rejection.
 
 ## RESP protocol
 
@@ -443,5 +452,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add optional structured JSONL metrics export for log collectors that prefer schema-stable fields.
-2. Add optional key-list filtering or prefix matching for larger datasets.
+1. Add optional key-list filtering or prefix matching for larger datasets.
+2. Add small client-side command aliases for frequent operational checks.

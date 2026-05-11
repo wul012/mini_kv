@@ -423,6 +423,93 @@ int main() {
 
     assert(server.stop_requested());
 
+    minikv::Store jsonl_store;
+    minikv::TcpServer::Options jsonl_options;
+    jsonl_options.host = "127.0.0.1";
+    jsonl_options.port = 0;
+    jsonl_options.accept_poll_interval = 10ms;
+    jsonl_options.metrics_log_interval = 20ms;
+    jsonl_options.metrics_export_format = minikv::MetricsExportFormat::jsonl;
+
+    std::mutex jsonl_logs_mutex;
+    std::vector<std::string> jsonl_logs;
+    std::vector<std::string> jsonl_exports;
+    jsonl_options.logger = [&](const std::string& message) {
+        std::lock_guard jsonl_lock{jsonl_logs_mutex};
+        jsonl_logs.push_back(message);
+    };
+    jsonl_options.metrics_exporter = [&](const std::string& message) {
+        std::lock_guard jsonl_lock{jsonl_logs_mutex};
+        jsonl_exports.push_back(message);
+    };
+
+    minikv::TcpServer jsonl_server{jsonl_store, jsonl_options};
+    std::exception_ptr jsonl_failure;
+    std::thread jsonl_thread{[&] {
+        try {
+            jsonl_server.run();
+        } catch (...) {
+            jsonl_failure = std::current_exception();
+        }
+    }};
+
+    bool jsonl_started = false;
+    for (int attempt = 0; attempt < 100; ++attempt) {
+        {
+            std::lock_guard jsonl_lock{jsonl_logs_mutex};
+            jsonl_started = contains_log(jsonl_logs, "event=tcp_listen");
+        }
+        if (jsonl_started) {
+            break;
+        }
+        std::this_thread::sleep_for(10ms);
+    }
+
+    assert(jsonl_started);
+    const auto jsonl_port = jsonl_server.bound_port();
+    assert(jsonl_port > 0);
+
+    bool jsonl_metrics_logged = false;
+    for (int attempt = 0; attempt < 100; ++attempt) {
+        {
+            std::lock_guard jsonl_lock{jsonl_logs_mutex};
+            jsonl_metrics_logged = contains_log(jsonl_logs, "event=server_metrics") &&
+                                   contains_log(jsonl_exports, "\"event\":\"server_metrics\"");
+        }
+        if (jsonl_metrics_logged) {
+            break;
+        }
+        std::this_thread::sleep_for(10ms);
+    }
+    assert(jsonl_metrics_logged);
+
+    const auto jsonl_response = exchange_inline("127.0.0.1", jsonl_port, "PING jsonl\nQUIT\n");
+    assert(jsonl_response.find("jsonl\n") != std::string::npos);
+    assert(jsonl_response.find("BYE\n") != std::string::npos);
+
+    jsonl_server.request_stop();
+    jsonl_thread.join();
+
+    if (jsonl_failure) {
+        std::rethrow_exception(jsonl_failure);
+    }
+
+    {
+        std::lock_guard jsonl_lock{jsonl_logs_mutex};
+        assert(contains_log(jsonl_logs, "event=server_metrics"));
+        assert(contains_log(jsonl_logs, "metrics_interval_ms=20"));
+        assert(contains_log(jsonl_logs, "event=tcp_stop"));
+        assert(contains_log(jsonl_exports, "\"event\":\"server_metrics\""));
+        assert(contains_log(jsonl_exports, "\"event\":\"tcp_stop\""));
+        assert(contains_log(jsonl_exports, "\"host\":\"127.0.0.1\""));
+        assert(contains_log(jsonl_exports, "\"port\":"));
+        assert(contains_log(jsonl_exports, "\"connection_stats\":{\"active_connections\""));
+        assert(contains_log(jsonl_exports, "\"commands\":{\"total_commands\""));
+        assert(contains_log(jsonl_exports, "\"metrics_interval_ms\":20"));
+        assert(contains_log(jsonl_exports, "\"command\":\"PING\""));
+        assert(!contains_log(jsonl_exports, "event=server_metrics"));
+    }
+
     std::lock_guard lock{logs_mutex};
     assert(contains_log(logs, "event=tcp_listen"));
     assert(contains_log(logs, "event=tcp_client_accepted"));

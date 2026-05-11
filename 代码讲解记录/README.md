@@ -1509,3 +1509,37 @@ v41
 ```
 
 这样 v41 既完成 Roadmap 的客户端刷新目标，又没有额外引入新的交互命令或过大的功能面。
+
+## 第四十二版讲解索引补充
+```text
+86-metrics-jsonl-export.md
+ -> 第四十二版 Metrics JSONL 导出核心：MetricsExportFormat、metrics_json_line、metrics exporter 双通道和 --metrics-file-format
+
+87-version-42-tests-docs.md
+ -> 第四十二版 tcp_server_tests、真实 JSONL metrics smoke、README、CMake、a/42 归档和整体增删改
+```
+
+## 第四十二版补充理解
+第四十二版没有把 stdout 日志改成 JSON。
+
+它只给 metrics file 增加格式选择：
+
+```text
+默认 text
+ -> 保持旧行为
+
+--metrics-file-format jsonl
+ -> metrics file 写一行一个 JSON object
+```
+
+核心设计是“双通道”：
+
+```text
+server stdout
+ -> 继续输出 event=... 文本，方便人直接看
+
+metrics_exporter
+ -> 根据 MetricsExportFormat 输出 text 或 jsonl，方便采集器读
+```
+
+这样 v42 完成了 Roadmap 的 JSONL metrics export，又没有破坏已有日志、测试和用户习惯。

@@ -22,6 +22,11 @@ struct TcpServerConnectionStats {
     std::size_t peak_connections = 0;
 };
 
+enum class MetricsExportFormat {
+    text,
+    jsonl,
+};
+
 class TcpServer {
 public:
     struct Options {
@@ -36,6 +41,7 @@ public:
         std::chrono::milliseconds metrics_log_interval{0};
         std::size_t max_request_bytes = 64 * 1024;
         bool auto_compact_wal = false;
+        MetricsExportFormat metrics_export_format = MetricsExportFormat::text;
         StopPredicate should_stop;
         LogHandler logger;
         MetricsExportHandler metrics_exporter;

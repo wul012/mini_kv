@@ -92,6 +92,7 @@ void print_usage(const char* program) {
                  " [--wal-compact-min-records count] [--wal-compact-record-ratio ratio]"
                  " [--wal-compact-min-bytes bytes] [--max-request-bytes bytes]"
                  " [--accept-poll-ms ms] [--metrics-interval-ms ms] [--metrics-file path]"
+                 " [--metrics-file-format text|jsonl]"
                  " [--metrics-file-max-bytes bytes] [--metrics-file-keep count]\n";
 }
 
@@ -112,6 +113,26 @@ void log_wal_repair(const minikv::WriteAheadLog& wal, const minikv::WalRepairRep
 
 const char* true_false(bool value) {
     return value ? "true" : "false";
+}
+
+minikv::MetricsExportFormat parse_metrics_file_format(std::string_view value) {
+    if (value == "text") {
+        return minikv::MetricsExportFormat::text;
+    }
+    if (value == "jsonl") {
+        return minikv::MetricsExportFormat::jsonl;
+    }
+    throw std::out_of_range{"metrics-file-format must be text or jsonl"};
+}
+
+const char* metrics_file_format_name(minikv::MetricsExportFormat format) {
+    switch (format) {
+    case minikv::MetricsExportFormat::text:
+        return "text";
+    case minikv::MetricsExportFormat::jsonl:
+        return "jsonl";
+    }
+    return "text";
 }
 
 void log_wal_maintenance(const minikv::WriteAheadLog& wal, const minikv::WalMaintenanceReport& report) {
@@ -179,6 +200,7 @@ int main(int argc, char** argv) {
         std::optional<std::uintmax_t> metrics_file_max_bytes;
         std::size_t metrics_file_keep = 3;
         bool metrics_file_keep_set = false;
+        bool metrics_file_format_set = false;
         minikv::WalMaintenanceOptions wal_options;
         for (int index = 1; index < argc; ++index) {
             const std::string_view argument = argv[index];
@@ -215,6 +237,16 @@ int main(int argc, char** argv) {
                     return 2;
                 }
                 metrics_file_path = argv[index];
+                continue;
+            }
+
+            if (argument == "--metrics-file-format") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                options.metrics_export_format = parse_metrics_file_format(argv[index]);
+                metrics_file_format_set = true;
                 continue;
             }
 
@@ -301,7 +333,8 @@ int main(int argc, char** argv) {
             return 2;
         }
 
-        if ((metrics_file_max_bytes.has_value() || metrics_file_keep_set) && !metrics_file_path.has_value()) {
+        if ((metrics_file_max_bytes.has_value() || metrics_file_keep_set || metrics_file_format_set) &&
+            !metrics_file_path.has_value()) {
             print_usage(argv[0]);
             return 2;
         }
@@ -356,6 +389,7 @@ int main(int argc, char** argv) {
                   << " accept_poll_ms=" << options.accept_poll_interval.count()
                   << " metrics_interval_ms=" << options.metrics_log_interval.count()
                   << " metrics_file=" << quote_value(metrics_file_path.value_or("none"))
+                  << " metrics_file_format=" << metrics_file_format_name(options.metrics_export_format)
                   << " metrics_file_max_bytes=" << metrics_file_max_bytes.value_or(0)
                   << " metrics_file_keep=" << (metrics_file_path.has_value() ? metrics_file_keep : 0)
                   << " auto_compact_wal=" << true_false(options.auto_compact_wal) << '\n';

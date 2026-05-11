@@ -60,6 +60,7 @@ private:
 };
 
 std::string format_command_metrics(const CommandProcessorMetrics& metrics);
+std::string format_command_metrics_json(const CommandProcessorMetrics& metrics);
 
 struct CommandProcessorOptions {
     using ConnectionStatsProvider = std::function<CommandConnectionStats()>;

@@ -10,6 +10,7 @@
 #include <cstring>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -142,10 +143,75 @@ void log_event(const TcpServer::Options& options, const std::string& message) {
     }
 }
 
-void export_metrics_event(const TcpServer::Options& options, const std::string& message) {
-    log_event(options, message);
+std::string json_string(std::string_view value) {
+    constexpr char hex[] = "0123456789ABCDEF";
+    std::string result = "\"";
+    for (const unsigned char ch : value) {
+        switch (ch) {
+        case '"':
+            result += "\\\"";
+            break;
+        case '\\':
+            result += "\\\\";
+            break;
+        case '\b':
+            result += "\\b";
+            break;
+        case '\f':
+            result += "\\f";
+            break;
+        case '\n':
+            result += "\\n";
+            break;
+        case '\r':
+            result += "\\r";
+            break;
+        case '\t':
+            result += "\\t";
+            break;
+        default:
+            if (ch < 0x20) {
+                result += "\\u00";
+                result.push_back(hex[(ch >> 4) & 0x0F]);
+                result.push_back(hex[ch & 0x0F]);
+            } else {
+                result.push_back(static_cast<char>(ch));
+            }
+            break;
+        }
+    }
+    result.push_back('"');
+    return result;
+}
+
+std::string metrics_json_line(std::string_view event,
+                              const TcpServer::Options& options,
+                              std::uint16_t bound_port,
+                              const TcpServerConnectionStats& stats,
+                              const CommandProcessorMetrics& command_metrics,
+                              std::optional<std::chrono::milliseconds> interval) {
+    std::string result = "{\"event\":" + json_string(event) +
+                         ",\"host\":" + json_string(options.host) +
+                         ",\"port\":" + std::to_string(bound_port) +
+                         ",\"connection_stats\":{\"active_connections\":" +
+                         std::to_string(stats.active_connections) +
+                         ",\"total_connections\":" + std::to_string(stats.total_connections) +
+                         ",\"peak_connections\":" + std::to_string(stats.peak_connections) + "}," +
+                         format_command_metrics_json(command_metrics);
+    if (interval.has_value()) {
+        result += ",\"metrics_interval_ms\":" + std::to_string(interval->count());
+    }
+    result += "}";
+    return result;
+}
+
+void export_metrics_event(const TcpServer::Options& options,
+                          const std::string& log_message,
+                          const std::string& jsonl_message) {
+    log_event(options, log_message);
     if (options.metrics_exporter) {
-        options.metrics_exporter(message);
+        options.metrics_exporter(options.metrics_export_format == MetricsExportFormat::jsonl ? jsonl_message
+                                                                                             : log_message);
     }
 }
 
@@ -575,10 +641,17 @@ void TcpServer::run() {
         if (metrics_enabled) {
             const auto now = std::chrono::steady_clock::now();
             if (now >= next_metrics_log) {
-                export_metrics_event(options_, "event=server_metrics " + endpoint + " " +
-                                                    metrics_fields(connection_tracker_->stats(),
-                                                                   command_metrics_tracker_->stats(),
-                                                                   options_.metrics_log_interval));
+                const auto connection_stats = connection_tracker_->stats();
+                const auto command_metrics = command_metrics_tracker_->stats();
+                export_metrics_event(options_,
+                                     "event=server_metrics " + endpoint + " " +
+                                         metrics_fields(connection_stats, command_metrics, options_.metrics_log_interval),
+                                     metrics_json_line("server_metrics",
+                                                       options_,
+                                                       actual_port,
+                                                       connection_stats,
+                                                       command_metrics,
+                                                       options_.metrics_log_interval));
                 do {
                     next_metrics_log += options_.metrics_log_interval;
                 } while (next_metrics_log <= now);
@@ -617,9 +690,17 @@ void TcpServer::run() {
             .detach();
     }
 
-    export_metrics_event(options_, "event=tcp_stop " + endpoint + " " +
-                                       stats_fields(connection_tracker_->stats()) + " " +
-                                       command_metrics_fields(command_metrics_tracker_->stats()));
+    const auto connection_stats = connection_tracker_->stats();
+    const auto command_metrics = command_metrics_tracker_->stats();
+    export_metrics_event(options_,
+                         "event=tcp_stop " + endpoint + " " + stats_fields(connection_stats) + " " +
+                             command_metrics_fields(command_metrics),
+                         metrics_json_line("tcp_stop",
+                                           options_,
+                                           actual_port,
+                                           connection_stats,
+                                           command_metrics,
+                                           std::nullopt));
 }
 
 } // namespace minikv

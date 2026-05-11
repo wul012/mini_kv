@@ -249,40 +249,6 @@ std::string format_health(std::size_t live_keys,
     return response;
 }
 
-std::string format_command_metrics_json(const CommandProcessorMetrics& metrics) {
-    const std::uint64_t average_latency_ns =
-        metrics.total_commands == 0 ? 0 : metrics.total_latency_ns / metrics.total_commands;
-
-    std::string response = "\"commands\":{\"total_commands\":" + std::to_string(metrics.total_commands) +
-                           ",\"successful_commands\":" + std::to_string(metrics.successful_commands) +
-                           ",\"error_commands\":" + std::to_string(metrics.error_commands) +
-                           ",\"total_latency_ns\":" + std::to_string(metrics.total_latency_ns) +
-                           ",\"avg_latency_ns\":" + std::to_string(average_latency_ns) +
-                           ",\"max_latency_ns\":" + std::to_string(metrics.max_latency_ns) +
-                           ",\"breakdown\":[";
-
-    bool first = true;
-    for (const auto& command_metrics : metrics.command_breakdown) {
-        const std::uint64_t command_average_latency_ns =
-            command_metrics.total_commands == 0 ? 0 : command_metrics.total_latency_ns / command_metrics.total_commands;
-        if (!first) {
-            response += ",";
-        }
-        first = false;
-
-        response += "{\"command\":" + json_string(command_metrics.command) +
-                    ",\"total_commands\":" + std::to_string(command_metrics.total_commands) +
-                    ",\"successful_commands\":" + std::to_string(command_metrics.successful_commands) +
-                    ",\"error_commands\":" + std::to_string(command_metrics.error_commands) +
-                    ",\"total_latency_ns\":" + std::to_string(command_metrics.total_latency_ns) +
-                    ",\"avg_latency_ns\":" + std::to_string(command_average_latency_ns) +
-                    ",\"max_latency_ns\":" + std::to_string(command_metrics.max_latency_ns) + "}";
-    }
-
-    response += "]}";
-    return response;
-}
-
 std::string format_stats_json(std::size_t live_keys,
                               WriteAheadLog* wal,
                               const std::optional<WalMaintenanceReport>& wal_report,
@@ -321,6 +287,40 @@ std::string format_stats_json(std::size_t live_keys,
 }
 
 } // namespace
+
+std::string format_command_metrics_json(const CommandProcessorMetrics& metrics) {
+    const std::uint64_t average_latency_ns =
+        metrics.total_commands == 0 ? 0 : metrics.total_latency_ns / metrics.total_commands;
+
+    std::string response = "\"commands\":{\"total_commands\":" + std::to_string(metrics.total_commands) +
+                           ",\"successful_commands\":" + std::to_string(metrics.successful_commands) +
+                           ",\"error_commands\":" + std::to_string(metrics.error_commands) +
+                           ",\"total_latency_ns\":" + std::to_string(metrics.total_latency_ns) +
+                           ",\"avg_latency_ns\":" + std::to_string(average_latency_ns) +
+                           ",\"max_latency_ns\":" + std::to_string(metrics.max_latency_ns) +
+                           ",\"breakdown\":[";
+
+    bool first = true;
+    for (const auto& command_metrics : metrics.command_breakdown) {
+        const std::uint64_t command_average_latency_ns =
+            command_metrics.total_commands == 0 ? 0 : command_metrics.total_latency_ns / command_metrics.total_commands;
+        if (!first) {
+            response += ",";
+        }
+        first = false;
+
+        response += "{\"command\":" + json_string(command_metrics.command) +
+                    ",\"total_commands\":" + std::to_string(command_metrics.total_commands) +
+                    ",\"successful_commands\":" + std::to_string(command_metrics.successful_commands) +
+                    ",\"error_commands\":" + std::to_string(command_metrics.error_commands) +
+                    ",\"total_latency_ns\":" + std::to_string(command_metrics.total_latency_ns) +
+                    ",\"avg_latency_ns\":" + std::to_string(command_average_latency_ns) +
+                    ",\"max_latency_ns\":" + std::to_string(command_metrics.max_latency_ns) + "}";
+    }
+
+    response += "]}";
+    return response;
+}
 
 void CommandMetricsTracker::record(const CommandResult& result) {
     record("UNKNOWN", result, 0);
