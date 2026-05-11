@@ -1,3 +1,4 @@
+#include "minikv/metrics_file.hpp"
 #include "minikv/store.hpp"
 #include "minikv/tcp_server.hpp"
 #include "minikv/wal.hpp"
@@ -7,7 +8,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <exception>
-#include <fstream>
 #include <iostream>
 #include <limits>
 #include <mutex>
@@ -67,6 +67,20 @@ std::size_t parse_positive_size(const char* text, std::string_view name) {
     return static_cast<std::size_t>(value);
 }
 
+std::size_t parse_nonnegative_size(const char* text, std::string_view name) {
+    if (text[0] == '\0' || text[0] == '-') {
+        throw std::out_of_range{std::string{name} + " must be a non-negative integer"};
+    }
+
+    std::size_t parsed_chars = 0;
+    const unsigned long long value = std::stoull(text, &parsed_chars);
+    if (text[parsed_chars] != '\0' ||
+        value > static_cast<unsigned long long>(std::numeric_limits<std::size_t>::max())) {
+        throw std::out_of_range{std::string{name} + " must be a non-negative integer"};
+    }
+    return static_cast<std::size_t>(value);
+}
+
 std::chrono::milliseconds parse_positive_milliseconds(const char* text, std::string_view name) {
     const auto value = parse_positive_size(text, name);
     return std::chrono::milliseconds{static_cast<long long>(value)};
@@ -77,7 +91,8 @@ void print_usage(const char* program) {
               << " [port] [host] [wal_path] [--repair-wal] [--auto-compact-wal]"
                  " [--wal-compact-min-records count] [--wal-compact-record-ratio ratio]"
                  " [--wal-compact-min-bytes bytes] [--max-request-bytes bytes]"
-                 " [--accept-poll-ms ms] [--metrics-interval-ms ms] [--metrics-file path]\n";
+                 " [--accept-poll-ms ms] [--metrics-interval-ms ms] [--metrics-file path]"
+                 " [--metrics-file-max-bytes bytes] [--metrics-file-keep count]\n";
 }
 
 void log_wal_replay(const minikv::WriteAheadLog& wal, const minikv::WalReplayReport& replay) {
@@ -161,6 +176,9 @@ int main(int argc, char** argv) {
         bool auto_compact_wal = false;
         bool custom_wal_options = false;
         std::optional<std::string> metrics_file_path;
+        std::optional<std::uintmax_t> metrics_file_max_bytes;
+        std::size_t metrics_file_keep = 3;
+        bool metrics_file_keep_set = false;
         minikv::WalMaintenanceOptions wal_options;
         for (int index = 1; index < argc; ++index) {
             const std::string_view argument = argv[index];
@@ -197,6 +215,25 @@ int main(int argc, char** argv) {
                     return 2;
                 }
                 metrics_file_path = argv[index];
+                continue;
+            }
+
+            if (argument == "--metrics-file-max-bytes") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                metrics_file_max_bytes = parse_positive_size(argv[index], "metrics-file-max-bytes");
+                continue;
+            }
+
+            if (argument == "--metrics-file-keep") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                metrics_file_keep = parse_nonnegative_size(argv[index], "metrics-file-keep");
+                metrics_file_keep_set = true;
                 continue;
             }
 
@@ -264,19 +301,23 @@ int main(int argc, char** argv) {
             return 2;
         }
 
-        std::ofstream metrics_file;
+        if ((metrics_file_max_bytes.has_value() || metrics_file_keep_set) && !metrics_file_path.has_value()) {
+            print_usage(argv[0]);
+            return 2;
+        }
+
+        std::optional<minikv::MetricsFileWriter> metrics_file;
         std::mutex metrics_file_mutex;
         if (metrics_file_path.has_value()) {
-            metrics_file.open(*metrics_file_path, std::ios::out | std::ios::trunc);
-            if (!metrics_file) {
-                std::cerr << "fatal: cannot open metrics file " << quote_value(*metrics_file_path) << '\n';
-                return 1;
-            }
+            minikv::MetricsFileOptions metrics_file_options;
+            metrics_file_options.path = *metrics_file_path;
+            metrics_file_options.max_bytes = metrics_file_max_bytes;
+            metrics_file_options.keep_files = metrics_file_keep;
+            metrics_file.emplace(metrics_file_options);
 
             options.metrics_exporter = [&metrics_file, &metrics_file_mutex](const std::string& message) {
                 std::lock_guard lock{metrics_file_mutex};
-                metrics_file << message << '\n';
-                metrics_file.flush();
+                metrics_file->write_line(message);
             };
         }
 
@@ -315,6 +356,8 @@ int main(int argc, char** argv) {
                   << " accept_poll_ms=" << options.accept_poll_interval.count()
                   << " metrics_interval_ms=" << options.metrics_log_interval.count()
                   << " metrics_file=" << quote_value(metrics_file_path.value_or("none"))
+                  << " metrics_file_max_bytes=" << metrics_file_max_bytes.value_or(0)
+                  << " metrics_file_keep=" << (metrics_file_path.has_value() ? metrics_file_keep : 0)
                   << " auto_compact_wal=" << true_false(options.auto_compact_wal) << '\n';
         std::cout << "event=server_hint command=" << quote_value("SET name mini-kv") << '\n';
 

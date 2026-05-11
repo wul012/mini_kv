@@ -1379,3 +1379,46 @@ session 2 再启动
 ```
 
 这样 v38 不改变服务端协议，也不需要全量 key 查询命令，就先把日常交互体验往前推了一步。
+## 第三十九版讲解索引补充
+```text
+80-metrics-file-rotation.md
+ -> 第三十九版 Metrics 文件轮转核心：MetricsFileWriter、max_bytes、keep_files、轮转顺序和 server_main 参数接入
+
+81-version-39-tests-docs.md
+ -> 第三十九版 metrics_file_tests、真实 metrics rotation smoke、README、CMake、a/39 归档和整体增删改
+```
+
+## 第三十九版补充理解
+第三十九版把服务端 metrics 文件从“能导出”推进到“能长期导出”：
+
+```text
+--metrics-file
+ -> 指标落盘
+
+--metrics-file-max-bytes
+ -> 主文件超过阈值前轮转
+
+--metrics-file-keep
+ -> 控制最多保留多少份旧 metrics 文件
+```
+
+核心新增模块是：
+
+```text
+MetricsFileWriter
+```
+
+它封装了：
+
+```text
+创建父目录
+启动时 trunc 主文件
+写入后 flush
+写入前判断大小
+按 .1 / .2 / .3 顺序保留旧文件
+keep=0 时丢弃旧文件
+```
+
+服务端入口只负责解析参数并把 writer 接进 `metrics_exporter` 回调。
+
+这样后续如果继续做 JSONL 指标、压缩旧日志、按时间切分，也可以优先扩展这个小模块，而不把 `server_main.cpp` 变成文件系统逻辑集中地。
