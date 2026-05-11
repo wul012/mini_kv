@@ -75,6 +75,7 @@ constexpr CommandCatalogEntry command_catalog[] = {
     {"INFOJSON", "meta", false, false, true, "Read server identity metadata as JSON"},
     {"COMMANDS", "meta", false, false, true, "Read command catalog as text"},
     {"COMMANDSJSON", "meta", false, false, true, "Read command catalog as JSON"},
+    {"EXPLAINJSON", "meta", false, false, true, "Explain a command risk profile as JSON without executing it"},
     {"HELP", "meta", false, false, true, "Show command help"},
     {"EXIT", "meta", false, false, true, "Close the current client session"},
     {"QUIT", "meta", false, false, true, "Close the current client session"},
@@ -288,6 +289,155 @@ std::string format_commands_json() {
     }
     response += "]}";
     return response;
+}
+
+std::string format_json_string_array(const std::vector<std::string>& values) {
+    std::string response = "[";
+    bool first = true;
+    for (const auto& value : values) {
+        if (!first) {
+            response += ",";
+        }
+        first = false;
+        response += json_string(value);
+    }
+    response += "]";
+    return response;
+}
+
+struct CommandExplain {
+    std::string command;
+    std::string category = "unknown";
+    bool mutates_store = false;
+    bool touches_wal = false;
+    std::optional<std::string> key;
+    bool requires_value = false;
+    bool ttl_sensitive = false;
+    bool allowed_by_parser = false;
+    std::vector<std::string> warnings;
+};
+
+std::string format_explain_json(const CommandExplain& explain) {
+    std::string response = "{\"command\":" + json_string(explain.command) +
+                           ",\"category\":" + json_string(explain.category) +
+                           ",\"mutates_store\":" + format_json_bool(explain.mutates_store) +
+                           ",\"touches_wal\":" + format_json_bool(explain.touches_wal) +
+                           ",\"key\":";
+    if (explain.key.has_value()) {
+        response += json_string(*explain.key);
+    } else {
+        response += "null";
+    }
+    response += ",\"requires_value\":" + format_json_bool(explain.requires_value) +
+                ",\"ttl_sensitive\":" + format_json_bool(explain.ttl_sensitive) +
+                ",\"allowed_by_parser\":" + format_json_bool(explain.allowed_by_parser) +
+                ",\"warnings\":" + format_json_string_array(explain.warnings) + "}";
+    return response;
+}
+
+void mark_usage_warning(CommandExplain& explain, std::string_view command_usage) {
+    explain.allowed_by_parser = false;
+    explain.warnings.push_back(std::string{"usage: "} + std::string{command_usage});
+}
+
+CommandExplain explain_command(std::string_view line) {
+    CommandExplain explain;
+    const std::string trimmed = trim_copy(line);
+    std::istringstream input{trimmed};
+    input >> explain.command;
+    explain.command = to_upper(explain.command);
+
+    if (explain.command.empty()) {
+        explain.warnings.push_back("missing command");
+        return explain;
+    }
+
+    const auto* entry = find_command_catalog_entry(explain.command);
+    if (entry == nullptr) {
+        explain.warnings.push_back("unknown command");
+        return explain;
+    }
+
+    explain.category = std::string{entry->category};
+    explain.mutates_store = entry->mutates_store;
+    explain.touches_wal = entry->touches_wal;
+    explain.requires_value = explain.command == "SET";
+    explain.ttl_sensitive = explain.command == "EXPIRE" || explain.command == "TTL";
+    explain.allowed_by_parser = true;
+
+    if (explain.command == "PING") {
+        return explain;
+    }
+
+    if (explain.command == "SET") {
+        std::string key;
+        input >> key;
+        std::string value;
+        std::getline(input >> std::ws, value);
+        if (!key.empty()) {
+            explain.key = key;
+        }
+        if (key.empty() || value.empty()) {
+            mark_usage_warning(explain, "SET key value");
+        }
+        return explain;
+    }
+
+    if (explain.command == "GET" || explain.command == "DEL" || explain.command == "TTL") {
+        std::string key;
+        input >> key;
+        if (!key.empty()) {
+            explain.key = key;
+        }
+        if (key.empty() || has_extra_token(input)) {
+            mark_usage_warning(explain, explain.command + " key");
+        }
+        return explain;
+    }
+
+    if (explain.command == "EXPIRE") {
+        std::string key;
+        std::string seconds_text;
+        input >> key >> seconds_text;
+        if (!key.empty()) {
+            explain.key = key;
+        }
+        if (key.empty() || !parse_positive_seconds(seconds_text).has_value() || has_extra_token(input)) {
+            mark_usage_warning(explain, "EXPIRE key seconds");
+        }
+        return explain;
+    }
+
+    if (explain.command == "KEYS" || explain.command == "KEYSJSON") {
+        std::string prefix;
+        if (input >> prefix && has_extra_token(input)) {
+            mark_usage_warning(explain, explain.command + " [prefix]");
+        }
+        return explain;
+    }
+
+    if (explain.command == "SAVE" || explain.command == "LOAD") {
+        std::string path;
+        std::getline(input >> std::ws, path);
+        if (path.empty()) {
+            mark_usage_warning(explain, explain.command + " path");
+        }
+        return explain;
+    }
+
+    if (explain.command == "EXPLAINJSON") {
+        std::string nested_command;
+        input >> nested_command;
+        if (nested_command.empty()) {
+            mark_usage_warning(explain, "EXPLAINJSON command");
+        }
+        return explain;
+    }
+
+    if (has_extra_token(input)) {
+        mark_usage_warning(explain, explain.command);
+    }
+    return explain;
 }
 
 std::string format_walinfo(const WalMaintenanceReport& report) {
@@ -948,6 +1098,16 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_commands_json()};
     }
 
+    if (command == "EXPLAINJSON") {
+        std::string target_command;
+        std::getline(input >> std::ws, target_command);
+        if (target_command.empty()) {
+            return usage("EXPLAINJSON command");
+        }
+
+        return {format_explain_json(explain_command(target_command))};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -990,6 +1150,7 @@ std::string CommandProcessor::help_text() {
            "  INFOJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
+           "  EXPLAINJSON command\n"
            "  HELP\n"
            "  EXIT\n"
            "  QUIT";

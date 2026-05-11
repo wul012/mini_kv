@@ -1785,3 +1785,52 @@ limit=1000
 ```
 
 这样 Node v58 以后可以安全展示 key 列表，但不会把 mini-kv 变成无限制 scan 服务，更不会让 mini-kv 承担订单系统权威存储。
+
+## 第四十八版讲解索引补充
+```text
+98-explainjson-command-core.md
+ -> 第四十八版 EXPLAINJSON 命令解释核心：CommandExplain、explain_command、format_explain_json 和不执行目标命令的分发入口
+
+99-version-48-tests-docs.md
+ -> 第四十八版 command/line_editor_tests、真实 EXPLAINJSON smoke、README、a/48 归档和整体增删改
+```
+
+## 第四十八版补充理解
+第四十八版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v59-post-preflight-control-roadmap.md
+```
+
+计划合理点在于：
+
+```text
+mini-kv v48 只补 raw command explain 依据
+不执行被 explain 的命令
+不做 ACL
+不做事务
+不新增后台扫描
+不让 mini-kv 承担订单权威存储
+```
+
+v48 新增：
+
+```text
+EXPLAINJSON command
+```
+
+输出字段：
+
+```text
+command
+category
+mutates_store
+touches_wal
+key
+requires_value
+ttl_sensitive
+allowed_by_parser
+warnings
+```
+
+这样 Node v61 以后可以在 operation execution preview 里解释 mini-kv raw command 的风险，但仍然不能绕过 mini-kv 自己的执行边界。

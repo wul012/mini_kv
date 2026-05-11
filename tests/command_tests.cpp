@@ -209,13 +209,14 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=24") != std::string::npos);
+    assert(result.response.find("command_count=25") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("GET(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("KEYSJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("COMPACT(category=admin,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("COMMANDSJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
 
     result = processor.execute("COMMANDSJSON extra");
     assert(result.response == "ERR usage: COMMANDSJSON");
@@ -228,7 +229,39 @@ int main() {
     assert(result.response.find("\"name\":\"KEYSJSON\",\"category\":\"read\",\"mutates_store\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"LOAD\",\"category\":\"admin\",\"mutates_store\":true") != std::string::npos);
     assert(result.response.find("\"name\":\"COMMANDSJSON\",\"category\":\"meta\"") != std::string::npos);
+    assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"description\":\"Read command catalog as JSON\"") != std::string::npos);
+
+    result = processor.execute("EXPLAINJSON");
+    assert(result.response == "ERR usage: EXPLAINJSON command");
+
+    result = processor.execute("EXPLAINJSON SET orderops:1 value");
+    assert(result.response == "{\"command\":\"SET\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true,"
+                              "\"key\":\"orderops:1\",\"requires_value\":true,\"ttl_sensitive\":false,"
+                              "\"allowed_by_parser\":true,\"warnings\":[]}");
+
+    result = processor.execute("GET orderops:1");
+    assert(result.response == "(nil)");
+
+    result = processor.execute("EXPLAINJSON GET orderops:1");
+    assert(result.response == "{\"command\":\"GET\",\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false,"
+                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":false,"
+                              "\"allowed_by_parser\":true,\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON EXPIRE orderops:1 60");
+    assert(result.response == "{\"command\":\"EXPIRE\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true,"
+                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":true,"
+                              "\"allowed_by_parser\":true,\"warnings\":[]}");
+
+    result = processor.execute("EXPLAINJSON GET orderops:1 extra");
+    assert(result.response == "{\"command\":\"GET\",\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false,"
+                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":false,"
+                              "\"allowed_by_parser\":false,\"warnings\":[\"usage: GET key\"]}");
+
+    result = processor.execute("EXPLAINJSON NOPE orderops:1");
+    assert(result.response == "{\"command\":\"NOPE\",\"category\":\"unknown\",\"mutates_store\":false,"
+                              "\"touches_wal\":false,\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,"
+                              "\"allowed_by_parser\":false,\"warnings\":[\"unknown command\"]}");
 
     minikv::Store inventory_store;
     minikv::CommandProcessor inventory_processor{inventory_store};
@@ -407,6 +440,7 @@ int main() {
     assert(result.response.find("INFOJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
+    assert(result.response.find("EXPLAINJSON") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");
