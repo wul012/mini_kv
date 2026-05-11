@@ -68,6 +68,14 @@ KEYS
 std::optional<std::vector<std::string>> parse_key_list_response(std::string_view response);
 ```
 
+实现里使用 `std::istringstream` 拆分 `keys=` 后面的 key 列表，所以 `src/client_history.cpp` 也显式包含了：
+
+```cpp
+#include <sstream>
+```
+
+这不是功能逻辑变化，但它很重要：不同平台的标准库头文件间接包含不完全一致，显式包含能避免本机通过、macOS 或 MSVC CI 编译失败。
+
 它只接受 v40 定义的格式：
 
 ```text

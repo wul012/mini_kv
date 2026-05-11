@@ -5,8 +5,9 @@
 #include <filesystem>
 #include <fstream>
 #include <limits>
-#include <system_error>
+#include <sstream>
 #include <stdexcept>
+#include <system_error>
 #include <utility>
 
 namespace minikv {
