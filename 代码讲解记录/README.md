@@ -1422,3 +1422,46 @@ keep=0 时丢弃旧文件
 服务端入口只负责解析参数并把 writer 接进 `metrics_exporter` 回调。
 
 这样后续如果继续做 JSONL 指标、压缩旧日志、按时间切分，也可以优先扩展这个小模块，而不把 `server_main.cpp` 变成文件系统逻辑集中地。
+## 第四十版讲解索引补充
+```text
+82-key-listing-core.md
+ -> 第四十版 KEYS 列表命令核心：Store::keys、KEYS 输出格式、排序 live keys、metrics 归类和客户端命令补全
+
+83-version-40-tests-docs.md
+ -> 第四十版 store/command/line_editor 测试、真实 KEYS smoke、README、CMake、a/40 归档和整体增删改
+```
+
+## 第四十版补充理解
+第四十版只推进一个主题：
+
+```text
+服务端提供稳定的 key-listing command。
+```
+
+核心链路是：
+
+```text
+Store::keys()
+ -> 加锁
+ -> 清理过期 key
+ -> 收集 key
+ -> 字典序排序
+
+CommandProcessor::execute("KEYS")
+ -> 校验不能带额外参数
+ -> 返回 key_count=N keys=...
+```
+
+这个版本刻意没有继续做客户端自动刷新 key cache。
+
+原因是版本粒度要合适：
+
+```text
+v40
+ -> 服务端 KEYS 基础能力
+
+后续版本
+ -> 客户端调用 KEYS 并刷新本地 key cache
+```
+
+这样每一版都能独立验证，也不会把功能范围一下子铺太大。

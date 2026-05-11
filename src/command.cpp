@@ -45,7 +45,7 @@ std::string command_token(std::string_view text) {
 
 bool is_known_command(std::string_view command) {
     return command == "PING" || command == "SET" || command == "GET" || command == "DEL" ||
-           command == "EXPIRE" || command == "TTL" || command == "SIZE" || command == "SAVE" ||
+           command == "EXPIRE" || command == "TTL" || command == "SIZE" || command == "KEYS" || command == "SAVE" ||
            command == "LOAD" || command == "COMPACT" || command == "WALINFO" || command == "STATS" ||
            command == "STATSJSON" || command == "RESETSTATS" || command == "HEALTH" ||
            command == "HELP" || command == "EXIT" || command == "QUIT";
@@ -113,6 +113,19 @@ std::string format_yes_no(bool value) {
 
 std::string format_json_bool(bool value) {
     return value ? "true" : "false";
+}
+
+std::string format_keys(const std::vector<std::string>& keys) {
+    std::string response = "key_count=" + std::to_string(keys.size()) + " keys=";
+    bool first = true;
+    for (const auto& key : keys) {
+        if (!first) {
+            response.push_back(' ');
+        }
+        first = false;
+        response += key;
+    }
+    return response;
 }
 
 std::string json_string(std::string_view value) {
@@ -578,6 +591,14 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {std::to_string(store_.size())};
     }
 
+    if (command == "KEYS") {
+        if (has_extra_token(input)) {
+            return usage("KEYS");
+        }
+
+        return {format_keys(store_.keys())};
+    }
+
     if (command == "SAVE") {
         std::string path;
         std::getline(input >> std::ws, path);
@@ -725,6 +746,7 @@ std::string CommandProcessor::help_text() {
            "  EXPIRE key seconds\n"
            "  TTL key\n"
            "  SIZE\n"
+           "  KEYS\n"
            "  SAVE path\n"
            "  LOAD path\n"
            "  COMPACT\n"

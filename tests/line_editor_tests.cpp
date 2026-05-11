@@ -73,13 +73,14 @@ int main() {
     assert(!empty_navigator.next().has_value());
 
     minikv::LineEditorCompletion completion{
-        {"PING", "SET", "GET", "SAVE", "SIZE", "STATS", "STATSJSON", "RESETSTATS",
+        {"PING", "SET", "GET", "SAVE", "SIZE", "KEYS", "STATS", "STATSJSON", "RESETSTATS",
          "HELP", "HEALTH", "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
     assert(completion.complete("  pi", 4) == std::optional<std::string>{"  PING "});
     assert(completion.complete(":h", 2) == std::optional<std::string>{":history "});
     assert(completion.complete("HEA", 3) == std::optional<std::string>{"HEALTH "});
+    assert(completion.complete("K", 1) == std::optional<std::string>{"KEYS "});
     assert(completion.complete("E", 1) == std::optional<std::string>{"EX"});
     assert(completion.complete("R", 1) == std::optional<std::string>{"RESETSTATS "});
     assert(completion.complete("STAT", 4) == std::optional<std::string>{"STATS"});
@@ -92,7 +93,7 @@ int main() {
 
     minikv::LineEditorCompletionOptions contextual_options;
     contextual_options.command_candidates =
-        {"PING", "SET", "GET", "DEL", "EXPIRE", "TTL", "STATS", "STATSJSON", "RESETSTATS"};
+        {"PING", "SET", "GET", "DEL", "EXPIRE", "TTL", "KEYS", "STATS", "STATSJSON", "RESETSTATS"};
     contextual_options.key_candidates = {"alpha", "alpine", "name", "user:1"};
     minikv::LineEditorCompletion contextual_completion{contextual_options};
     assert(contextual_completion.complete("GET na", 6) == std::optional<std::string>{"GET name "});

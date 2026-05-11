@@ -27,6 +27,7 @@ public:
     bool erase(std::string_view key);
     bool contains(std::string_view key) const;
     std::size_t size() const;
+    std::vector<std::string> keys() const;
     void clear();
 
     bool expire(std::string_view key, std::chrono::seconds ttl);

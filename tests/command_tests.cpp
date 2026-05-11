@@ -56,6 +56,18 @@ int main() {
     result = processor.execute("SIZE");
     assert(result.response == "1");
 
+    result = processor.execute("SET alpha first");
+    assert(result.response == "OK inserted");
+
+    result = processor.execute("KEYS");
+    assert(result.response == "key_count=2 keys=alpha name");
+
+    result = processor.execute("KEYS extra");
+    assert(result.response == "ERR usage: KEYS");
+
+    result = processor.execute("DEL alpha");
+    assert(result.response == "1");
+
     result = processor.execute("DEL name");
     assert(result.response == "1");
 
@@ -282,6 +294,7 @@ int main() {
 
     result = processor.execute("HELP");
     assert(result.response.find("COMPACT") != std::string::npos);
+    assert(result.response.find("KEYS") != std::string::npos);
     assert(result.response.find("WALINFO") != std::string::npos);
     assert(result.response.find("STATS") != std::string::npos);
     assert(result.response.find("STATSJSON") != std::string::npos);

@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 39 is a runnable in-memory KV service with rotated metrics file export:
+Version 40 is a runnable in-memory KV service with a key-listing command:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -22,6 +22,7 @@ Version 39 is a runnable in-memory KV service with rotated metrics file export:
 - WAL compaction thresholds are configurable, and `WALINFO` reports compact counters and saved work
 - Runtime `STATS`, `STATSJSON`, and `HEALTH` commands expose live keys, WAL maintenance state, server connection counters, per-command counters, and latency counters
 - Runtime `RESETSTATS` clears command execution metrics without resetting data, WAL maintenance counters, or TCP connection counters
+- Runtime `KEYS` returns a sorted one-line list of currently live keys for scripts and future client cache refresh
 - Optional `--metrics-interval-ms` emits periodic structured `event=server_metrics` connection, command, and latency counters
 - Optional `--metrics-file` mirrors periodic server metrics and final stop metrics to a dedicated file for longer runs
 - Optional `--metrics-file-max-bytes` and `--metrics-file-keep` rotate and retain bounded metrics export files
@@ -197,7 +198,7 @@ TCP client local history commands:
 !N        Repeat history entry N, using 1-based indexing.
 ```
 
-When the bundled TCP client runs in an interactive terminal, it supports Tab command completion, Up/Down history navigation, Left/Right cursor movement, Home/End, Backspace, and Delete. Tab completes command prefixes such as `PI` to `PING `, `R` to `RESETSTATS `, and `:h` to `:history `; ambiguous prefixes expand only to the longest shared prefix when that prefix grows. After successful `SET` commands, the client also learns key names and can complete the key argument for `GET`, `SET`, `DEL`, `EXPIRE`, and `TTL`. With `--key-cache-file`, those learned key names are loaded on startup and saved after cache-changing commands, so key completion can carry across client sessions. When stdin is redirected or piped, it keeps the original line-by-line input behavior.
+When the bundled TCP client runs in an interactive terminal, it supports Tab command completion, Up/Down history navigation, Left/Right cursor movement, Home/End, Backspace, and Delete. Tab completes command prefixes such as `PI` to `PING `, `K` to `KEYS `, `R` to `RESETSTATS `, and `:h` to `:history `; ambiguous prefixes expand only to the longest shared prefix when that prefix grows. After successful `SET` commands, the client also learns key names and can complete the key argument for `GET`, `SET`, `DEL`, `EXPIRE`, and `TTL`. With `--key-cache-file`, those learned key names are loaded on startup and saved after cache-changing commands, so key completion can carry across client sessions. When stdin is redirected or piped, it keeps the original line-by-line input behavior.
 
 Benchmark:
 
@@ -251,6 +252,7 @@ DEL key
 EXPIRE key seconds
 TTL key
 SIZE
+KEYS
 SAVE path
 LOAD path
 COMPACT
@@ -280,6 +282,7 @@ GET name
 EXPIRE name 10
 TTL name
 SIZE
+KEYS
 SAVE data\mini-kv.snapshot
 DEL name
 LOAD data\mini-kv.snapshot
@@ -308,7 +311,7 @@ The TCP server also accepts Redis-style RESP request arrays:
 
 RESP mode returns simple strings, integers, bulk strings, null bulk strings, or errors using RESP framing. Inline mode keeps the original one-line text responses.
 
-`STATS` returns a compact key-value status line with live key count, command counters, command latency counters, per-command breakdown, WAL maintenance details when enabled, and TCP connection counters when executed through the server. `STATSJSON` returns the same operational snapshot as one JSON object, which is easier for scripts and log collectors to parse. `RESETSTATS` clears command execution metrics; a successful reset is not counted as a new command, so the next `STATS` or `STATSJSON` response starts from zero. `HEALTH` returns an `OK ...` line for quick liveness checks with the same WAL, command metric, and connection signals. `command_breakdown` uses `COMMAND:total/success/error/total_latency_ns/avg_latency_ns/max_latency_ns` entries separated by semicolons; unknown commands are grouped under `UNKNOWN`.
+`KEYS` returns currently live key names in sorted order as `key_count=N keys=...`; expired keys are pruned before the list is produced. `STATS` returns a compact key-value status line with live key count, command counters, command latency counters, per-command breakdown, WAL maintenance details when enabled, and TCP connection counters when executed through the server. `STATSJSON` returns the same operational snapshot as one JSON object, which is easier for scripts and log collectors to parse. `RESETSTATS` clears command execution metrics; a successful reset is not counted as a new command, so the next `STATS` or `STATSJSON` response starts from zero. `HEALTH` returns an `OK ...` line for quick liveness checks with the same WAL, command metric, and connection signals. `command_breakdown` uses `COMMAND:total/success/error/total_latency_ns/avg_latency_ns/max_latency_ns` entries separated by semicolons; unknown commands are grouped under `UNKNOWN`.
 
 The server prints structured lifecycle logs using key-value fields:
 
@@ -351,7 +354,7 @@ minikv_client.exe [host] [port] [timeout_ms] [--connect-retries count] [--retry-
 `--connect-retries` controls how many times the client retries after the initial connection attempt fails. `--retry-delay-ms` controls the delay between retries and defaults to 250 ms.
 The bundled client also handles local session history commands before sending data to the server: `:history`, `!!`, and `!N`. When `--history-file` is set, the client loads existing commands from that file at startup and saves the bounded history after each successful sent command.
 When `--key-cache-file` is set, the client loads remembered key names at startup, saves newly learned keys after successful `SET`, removes deleted keys after `DEL`, and clears the cache after successful `LOAD`.
-On an interactive terminal, the bundled client edits the current line locally with Tab completion, arrow keys, Home/End, Backspace, and Delete. Tab completes server command names including `STATSJSON` and `RESETSTATS`, plus local `:history`; it also completes remembered key names in the second token of `GET`, `SET`, `DEL`, `EXPIRE`, and `TTL`. Up/Down walk the same in-memory or loaded history that powers `:history`, `!!`, and `!N`. Redirected stdin still uses normal line-by-line reading for scripts and smoke tests.
+On an interactive terminal, the bundled client edits the current line locally with Tab completion, arrow keys, Home/End, Backspace, and Delete. Tab completes server command names including `KEYS`, `STATSJSON`, and `RESETSTATS`, plus local `:history`; it also completes remembered key names in the second token of `GET`, `SET`, `DEL`, `EXPIRE`, and `TTL`. Up/Down walk the same in-memory or loaded history that powers `:history`, `!!`, and `!N`. Redirected stdin still uses normal line-by-line reading for scripts and smoke tests.
 
 TTL commands:
 
@@ -416,7 +419,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, `STATS` / `STATSJSON` / `RESETSTATS` / `HEALTH`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs, metrics exporter output, active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save, persistent key cache load/save, duplicate filtering, and capacity trimming. `line_editor_tests` verifies the line editing buffer operations, command Tab completion, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client. `metrics_file_tests` verifies metrics file truncation, max-byte rotation, retained suffix files, discard-old mode, and invalid option rejection.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, `KEYS`, `STATS` / `STATSJSON` / `RESETSTATS` / `HEALTH`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs, metrics exporter output, active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save, persistent key cache load/save, duplicate filtering, and capacity trimming. `line_editor_tests` verifies the line editing buffer operations, command Tab completion including `KEYS`, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client. `metrics_file_tests` verifies metrics file truncation, max-byte rotation, retained suffix files, discard-old mode, and invalid option rejection.
 
 ## RESP protocol
 
@@ -439,5 +442,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add optional client key cache refresh from a future key-listing command.
+1. Add optional client key cache refresh using the `KEYS` command.
 2. Add optional structured JSONL metrics export for log collectors that prefer schema-stable fields.

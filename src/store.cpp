@@ -66,6 +66,20 @@ std::size_t Store::size() const {
     return data_.size();
 }
 
+std::vector<std::string> Store::keys() const {
+    std::lock_guard lock(mutex_);
+    prune_expired_locked(Clock::now());
+
+    std::vector<std::string> result;
+    result.reserve(data_.size());
+    for (const auto& item : data_) {
+        result.push_back(item.first);
+    }
+
+    std::ranges::sort(result);
+    return result;
+}
+
 void Store::clear() {
     std::lock_guard lock(mutex_);
     data_.clear();

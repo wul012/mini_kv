@@ -4,6 +4,7 @@
 #include <chrono>
 #include <string>
 #include <thread>
+#include <vector>
 
 int main() {
     using namespace std::chrono_literals;
@@ -24,6 +25,15 @@ int main() {
     assert(store.get("name") == std::optional<std::string>{"redis-ish"});
 
     assert(store.set("lang", "cpp20"));
+    assert(store.set("alpha", "first"));
+    const std::vector<std::string> expected_keys{"alpha", "lang", "name"};
+    assert(store.keys() == expected_keys);
+
+    assert(store.expire("alpha", 1s));
+    std::this_thread::sleep_for(1100ms);
+    const std::vector<std::string> expected_live_keys{"lang", "name"};
+    assert(store.keys() == expected_live_keys);
+
     const auto snapshot = store.snapshot();
     assert(snapshot.size() == 2);
     assert(snapshot[0].first == "lang");
