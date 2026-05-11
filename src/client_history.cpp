@@ -169,6 +169,112 @@ void ClientHistory::save_to_file(const std::filesystem::path& path) const {
     }
 }
 
+ClientKeyCache::ClientKeyCache(std::size_t max_entries) : max_entries_(max_entries) {
+    if (max_entries_ == 0) {
+        throw std::invalid_argument{"client key cache max_entries must be greater than zero"};
+    }
+}
+
+bool ClientKeyCache::add(std::string key) {
+    key = trim_copy(key);
+    if (key.empty() || std::ranges::find(entries_, key) != entries_.end()) {
+        return false;
+    }
+
+    entries_.push_back(std::move(key));
+    if (entries_.size() > max_entries_) {
+        entries_.erase(entries_.begin());
+    }
+    return true;
+}
+
+bool ClientKeyCache::remove(std::string_view key) {
+    const auto it = std::ranges::find(entries_, key);
+    if (it == entries_.end()) {
+        return false;
+    }
+
+    entries_.erase(it);
+    return true;
+}
+
+bool ClientKeyCache::clear() {
+    if (entries_.empty()) {
+        return false;
+    }
+
+    entries_.clear();
+    return true;
+}
+
+bool ClientKeyCache::empty() const {
+    return entries_.empty();
+}
+
+std::size_t ClientKeyCache::size() const {
+    return entries_.size();
+}
+
+const std::vector<std::string>& ClientKeyCache::entries() const {
+    return entries_;
+}
+
+std::size_t ClientKeyCache::load_from_file(const std::filesystem::path& path) {
+    std::error_code error;
+    if (!std::filesystem::exists(path, error)) {
+        if (error) {
+            throw std::runtime_error{"failed to check key cache file: " + error.message()};
+        }
+        return 0;
+    }
+
+    std::ifstream input{path};
+    if (!input) {
+        throw std::runtime_error{"failed to open key cache file for reading: " + path.string()};
+    }
+
+    std::size_t loaded = 0;
+    std::string line;
+    while (std::getline(input, line)) {
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+        if (add(std::move(line))) {
+            ++loaded;
+        }
+        line.clear();
+    }
+
+    if (input.bad()) {
+        throw std::runtime_error{"failed while reading key cache file: " + path.string()};
+    }
+
+    return loaded;
+}
+
+void ClientKeyCache::save_to_file(const std::filesystem::path& path) const {
+    if (const auto parent = path.parent_path(); !parent.empty()) {
+        std::error_code error;
+        std::filesystem::create_directories(parent, error);
+        if (error) {
+            throw std::runtime_error{"failed to create key cache directory: " + error.message()};
+        }
+    }
+
+    std::ofstream output{path, std::ios::trunc};
+    if (!output) {
+        throw std::runtime_error{"failed to open key cache file for writing: " + path.string()};
+    }
+
+    for (const auto& entry : entries_) {
+        output << entry << '\n';
+    }
+
+    if (!output) {
+        throw std::runtime_error{"failed while writing key cache file: " + path.string()};
+    }
+}
+
 ClientInputResult resolve_client_input(ClientHistory& history, std::string_view input) {
     const std::string trimmed = trim_copy(input);
     if (trimmed.empty()) {

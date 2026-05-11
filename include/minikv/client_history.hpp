@@ -38,6 +38,24 @@ private:
     std::vector<std::string> entries_;
 };
 
+class ClientKeyCache {
+public:
+    explicit ClientKeyCache(std::size_t max_entries = 1000);
+
+    bool add(std::string key);
+    bool remove(std::string_view key);
+    bool clear();
+    bool empty() const;
+    std::size_t size() const;
+    const std::vector<std::string>& entries() const;
+    std::size_t load_from_file(const std::filesystem::path& path);
+    void save_to_file(const std::filesystem::path& path) const;
+
+private:
+    std::size_t max_entries_;
+    std::vector<std::string> entries_;
+};
+
 ClientInputResult resolve_client_input(ClientHistory& history, std::string_view input);
 
 } // namespace minikv

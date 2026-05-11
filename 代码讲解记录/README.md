@@ -1046,6 +1046,12 @@ stdin 或 stdout 不是终端
 
 77-version-37-tests-docs.md
  -> 第三十七版 tcp_server_tests、真实 metrics file smoke、README、CMake、a/37 归档和整体增删改
+
+78-client-key-cache-persistence.md
+ -> 第三十八版客户端 Key Cache 持久化核心：ClientKeyCache、--key-cache-file、key cache load/save 和跨会话补全候选
+
+79-version-38-tests-docs.md
+ -> 第三十八版 client_history_tests、真实 key cache 双会话 smoke、README、CMake、a/38 归档和整体增删改
 ```
 
 ## 第三十五版补充理解
@@ -1307,3 +1313,69 @@ std::ios::trunc
 保留最近 N 份
 压缩旧文件
 ```
+
+## 第三十八版讲解索引补充
+
+```text
+78-client-key-cache-persistence.md
+ -> 第三十八版客户端 Key Cache 持久化核心：ClientKeyCache、--key-cache-file、key cache load/save 和跨会话补全候选
+
+79-version-38-tests-docs.md
+ -> 第三十八版 client_history_tests、真实 key cache 双会话 smoke、README、CMake、a/38 归档和整体增删改
+```
+
+## 第三十八版补充理解
+
+第三十八版把客户端 key 补全从“本会话可用”推进到“可选跨会话可用”：
+
+```text
+不传 --key-cache-file
+ -> 和 v36 一样，只在当前客户端进程里记住 key
+
+传 --key-cache-file
+ -> 启动时加载 key
+ -> 成功 SET / DEL / LOAD 后保存更新
+```
+
+新核心类是：
+
+```text
+ClientKeyCache
+```
+
+它负责：
+
+```text
+去重
+容量裁剪
+load_from_file
+save_to_file
+add / remove / clear 返回是否发生变化
+```
+
+客户端更新规则保持保守：
+
+```text
+SET key value + OK ...
+ -> 记住 key
+
+DEL key + 1 / 0
+ -> 移除 key
+
+LOAD path + OK loaded ...
+ -> 清空 key cache
+```
+
+真实 smoke 用两个客户端会话验证：
+
+```text
+session 1 写入 alpha / alpine
+ -> client.keys 保存 alpha / alpine
+
+session 2 再启动
+ -> 加载 2 个 key
+ -> DEL alpha
+ -> client.keys 只剩 alpine
+```
+
+这样 v38 不改变服务端协议，也不需要全量 key 查询命令，就先把日常交互体验往前推了一步。

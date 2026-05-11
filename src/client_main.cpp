@@ -152,6 +152,7 @@ struct ClientOptions {
     int connect_retries = 0;
     std::chrono::milliseconds retry_delay{250};
     std::optional<std::filesystem::path> history_file;
+    std::optional<std::filesystem::path> key_cache_file;
 };
 
 class UsageError : public std::runtime_error {
@@ -232,40 +233,28 @@ std::optional<std::string> key_argument(std::string_view line) {
     return key;
 }
 
-void add_known_key(std::vector<std::string>& keys, const std::string& key) {
-    if (key.empty() || std::ranges::find(keys, key) != keys.end()) {
-        return;
-    }
-    keys.push_back(key);
-}
-
-void remove_known_key(std::vector<std::string>& keys, const std::string& key) {
-    const auto it = std::ranges::find(keys, key);
-    if (it != keys.end()) {
-        keys.erase(it);
-    }
-}
-
-void update_known_keys(std::vector<std::string>& keys, std::string_view command_line, std::string_view response) {
+bool update_known_keys(minikv::ClientKeyCache& keys, std::string_view command_line, std::string_view response) {
     const std::string command = first_token(command_line);
 
     if (command == "SET" && response.rfind("OK ", 0) == 0) {
         if (const auto key = key_argument(command_line)) {
-            add_known_key(keys, *key);
+            return keys.add(*key);
         }
-        return;
+        return false;
     }
 
     if (command == "DEL" && (response == "1" || response == "0")) {
         if (const auto key = key_argument(command_line)) {
-            remove_known_key(keys, *key);
+            return keys.remove(*key);
         }
-        return;
+        return false;
     }
 
     if (command == "LOAD" && response.rfind("OK loaded ", 0) == 0) {
-        keys.clear();
+        return keys.clear();
     }
+
+    return false;
 }
 
 bool send_all(SocketHandle socket, std::string_view data) {
@@ -409,7 +398,7 @@ SocketGuard connect_with_retries(const ClientOptions& options) {
 void print_usage(const char* program) {
     std::cerr << "Usage: " << program
               << " [host] [port] [timeout_ms] [--connect-retries count] [--retry-delay-ms ms]"
-                 " [--history-file path]\n";
+                 " [--history-file path] [--key-cache-file path]\n";
 }
 
 bool print_response(SocketHandle socket, std::string_view command, std::string* first_response = nullptr) {
@@ -468,6 +457,17 @@ ClientOptions parse_options(int argc, char** argv) {
             continue;
         }
 
+        if (argument == "--key-cache-file") {
+            if (++index >= argc) {
+                throw UsageError{"missing value for --key-cache-file"};
+            }
+            if (argv[index][0] == '\0') {
+                throw UsageError{"key-cache-file must not be empty"};
+            }
+            options.key_cache_file = std::filesystem::path{argv[index]};
+            continue;
+        }
+
         if (!argument.empty() && argument.front() == '-') {
             throw UsageError{"unknown option: " + std::string{argument}};
         }
@@ -505,18 +505,23 @@ int main(int argc, char** argv) {
         }
 
         minikv::ClientHistory history;
-        std::vector<std::string> known_keys;
+        minikv::ClientKeyCache key_cache;
         if (options.history_file.has_value()) {
             const std::size_t loaded = history.load_from_file(*options.history_file);
             std::cout << "history file: " << options.history_file->string() << " (" << history.size()
                       << " entries available, " << loaded << " loaded)\n";
+        }
+        if (options.key_cache_file.has_value()) {
+            const std::size_t loaded = key_cache.load_from_file(*options.key_cache_file);
+            std::cout << "key cache file: " << options.key_cache_file->string() << " (" << key_cache.size()
+                      << " keys available, " << loaded << " loaded)\n";
         }
 
         std::string line;
         while (true) {
             const std::string prompt = "mini-kv@" + options.host + ':' + std::to_string(options.port) + "> ";
             minikv::LineEditorCompletionOptions completion_options = minikv::default_client_completion_options();
-            completion_options.key_candidates = known_keys;
+            completion_options.key_candidates = key_cache.entries();
             if (!minikv::read_client_line(prompt, history.entries(), completion_options, line)) {
                 std::cout << '\n';
                 break;
@@ -545,10 +550,13 @@ int main(int argc, char** argv) {
                 return 1;
             }
 
-            update_known_keys(known_keys, resolved.command, response);
+            const bool key_cache_changed = update_known_keys(key_cache, resolved.command, response);
 
             if (options.history_file.has_value()) {
                 history.save_to_file(*options.history_file);
+            }
+            if (key_cache_changed && options.key_cache_file.has_value()) {
+                key_cache.save_to_file(*options.key_cache_file);
             }
 
             const std::string command = first_token(resolved.command);

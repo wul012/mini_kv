@@ -105,6 +105,58 @@ int main() {
     assert(clipped_history.load_from_file(manual_file) == 4);
     assert((clipped_history.entries() == std::vector<std::string>{"GET loaded", "SIZE"}));
 
+    minikv::ClientKeyCache key_cache{3};
+    assert(key_cache.empty());
+    assert(key_cache.add("alpha"));
+    assert(!key_cache.add("alpha"));
+    assert(key_cache.add(" beta "));
+    assert((key_cache.entries() == std::vector<std::string>{"alpha", "beta"}));
+    assert(!key_cache.remove("missing"));
+    assert(key_cache.remove("alpha"));
+    assert((key_cache.entries() == std::vector<std::string>{"beta"}));
+    assert(key_cache.clear());
+    assert(!key_cache.clear());
+
+    bool rejected_zero_key_capacity = false;
+    try {
+        minikv::ClientKeyCache invalid{0};
+    } catch (const std::invalid_argument&) {
+        rejected_zero_key_capacity = true;
+    }
+    assert(rejected_zero_key_capacity);
+
+    minikv::ClientKeyCache missing_key_cache{3};
+    assert(missing_key_cache.load_from_file(temp_dir / "missing.keys") == 0);
+    assert(missing_key_cache.empty());
+
+    minikv::ClientKeyCache persistent_key_cache{3};
+    assert(persistent_key_cache.add("alpha"));
+    assert(persistent_key_cache.add("alpine"));
+    assert(persistent_key_cache.add("name"));
+    assert(persistent_key_cache.add("user:1"));
+
+    const auto saved_keys_file = temp_dir / "nested" / "client.keys";
+    persistent_key_cache.save_to_file(saved_keys_file);
+    assert(std::filesystem::exists(saved_keys_file));
+
+    minikv::ClientKeyCache restored_key_cache{5};
+    assert(restored_key_cache.load_from_file(saved_keys_file) == 3);
+    assert((restored_key_cache.entries() == std::vector<std::string>{"alpine", "name", "user:1"}));
+
+    const auto manual_keys_file = temp_dir / "manual.keys";
+    {
+        std::ofstream manual{manual_keys_file};
+        manual << "alpha\n";
+        manual << "\n";
+        manual << "alpha\r\n";
+        manual << "name\n";
+        manual << "user:1\n";
+    }
+
+    minikv::ClientKeyCache clipped_key_cache{2};
+    assert(clipped_key_cache.load_from_file(manual_keys_file) == 3);
+    assert((clipped_key_cache.entries() == std::vector<std::string>{"name", "user:1"}));
+
     std::filesystem::remove_all(temp_dir);
 
     return 0;
