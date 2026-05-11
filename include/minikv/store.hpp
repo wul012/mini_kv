@@ -28,6 +28,7 @@ public:
     bool contains(std::string_view key) const;
     std::size_t size() const;
     std::vector<std::string> keys() const;
+    std::vector<std::string> keys_with_prefix(std::string_view prefix) const;
     void clear();
 
     bool expire(std::string_view key, std::chrono::seconds ttl);

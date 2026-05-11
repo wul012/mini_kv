@@ -128,6 +128,19 @@ std::string format_keys(const std::vector<std::string>& keys) {
     return response;
 }
 
+std::string format_prefixed_keys(std::string_view prefix, const std::vector<std::string>& keys) {
+    std::string response = "key_count=" + std::to_string(keys.size()) + " prefix=" + std::string{prefix} + " keys=";
+    bool first = true;
+    for (const auto& key : keys) {
+        if (!first) {
+            response.push_back(' ');
+        }
+        first = false;
+        response += key;
+    }
+    return response;
+}
+
 std::string json_string(std::string_view value) {
     constexpr char hex[] = "0123456789ABCDEF";
     std::string result = "\"";
@@ -592,8 +605,13 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
     }
 
     if (command == "KEYS") {
-        if (has_extra_token(input)) {
-            return usage("KEYS");
+        std::string prefix;
+        if (input >> prefix) {
+            if (has_extra_token(input)) {
+                return usage("KEYS [prefix]");
+            }
+
+            return {format_prefixed_keys(prefix, store_.keys_with_prefix(prefix))};
         }
 
         return {format_keys(store_.keys())};
@@ -746,7 +764,7 @@ std::string CommandProcessor::help_text() {
            "  EXPIRE key seconds\n"
            "  TTL key\n"
            "  SIZE\n"
-           "  KEYS\n"
+           "  KEYS [prefix]\n"
            "  SAVE path\n"
            "  LOAD path\n"
            "  COMPACT\n"

@@ -80,6 +80,21 @@ std::vector<std::string> Store::keys() const {
     return result;
 }
 
+std::vector<std::string> Store::keys_with_prefix(std::string_view prefix) const {
+    std::lock_guard lock(mutex_);
+    prune_expired_locked(Clock::now());
+
+    std::vector<std::string> result;
+    for (const auto& item : data_) {
+        if (item.first.rfind(prefix, 0) == 0) {
+            result.push_back(item.first);
+        }
+    }
+
+    std::ranges::sort(result);
+    return result;
+}
+
 void Store::clear() {
     std::lock_guard lock(mutex_);
     data_.clear();

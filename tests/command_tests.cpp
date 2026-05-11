@@ -62,10 +62,22 @@ int main() {
     result = processor.execute("KEYS");
     assert(result.response == "key_count=2 keys=alpha name");
 
-    result = processor.execute("KEYS extra");
-    assert(result.response == "ERR usage: KEYS");
+    result = processor.execute("SET alpine mountain");
+    assert(result.response == "OK inserted");
+
+    result = processor.execute("KEYS alp");
+    assert(result.response == "key_count=2 prefix=alp keys=alpha alpine");
+
+    result = processor.execute("KEYS z");
+    assert(result.response == "key_count=0 prefix=z keys=");
+
+    result = processor.execute("KEYS alp extra");
+    assert(result.response == "ERR usage: KEYS [prefix]");
 
     result = processor.execute("DEL alpha");
+    assert(result.response == "1");
+
+    result = processor.execute("DEL alpine");
     assert(result.response == "1");
 
     result = processor.execute("DEL name");

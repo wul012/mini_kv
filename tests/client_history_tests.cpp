@@ -173,6 +173,7 @@ int main() {
     assert(parsed_keys->empty());
 
     assert(!minikv::parse_key_list_response("ERR usage: KEYS").has_value());
+    assert(!minikv::parse_key_list_response("key_count=2 prefix=alp keys=alpha alpine").has_value());
     assert(!minikv::parse_key_list_response("key_count=two keys=alpha beta").has_value());
     assert(!minikv::parse_key_list_response("key_count=1 keys=alpha beta").has_value());
 

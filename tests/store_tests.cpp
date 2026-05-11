@@ -26,21 +26,30 @@ int main() {
 
     assert(store.set("lang", "cpp20"));
     assert(store.set("alpha", "first"));
-    const std::vector<std::string> expected_keys{"alpha", "lang", "name"};
-    assert(store.keys() == expected_keys);
+    assert(store.set("alpine", "mountain"));
+    const std::vector<std::string> expected_all_keys{"alpha", "alpine", "lang", "name"};
+    assert(store.keys() == expected_all_keys);
+
+    const std::vector<std::string> expected_alpha_prefix_keys{"alpha", "alpine"};
+    assert(store.keys_with_prefix("alp") == expected_alpha_prefix_keys);
+    assert(store.keys_with_prefix("missing").empty());
 
     assert(store.expire("alpha", 1s));
     std::this_thread::sleep_for(1100ms);
-    const std::vector<std::string> expected_live_keys{"lang", "name"};
+    const std::vector<std::string> expected_live_keys{"alpine", "lang", "name"};
     assert(store.keys() == expected_live_keys);
+    const std::vector<std::string> expected_live_prefix_keys{"alpine"};
+    assert(store.keys_with_prefix("alp") == expected_live_prefix_keys);
 
     const auto snapshot = store.snapshot();
-    assert(snapshot.size() == 2);
-    assert(snapshot[0].first == "lang");
-    assert(snapshot[1].first == "name");
+    assert(snapshot.size() == 3);
+    assert(snapshot[0].first == "alpine");
+    assert(snapshot[1].first == "lang");
+    assert(snapshot[2].first == "name");
 
     assert(store.erase("name"));
     assert(!store.erase("name"));
+    assert(store.erase("alpine"));
     assert(store.size() == 1);
 
     store.clear();

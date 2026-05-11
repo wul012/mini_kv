@@ -1543,3 +1543,45 @@ metrics_exporter
 ```
 
 这样 v42 完成了 Roadmap 的 JSONL metrics export，又没有破坏已有日志、测试和用户习惯。
+
+## 第四十三版讲解索引补充
+```text
+88-keys-prefix-filter.md
+ -> 第四十三版 KEYS 前缀过滤核心：Store::keys_with_prefix、KEYS [prefix]、format_prefixed_keys 和客户端缓存保护
+
+89-version-43-tests-docs.md
+ -> 第四十三版 store/command/client_history_tests、真实 prefix KEYS smoke、README、CMake、a/43 归档和整体增删改
+```
+
+## 第四十三版补充理解
+第四十三版做的是：
+
+```text
+KEYS
+ -> 仍然返回全量 key_count=N keys=...
+
+KEYS prefix
+ -> 返回 key_count=N prefix=prefix keys=...
+```
+
+这里最重要的点不是过滤本身，而是响应格式区分。
+
+原因是 v41 已经让 bundled client 在看到合法全量 `KEYS` 响应时刷新本地 key cache：
+
+```text
+key_count=N keys=...
+```
+
+如果过滤响应也长得一样，客户端就会把全量 cache 错误替换成子集。
+
+所以 v43 的规则是：
+
+```text
+无参数 KEYS
+ -> 可刷新全量 key cache
+
+带 prefix 的 KEYS
+ -> 只显示过滤结果，不刷新全量 key cache
+```
+
+这样既完成了 Roadmap 的 prefix matching，也保护了之前版本的客户端体验。
