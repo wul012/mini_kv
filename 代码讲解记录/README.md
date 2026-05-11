@@ -1040,6 +1040,12 @@ stdin 或 stdout 不是终端
 
 75-version-36-tests-docs.md
  -> 第三十六版 line_editor_tests、真实 client key smoke、README、CMake、a/36 归档和整体增删改
+
+76-server-metrics-file-export.md
+ -> 第三十七版 Server Metrics 文件导出核心：MetricsExportHandler、export_metrics_event、--metrics-file 和 server_metrics 文件落盘
+
+77-version-37-tests-docs.md
+ -> 第三十七版 tcp_server_tests、真实 metrics file smoke、README、CMake、a/37 归档和整体增删改
 ```
 
 ## 第三十五版补充理解
@@ -1222,4 +1228,82 @@ key 大小写敏感
 stdin 或 stdout 不是终端
  -> fallback_read_line
  -> std::getline
+```
+
+## 第三十七版讲解索引补充
+
+```text
+76-server-metrics-file-export.md
+ -> 第三十七版 Server Metrics 文件导出核心：MetricsExportHandler、export_metrics_event、--metrics-file 和 server_metrics 文件落盘
+
+77-version-37-tests-docs.md
+ -> 第三十七版 tcp_server_tests、真实 metrics file smoke、README、CMake、a/37 归档和整体增删改
+```
+
+## 第三十七版补充理解
+
+第三十七版把服务端指标从“能打印”推进到“能保存”：
+
+```text
+stdout
+ -> 现场看日志
+
+metrics file
+ -> 长跑后复盘
+```
+
+核心新开关：
+
+```text
+--metrics-file path
+```
+
+它和已有的周期采样开关配套使用：
+
+```text
+--metrics-interval-ms 10000 --metrics-file data/server.metrics.log
+```
+
+导出的内容保持和 `event=server_metrics` 一致：
+
+```text
+active_connections
+total_connections
+peak_connections
+total_commands
+successful_commands
+error_commands
+total_latency_ns
+avg_latency_ns
+max_latency_ns
+command_breakdown
+metrics_interval_ms
+```
+
+`TcpServer::Options` 里把普通日志和指标导出拆开：
+
+```text
+logger
+ -> 所有生命周期日志
+
+metrics_exporter
+ -> server_metrics / tcp_stop
+```
+
+所以连接建立、连接关闭这类事件仍然只走普通日志，不会进入 metrics file。
+
+真实运行时，文件打开策略是：
+
+```text
+std::ios::trunc
+```
+
+也就是每次 server 启动生成一份新的本轮指标文件。
+后续如果要支持长时间生产式留存，可以继续做：
+
+```text
+按大小切分
+按时间切分
+保留最近 N 份
+压缩旧文件
 ```

@@ -142,6 +142,13 @@ void log_event(const TcpServer::Options& options, const std::string& message) {
     }
 }
 
+void export_metrics_event(const TcpServer::Options& options, const std::string& message) {
+    log_event(options, message);
+    if (options.metrics_exporter) {
+        options.metrics_exporter(message);
+    }
+}
+
 std::string endpoint_fields(const TcpServer::Options& options, std::uint16_t bound_port) {
     return "host=" + options.host + " port=" + std::to_string(bound_port);
 }
@@ -568,10 +575,10 @@ void TcpServer::run() {
         if (metrics_enabled) {
             const auto now = std::chrono::steady_clock::now();
             if (now >= next_metrics_log) {
-                log_event(options_, "event=server_metrics " + endpoint + " " +
-                                        metrics_fields(connection_tracker_->stats(),
-                                                       command_metrics_tracker_->stats(),
-                                                       options_.metrics_log_interval));
+                export_metrics_event(options_, "event=server_metrics " + endpoint + " " +
+                                                    metrics_fields(connection_tracker_->stats(),
+                                                                   command_metrics_tracker_->stats(),
+                                                                   options_.metrics_log_interval));
                 do {
                     next_metrics_log += options_.metrics_log_interval;
                 } while (next_metrics_log <= now);
@@ -610,8 +617,9 @@ void TcpServer::run() {
             .detach();
     }
 
-    log_event(options_, "event=tcp_stop " + endpoint + " " + stats_fields(connection_tracker_->stats()) +
-                            " " + command_metrics_fields(command_metrics_tracker_->stats()));
+    export_metrics_event(options_, "event=tcp_stop " + endpoint + " " +
+                                       stats_fields(connection_tracker_->stats()) + " " +
+                                       command_metrics_fields(command_metrics_tracker_->stats()));
 }
 
 } // namespace minikv

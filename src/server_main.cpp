@@ -7,10 +7,11 @@
 #include <cstddef>
 #include <cstdint>
 #include <exception>
+#include <fstream>
 #include <iostream>
 #include <limits>
-#include <optional>
 #include <mutex>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -76,7 +77,7 @@ void print_usage(const char* program) {
               << " [port] [host] [wal_path] [--repair-wal] [--auto-compact-wal]"
                  " [--wal-compact-min-records count] [--wal-compact-record-ratio ratio]"
                  " [--wal-compact-min-bytes bytes] [--max-request-bytes bytes]"
-                 " [--accept-poll-ms ms] [--metrics-interval-ms ms]\n";
+                 " [--accept-poll-ms ms] [--metrics-interval-ms ms] [--metrics-file path]\n";
 }
 
 void log_wal_replay(const minikv::WriteAheadLog& wal, const minikv::WalReplayReport& replay) {
@@ -159,6 +160,7 @@ int main(int argc, char** argv) {
         bool repair_wal = false;
         bool auto_compact_wal = false;
         bool custom_wal_options = false;
+        std::optional<std::string> metrics_file_path;
         minikv::WalMaintenanceOptions wal_options;
         for (int index = 1; index < argc; ++index) {
             const std::string_view argument = argv[index];
@@ -186,6 +188,15 @@ int main(int argc, char** argv) {
                     return 2;
                 }
                 options.metrics_log_interval = parse_positive_milliseconds(argv[index], "metrics-interval-ms");
+                continue;
+            }
+
+            if (argument == "--metrics-file") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                metrics_file_path = argv[index];
                 continue;
             }
 
@@ -253,6 +264,22 @@ int main(int argc, char** argv) {
             return 2;
         }
 
+        std::ofstream metrics_file;
+        std::mutex metrics_file_mutex;
+        if (metrics_file_path.has_value()) {
+            metrics_file.open(*metrics_file_path, std::ios::out | std::ios::trunc);
+            if (!metrics_file) {
+                std::cerr << "fatal: cannot open metrics file " << quote_value(*metrics_file_path) << '\n';
+                return 1;
+            }
+
+            options.metrics_exporter = [&metrics_file, &metrics_file_mutex](const std::string& message) {
+                std::lock_guard lock{metrics_file_mutex};
+                metrics_file << message << '\n';
+                metrics_file.flush();
+            };
+        }
+
         minikv::Store store;
         std::optional<minikv::WriteAheadLog> wal;
 
@@ -287,6 +314,7 @@ int main(int argc, char** argv) {
                   << " protocol=inline,resp max_request_bytes=" << options.max_request_bytes
                   << " accept_poll_ms=" << options.accept_poll_interval.count()
                   << " metrics_interval_ms=" << options.metrics_log_interval.count()
+                  << " metrics_file=" << quote_value(metrics_file_path.value_or("none"))
                   << " auto_compact_wal=" << true_false(options.auto_compact_wal) << '\n';
         std::cout << "event=server_hint command=" << quote_value("SET name mini-kv") << '\n';
 

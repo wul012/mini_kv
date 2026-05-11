@@ -26,6 +26,7 @@ class TcpServer {
 public:
     struct Options {
         using LogHandler = std::function<void(const std::string&)>;
+        using MetricsExportHandler = std::function<void(const std::string&)>;
         using StopPredicate = std::function<bool()>;
 
         std::string host = "0.0.0.0";
@@ -37,6 +38,7 @@ public:
         bool auto_compact_wal = false;
         StopPredicate should_stop;
         LogHandler logger;
+        MetricsExportHandler metrics_exporter;
     };
 
     explicit TcpServer(Store& store, Options options);

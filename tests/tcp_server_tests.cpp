@@ -248,9 +248,14 @@ int main() {
 
     std::mutex logs_mutex;
     std::vector<std::string> logs;
+    std::vector<std::string> metrics_exports;
     options.logger = [&](const std::string& message) {
         std::lock_guard lock{logs_mutex};
         logs.push_back(message);
+    };
+    options.metrics_exporter = [&](const std::string& message) {
+        std::lock_guard lock{logs_mutex};
+        metrics_exports.push_back(message);
     };
 
     minikv::TcpServer server{store, options};
@@ -439,6 +444,10 @@ int main() {
     assert(contains_log(logs, "avg_latency_ns="));
     assert(contains_log(logs, "command_breakdown="));
     assert(contains_log(logs, "event=tcp_stop"));
+    assert(contains_log(metrics_exports, "event=server_metrics"));
+    assert(contains_log(metrics_exports, "metrics_interval_ms=20"));
+    assert(contains_log(metrics_exports, "event=tcp_stop"));
+    assert(!contains_log(metrics_exports, "event=tcp_client_accepted"));
 
     minikv::Store localhost_store;
     minikv::TcpServer::Options localhost_options;

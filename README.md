@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 36 is a runnable in-memory KV service with client-side key completion:
+Version 37 is a runnable in-memory KV service with optional server metrics file export:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -23,6 +23,7 @@ Version 36 is a runnable in-memory KV service with client-side key completion:
 - Runtime `STATS`, `STATSJSON`, and `HEALTH` commands expose live keys, WAL maintenance state, server connection counters, per-command counters, and latency counters
 - Runtime `RESETSTATS` clears command execution metrics without resetting data, WAL maintenance counters, or TCP connection counters
 - Optional `--metrics-interval-ms` emits periodic structured `event=server_metrics` connection, command, and latency counters
+- Optional `--metrics-file` mirrors periodic server metrics and final stop metrics to a dedicated file for longer runs
 - Manual snapshots with `SAVE` and `LOAD`
 - Snapshot load rejects corrupt files without replacing the current store
 - Atomic snapshot saves write a temporary file before replacing the target snapshot
@@ -136,6 +137,12 @@ TCP server with periodic metrics logs:
 
 ```powershell
 .\build\Debug\minikv_server.exe 6379 127.0.0.1 --metrics-interval-ms 10000
+```
+
+TCP server with metrics file export:
+
+```powershell
+.\build\Debug\minikv_server.exe 6379 127.0.0.1 --metrics-interval-ms 10000 --metrics-file data\server.metrics.log
 ```
 
 TCP server bound through hostname resolution:
@@ -309,11 +316,12 @@ TCP server options:
 minikv_server.exe [port] [host] [wal_path] [--repair-wal] [--auto-compact-wal]
                   [--wal-compact-min-records count] [--wal-compact-record-ratio ratio]
                   [--wal-compact-min-bytes bytes] [--max-request-bytes bytes]
-                  [--accept-poll-ms ms] [--metrics-interval-ms ms]
+                  [--accept-poll-ms ms] [--metrics-interval-ms ms] [--metrics-file path]
 ```
 
 `--max-request-bytes` limits the buffered bytes for one pending TCP request. Inline over-limit requests return `ERR line too long`; RESP over-limit requests return `-ERR request too long`.
 `--metrics-interval-ms` enables periodic `event=server_metrics` logs. It is disabled by default and reports active, total, and peak connection counters plus command totals, error totals, latency counters, and per-command breakdown when enabled.
+`--metrics-file` writes the same periodic `event=server_metrics` lines, plus the final `event=tcp_stop` snapshot, to a dedicated file. The file is truncated when the server starts and flushed after each exported metrics line.
 
 TCP client options:
 
@@ -390,7 +398,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, `STATS` / `STATSJSON` / `RESETSTATS` / `HEALTH`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs and active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming. `line_editor_tests` verifies the line editing buffer operations, command Tab completion, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, `STATS` / `STATSJSON` / `RESETSTATS` / `HEALTH`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs, metrics exporter output, active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save and capacity trimming. `line_editor_tests` verifies the line editing buffer operations, command Tab completion, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client.
 
 ## RESP protocol
 
@@ -413,5 +421,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add optional metrics file export for longer benchmark or soak-test runs.
-2. Add optional persisted client key cache for cross-session key completion.
+1. Add optional persisted client key cache for cross-session key completion.
+2. Add retention or rotation controls for long-running metrics export files.
