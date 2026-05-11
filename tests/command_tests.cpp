@@ -75,6 +75,18 @@ int main() {
     result = processor.execute("KEYS alp extra");
     assert(result.response == "ERR usage: KEYS [prefix]");
 
+    result = processor.execute("KEYSJSON extra more");
+    assert(result.response == "ERR usage: KEYSJSON [prefix]");
+
+    result = processor.execute("KEYSJSON");
+    assert(result.response == "{\"prefix\":null,\"key_count\":3,\"keys\":[\"alpha\",\"alpine\",\"name\"],\"truncated\":false,\"limit\":1000}");
+
+    result = processor.execute("KEYSJSON alp");
+    assert(result.response == "{\"prefix\":\"alp\",\"key_count\":2,\"keys\":[\"alpha\",\"alpine\"],\"truncated\":false,\"limit\":1000}");
+
+    result = processor.execute("KEYSJSON z");
+    assert(result.response == "{\"prefix\":\"z\",\"key_count\":0,\"keys\":[],\"truncated\":false,\"limit\":1000}");
+
     result = processor.execute("DEL alpha");
     assert(result.response == "1");
 
@@ -197,10 +209,11 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=23") != std::string::npos);
+    assert(result.response.find("command_count=24") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("GET(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find("KEYSJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("COMPACT(category=admin,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("COMMANDSJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
 
@@ -212,9 +225,22 @@ int main() {
     assert(result.response.find("\"name\":\"PING\",\"category\":\"meta\",\"mutates_store\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"SET\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true") != std::string::npos);
     assert(result.response.find("\"name\":\"GET\",\"category\":\"read\",\"mutates_store\":false") != std::string::npos);
+    assert(result.response.find("\"name\":\"KEYSJSON\",\"category\":\"read\",\"mutates_store\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"LOAD\",\"category\":\"admin\",\"mutates_store\":true") != std::string::npos);
     assert(result.response.find("\"name\":\"COMMANDSJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"description\":\"Read command catalog as JSON\"") != std::string::npos);
+
+    minikv::Store inventory_store;
+    minikv::CommandProcessor inventory_processor{inventory_store};
+    for (int index = 0; index < 1002; ++index) {
+        result = inventory_processor.execute("SET bulk:" + std::to_string(index) + " value");
+        assert(result.response == "OK inserted");
+    }
+    result = inventory_processor.execute("KEYSJSON bulk:");
+    assert(result.response.find("\"prefix\":\"bulk:\"") != std::string::npos);
+    assert(result.response.find("\"key_count\":1000") != std::string::npos);
+    assert(result.response.find("\"truncated\":true") != std::string::npos);
+    assert(result.response.find("\"limit\":1000") != std::string::npos);
 
     minikv::CommandProcessorOptions stats_options;
     stats_options.connection_stats = [] {
@@ -371,6 +397,7 @@ int main() {
     result = processor.execute("HELP");
     assert(result.response.find("COMPACT") != std::string::npos);
     assert(result.response.find("KEYS") != std::string::npos);
+    assert(result.response.find("KEYSJSON") != std::string::npos);
     assert(result.response.find("WALINFO") != std::string::npos);
     assert(result.response.find("STATS") != std::string::npos);
     assert(result.response.find("STATSJSON") != std::string::npos);

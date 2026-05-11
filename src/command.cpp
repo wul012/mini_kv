@@ -62,6 +62,7 @@ constexpr CommandCatalogEntry command_catalog[] = {
     {"TTL", "read", false, false, true, "Read a key TTL state"},
     {"SIZE", "read", false, false, true, "Return the live key count"},
     {"KEYS", "read", false, false, true, "List live keys, optionally filtered by prefix"},
+    {"KEYSJSON", "read", false, false, true, "List live keys as JSON, optionally filtered by prefix"},
     {"SAVE", "admin", false, false, true, "Save a snapshot file"},
     {"LOAD", "admin", true, false, true, "Load a snapshot file into the store"},
     {"COMPACT", "admin", false, true, true, "Compact the write-ahead log"},
@@ -182,6 +183,8 @@ std::string format_prefixed_keys(std::string_view prefix, const std::vector<std:
     return response;
 }
 
+constexpr std::size_t key_inventory_limit = 1000;
+
 std::string json_string(std::string_view value) {
     constexpr char hex[] = "0123456789ABCDEF";
     std::string result = "\"";
@@ -221,6 +224,34 @@ std::string json_string(std::string_view value) {
     }
     result.push_back('"');
     return result;
+}
+
+std::string format_keys_json(std::optional<std::string_view> prefix, std::vector<std::string> keys) {
+    bool truncated = false;
+    if (keys.size() > key_inventory_limit) {
+        keys.resize(key_inventory_limit);
+        truncated = true;
+    }
+
+    std::string response = "{\"prefix\":";
+    if (prefix.has_value()) {
+        response += json_string(*prefix);
+    } else {
+        response += "null";
+    }
+
+    response += ",\"key_count\":" + std::to_string(keys.size()) + ",\"keys\":[";
+    bool first = true;
+    for (const auto& key : keys) {
+        if (!first) {
+            response += ",";
+        }
+        first = false;
+        response += json_string(key);
+    }
+    response += "],\"truncated\":" + format_json_bool(truncated) +
+                ",\"limit\":" + std::to_string(key_inventory_limit) + "}";
+    return response;
 }
 
 std::string format_commands() {
@@ -753,6 +784,19 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_keys(store_.keys())};
     }
 
+    if (command == "KEYSJSON") {
+        std::string prefix;
+        if (input >> prefix) {
+            if (has_extra_token(input)) {
+                return usage("KEYSJSON [prefix]");
+            }
+
+            return {format_keys_json(prefix, store_.keys_with_prefix(prefix))};
+        }
+
+        return {format_keys_json(std::nullopt, store_.keys())};
+    }
+
     if (command == "SAVE") {
         std::string path;
         std::getline(input >> std::ws, path);
@@ -933,6 +977,7 @@ std::string CommandProcessor::help_text() {
            "  TTL key\n"
            "  SIZE\n"
            "  KEYS [prefix]\n"
+           "  KEYSJSON [prefix]\n"
            "  SAVE path\n"
            "  LOAD path\n"
            "  COMPACT\n"

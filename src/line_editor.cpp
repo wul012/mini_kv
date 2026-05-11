@@ -517,10 +517,10 @@ KeyEvent read_key() {
 
 LineEditorCompletionOptions default_client_completion_options() {
     LineEditorCompletionOptions options;
-    options.command_candidates = {"PING",    "SET",      "GET",    "DEL",       "EXPIRE",   "TTL",      "SIZE", "KEYS",
-                                  "SAVE",    "LOAD",     "COMPACT", "COMMANDS",  "COMMANDSJSON", "WALINFO", "STATS",
-                                  "STATSJSON", "RESETSTATS", "HEALTH", "INFO", "INFOJSON", "HELP", "EXIT", "QUIT",
-                                  ":history"};
+    options.command_candidates = {"PING",       "SET",      "GET",    "DEL",       "EXPIRE",   "TTL",      "SIZE",
+                                  "KEYS",       "KEYSJSON", "SAVE",   "LOAD",      "COMPACT",  "COMMANDS", "COMMANDSJSON",
+                                  "WALINFO",    "STATS",    "STATSJSON", "RESETSTATS", "HEALTH", "INFO", "INFOJSON",
+                                  "HELP",       "EXIT",     "QUIT",   ":history"};
     return options;
 }
 

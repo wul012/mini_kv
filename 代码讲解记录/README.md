@@ -1733,3 +1733,55 @@ command catalog available
 ```
 
 但 mini-kv 自己仍然保持基础设施实验位，不承担订单、库存、支付的权威存储。
+
+## 第四十七版讲解索引补充
+```text
+96-keysjson-inventory-core.md
+ -> 第四十七版 KEYSJSON key inventory 核心：format_keys_json、1000 条上限、prefix 过滤和 COMMANDSJSON catalog 更新
+
+97-version-47-tests-docs.md
+ -> 第四十七版 command/line_editor_tests、真实 KEYSJSON smoke、README、a/47 归档和整体增删改
+```
+
+## 第四十七版补充理解
+第四十七版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v56-post-dashboard-control-roadmap.md
+```
+
+计划合理点在于：
+
+```text
+mini-kv v47 只补只读 key inventory
+不读取 value
+不做分页游标
+不做 glob
+不改变 KEYS 文本语义
+不接 Node
+```
+
+v47 新增：
+
+```text
+KEYSJSON
+KEYSJSON prefix
+```
+
+输出字段：
+
+```text
+prefix
+key_count
+keys
+truncated
+limit
+```
+
+这里的上限是：
+
+```text
+limit=1000
+```
+
+这样 Node v58 以后可以安全展示 key 列表，但不会把 mini-kv 变成无限制 scan 服务，更不会让 mini-kv 承担订单系统权威存储。
