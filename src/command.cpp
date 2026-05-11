@@ -1,6 +1,7 @@
 #include "minikv/command.hpp"
 
 #include "minikv/snapshot.hpp"
+#include "minikv/version.hpp"
 #include "minikv/wal.hpp"
 
 #include <chrono>
@@ -47,7 +48,7 @@ bool is_known_command(std::string_view command) {
     return command == "PING" || command == "SET" || command == "GET" || command == "DEL" ||
            command == "EXPIRE" || command == "TTL" || command == "SIZE" || command == "KEYS" || command == "SAVE" ||
            command == "LOAD" || command == "COMPACT" || command == "WALINFO" || command == "STATS" ||
-           command == "STATSJSON" || command == "RESETSTATS" || command == "HEALTH" ||
+           command == "STATSJSON" || command == "RESETSTATS" || command == "HEALTH" || command == "INFO" ||
            command == "HELP" || command == "EXIT" || command == "QUIT";
 }
 
@@ -260,6 +261,24 @@ std::string format_health(std::size_t live_keys,
     response += " " + format_command_metrics(command_metrics);
     response += format_connection_stats(stats);
     return response;
+}
+
+std::string format_info(std::size_t live_keys,
+                        WriteAheadLog* wal,
+                        const CommandRuntimeInfo& runtime_info) {
+    const auto now = std::chrono::steady_clock::now();
+    const auto uptime =
+        now >= runtime_info.started_at
+            ? std::chrono::duration_cast<std::chrono::seconds>(now - runtime_info.started_at).count()
+            : 0;
+
+    return "version=" + std::string{version} +
+           " protocol=" + runtime_info.protocol +
+           " uptime_seconds=" + std::to_string(uptime) +
+           " live_keys=" + std::to_string(live_keys) +
+           " wal_enabled=" + format_yes_no(wal != nullptr) +
+           " metrics_enabled=" + format_yes_no(runtime_info.metrics_enabled) +
+           " max_request_bytes=" + std::to_string(runtime_info.max_request_bytes);
 }
 
 std::string format_stats_json(std::size_t live_keys,
@@ -736,6 +755,14 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_health(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
+    if (command == "INFO") {
+        if (has_extra_token(input)) {
+            return usage("INFO");
+        }
+
+        return {format_info(store_.size(), wal_, options_.runtime_info)};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -773,6 +800,7 @@ std::string CommandProcessor::help_text() {
            "  STATSJSON\n"
            "  RESETSTATS\n"
            "  HEALTH\n"
+           "  INFO\n"
            "  HELP\n"
            "  EXIT";
 }

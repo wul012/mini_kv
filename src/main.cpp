@@ -195,6 +195,7 @@ int main(int argc, char** argv) {
 
         minikv::CommandProcessorOptions command_options;
         command_options.auto_compact_wal = options->auto_compact_wal;
+        command_options.runtime_info.protocol = "cli";
         minikv::CommandProcessor processor{store, wal.has_value() ? &*wal : nullptr, command_options};
 
         std::cout << "mini-kv CLI\n";

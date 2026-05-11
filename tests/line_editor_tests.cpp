@@ -74,12 +74,13 @@ int main() {
 
     minikv::LineEditorCompletion completion{
         {"PING", "SET", "GET", "SAVE", "SIZE", "KEYS", "STATS", "STATSJSON", "RESETSTATS",
-         "HELP", "HEALTH", "EXIT", "EXPIRE", ":history"}};
+         "HELP", "HEALTH", "INFO", "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
     assert(completion.complete("  pi", 4) == std::optional<std::string>{"  PING "});
     assert(completion.complete(":h", 2) == std::optional<std::string>{":history "});
     assert(completion.complete("HEA", 3) == std::optional<std::string>{"HEALTH "});
+    assert(completion.complete("INF", 3) == std::optional<std::string>{"INFO "});
     assert(completion.complete("K", 1) == std::optional<std::string>{"KEYS "});
     assert(completion.complete("E", 1) == std::optional<std::string>{"EX"});
     assert(completion.complete("R", 1) == std::optional<std::string>{"RESETSTATS "});

@@ -1585,3 +1585,50 @@ key_count=N keys=...
 ```
 
 这样既完成了 Roadmap 的 prefix matching，也保护了之前版本的客户端体验。
+
+## 第四十四版讲解索引补充
+```text
+90-info-command-version-injection.md
+ -> 第四十四版 INFO 与版本注入核心：CMake configure_file、minikv/version.hpp、CommandRuntimeInfo 和 INFO 输出字段
+
+91-version-44-tests-docs.md
+ -> 第四十四版 command/line_editor_tests、真实 INFO smoke、README、CMake、a/44 归档和整体增删改
+```
+
+## 第四十四版补充理解
+第四十四版的目标不是增加业务命令，而是让外部控制面能识别 mini-kv：
+
+```text
+INFO
+ -> version
+ -> protocol
+ -> uptime_seconds
+ -> live_keys
+ -> wal_enabled
+ -> metrics_enabled
+ -> max_request_bytes
+```
+
+最关键的是版本号来源：
+
+```text
+CMake project(mini_kv VERSION ...)
+ -> configure_file 生成 minikv/version.hpp
+ -> INFO 使用 minikv::version
+```
+
+这样以后 Node 或发布证据链读取 mini-kv 版本时，拿到的是构建配置中的真实版本，而不是源码里手写的字符串。
+
+v44 先做 text `INFO`，不做 `INFOJSON`。
+
+原因是：
+
+```text
+v44
+ -> 先确定字段语义和版本注入方式
+
+v45
+ -> 再把同一批元信息稳定成 JSON object
+```
+
+这样版本边界更清楚，也方便 Node 后续分阶段接入。

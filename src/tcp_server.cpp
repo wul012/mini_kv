@@ -495,6 +495,7 @@ void serve_client(Store& store,
                   std::shared_ptr<CommandMetricsTracker> command_metrics_tracker,
                   std::uint64_t connection_id,
                   std::size_t max_request_bytes,
+                  CommandRuntimeInfo runtime_info,
                   bool auto_compact_wal) {
     SocketGuard client{client_socket};
     ConnectionCloseLogger close_logger{logger, endpoint, tracker, connection_id};
@@ -505,6 +506,7 @@ void serve_client(Store& store,
         return CommandConnectionStats{true, stats.total_connections, stats.active_connections, stats.peak_connections};
     };
     command_options.metrics_tracker = std::move(command_metrics_tracker);
+    command_options.runtime_info = std::move(runtime_info);
     CommandProcessor processor{store, wal, command_options};
     std::string pending;
     std::array<char, 4096> buffer{};
@@ -630,6 +632,7 @@ void TcpServer::run() {
     (void)runtime;
     SocketGuard listener = bind_listener(options_);
     const auto actual_port = socket_bound_port(listener.get());
+    const auto server_started_at = std::chrono::steady_clock::now();
     bound_port_.store(actual_port);
     const std::string endpoint = endpoint_fields(options_, actual_port);
     log_event(options_, "event=tcp_listen " + endpoint + " max_request_bytes=" +
@@ -676,6 +679,11 @@ void TcpServer::run() {
 
         const auto snapshot = connection_tracker_->connected();
         log_event(options_, "event=tcp_client_accepted " + endpoint + " " + connection_fields(snapshot));
+        CommandRuntimeInfo runtime_info;
+        runtime_info.protocol = "inline,resp";
+        runtime_info.started_at = server_started_at;
+        runtime_info.max_request_bytes = options_.max_request_bytes;
+        runtime_info.metrics_enabled = metrics_enabled;
         std::thread{serve_client,
                     std::ref(store_),
                     wal_,
@@ -686,6 +694,7 @@ void TcpServer::run() {
                     command_metrics_tracker_,
                     snapshot.connection_id,
                     options_.max_request_bytes,
+                    std::move(runtime_info),
                     options_.auto_compact_wal}
             .detach();
     }

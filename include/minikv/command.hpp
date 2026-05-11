@@ -2,6 +2,7 @@
 
 #include "minikv/store.hpp"
 
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
@@ -46,6 +47,13 @@ struct CommandProcessorMetrics {
     std::vector<CommandBreakdownMetrics> command_breakdown;
 };
 
+struct CommandRuntimeInfo {
+    std::string protocol = "inline";
+    std::chrono::steady_clock::time_point started_at = std::chrono::steady_clock::now();
+    std::size_t max_request_bytes = 0;
+    bool metrics_enabled = false;
+};
+
 class CommandMetricsTracker {
 public:
     void record(const CommandResult& result);
@@ -66,6 +74,7 @@ struct CommandProcessorOptions {
     using ConnectionStatsProvider = std::function<CommandConnectionStats()>;
 
     bool auto_compact_wal = false;
+    CommandRuntimeInfo runtime_info;
     ConnectionStatsProvider connection_stats;
     std::shared_ptr<CommandMetricsTracker> metrics_tracker;
 };

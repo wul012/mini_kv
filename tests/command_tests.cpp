@@ -1,5 +1,6 @@
 #include "minikv/command.hpp"
 #include "minikv/store.hpp"
+#include "minikv/version.hpp"
 
 #include <cassert>
 #include <chrono>
@@ -168,6 +169,18 @@ int main() {
     assert(result.response.find("compact_recommended=na") != std::string::npos);
     assert(result.response.find("connection_stats_available=no") != std::string::npos);
 
+    result = processor.execute("INFO extra");
+    assert(result.response == "ERR usage: INFO");
+
+    result = processor.execute("INFO");
+    assert(result.response.find("version=" + std::string{minikv::version}) != std::string::npos);
+    assert(result.response.find("protocol=inline") != std::string::npos);
+    assert(result.response.find("uptime_seconds=") != std::string::npos);
+    assert(result.response.find("live_keys=1") != std::string::npos);
+    assert(result.response.find("wal_enabled=no") != std::string::npos);
+    assert(result.response.find("metrics_enabled=no") != std::string::npos);
+    assert(result.response.find("max_request_bytes=0") != std::string::npos);
+
     minikv::CommandProcessorOptions stats_options;
     stats_options.connection_stats = [] {
         minikv::CommandConnectionStats stats;
@@ -285,6 +298,17 @@ int main() {
     assert(statsjson_metrics->total_commands == 1);
     assert(statsjson_metrics->successful_commands == 1);
 
+    minikv::CommandProcessorOptions info_options;
+    info_options.runtime_info.protocol = "inline,resp";
+    info_options.runtime_info.started_at = std::chrono::steady_clock::now() - 3s;
+    info_options.runtime_info.max_request_bytes = 4096;
+    info_options.runtime_info.metrics_enabled = true;
+    minikv::CommandProcessor info_processor{metrics_store, nullptr, info_options};
+    result = info_processor.execute("INFO");
+    assert(result.response.find("protocol=inline,resp") != std::string::npos);
+    assert(result.response.find("metrics_enabled=yes") != std::string::npos);
+    assert(result.response.find("max_request_bytes=4096") != std::string::npos);
+
     result = metrics_processor.execute("RESETSTATS extra");
     assert(result.response == "ERR usage: RESETSTATS");
     assert(metrics_processor.metrics().total_commands == 7);
@@ -312,6 +336,7 @@ int main() {
     assert(result.response.find("STATSJSON") != std::string::npos);
     assert(result.response.find("RESETSTATS") != std::string::npos);
     assert(result.response.find("HEALTH") != std::string::npos);
+    assert(result.response.find("INFO") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");
