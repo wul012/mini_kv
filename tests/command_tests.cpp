@@ -181,6 +181,18 @@ int main() {
     assert(result.response.find("metrics_enabled=no") != std::string::npos);
     assert(result.response.find("max_request_bytes=0") != std::string::npos);
 
+    result = processor.execute("INFOJSON extra");
+    assert(result.response == "ERR usage: INFOJSON");
+
+    result = processor.execute("INFOJSON");
+    assert(result.response.find("\"version\":\"" + std::string{minikv::version} + "\"") != std::string::npos);
+    assert(result.response.find("\"server\":{\"protocol\":[\"inline\"]") != std::string::npos);
+    assert(result.response.find("\"uptime_seconds\":") != std::string::npos);
+    assert(result.response.find("\"max_request_bytes\":0") != std::string::npos);
+    assert(result.response.find("\"store\":{\"live_keys\":1}") != std::string::npos);
+    assert(result.response.find("\"wal\":{\"enabled\":false}") != std::string::npos);
+    assert(result.response.find("\"metrics\":{\"enabled\":false}") != std::string::npos);
+
     minikv::CommandProcessorOptions stats_options;
     stats_options.connection_stats = [] {
         minikv::CommandConnectionStats stats;
@@ -309,6 +321,11 @@ int main() {
     assert(result.response.find("metrics_enabled=yes") != std::string::npos);
     assert(result.response.find("max_request_bytes=4096") != std::string::npos);
 
+    result = info_processor.execute("INFOJSON");
+    assert(result.response.find("\"protocol\":[\"inline\",\"resp\"]") != std::string::npos);
+    assert(result.response.find("\"metrics\":{\"enabled\":true}") != std::string::npos);
+    assert(result.response.find("\"max_request_bytes\":4096") != std::string::npos);
+
     result = metrics_processor.execute("RESETSTATS extra");
     assert(result.response == "ERR usage: RESETSTATS");
     assert(metrics_processor.metrics().total_commands == 7);
@@ -337,6 +354,7 @@ int main() {
     assert(result.response.find("RESETSTATS") != std::string::npos);
     assert(result.response.find("HEALTH") != std::string::npos);
     assert(result.response.find("INFO") != std::string::npos);
+    assert(result.response.find("INFOJSON") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");

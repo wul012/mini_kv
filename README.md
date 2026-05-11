@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 44 is a runnable in-memory KV service with injected build version metadata and an `INFO` command:
+Version 45 is a runnable in-memory KV service with injected build version metadata plus text and JSON identity commands:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -22,6 +22,7 @@ Version 44 is a runnable in-memory KV service with injected build version metada
 - WAL compaction thresholds are configurable, and `WALINFO` reports compact counters and saved work
 - Runtime `STATS`, `STATSJSON`, and `HEALTH` commands expose live keys, WAL maintenance state, server connection counters, per-command counters, and latency counters
 - Runtime `INFO` exposes injected build version, protocol, uptime, live keys, WAL mode, metrics mode, and request limit metadata
+- Runtime `INFOJSON` exposes the same identity metadata as a schema-stable JSON object for external control planes
 - Runtime `RESETSTATS` clears command execution metrics without resetting data, WAL maintenance counters, or TCP connection counters
 - Runtime `KEYS` returns a sorted one-line list of currently live keys for scripts and client cache refresh
 - Runtime `KEYS prefix` returns a sorted filtered list without replacing the bundled client's full key cache
@@ -272,6 +273,7 @@ STATSJSON
 RESETSTATS
 HEALTH
 INFO
+INFOJSON
 HELP
 EXIT
 ```
@@ -305,6 +307,7 @@ STATSJSON
 RESETSTATS
 HEALTH
 INFO
+INFOJSON
 QUIT
 ```
 
@@ -324,7 +327,7 @@ The TCP server also accepts Redis-style RESP request arrays:
 
 RESP mode returns simple strings, integers, bulk strings, null bulk strings, or errors using RESP framing. Inline mode keeps the original one-line text responses.
 
-`KEYS` returns currently live key names in sorted order as `key_count=N keys=...`; expired keys are pruned before the list is produced. `KEYS prefix` returns only keys that start with that prefix as `key_count=N prefix=prefix keys=...`. The prefixed response intentionally differs from the full-list response so the bundled client does not replace its full local key cache with a filtered subset. `STATS` returns a compact key-value status line with live key count, command counters, command latency counters, per-command breakdown, WAL maintenance details when enabled, and TCP connection counters when executed through the server. `STATSJSON` returns the same operational snapshot as one JSON object, which is easier for scripts and log collectors to parse. `INFO` returns build and runtime identity as `version=... protocol=... uptime_seconds=... live_keys=... wal_enabled=... metrics_enabled=... max_request_bytes=...`; the version comes from the CMake project version generated into `minikv/version.hpp`. `RESETSTATS` clears command execution metrics; a successful reset is not counted as a new command, so the next `STATS` or `STATSJSON` response starts from zero. `HEALTH` returns an `OK ...` line for quick liveness checks with the same WAL, command metric, and connection signals. `command_breakdown` uses `COMMAND:total/success/error/total_latency_ns/avg_latency_ns/max_latency_ns` entries separated by semicolons; unknown commands are grouped under `UNKNOWN`.
+`KEYS` returns currently live key names in sorted order as `key_count=N keys=...`; expired keys are pruned before the list is produced. `KEYS prefix` returns only keys that start with that prefix as `key_count=N prefix=prefix keys=...`. The prefixed response intentionally differs from the full-list response so the bundled client does not replace its full local key cache with a filtered subset. `STATS` returns a compact key-value status line with live key count, command counters, command latency counters, per-command breakdown, WAL maintenance details when enabled, and TCP connection counters when executed through the server. `STATSJSON` returns the same operational snapshot as one JSON object, which is easier for scripts and log collectors to parse. `INFO` returns build and runtime identity as `version=... protocol=... uptime_seconds=... live_keys=... wal_enabled=... metrics_enabled=... max_request_bytes=...`; the version comes from the CMake project version generated into `minikv/version.hpp`. `INFOJSON` returns the same identity contract as JSON: `version`, `server.protocol`, `server.uptime_seconds`, `server.max_request_bytes`, `store.live_keys`, `wal.enabled`, and `metrics.enabled`. `RESETSTATS` clears command execution metrics; a successful reset is not counted as a new command, so the next `STATS` or `STATSJSON` response starts from zero. `HEALTH` returns an `OK ...` line for quick liveness checks with the same WAL, command metric, and connection signals. `command_breakdown` uses `COMMAND:total/success/error/total_latency_ns/avg_latency_ns/max_latency_ns` entries separated by semicolons; unknown commands are grouped under `UNKNOWN`.
 
 The server prints structured lifecycle logs using key-value fields:
 
@@ -434,7 +437,7 @@ The stress test is registered with CTest:
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, full and prefix-filtered `KEYS`, `STATS` / `STATSJSON` / `RESETSTATS` / `HEALTH`, injected-version `INFO`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs, text and JSONL metrics exporter output, active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save, persistent key cache load/save, duplicate filtering, capacity trimming, full cache replacement, full `KEYS` response parsing, and prefixed `KEYS` response rejection for cache refresh. `line_editor_tests` verifies the line editing buffer operations, command Tab completion including `KEYS` and `INFO`, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client. `metrics_file_tests` verifies metrics file truncation, max-byte rotation, retained suffix files, discard-old mode, and invalid option rejection.
+`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, full and prefix-filtered `KEYS`, `STATS` / `STATSJSON` / `RESETSTATS` / `HEALTH`, injected-version `INFO` / `INFOJSON`, and connection-stat provider formatting. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs, text and JSONL metrics exporter output, active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save, persistent key cache load/save, duplicate filtering, capacity trimming, full cache replacement, full `KEYS` response parsing, and prefixed `KEYS` response rejection for cache refresh. `line_editor_tests` verifies the line editing buffer operations, command Tab completion including `KEYS`, `INFO`, and `INFOJSON`, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client. `metrics_file_tests` verifies metrics file truncation, max-byte rotation, retained suffix files, discard-old mode, and invalid option rejection.
 
 ## RESP protocol
 
@@ -457,5 +460,5 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Add `INFOJSON` for schema-stable mini-kv metadata consumed by external control planes.
-2. Add command classification metadata for read/write/maintenance gateway decisions.
+1. Add `COMMANDS` / `COMMANDSJSON` command classification metadata for read/write/maintenance gateway decisions.
+2. Add external control-plane smoke notes once Node consumes `INFOJSON`.

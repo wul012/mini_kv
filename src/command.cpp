@@ -49,7 +49,7 @@ bool is_known_command(std::string_view command) {
            command == "EXPIRE" || command == "TTL" || command == "SIZE" || command == "KEYS" || command == "SAVE" ||
            command == "LOAD" || command == "COMPACT" || command == "WALINFO" || command == "STATS" ||
            command == "STATSJSON" || command == "RESETSTATS" || command == "HEALTH" || command == "INFO" ||
-           command == "HELP" || command == "EXIT" || command == "QUIT";
+           command == "INFOJSON" || command == "HELP" || command == "EXIT" || command == "QUIT";
 }
 
 std::string metrics_command_name(std::string_view command) {
@@ -279,6 +279,47 @@ std::string format_info(std::size_t live_keys,
            " wal_enabled=" + format_yes_no(wal != nullptr) +
            " metrics_enabled=" + format_yes_no(runtime_info.metrics_enabled) +
            " max_request_bytes=" + std::to_string(runtime_info.max_request_bytes);
+}
+
+std::string format_protocol_json_array(std::string_view protocol) {
+    std::string response = "[";
+    bool first = true;
+    while (!protocol.empty()) {
+        const auto comma = protocol.find(',');
+        const std::string token = trim_copy(protocol.substr(0, comma));
+        if (!token.empty()) {
+            if (!first) {
+                response += ",";
+            }
+            first = false;
+            response += json_string(token);
+        }
+
+        if (comma == std::string_view::npos) {
+            break;
+        }
+        protocol.remove_prefix(comma + 1);
+    }
+    response += "]";
+    return response;
+}
+
+std::string format_info_json(std::size_t live_keys,
+                             WriteAheadLog* wal,
+                             const CommandRuntimeInfo& runtime_info) {
+    const auto now = std::chrono::steady_clock::now();
+    const auto uptime =
+        now >= runtime_info.started_at
+            ? std::chrono::duration_cast<std::chrono::seconds>(now - runtime_info.started_at).count()
+            : 0;
+
+    return "{\"version\":" + json_string(version) +
+           ",\"server\":{\"protocol\":" + format_protocol_json_array(runtime_info.protocol) +
+           ",\"uptime_seconds\":" + std::to_string(uptime) +
+           ",\"max_request_bytes\":" + std::to_string(runtime_info.max_request_bytes) +
+           "},\"store\":{\"live_keys\":" + std::to_string(live_keys) +
+           "},\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr) +
+           "},\"metrics\":{\"enabled\":" + format_json_bool(runtime_info.metrics_enabled) + "}}";
 }
 
 std::string format_stats_json(std::size_t live_keys,
@@ -763,6 +804,14 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_info(store_.size(), wal_, options_.runtime_info)};
     }
 
+    if (command == "INFOJSON") {
+        if (has_extra_token(input)) {
+            return usage("INFOJSON");
+        }
+
+        return {format_info_json(store_.size(), wal_, options_.runtime_info)};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -801,6 +850,7 @@ std::string CommandProcessor::help_text() {
            "  RESETSTATS\n"
            "  HEALTH\n"
            "  INFO\n"
+           "  INFOJSON\n"
            "  HELP\n"
            "  EXIT";
 }

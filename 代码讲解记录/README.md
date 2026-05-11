@@ -1632,3 +1632,47 @@ v45
 ```
 
 这样版本边界更清楚，也方便 Node 后续分阶段接入。
+
+## 第四十五版讲解索引补充
+```text
+92-infojson-command-core.md
+ -> 第四十五版 INFOJSON 命令核心：format_info_json、protocol JSON array、INFOJSON 分发和补全入口
+
+93-version-45-tests-docs.md
+ -> 第四十五版 command/line_editor_tests、真实 INFOJSON smoke、README、a/45 归档和整体增删改
+```
+
+## 第四十五版补充理解
+第四十五版严格按跨项目路线图做 mini-kv 自己的结构化身份入口：
+
+```text
+INFOJSON
+ -> version
+ -> server.protocol
+ -> server.uptime_seconds
+ -> server.max_request_bytes
+ -> store.live_keys
+ -> wal.enabled
+ -> metrics.enabled
+```
+
+它和 `STATSJSON` 的边界是：
+
+```text
+INFOJSON
+ -> 我是谁、当前能力边界是什么
+
+STATSJSON
+ -> 当前运行指标和命令统计是什么
+```
+
+这一版最重要的是不越界：
+
+```text
+不接 Node
+不改 Java
+不做 COMMANDSJSON
+不替代 STATSJSON
+```
+
+这样 v45 可以独立验证，后续 Node v54 再消费这个稳定字段。
