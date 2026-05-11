@@ -116,6 +116,13 @@ int main() {
     assert((key_cache.entries() == std::vector<std::string>{"beta"}));
     assert(key_cache.clear());
     assert(!key_cache.clear());
+    assert(key_cache.replace({"old", "alpha", "alpha", " beta "}));
+    assert((key_cache.entries() == std::vector<std::string>{"old", "alpha", "beta"}));
+    assert(key_cache.replace({"alpha", "beta", "gamma", "delta"}));
+    assert((key_cache.entries() == std::vector<std::string>{"beta", "gamma", "delta"}));
+    assert(!key_cache.replace({"beta", "gamma", "delta"}));
+    assert(key_cache.replace({}));
+    assert(key_cache.empty());
 
     bool rejected_zero_key_capacity = false;
     try {
@@ -156,6 +163,18 @@ int main() {
     minikv::ClientKeyCache clipped_key_cache{2};
     assert(clipped_key_cache.load_from_file(manual_keys_file) == 3);
     assert((clipped_key_cache.entries() == std::vector<std::string>{"name", "user:1"}));
+
+    auto parsed_keys = minikv::parse_key_list_response("key_count=2 keys=alpha beta");
+    assert(parsed_keys.has_value());
+    assert((*parsed_keys == std::vector<std::string>{"alpha", "beta"}));
+
+    parsed_keys = minikv::parse_key_list_response("key_count=0 keys=");
+    assert(parsed_keys.has_value());
+    assert(parsed_keys->empty());
+
+    assert(!minikv::parse_key_list_response("ERR usage: KEYS").has_value());
+    assert(!minikv::parse_key_list_response("key_count=two keys=alpha beta").has_value());
+    assert(!minikv::parse_key_list_response("key_count=1 keys=alpha beta").has_value());
 
     std::filesystem::remove_all(temp_dir);
 

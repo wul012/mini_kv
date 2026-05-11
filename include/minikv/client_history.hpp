@@ -45,6 +45,7 @@ public:
     bool add(std::string key);
     bool remove(std::string_view key);
     bool clear();
+    bool replace(std::vector<std::string> keys);
     bool empty() const;
     std::size_t size() const;
     const std::vector<std::string>& entries() const;
@@ -57,5 +58,6 @@ private:
 };
 
 ClientInputResult resolve_client_input(ClientHistory& history, std::string_view input);
+std::optional<std::vector<std::string>> parse_key_list_response(std::string_view response);
 
 } // namespace minikv

@@ -49,6 +49,22 @@ std::optional<std::size_t> parse_history_index(std::string_view text) {
     return value;
 }
 
+std::optional<std::size_t> parse_nonnegative_size(std::string_view text) {
+    if (!all_digits(text)) {
+        return std::nullopt;
+    }
+
+    std::size_t value = 0;
+    for (const char ch : text) {
+        const auto digit = static_cast<std::size_t>(ch - '0');
+        if (value > (std::numeric_limits<std::size_t>::max() - digit) / 10) {
+            return std::nullopt;
+        }
+        value = value * 10 + digit;
+    }
+    return value;
+}
+
 ClientInputResult local_message(std::string message) {
     ClientInputResult result;
     result.action = ClientInputAction::local;
@@ -207,6 +223,30 @@ bool ClientKeyCache::clear() {
     return true;
 }
 
+bool ClientKeyCache::replace(std::vector<std::string> keys) {
+    std::vector<std::string> next_entries;
+    next_entries.reserve(std::min(keys.size(), max_entries_));
+
+    for (auto& key : keys) {
+        key = trim_copy(key);
+        if (key.empty() || std::ranges::find(next_entries, key) != next_entries.end()) {
+            continue;
+        }
+
+        next_entries.push_back(std::move(key));
+        if (next_entries.size() > max_entries_) {
+            next_entries.erase(next_entries.begin());
+        }
+    }
+
+    if (next_entries == entries_) {
+        return false;
+    }
+
+    entries_ = std::move(next_entries);
+    return true;
+}
+
 bool ClientKeyCache::empty() const {
     return entries_.empty();
 }
@@ -318,6 +358,38 @@ ClientInputResult resolve_client_input(ClientHistory& history, std::string_view 
     }
 
     return send_command(history, std::string{input});
+}
+
+std::optional<std::vector<std::string>> parse_key_list_response(std::string_view response) {
+    constexpr std::string_view count_prefix = "key_count=";
+    constexpr std::string_view keys_separator = " keys=";
+    if (response.substr(0, count_prefix.size()) != count_prefix) {
+        return std::nullopt;
+    }
+
+    const auto separator = response.find(keys_separator, count_prefix.size());
+    if (separator == std::string_view::npos) {
+        return std::nullopt;
+    }
+
+    const auto count = parse_nonnegative_size(response.substr(count_prefix.size(), separator - count_prefix.size()));
+    if (!count.has_value()) {
+        return std::nullopt;
+    }
+
+    const std::string keys_text{response.substr(separator + keys_separator.size())};
+    std::istringstream input{keys_text};
+    std::vector<std::string> keys;
+    std::string key;
+    while (input >> key) {
+        keys.push_back(std::move(key));
+        key.clear();
+    }
+
+    if (keys.size() != *count) {
+        return std::nullopt;
+    }
+    return keys;
 }
 
 } // namespace minikv

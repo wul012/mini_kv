@@ -1465,3 +1465,47 @@ v40
 ```
 
 这样每一版都能独立验证，也不会把功能范围一下子铺太大。
+## 第四十一版讲解索引补充
+```text
+84-client-key-cache-refresh.md
+ -> 第四十一版客户端 Key Cache 刷新核心：parse_key_list_response、ClientKeyCache::replace、KEYS 响应解析和 key cache 替换保存
+
+85-version-41-tests-docs.md
+ -> 第四十一版 client_history_tests、真实 key cache refresh smoke、README、CMake、a/41 归档和整体增删改
+```
+
+## 第四十一版补充理解
+第四十一版把两条已经存在的能力接起来：
+
+```text
+v38
+ -> 客户端 key cache 可以持久化
+
+v40
+ -> 服务端 KEYS 可以返回当前 live keys
+
+v41
+ -> 客户端收到 KEYS 的合法响应后，用它替换本地 key cache
+```
+
+刷新规则是：
+
+```text
+用户运行 KEYS
+ -> server 返回 key_count=N keys=...
+ -> client parse_key_list_response
+ -> ClientKeyCache::replace
+ -> 如果配置了 --key-cache-file 且缓存有变化，就保存文件
+```
+
+这个设计保持可选：
+
+```text
+不运行 KEYS
+ -> 继续用 SET / DEL / LOAD 做增量观察
+
+运行 KEYS
+ -> 主动和服务端当前 key 集合对齐
+```
+
+这样 v41 既完成 Roadmap 的客户端刷新目标，又没有额外引入新的交互命令或过大的功能面。

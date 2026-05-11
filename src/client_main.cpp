@@ -254,6 +254,13 @@ bool update_known_keys(minikv::ClientKeyCache& keys, std::string_view command_li
         return keys.clear();
     }
 
+    if (command == "KEYS") {
+        const auto refreshed_keys = minikv::parse_key_list_response(response);
+        if (refreshed_keys.has_value()) {
+            return keys.replace(*refreshed_keys);
+        }
+    }
+
     return false;
 }
 
