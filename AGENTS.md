@@ -1,5 +1,17 @@
 # mini-kv Agent Notes
 
+## C++ Ownership Rule
+
+本线程/本项目中，Codex 的默认职责是推进 C++ 侧，也就是 `D:\C\mini-kv`。
+
+执行要求：
+
+- 只负责 mini-kv / C++ 代码、测试、文档、归档和 CI 修复。
+- 读取 Node 计划只是为了判断 mini-kv 下一版方向，不代表可以修改 Node 项目。
+- 如果最新跨项目计划的下一步不是 mini-kv / C++，则只读判断后停止，不修改 Node 或 Java。
+- 如果用户要求“推进”但上下文不清，优先解释为推进 mini-kv / C++；若计划明确轮到 Node 或 Java，则说明原因并停止。
+- 除非用户明确单独授权，否则不在 `D:\nodeproj` 或 `D:\javaproj` 中改文件、构建、启动服务或提交。
+
 ## Version Scope Rule
 
 每个版本默认只推进一个大小合适、能够闭环验证的小主题。工作量不能过大，也不能过小：
