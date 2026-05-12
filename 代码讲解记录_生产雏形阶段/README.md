@@ -1,19 +1,151 @@
-# 代码讲解记录_生产雏形阶段
+# mini-kv 代码讲解记录_生产雏形阶段
 
-本目录从 mini-kv 当前“生产雏形阶段”开始，承接后续新增代码讲解记录。
+本目录从 v57 之后作为新的代码讲解入口使用，和旧目录同级。
 
-旧目录：
-
-```text
-代码讲解记录/
-```
-
-作为历史讲解归档保留，不主动搬迁。
-
-后续新增讲解写入本目录，文件名继续延续原编号和版本模式，例如：
+目录名里的“生产雏形阶段”表示当前项目进度：mini-kv 已经不只是内存 KV 练手项目，而是进入带 TCP/RESP、WAL、Snapshot、指标、只读 evidence、恢复证据和跨项目控制面消费雏形的阶段。
 
 ```text
-113-example-topic-v57.md
+D:\C\mini-kv\代码讲解记录
+D:\C\mini-kv\代码讲解记录_生产雏形阶段
 ```
 
-讲解 md 模式保持不变：先说明本版目标、角色定位和边界，再按文件/模块讲职责，解释关键字段给控制面的含义，说明测试保护点，最后用一句话总结本版价值。
+旧目录保留 v1-v56 的历史讲解，不再继续堆新文件。
+
+## 写入规则
+
+后续每次推进 mini-kv 版本时，新的代码讲解文件写入本目录。
+
+以后如果项目进入新的阶段，再新建同级目录，不继续塞进旧阶段目录。目录命名格式为：
+
+```text
+代码讲解记录_阶段名称
+```
+
+示例：
+
+```text
+代码讲解记录_生产雏形阶段
+代码讲解记录_生产强化阶段
+代码讲解记录_多项目融合阶段
+```
+
+命名模式继续沿用旧目录：
+
+```text
+113-version-57-主题.md
+114-version-58-主题.md
+115-version-59-主题.md
+```
+
+说明文档结构也继续沿用旧模式，并参考 Java 侧生产雏形阶段讲解密度：
+
+```text
+先说明本版目标、角色定位和不做事项
+再说明本版所处项目进度
+再按文件或模块讲清入口、数据结构、核心流程
+然后多代码引用解释关键实现
+再说明测试、真实运行、归档和成熟度变化
+最后做一句话总结
+```
+
+也就是说，本目录不是只写“代码改了什么”，还要明确说明“本版让 mini-kv 的生产雏形阶段推进到了什么程度”。
+
+## 当前项目进度基线
+
+截至 v56，mini-kv 已经从基础 C++ KV 项目推进到具备网络协议、持久化恢复、运行观测和控制面只读证据的 Redis-like KV 练手产品雏形。
+
+当前主线能力：
+
+```text
+KV 核心
+ -> SET / GET / DEL
+ -> EXPIRE / TTL
+ -> SIZE
+ -> KEYS / KEYSJSON
+ -> 线程安全 Store
+ -> 过期 key 清理
+
+协议与客户端
+ -> 本地 CLI
+ -> TCP server
+ -> TCP client
+ -> Inline text protocol
+ -> RESP parser
+ -> RESP TCP compatibility tests
+ -> 并发 RESP client tests
+ -> 客户端历史记录
+ -> key cache
+ -> Tab 补全和行编辑
+
+持久化与恢复
+ -> WAL append
+ -> WAL2 checksum
+ -> 旧 WAL replay compatibility
+ -> WAL replay report
+ -> WAL repair
+ -> WAL compaction
+ -> auto compact
+ -> manual Snapshot SAVE / LOAD
+ -> atomic snapshot save
+ -> restart recovery evidence sample
+ -> recovery fixture index
+
+运行观测
+ -> HEALTH
+ -> STATS / STATSJSON
+ -> INFO / INFOJSON
+ -> COMMANDS / COMMANDSJSON
+ -> command metrics
+ -> connection metrics
+ -> metrics file export
+ -> JSONL metrics export
+ -> metrics rotation
+
+控制面只读证据
+ -> EXPLAINJSON
+ -> CHECKJSON
+ -> CHECKJSON write/read fixtures
+ -> STORAGEJSON
+ -> recovery evidence fixture
+ -> recovery fixture index
+ -> read_only / execution_allowed / order_authoritative 边界字段
+```
+
+成熟度判断：
+
+```text
+KV 基础能力：中高成熟
+TCP / RESP 协议练习：中等偏高成熟
+WAL / Snapshot / restart recovery：中等成熟，已具备证据样本
+运行观测与 evidence：中高成熟
+真实生产安全：仍需继续补强
+跨项目融合：mini-kv 适合作为自研 KV、缓存/幂等/观测实验层和 Node 控制面的只读证据上游
+```
+
+还没有完成的方向：
+
+```text
+真实认证、授权和多租户隔离
+更完整的 crash consistency 故障注入
+更多恢复失败样本和异常矩阵
+长时间压测、资源限制和性能回归记录
+更完整 Redis 命令兼容性
+集群、副本、高可用
+生产部署、备份、监控和告警链路
+作为缓存/幂等适配层时和 Java / Node 的稳定契约
+```
+
+## 后续讲解索引
+
+新版本讲解从这里继续追加：
+
+```text
+113-version-57-待定主题.md
+ -> 第五十七版代码讲解和生产雏形阶段进度说明
+```
+
+实际推进 v57 时，再把 `待定主题` 替换为本版真实主题，并补齐具体讲解。
+
+## 一句话总览
+
+旧目录记录“mini-kv 如何一步步长到 v56”，本目录从 v57 开始继续记录“每版代码怎么实现、生产雏形阶段推进到哪里、成熟度发生了什么变化”。
