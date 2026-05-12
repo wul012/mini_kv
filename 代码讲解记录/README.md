@@ -1924,3 +1924,50 @@ side_effect_count=side_effects 数组长度
 ```
 
 这样 Node v67 可以把 mini-kv 上游证据纳入 digest-aware verification，而 mini-kv 仍然只提供自身命令解释，不参与真实执行 gate。
+
+## 第五十一版讲解索引补充
+```text
+104-checkjson-execution-contract-core.md
+ -> 第五十一版 CHECKJSON execution contract 核心：只读 contract、parser/write/WAL checks、durability 和 warnings
+
+105-version-51-tests-docs.md
+ -> 第五十一版 command/line_editor_tests、真实 CHECKJSON smoke、README、a/51 归档和整体增删改
+```
+
+## 第五十一版补充理解
+第五十一版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v68-post-execution-gate-roadmap.md
+```
+
+计划合理点在于：
+
+```text
+mini-kv v51 只做只读 execution-contract / CHECKJSON
+不执行 mini-kv 写命令
+不新增事务
+不新增集群
+不承担订单权威存储
+```
+
+v51 新增命令：
+
+```text
+CHECKJSON command
+```
+
+核心字段：
+
+```text
+read_only
+execution_allowed
+command_digest
+write_command
+allowed_by_parser
+checks
+wal
+warnings
+```
+
+这样 Node v71 可以把 mini-kv 的执行前 contract 纳入 gate evidence，但 mini-kv 仍然只负责只读说明自身检查条件，不实际执行写命令。

@@ -1,6 +1,7 @@
 #include "minikv/command.hpp"
 #include "minikv/store.hpp"
 #include "minikv/version.hpp"
+#include "minikv/wal.hpp"
 
 #include <cassert>
 #include <chrono>
@@ -223,7 +224,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=25") != std::string::npos);
+    assert(result.response.find("command_count=26") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("GET(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -231,6 +232,7 @@ int main() {
     assert(result.response.find("COMPACT(category=admin,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("COMMANDSJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
 
     result = processor.execute("COMMANDSJSON extra");
     assert(result.response == "ERR usage: COMMANDSJSON");
@@ -244,6 +246,7 @@ int main() {
     assert(result.response.find("\"name\":\"LOAD\",\"category\":\"admin\",\"mutates_store\":true") != std::string::npos);
     assert(result.response.find("\"name\":\"COMMANDSJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
+    assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"description\":\"Read command catalog as JSON\"") != std::string::npos);
 
     result = processor.execute("EXPLAINJSON");
@@ -347,6 +350,57 @@ int main() {
     assert_response_contains(result, "\"command\":\"QUIT\"");
     assert_response_contains(result, "\"side_effects\":[\"connection_close\"]");
     assert_response_contains(result, "\"side_effect_count\":1");
+
+    result = processor.execute("CHECKJSON");
+    assert(result.response == "ERR usage: CHECKJSON command");
+
+    result = processor.execute("CHECKJSON SET orderops:1 value");
+    assert_response_contains(result, "\"schema_version\":1");
+    assert_response_contains(result, "\"read_only\":true");
+    assert_response_contains(result, "\"execution_allowed\":false");
+    assert_response_contains(result, "\"command_digest\":\"" + set_digest + "\"");
+    assert_response_contains(result, "\"command\":\"SET\"");
+    assert_response_contains(result, "\"write_command\":true");
+    assert_response_contains(result, "\"allowed_by_parser\":true");
+    assert_response_contains(result, "\"side_effects\":[\"store_write\",\"wal_append_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":2");
+    assert_response_contains(result, "\"checks\":{\"parser_allowed\":true,\"write_command\":true,"
+                                     "\"wal_append_when_enabled\":true,\"wal_enabled\":false}");
+    assert_response_contains(result, "\"wal\":{\"enabled\":false,\"touches_wal\":true,"
+                                     "\"append_when_enabled\":true,\"durability\":\"memory_only\"}");
+    assert_response_contains(result, "\"warnings\":[\"wal disabled; write would be in-memory only\"]");
+
+    result = processor.execute("GET orderops:1");
+    assert(result.response == "(nil)");
+
+    result = processor.execute("CHECKJSON GET orderops:1");
+    assert_response_contains(result, "\"command\":\"GET\"");
+    assert_response_contains(result, "\"write_command\":false");
+    assert_response_contains(result, "\"allowed_by_parser\":true");
+    assert_response_contains(result, "\"checks\":{\"parser_allowed\":true,\"write_command\":false,"
+                                     "\"wal_append_when_enabled\":false,\"wal_enabled\":false}");
+    assert_response_contains(result, "\"durability\":\"not_applicable\"");
+    assert_response_contains(result, "\"warnings\":[\"not a write command\"]");
+
+    result = processor.execute("CHECKJSON SET orderops:1");
+    assert_response_contains(result, "\"command\":\"SET\"");
+    assert_response_contains(result, "\"write_command\":true");
+    assert_response_contains(result, "\"allowed_by_parser\":false");
+    assert_response_contains(result, "\"warnings\":[\"usage: SET key value\","
+                                     "\"wal disabled; write would be in-memory only\"]");
+
+    const auto wal_contract_path = std::filesystem::path{"minikv-command-checkjson-test.wal"};
+    std::filesystem::remove(wal_contract_path);
+    minikv::Store wal_contract_store;
+    minikv::WriteAheadLog wal_contract{wal_contract_path};
+    minikv::CommandProcessor wal_contract_processor{wal_contract_store, &wal_contract};
+    result = wal_contract_processor.execute("CHECKJSON SET orderops:1 value");
+    assert_response_contains(result, "\"wal_enabled\":true");
+    assert_response_contains(result, "\"wal\":{\"enabled\":true,\"touches_wal\":true,"
+                                     "\"append_when_enabled\":true,\"durability\":\"wal_backed\"}");
+    assert_response_contains(result, "\"warnings\":[]");
+    assert(!std::filesystem::exists(wal_contract_path));
+    std::filesystem::remove(wal_contract_path);
 
     minikv::Store inventory_store;
     minikv::CommandProcessor inventory_processor{inventory_store};
@@ -526,6 +580,7 @@ int main() {
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
+    assert(result.response.find("CHECKJSON") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");

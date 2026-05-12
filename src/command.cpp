@@ -77,6 +77,7 @@ constexpr CommandCatalogEntry command_catalog[] = {
     {"COMMANDS", "meta", false, false, true, "Read command catalog as text"},
     {"COMMANDSJSON", "meta", false, false, true, "Read command catalog as JSON"},
     {"EXPLAINJSON", "meta", false, false, true, "Explain a command risk profile as JSON without executing it"},
+    {"CHECKJSON", "meta", false, false, true, "Read a write command execution contract as JSON without executing it"},
     {"HELP", "meta", false, false, true, "Show command help"},
     {"EXIT", "meta", false, false, true, "Close the current client session"},
     {"QUIT", "meta", false, false, true, "Close the current client session"},
@@ -389,6 +390,50 @@ std::string format_explain_json(const CommandExplain& explain) {
     return response;
 }
 
+std::string execution_contract_durability(const CommandExplain& explain, bool wal_enabled) {
+    if (!explain.mutates_store) {
+        return "not_applicable";
+    }
+    if (!explain.touches_wal) {
+        return "not_wal_backed";
+    }
+    return wal_enabled ? "wal_backed" : "memory_only";
+}
+
+std::vector<std::string> execution_contract_warnings(const CommandExplain& explain, bool wal_enabled) {
+    std::vector<std::string> warnings = explain.warnings;
+    if (!explain.mutates_store) {
+        warnings.push_back("not a write command");
+    } else if (!explain.touches_wal) {
+        warnings.push_back("write command is not wal-backed");
+    } else if (!wal_enabled) {
+        warnings.push_back("wal disabled; write would be in-memory only");
+    }
+    return warnings;
+}
+
+std::string format_check_json(const CommandExplain& explain, bool wal_enabled) {
+    const auto warnings = execution_contract_warnings(explain, wal_enabled);
+    std::string response = "{\"schema_version\":" + std::to_string(explain_schema_version) +
+                           ",\"read_only\":true,\"execution_allowed\":false" +
+                           ",\"command_digest\":" + json_string(command_digest(explain)) +
+                           ",\"command\":" + json_string(explain.command) +
+                           ",\"write_command\":" + format_json_bool(explain.mutates_store) +
+                           ",\"allowed_by_parser\":" + format_json_bool(explain.allowed_by_parser) +
+                           ",\"side_effects\":" + format_json_string_array(explain.side_effects) +
+                           ",\"side_effect_count\":" + std::to_string(explain.side_effects.size()) +
+                           ",\"checks\":{\"parser_allowed\":" + format_json_bool(explain.allowed_by_parser) +
+                           ",\"write_command\":" + format_json_bool(explain.mutates_store) +
+                           ",\"wal_append_when_enabled\":" + format_json_bool(explain.touches_wal) +
+                           ",\"wal_enabled\":" + format_json_bool(wal_enabled) + "}" +
+                           ",\"wal\":{\"enabled\":" + format_json_bool(wal_enabled) +
+                           ",\"touches_wal\":" + format_json_bool(explain.touches_wal) +
+                           ",\"append_when_enabled\":" + format_json_bool(explain.touches_wal) +
+                           ",\"durability\":" + json_string(execution_contract_durability(explain, wal_enabled)) + "}" +
+                           ",\"warnings\":" + format_json_string_array(warnings) + "}";
+    return response;
+}
+
 void mark_usage_warning(CommandExplain& explain, std::string_view command_usage) {
     explain.allowed_by_parser = false;
     explain.warnings.push_back(std::string{"usage: "} + std::string{command_usage});
@@ -496,12 +541,12 @@ CommandExplain explain_command(std::string_view line) {
         return explain;
     }
 
-    if (explain.command == "EXPLAINJSON") {
+    if (explain.command == "EXPLAINJSON" || explain.command == "CHECKJSON") {
         explain.side_effects.push_back("metadata_read");
         std::string nested_command;
         input >> nested_command;
         if (nested_command.empty()) {
-            mark_usage_warning(explain, "EXPLAINJSON command");
+            mark_usage_warning(explain, explain.command + " command");
         }
         return explain;
     }
@@ -1192,6 +1237,16 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_explain_json(explain_command(target_command))};
     }
 
+    if (command == "CHECKJSON") {
+        std::string target_command;
+        std::getline(input >> std::ws, target_command);
+        if (target_command.empty()) {
+            return usage("CHECKJSON command");
+        }
+
+        return {format_check_json(explain_command(target_command), wal_ != nullptr)};
+    }
+
     if (command == "HELP") {
         if (has_extra_token(input)) {
             return usage("HELP");
@@ -1235,6 +1290,7 @@ std::string CommandProcessor::help_text() {
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"
+           "  CHECKJSON command\n"
            "  HELP\n"
            "  EXIT\n"
            "  QUIT";
