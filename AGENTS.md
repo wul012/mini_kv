@@ -67,6 +67,24 @@ a/<version>/解释/
 - 不为了固定篇数而硬拆文档；讲解应服务于后续回看和维护。
 - `代码讲解记录/README.md` 索引要和实际新增篇数一致。
 
+## Code Explanation Format Rule
+
+后续 mini-kv 代码讲解记录的版式，优先参考：
+
+```text
+D:\javaproj\advanced-order-platform\代码讲解记录\49-version-45-ops-evidence.md
+```
+
+执行要求：
+
+- 参考它的表达结构和讲解密度，不复制 Java 项目内容。
+- 开头先说明本版目标、角色定位、为什么做，以及明确“不是什么”：不是新的执行入口、不绕过审批/契约、不写不该写的数据、不突破项目边界。
+- 分模块讲清楚文件职责：入口在哪里、响应/数据结构是什么、核心聚合/格式化逻辑在哪里、测试在哪里。
+- 对关键字段或命令契约解释“控制面读到后怎么理解”，特别是 `read_only`、`execution_allowed`、`order_authoritative`、`warnings/blockers/diagnostics` 这类边界字段。
+- 测试部分不能只列命令，要说明每类断言保护什么行为，以及真实 smoke 证明了什么。
+- 结尾保留一句话总结，说明本版给后续 Node/Java/mini-kv 松耦合融合带来的价值。
+- 如果本版改动很小，可以合并为一篇，但仍应保留上述表达骨架，避免只罗列字段和文件。
+
 ## Local Toolchain Environment
 
 本机直接运行 CMake/CTest/测试程序时，优先使用 CLion 捆绑工具链，避免环境变量缺失导致误判。
