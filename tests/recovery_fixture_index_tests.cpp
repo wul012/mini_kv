@@ -54,9 +54,24 @@ int main() {
     assert_contains(index, "\"recovered\":true");
     assert_contains(index, "\"digests_match\":true");
     assert_contains(index, "\"digest\":\"fnv1a64:0991cf4e41a8005a\"");
-    assert_contains(index, "\"consumer_hint\":\"Node v103 production readiness summary v3\"");
+    assert_contains(index, "\"baseline_saved_keys\":1");
+    assert_contains(index, "\"replay_records\":1");
+    assert_contains(index, "\"replay_work\":\"one_delta_record_after_snapshot_baseline\"");
+    assert_contains(index, "\"restart_replay_cost\":{\"cost_model\":\"sample_record_count\","
+                           "\"snapshot_loads\":1,\"wal_records_replayed\":1");
+    assert_contains(index, "\"expected_replay_complexity\":\"O(snapshot_keys + wal_records)\"");
+    assert_contains(index, "\"measured_in_fixture_only\":true");
+    assert_contains(index, "\"retention_boundary\":{\"fixture_sample_only\":true,"
+                           "\"values_retained_in_index\":false");
+    assert_contains(index, "\"production_retention_policy\":\"not_defined\"");
+    assert_contains(index, "\"backup_or_rotation_policy\":\"not_included\"");
+    assert_contains(index, "\"operator_action_required\":\"define retention before production use\"");
+    assert_contains(index, "\"consumer_hint\":\"Node v107 production readiness summary v4\"");
     assert_contains(index, "\"boundaries\":[\"read-only fixture\",\"no server command added\","
-                           "\"no write command expanded\",\"not order authoritative\"]");
+                           "\"no write command expanded\",\"not order authoritative\","
+                           "\"retention policy not defined\"]");
+    assert_contains(index, "\"restart replay cost is sample-scale evidence only\"");
+    assert_contains(index, "\"retention boundary must be defined outside this fixture\"");
 
     assert_contains(evidence, "\"evidence_version\":\"mini-kv-restart-recovery.v1\"");
     assert_contains(evidence, "\"recovered\":true");
