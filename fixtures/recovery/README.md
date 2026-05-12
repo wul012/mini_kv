@@ -1,5 +1,7 @@
 # Recovery fixtures
 
+`index.json` is the stable recovery fixture index for downstream control-plane smoke tests. It lists the available recovery evidence fixture, its relative path, evidence version, digest, expected recovery status, and boundaries.
+
 `restart-recovery-evidence.json` is a stable mini-kv restart recovery evidence sample.
 
 The sample models this flow:
@@ -20,4 +22,13 @@ recovered=true
 digests_match=true
 diagnostics.order_authoritative=false
 diagnostics.write_commands_executed_by_evidence=false
+```
+
+The index keeps those boundaries visible before a downstream tool opens the concrete fixture:
+
+```text
+read_only=true
+execution_allowed=false
+order_authoritative=false
+consumer_hint=Node v103 production readiness summary v3
 ```

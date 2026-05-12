@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.55.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.56.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -189,3 +189,16 @@ target_compile_definitions(minikv_recovery_evidence_tests
 )
 
 add_test(NAME recovery_evidence_tests COMMAND minikv_recovery_evidence_tests)
+
+add_executable(minikv_recovery_fixture_index_tests
+    tests/recovery_fixture_index_tests.cpp
+)
+
+target_link_libraries(minikv_recovery_fixture_index_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_recovery_fixture_index_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME recovery_fixture_index_tests COMMAND minikv_recovery_fixture_index_tests)

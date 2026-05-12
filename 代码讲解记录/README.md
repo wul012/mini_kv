@@ -2108,3 +2108,41 @@ recovered=true
 ```
 
 它不是新命令，不扩大写能力，不改变 mini-kv 和订单系统的边界。
+
+## 第一百一十二次讲解索引补充
+
+```text
+112-recovery-fixture-index-v56.md
+ -> 第五十六版 recovery fixture index：恢复证据索引、fixture 路径、digest、Node v103 consumer hint、边界说明、测试和归档
+```
+
+## 第五十六版补充理解
+
+第五十六版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v99-production-readiness-v2-roadmap.md
+```
+
+计划要求 mini-kv 补 recovery evidence 的说明 endpoint / fixture index。mini-kv 当前没有 HTTP endpoint 层，因此本版新增的是：
+
+```text
+fixtures/recovery/index.json
+```
+
+它不是新命令，而是让 Node v103 后续能先读取索引，再找到：
+
+```text
+fixtures/recovery/restart-recovery-evidence.json
+```
+
+索引固定说明：
+
+```text
+read_only=true
+execution_allowed=false
+order_authoritative=false
+consumer_hint=Node v103 production readiness summary v3
+```
+
+这样恢复证据可以被控制面发现和校验，但 mini-kv 的运行时协议和订单边界不变。
