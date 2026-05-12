@@ -1881,3 +1881,46 @@ metadata_read
 ```
 
 这样 Node v65 以后可以接入更完整的 approval evidence，但 mini-kv 仍然只负责解释自身命令语义，不负责审批和真实业务执行。
+
+## 第五十版讲解索引补充
+```text
+102-explainjson-schema-digest-core.md
+ -> 第五十版 EXPLAINJSON schema / digest 核心：schema_version、command_digest、side_effect_count 和规范化 digest source
+
+103-version-50-tests-docs.md
+ -> 第五十版 command_tests、真实 EXPLAINJSON digest smoke、README、a/50 归档和整体增删改
+```
+
+## 第五十版补充理解
+第五十版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v65-post-upstream-evidence-roadmap.md
+```
+
+计划合理点在于：
+
+```text
+mini-kv v50 只补 EXPLAINJSON 证据校验字段
+不新增事务
+不新增集群
+不承担订单权威存储
+```
+
+v50 新增解释字段：
+
+```text
+schema_version
+command_digest
+side_effect_count
+```
+
+其中：
+
+```text
+schema_version=1
+command_digest=fnv1a64:<16位hex>
+side_effect_count=side_effects 数组长度
+```
+
+这样 Node v67 可以把 mini-kv 上游证据纳入 digest-aware verification，而 mini-kv 仍然只提供自身命令解释，不参与真实执行 gate。

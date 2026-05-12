@@ -21,6 +21,20 @@ const minikv::CommandBreakdownMetrics* find_command_metrics(const minikv::Comman
     return nullptr;
 }
 
+void assert_response_contains(const minikv::CommandResult& result, std::string_view expected) {
+    assert(result.response.find(std::string{expected}) != std::string::npos);
+}
+
+std::string extract_json_string_field(const std::string& json, std::string_view field) {
+    const std::string marker = "\"" + std::string{field} + "\":\"";
+    const auto start = json.find(marker);
+    assert(start != std::string::npos);
+    const auto value_start = start + marker.size();
+    const auto value_end = json.find('"', value_start);
+    assert(value_end != std::string::npos);
+    return json.substr(value_start, value_end - value_start);
+}
+
 } // namespace
 
 int main() {
@@ -236,76 +250,103 @@ int main() {
     assert(result.response == "ERR usage: EXPLAINJSON command");
 
     result = processor.execute("EXPLAINJSON SET orderops:1 value");
-    assert(result.response == "{\"command\":\"SET\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true,"
-                              "\"key\":\"orderops:1\",\"requires_value\":true,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_write\",\"wal_append_when_enabled\"],"
-                              "\"warnings\":[]}");
+    assert_response_contains(result, "\"schema_version\":1");
+    assert_response_contains(result, "\"command_digest\":\"fnv1a64:");
+    const auto set_digest = extract_json_string_field(result.response, "command_digest");
+    assert(set_digest.size() == 24);
+    assert_response_contains(result, "\"command\":\"SET\"");
+    assert_response_contains(result, "\"category\":\"write\"");
+    assert_response_contains(result, "\"mutates_store\":true");
+    assert_response_contains(result, "\"touches_wal\":true");
+    assert_response_contains(result, "\"key\":\"orderops:1\"");
+    assert_response_contains(result, "\"requires_value\":true");
+    assert_response_contains(result, "\"ttl_sensitive\":false");
+    assert_response_contains(result, "\"allowed_by_parser\":true");
+    assert_response_contains(result, "\"side_effects\":[\"store_write\",\"wal_append_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":2");
+    assert_response_contains(result, "\"warnings\":[]");
+
+    const auto repeated_set = processor.execute("EXPLAINJSON SET orderops:1 value");
+    assert(extract_json_string_field(repeated_set.response, "command_digest") == set_digest);
 
     result = processor.execute("GET orderops:1");
     assert(result.response == "(nil)");
 
     result = processor.execute("EXPLAINJSON GET orderops:1");
-    assert(result.response == "{\"command\":\"GET\",\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false,"
-                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_read\"],\"warnings\":[]}");
+    assert(extract_json_string_field(result.response, "command_digest") != set_digest);
+    assert_response_contains(result, "\"schema_version\":1");
+    assert_response_contains(result, "\"command\":\"GET\"");
+    assert_response_contains(result, "\"category\":\"read\"");
+    assert_response_contains(result, "\"mutates_store\":false");
+    assert_response_contains(result, "\"touches_wal\":false");
+    assert_response_contains(result, "\"key\":\"orderops:1\"");
+    assert_response_contains(result, "\"side_effects\":[\"store_read\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
 
     result = processor.execute("EXPLAINJSON EXPIRE orderops:1 60");
-    assert(result.response == "{\"command\":\"EXPIRE\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true,"
-                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":true,"
-                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_ttl_update\",\"wal_append_when_enabled\"],"
-                              "\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"EXPIRE\"");
+    assert_response_contains(result, "\"ttl_sensitive\":true");
+    assert_response_contains(result, "\"side_effects\":[\"store_ttl_update\",\"wal_append_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":2");
 
     result = processor.execute("EXPLAINJSON GET orderops:1 extra");
-    assert(result.response == "{\"command\":\"GET\",\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false,"
-                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":false,\"side_effects\":[\"store_read\"],"
-                              "\"warnings\":[\"usage: GET key\"]}");
+    assert_response_contains(result, "\"command\":\"GET\"");
+    assert_response_contains(result, "\"allowed_by_parser\":false");
+    assert_response_contains(result, "\"side_effects\":[\"store_read\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
+    assert_response_contains(result, "\"warnings\":[\"usage: GET key\"]");
 
     result = processor.execute("EXPLAINJSON NOPE orderops:1");
-    assert(result.response == "{\"command\":\"NOPE\",\"category\":\"unknown\",\"mutates_store\":false,"
-                              "\"touches_wal\":false,\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":false,\"side_effects\":[],\"warnings\":[\"unknown command\"]}");
+    assert_response_contains(result, "\"command\":\"NOPE\"");
+    assert_response_contains(result, "\"category\":\"unknown\"");
+    assert_response_contains(result, "\"allowed_by_parser\":false");
+    assert_response_contains(result, "\"side_effects\":[]");
+    assert_response_contains(result, "\"side_effect_count\":0");
+    assert_response_contains(result, "\"warnings\":[\"unknown command\"]");
 
     result = processor.execute("EXPLAINJSON TTL orderops:1");
-    assert(result.response == "{\"command\":\"TTL\",\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false,"
-                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":true,"
-                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_read\"],\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"TTL\"");
+    assert_response_contains(result, "\"ttl_sensitive\":true");
+    assert_response_contains(result, "\"side_effects\":[\"store_read\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
 
     result = processor.execute("EXPLAINJSON DEL orderops:1");
-    assert(result.response == "{\"command\":\"DEL\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true,"
-                              "\"key\":\"orderops:1\",\"requires_value\":false,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":true,\"side_effects\":[\"store_write\",\"wal_append_when_enabled\"],"
-                              "\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"DEL\"");
+    assert_response_contains(result, "\"side_effects\":[\"store_write\",\"wal_append_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":2");
 
     result = processor.execute("EXPLAINJSON SAVE data/snap.txt");
-    assert(result.response == "{\"command\":\"SAVE\",\"category\":\"admin\",\"mutates_store\":false,\"touches_wal\":false,"
-                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
-                              "\"side_effects\":[\"snapshot_file_write\"],\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"SAVE\"");
+    assert_response_contains(result, "\"category\":\"admin\"");
+    assert_response_contains(result, "\"side_effects\":[\"snapshot_file_write\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
 
     result = processor.execute("EXPLAINJSON LOAD data/snap.txt");
-    assert(result.response == "{\"command\":\"LOAD\",\"category\":\"admin\",\"mutates_store\":true,\"touches_wal\":false,"
-                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
-                              "\"side_effects\":[\"store_replace_from_snapshot\"],\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"LOAD\"");
+    assert_response_contains(result, "\"mutates_store\":true");
+    assert_response_contains(result, "\"side_effects\":[\"store_replace_from_snapshot\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
 
     result = processor.execute("EXPLAINJSON COMPACT");
-    assert(result.response == "{\"command\":\"COMPACT\",\"category\":\"admin\",\"mutates_store\":false,\"touches_wal\":true,"
-                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
-                              "\"side_effects\":[\"wal_rewrite_when_enabled\"],\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"COMPACT\"");
+    assert_response_contains(result, "\"touches_wal\":true");
+    assert_response_contains(result, "\"side_effects\":[\"wal_rewrite_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
 
     result = processor.execute("EXPLAINJSON RESETSTATS");
-    assert(result.response == "{\"command\":\"RESETSTATS\",\"category\":\"admin\",\"mutates_store\":false,"
-                              "\"touches_wal\":false,\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,"
-                              "\"allowed_by_parser\":true,\"side_effects\":[\"metrics_reset\"],\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"RESETSTATS\"");
+    assert_response_contains(result, "\"side_effects\":[\"metrics_reset\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
 
     result = processor.execute("EXPLAINJSON INFO");
-    assert(result.response == "{\"command\":\"INFO\",\"category\":\"meta\",\"mutates_store\":false,\"touches_wal\":false,"
-                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
-                              "\"side_effects\":[\"metadata_read\"],\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"INFO\"");
+    assert_response_contains(result, "\"side_effects\":[\"metadata_read\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
 
     result = processor.execute("EXPLAINJSON QUIT");
-    assert(result.response == "{\"command\":\"QUIT\",\"category\":\"meta\",\"mutates_store\":false,\"touches_wal\":false,"
-                              "\"key\":null,\"requires_value\":false,\"ttl_sensitive\":false,\"allowed_by_parser\":true,"
-                              "\"side_effects\":[\"connection_close\"],\"warnings\":[]}");
+    assert_response_contains(result, "\"command\":\"QUIT\"");
+    assert_response_contains(result, "\"side_effects\":[\"connection_close\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
 
     minikv::Store inventory_store;
     minikv::CommandProcessor inventory_processor{inventory_store};

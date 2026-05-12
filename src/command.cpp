@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cctype>
 #include <cstdint>
+#include <iomanip>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -185,6 +186,9 @@ std::string format_prefixed_keys(std::string_view prefix, const std::vector<std:
 }
 
 constexpr std::size_t key_inventory_limit = 1000;
+constexpr int explain_schema_version = 1;
+constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
+constexpr std::uint64_t fnv_prime = 1099511628211ull;
 
 std::string json_string(std::string_view value) {
     constexpr char hex[] = "0123456789ABCDEF";
@@ -305,6 +309,28 @@ std::string format_json_string_array(const std::vector<std::string>& values) {
     return response;
 }
 
+std::uint64_t fnv1a64(std::string_view text) {
+    std::uint64_t hash = fnv_offset_basis;
+    for (const unsigned char ch : text) {
+        hash ^= static_cast<std::uint64_t>(ch);
+        hash *= fnv_prime;
+    }
+    return hash;
+}
+
+std::string format_hex64(std::uint64_t value) {
+    std::ostringstream output;
+    output << std::hex << std::nouppercase << std::setfill('0') << std::setw(16) << value;
+    return output.str();
+}
+
+void append_digest_part(std::string& source, std::string_view value) {
+    source += std::to_string(value.size());
+    source.push_back(':');
+    source += value;
+    source.push_back(';');
+}
+
 struct CommandExplain {
     std::string command;
     std::string category = "unknown";
@@ -318,8 +344,33 @@ struct CommandExplain {
     std::vector<std::string> warnings;
 };
 
+std::string command_digest(const CommandExplain& explain) {
+    std::string source;
+    append_digest_part(source, std::to_string(explain_schema_version));
+    append_digest_part(source, explain.command);
+    append_digest_part(source, explain.category);
+    append_digest_part(source, format_json_bool(explain.mutates_store));
+    append_digest_part(source, format_json_bool(explain.touches_wal));
+    append_digest_part(source, explain.key.value_or(""));
+    append_digest_part(source, explain.key.has_value() ? "present" : "null");
+    append_digest_part(source, format_json_bool(explain.requires_value));
+    append_digest_part(source, format_json_bool(explain.ttl_sensitive));
+    append_digest_part(source, format_json_bool(explain.allowed_by_parser));
+    append_digest_part(source, std::to_string(explain.side_effects.size()));
+    for (const auto& side_effect : explain.side_effects) {
+        append_digest_part(source, side_effect);
+    }
+    append_digest_part(source, std::to_string(explain.warnings.size()));
+    for (const auto& warning : explain.warnings) {
+        append_digest_part(source, warning);
+    }
+    return "fnv1a64:" + format_hex64(fnv1a64(source));
+}
+
 std::string format_explain_json(const CommandExplain& explain) {
-    std::string response = "{\"command\":" + json_string(explain.command) +
+    std::string response = "{\"schema_version\":" + std::to_string(explain_schema_version) +
+                           ",\"command_digest\":" + json_string(command_digest(explain)) +
+                           ",\"command\":" + json_string(explain.command) +
                            ",\"category\":" + json_string(explain.category) +
                            ",\"mutates_store\":" + format_json_bool(explain.mutates_store) +
                            ",\"touches_wal\":" + format_json_bool(explain.touches_wal) +
@@ -333,6 +384,7 @@ std::string format_explain_json(const CommandExplain& explain) {
                 ",\"ttl_sensitive\":" + format_json_bool(explain.ttl_sensitive) +
                 ",\"allowed_by_parser\":" + format_json_bool(explain.allowed_by_parser) +
                 ",\"side_effects\":" + format_json_string_array(explain.side_effects) +
+                ",\"side_effect_count\":" + std::to_string(explain.side_effects.size()) +
                 ",\"warnings\":" + format_json_string_array(explain.warnings) + "}";
     return response;
 }
