@@ -292,6 +292,7 @@ int main() {
 
     result = processor.execute("EXPLAINJSON GET orderops:1");
     assert(extract_json_string_field(result.response, "command_digest") != set_digest);
+    const auto get_digest = extract_json_string_field(result.response, "command_digest");
     assert_response_contains(result, "\"schema_version\":1");
     assert_response_contains(result, "\"command\":\"GET\"");
     assert_response_contains(result, "\"category\":\"read\"");
@@ -392,9 +393,15 @@ int main() {
     assert(result.response == "(nil)");
 
     result = processor.execute("CHECKJSON GET orderops:1");
+    const auto checkjson_get_fixture =
+        read_fixture_text(std::filesystem::path{"fixtures"} / "checkjson" / "get-orderops-read-contract.json");
+    assert(result.response == checkjson_get_fixture);
+    assert_response_contains(result, "\"command_digest\":\"" + get_digest + "\"");
     assert_response_contains(result, "\"command\":\"GET\"");
     assert_response_contains(result, "\"write_command\":false");
     assert_response_contains(result, "\"allowed_by_parser\":true");
+    assert_response_contains(result, "\"side_effects\":[\"store_read\"]");
+    assert_response_contains(result, "\"side_effect_count\":1");
     assert_response_contains(result, "\"checks\":{\"parser_allowed\":true,\"write_command\":false,"
                                      "\"wal_append_when_enabled\":false,\"wal_enabled\":false}");
     assert_response_contains(result, "\"durability\":\"not_applicable\"");

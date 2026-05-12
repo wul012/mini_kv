@@ -2010,3 +2010,36 @@ CHECKJSON SET orderops:1 value
 ```
 
 这样 Node v74 后续可以读取真实格式样本做 fixture-driven smoke，而 mini-kv 通过 `command_tests` 保证样本不会静默漂移。
+
+## 第五十三版讲解索引补充
+```text
+108-checkjson-read-fixture-sample.md
+ -> 第五十三版 CHECKJSON read-command fixture：GET contract、store_read、side_effect_count=1、not_applicable durability
+
+109-version-53-tests-docs.md
+ -> 第五十三版 command fixture test、真实 read fixture smoke、README、a/53 归档和整体增删改
+```
+
+## 第五十三版补充理解
+第五十三版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v75-post-fixture-diagnostics-roadmap.md
+```
+
+计划要求新增 mini-kv read-command CHECKJSON sample。
+本轮采用当前真实语义：
+
+```text
+CHECKJSON GET orderops:1
+ -> side_effects=["store_read"]
+ -> side_effect_count=1
+```
+
+新增样本：
+
+```text
+fixtures/checkjson/get-orderops-read-contract.json
+```
+
+这样 Node v78 可以把 mini-kv 的 write CHECKJSON 和 read CHECKJSON 同时纳入 scenario matrix。
