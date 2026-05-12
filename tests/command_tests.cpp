@@ -6,6 +6,8 @@
 #include <cassert>
 #include <chrono>
 #include <filesystem>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -34,6 +36,19 @@ std::string extract_json_string_field(const std::string& json, std::string_view 
     const auto value_end = json.find('"', value_start);
     assert(value_end != std::string::npos);
     return json.substr(value_start, value_end - value_start);
+}
+
+std::string read_fixture_text(const std::filesystem::path& relative_path) {
+    const auto path = std::filesystem::path{MINIKV_SOURCE_DIR} / relative_path;
+    std::ifstream input{path, std::ios::binary};
+    assert(input.is_open());
+    std::ostringstream output;
+    output << input.rdbuf();
+    auto text = output.str();
+    while (!text.empty() && (text.back() == '\n' || text.back() == '\r')) {
+        text.pop_back();
+    }
+    return text;
 }
 
 } // namespace
@@ -355,6 +370,9 @@ int main() {
     assert(result.response == "ERR usage: CHECKJSON command");
 
     result = processor.execute("CHECKJSON SET orderops:1 value");
+    const auto checkjson_set_fixture =
+        read_fixture_text(std::filesystem::path{"fixtures"} / "checkjson" / "set-orderops-write-contract.json");
+    assert(result.response == checkjson_set_fixture);
     assert_response_contains(result, "\"schema_version\":1");
     assert_response_contains(result, "\"read_only\":true");
     assert_response_contains(result, "\"execution_allowed\":false");

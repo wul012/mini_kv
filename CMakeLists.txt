@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.51.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.52.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -80,6 +80,11 @@ add_executable(minikv_command_tests
 )
 
 target_link_libraries(minikv_command_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_command_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
 
 add_test(NAME command_tests COMMAND minikv_command_tests)
 

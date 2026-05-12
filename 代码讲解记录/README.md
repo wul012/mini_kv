@@ -1971,3 +1971,42 @@ warnings
 ```
 
 这样 Node v71 可以把 mini-kv 的执行前 contract 纳入 gate evidence，但 mini-kv 仍然只负责只读说明自身检查条件，不实际执行写命令。
+
+## 第五十二版讲解索引补充
+```text
+106-checkjson-fixture-sample.md
+ -> 第五十二版 CHECKJSON fixture 样本：稳定 sample response、no-WAL contract、测试防漂移
+
+107-version-52-tests-docs.md
+ -> 第五十二版 command fixture test、真实 smoke、README、a/52 归档和整体增删改
+```
+
+## 第五十二版补充理解
+第五十二版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v71-post-execution-contract-roadmap.md
+```
+
+计划合理点在于：
+
+```text
+mini-kv v52 只产出 CHECKJSON fixture / sample
+不修改 Node
+不执行 mini-kv SET / DEL / EXPIRE
+不新增事务或集群
+```
+
+v52 新增样本：
+
+```text
+fixtures/checkjson/set-orderops-write-contract.json
+```
+
+对应命令：
+
+```text
+CHECKJSON SET orderops:1 value
+```
+
+这样 Node v74 后续可以读取真实格式样本做 fixture-driven smoke，而 mini-kv 通过 `command_tests` 保证样本不会静默漂移。
