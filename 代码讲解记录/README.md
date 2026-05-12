@@ -2075,3 +2075,36 @@ diagnostics.write_commands_executed=false
 ```
 
 这样 mini-kv 可以继续作为 C++ 自研 KV 和控制面观测对象，但不会被误接成订单权威数据库。
+
+## 第一百一十一次讲解索引补充
+
+```text
+111-restart-recovery-evidence-v55.md
+ -> 第五十五版 restart recovery evidence sample：WAL/snapshot 恢复证据、前后 key_count/digest、fixture、测试、README 和归档
+```
+
+## 第五十五版补充理解
+
+第五十五版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v95-production-gap-roadmap.md
+```
+
+计划要求 mini-kv 提供 restart recovery evidence sample，供 Node v99 后续汇总生产 readiness 时消费。核心 fixture 是：
+
+```text
+fixtures/recovery/restart-recovery-evidence.json
+```
+
+本版只证明：
+
+```text
+snapshot baseline 可保存/加载
+WAL delta 可 replay
+before/after key_count 一致
+before/after digest 一致
+recovered=true
+```
+
+它不是新命令，不扩大写能力，不改变 mini-kv 和订单系统的边界。

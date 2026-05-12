@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.54.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.55.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,6 +17,7 @@ add_library(minikv
     src/command.cpp
     src/line_editor.cpp
     src/metrics_file.cpp
+    src/recovery_evidence.cpp
     src/resp.cpp
     src/snapshot.cpp
     src/store.cpp
@@ -175,3 +176,16 @@ add_executable(minikv_metrics_file_tests
 target_link_libraries(minikv_metrics_file_tests PRIVATE minikv)
 
 add_test(NAME metrics_file_tests COMMAND minikv_metrics_file_tests)
+
+add_executable(minikv_recovery_evidence_tests
+    tests/recovery_evidence_tests.cpp
+)
+
+target_link_libraries(minikv_recovery_evidence_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_recovery_evidence_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME recovery_evidence_tests COMMAND minikv_recovery_evidence_tests)
