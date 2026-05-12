@@ -239,7 +239,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=26") != std::string::npos);
+    assert(result.response.find("command_count=27") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("GET(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -248,6 +248,7 @@ int main() {
     assert(result.response.find("COMMANDSJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find("STORAGEJSON(category=read,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
 
     result = processor.execute("COMMANDSJSON extra");
     assert(result.response == "ERR usage: COMMANDSJSON");
@@ -262,6 +263,8 @@ int main() {
     assert(result.response.find("\"name\":\"COMMANDSJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
+    assert(result.response.find("\"name\":\"STORAGEJSON\",\"category\":\"read\",\"mutates_store\":false,"
+                                "\"touches_wal\":true") != std::string::npos);
     assert(result.response.find("\"description\":\"Read command catalog as JSON\"") != std::string::npos);
 
     result = processor.execute("EXPLAINJSON");
@@ -362,6 +365,15 @@ int main() {
     assert_response_contains(result, "\"side_effects\":[\"metadata_read\"]");
     assert_response_contains(result, "\"side_effect_count\":1");
 
+    result = processor.execute("EXPLAINJSON STORAGEJSON");
+    assert_response_contains(result, "\"command\":\"STORAGEJSON\"");
+    assert_response_contains(result, "\"category\":\"read\"");
+    assert_response_contains(result, "\"mutates_store\":false");
+    assert_response_contains(result, "\"touches_wal\":true");
+    assert_response_contains(result, "\"side_effects\":[\"metadata_read\",\"store_read\","
+                                     "\"wal_metadata_read_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":3");
+
     result = processor.execute("EXPLAINJSON QUIT");
     assert_response_contains(result, "\"command\":\"QUIT\"");
     assert_response_contains(result, "\"side_effects\":[\"connection_close\"]");
@@ -407,6 +419,26 @@ int main() {
     assert_response_contains(result, "\"durability\":\"not_applicable\"");
     assert_response_contains(result, "\"warnings\":[\"not a write command\"]");
 
+    result = processor.execute("STORAGEJSON extra");
+    assert(result.response == "ERR usage: STORAGEJSON");
+
+    result = processor.execute("STORAGEJSON");
+    assert_response_contains(result, "\"schema_version\":1");
+    assert_response_contains(result, "\"read_only\":true");
+    assert_response_contains(result, "\"execution_allowed\":false");
+    assert_response_contains(result, "\"version\":\"" + std::string{minikv::version} + "\"");
+    assert_response_contains(result, "\"store\":{\"live_keys\":1,\"order_authoritative\":false}");
+    assert_response_contains(result, "\"wal\":{\"enabled\":false,\"status\":\"disabled\"}");
+    assert_response_contains(result, "\"snapshot\":{\"supported\":true,\"mode\":\"manual\",\"atomic_save\":true,"
+                                     "\"load_replaces_store\":true}");
+    assert_response_contains(result, "\"side_effects\":[\"metadata_read\",\"store_read\","
+                                     "\"wal_metadata_read_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":3");
+    assert_response_contains(result, "\"diagnostics\":{\"read_only_command\":true,\"write_commands_executed\":false,"
+                                     "\"order_authoritative\":false");
+    assert_response_contains(result, "\"notes\":[\"read_only_storage_evidence\",\"not_order_authoritative\","
+                                     "\"manual_snapshot_only\",\"wal_disabled\"]");
+
     result = processor.execute("CHECKJSON SET orderops:1");
     assert_response_contains(result, "\"command\":\"SET\"");
     assert_response_contains(result, "\"write_command\":true");
@@ -424,6 +456,13 @@ int main() {
     assert_response_contains(result, "\"wal\":{\"enabled\":true,\"touches_wal\":true,"
                                      "\"append_when_enabled\":true,\"durability\":\"wal_backed\"}");
     assert_response_contains(result, "\"warnings\":[]");
+
+    result = wal_contract_processor.execute("STORAGEJSON");
+    assert_response_contains(result, "\"wal\":{\"enabled\":true,\"status\":\"enabled\"");
+    assert_response_contains(result, "\"records\":0");
+    assert_response_contains(result, "\"live_keys\":0");
+    assert_response_contains(result, "\"notes\":[\"read_only_storage_evidence\",\"not_order_authoritative\","
+                                     "\"manual_snapshot_only\",\"wal_enabled\"]");
     assert(!std::filesystem::exists(wal_contract_path));
     std::filesystem::remove(wal_contract_path);
 
@@ -606,6 +645,7 @@ int main() {
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
     assert(result.response.find("CHECKJSON") != std::string::npos);
+    assert(result.response.find("STORAGEJSON") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");

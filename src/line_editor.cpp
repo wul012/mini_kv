@@ -520,8 +520,8 @@ LineEditorCompletionOptions default_client_completion_options() {
     options.command_candidates = {"PING",       "SET",      "GET",         "DEL",        "EXPIRE",   "TTL",
                                   "SIZE",       "KEYS",     "KEYSJSON",    "SAVE",       "LOAD",     "COMPACT",
                                   "COMMANDS",   "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON", "WALINFO",  "STATS",
-                                  "STATSJSON",  "RESETSTATS", "HEALTH",      "INFO",      "INFOJSON", "HELP",
-                                  "EXIT",       "QUIT",       ":history"};
+                                  "STATSJSON",  "STORAGEJSON", "RESETSTATS", "HEALTH",      "INFO",      "INFOJSON",
+                                  "HELP",       "EXIT",       "QUIT",       ":history"};
     return options;
 }
 

@@ -74,8 +74,8 @@ int main() {
 
     minikv::LineEditorCompletion completion{
         {"PING", "SET", "GET", "SAVE", "SIZE", "KEYS", "KEYSJSON", "COMPACT", "STATS", "STATSJSON", "RESETSTATS",
-         "HELP", "HEALTH", "INFO", "INFOJSON", "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON", "EXIT",
-         "EXPIRE", ":history"}};
+         "STORAGEJSON", "HELP", "HEALTH", "INFO", "INFOJSON", "COMMANDS", "COMMANDSJSON", "EXPLAINJSON",
+         "CHECKJSON", "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
     assert(completion.complete("  pi", 4) == std::optional<std::string>{"  PING "});
@@ -95,6 +95,7 @@ int main() {
     assert(completion.complete("STAT", 4) == std::optional<std::string>{"STATS"});
     assert(!completion.complete("STATS", 5).has_value());
     assert(completion.complete("STATSJ", 6) == std::optional<std::string>{"STATSJSON "});
+    assert(completion.complete("STOR", 4) == std::optional<std::string>{"STORAGEJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

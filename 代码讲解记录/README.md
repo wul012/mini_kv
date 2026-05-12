@@ -2043,3 +2043,35 @@ fixtures/checkjson/get-orderops-read-contract.json
 ```
 
 这样 Node v78 可以把 mini-kv 的 write CHECKJSON 和 read CHECKJSON 同时纳入 scenario matrix。
+
+## 第一百一十次讲解索引补充
+
+```text
+110-storagejson-evidence-v54.md
+ -> 第五十四版 STORAGEJSON 只读存储证据：version、live key、WAL/snapshot 状态、diagnostics、测试、smoke、README 和归档
+```
+
+## 第五十四版补充理解
+
+第五十四版来自最新跨项目计划：
+
+```text
+D:\nodeproj\orderops-node\docs\plans\v95-production-gap-roadmap.md
+```
+
+计划要求 mini-kv 提供只读 storage evidence，供 Node v96 后续消费。核心命令是：
+
+```text
+STORAGEJSON
+```
+
+它只返回证据，不执行写入：
+
+```text
+read_only=true
+execution_allowed=false
+store.order_authoritative=false
+diagnostics.write_commands_executed=false
+```
+
+这样 mini-kv 可以继续作为 C++ 自研 KV 和控制面观测对象，但不会被误接成订单权威数据库。

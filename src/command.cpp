@@ -78,6 +78,7 @@ constexpr CommandCatalogEntry command_catalog[] = {
     {"COMMANDSJSON", "meta", false, false, true, "Read command catalog as JSON"},
     {"EXPLAINJSON", "meta", false, false, true, "Explain a command risk profile as JSON without executing it"},
     {"CHECKJSON", "meta", false, false, true, "Read a write command execution contract as JSON without executing it"},
+    {"STORAGEJSON", "read", false, true, true, "Read storage evidence as JSON without mutating data"},
     {"HELP", "meta", false, false, true, "Show command help"},
     {"EXIT", "meta", false, false, true, "Close the current client session"},
     {"QUIT", "meta", false, false, true, "Close the current client session"},
@@ -188,6 +189,7 @@ std::string format_prefixed_keys(std::string_view prefix, const std::vector<std:
 
 constexpr std::size_t key_inventory_limit = 1000;
 constexpr int explain_schema_version = 1;
+constexpr int storage_evidence_schema_version = 1;
 constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
 constexpr std::uint64_t fnv_prime = 1099511628211ull;
 
@@ -551,6 +553,16 @@ CommandExplain explain_command(std::string_view line) {
         return explain;
     }
 
+    if (explain.command == "STORAGEJSON") {
+        explain.side_effects.push_back("metadata_read");
+        explain.side_effects.push_back("store_read");
+        explain.side_effects.push_back("wal_metadata_read_when_enabled");
+        if (has_extra_token(input)) {
+            mark_usage_warning(explain, "STORAGEJSON");
+        }
+        return explain;
+    }
+
     if (explain.command == "COMPACT") {
         explain.side_effects.push_back("wal_rewrite_when_enabled");
     } else if (explain.command == "RESETSTATS") {
@@ -742,6 +754,59 @@ std::string format_stats_json(std::size_t live_keys,
                     ",\"peak_connections\":" + std::to_string(stats.peak_connections);
     }
     response += "}}";
+    return response;
+}
+
+std::string format_storage_evidence_json(std::size_t live_keys,
+                                         WriteAheadLog* wal,
+                                         const std::optional<WalMaintenanceReport>& wal_report) {
+    const std::vector<std::string> side_effects = {
+        "metadata_read",
+        "store_read",
+        "wal_metadata_read_when_enabled",
+    };
+    std::vector<std::string> notes = {
+        "read_only_storage_evidence",
+        "not_order_authoritative",
+        "manual_snapshot_only",
+    };
+    notes.push_back(wal != nullptr ? "wal_enabled" : "wal_disabled");
+
+    std::string response = "{\"schema_version\":" + std::to_string(storage_evidence_schema_version) +
+                           ",\"read_only\":true,\"execution_allowed\":false" +
+                           ",\"version\":" + json_string(version) +
+                           ",\"store\":{\"live_keys\":" + std::to_string(live_keys) +
+                           ",\"order_authoritative\":false}" +
+                           ",\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr);
+
+    if (wal_report.has_value()) {
+        response += ",\"status\":\"enabled\"" +
+                    std::string{",\"bytes\":"} + std::to_string(wal_report->bytes) +
+                    ",\"records\":" + std::to_string(wal_report->records) +
+                    ",\"live_keys\":" + std::to_string(wal_report->live_keys) +
+                    ",\"compact_recommended\":" + format_json_bool(wal_report->compact_recommended) +
+                    ",\"options\":{\"compact_min_records\":" +
+                    std::to_string(wal_report->options.compact_min_records) +
+                    ",\"compact_record_ratio\":" + std::to_string(wal_report->options.compact_record_ratio) +
+                    ",\"compact_min_bytes\":" + std::to_string(wal_report->options.compact_min_bytes) + "}" +
+                    ",\"compactions\":{\"manual\":" +
+                    std::to_string(wal_report->compaction_stats.manual_compactions) +
+                    ",\"automatic\":" + std::to_string(wal_report->compaction_stats.auto_compactions) +
+                    ",\"repair\":" + std::to_string(wal_report->compaction_stats.repair_compactions) +
+                    ",\"compacted_keys\":" + std::to_string(wal_report->compaction_stats.compacted_keys) +
+                    ",\"records_removed\":" + std::to_string(wal_report->compaction_stats.records_removed) +
+                    ",\"bytes_saved\":" + std::to_string(wal_report->compaction_stats.bytes_saved) + "}";
+    } else {
+        response += ",\"status\":\"disabled\"";
+    }
+
+    response += "},\"snapshot\":{\"supported\":true,\"mode\":\"manual\",\"atomic_save\":true,"
+                "\"load_replaces_store\":true}" +
+                std::string{",\"side_effects\":"} + format_json_string_array(side_effects) +
+                ",\"side_effect_count\":" + std::to_string(side_effects.size()) +
+                ",\"diagnostics\":{\"read_only_command\":true,\"write_commands_executed\":false,"
+                "\"order_authoritative\":false,\"notes\":" +
+                format_json_string_array(notes) + "}}";
     return response;
 }
 
@@ -1171,6 +1236,21 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_stats_json(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
+    if (command == "STORAGEJSON") {
+        if (has_extra_token(input)) {
+            return usage("STORAGEJSON");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_storage_evidence_json(live_keys, wal_, wal_report)};
+    }
+
     if (command == "RESETSTATS") {
         if (has_extra_token(input)) {
             return usage("RESETSTATS");
@@ -1291,6 +1371,7 @@ std::string CommandProcessor::help_text() {
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"
            "  CHECKJSON command\n"
+           "  STORAGEJSON\n"
            "  HELP\n"
            "  EXIT\n"
            "  QUIT";
