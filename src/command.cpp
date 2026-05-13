@@ -189,6 +189,8 @@ std::string format_prefixed_keys(std::string_view prefix, const std::vector<std:
 
 constexpr std::size_t key_inventory_limit = 1000;
 constexpr int explain_schema_version = 1;
+constexpr int runtime_identity_schema_version = 1;
+constexpr int runtime_metrics_schema_version = 1;
 constexpr int storage_evidence_schema_version = 1;
 constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
 constexpr std::uint64_t fnv_prime = 1099511628211ull;
@@ -711,13 +713,17 @@ std::string format_info_json(std::size_t live_keys,
             ? std::chrono::duration_cast<std::chrono::seconds>(now - runtime_info.started_at).count()
             : 0;
 
-    return "{\"version\":" + json_string(version) +
+    return "{\"schema_version\":" + std::to_string(runtime_identity_schema_version) +
+           ",\"read_only\":true,\"execution_allowed\":false,\"order_authoritative\":false" +
+           ",\"evidence_type\":\"runtime_identity\"" +
+           ",\"version\":" + json_string(version) +
            ",\"server\":{\"protocol\":" + format_protocol_json_array(runtime_info.protocol) +
            ",\"uptime_seconds\":" + std::to_string(uptime) +
            ",\"max_request_bytes\":" + std::to_string(runtime_info.max_request_bytes) +
            "},\"store\":{\"live_keys\":" + std::to_string(live_keys) +
            "},\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr) +
-           "},\"metrics\":{\"enabled\":" + format_json_bool(runtime_info.metrics_enabled) + "}}";
+           "},\"metrics\":{\"enabled\":" + format_json_bool(runtime_info.metrics_enabled) +
+           "},\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
 std::string format_stats_json(std::size_t live_keys,
@@ -725,7 +731,10 @@ std::string format_stats_json(std::size_t live_keys,
                               const std::optional<WalMaintenanceReport>& wal_report,
                               const CommandProcessorMetrics& command_metrics,
                               const CommandConnectionStats& stats) {
-    std::string response = "{\"live_keys\":" + std::to_string(live_keys) +
+    std::string response = "{\"schema_version\":" + std::to_string(runtime_metrics_schema_version) +
+                           ",\"read_only\":true,\"execution_allowed\":false,\"order_authoritative\":false" +
+                           ",\"evidence_type\":\"runtime_metrics\"" +
+                           ",\"live_keys\":" + std::to_string(live_keys) +
                            ",\"wal_enabled\":" + format_json_bool(wal != nullptr);
 
     if (wal_report.has_value()) {
@@ -753,7 +762,9 @@ std::string format_stats_json(std::size_t live_keys,
                     ",\"total_connections\":" + std::to_string(stats.total_connections) +
                     ",\"peak_connections\":" + std::to_string(stats.peak_connections);
     }
-    response += "}}";
+    response += "},\"diagnostics\":{\"write_commands_executed\":false,"
+                "\"dynamic_fields\":[\"commands.total_latency_ns\",\"commands.avg_latency_ns\","
+                "\"commands.max_latency_ns\",\"commands.breakdown[*].*_latency_ns\"]}}";
     return response;
 }
 

@@ -12,6 +12,7 @@ STATSJSON
 ```
 
 `CHECKJSON` samples continue to live under `fixtures/checkjson/` because they are execution-contract fixtures. `fixtures/readonly/index.json` points at those existing samples and at the two runtime read samples in this directory.
+From v59 onward, `INFOJSON` and `STATSJSON` runtime responses carry their own `schema_version`, `read_only`, `execution_allowed`, `order_authoritative`, `evidence_type`, and `diagnostics` fields so a live probe can verify the no-write boundary from the response itself.
 
 ## infojson-empty-inline.json
 
@@ -29,6 +30,11 @@ no WAL path
 metrics disabled
 live_keys=0
 uptime_seconds=0 in the fixture test
+read_only=true
+execution_allowed=false
+order_authoritative=false
+evidence_type=runtime_identity
+diagnostics.write_commands_executed=false
 ```
 
 `uptime_seconds` is a dynamic runtime field. The test pins it to `0` by constructing a processor whose `started_at` is slightly in the future, so the sample stays stable while still comparing against the real command output.
@@ -48,6 +54,11 @@ empty inline processor
 no WAL path
 no connection stats provider
 captured before STATSJSON command accounting is recorded
+read_only=true
+execution_allowed=false
+order_authoritative=false
+evidence_type=runtime_metrics
+diagnostics.write_commands_executed=false
 ```
 
 Latency fields are runtime counters. This empty fixture intentionally uses zero counters so downstream control planes can validate the JSON shape and no-write boundaries without treating it as production pass evidence.
@@ -63,4 +74,4 @@ write_execution_allowed=false
 order_authoritative=false
 ```
 
-They are shape evidence for Node v152/v153 preparation, not proof that production operations are ready.
+They are shape evidence for Node v156 real-read capture preparation, not proof that production operations are ready.

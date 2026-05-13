@@ -143,6 +143,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 114-version-58-readonly-evidence-fixtures.md
  -> 第五十八版只读 evidence fixture 包：CHECKJSON、INFOJSON、STATSJSON 样本、动态字段边界、Node v152/v153 消费提示、测试和归档
+
+115-version-59-runtime-read-self-description.md
+ -> 第五十九版运行时只读自描述增强：INFOJSON/STATSJSON schema、read_only、execution_allowed、order_authoritative、diagnostics、Node v156 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。

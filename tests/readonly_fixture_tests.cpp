@@ -61,7 +61,7 @@ int main() {
     assert_contains(index, "\"runtime_read_commands_allowed\":true");
     assert_contains(index, "\"write_execution_allowed\":false");
     assert_contains(index, "\"order_authoritative\":false");
-    assert_contains(index, "\"consumer_hint\":\"Node v152/v153 production pass evidence preparation\"");
+    assert_contains(index, "\"consumer_hint\":\"Node v156 real-read capture preparation\"");
     assert_contains(index, "\"fixture_count\":4");
     assert(count_occurrences(index, "\"path\":") == 4);
     assert_contains(index, "\"command\":\"CHECKJSON SET orderops:1 value\"");
@@ -70,10 +70,17 @@ int main() {
     assert_contains(index, "\"path\":\"fixtures/checkjson/get-orderops-read-contract.json\"");
     assert_contains(index, "\"command\":\"INFOJSON\"");
     assert_contains(index, "\"path\":\"fixtures/readonly/infojson-empty-inline.json\"");
+    assert_contains(index, "\"sample_type\":\"runtime_identity\",\"schema_version\":1,"
+                           "\"read_only\":true,\"execution_allowed\":false,"
+                           "\"order_authoritative\":false");
     assert_contains(index, "\"dynamic_fields\":[\"server.uptime_seconds\"]");
     assert_contains(index, "\"command\":\"STATSJSON\"");
     assert_contains(index, "\"path\":\"fixtures/readonly/statsjson-empty-inline.json\"");
+    assert_contains(index, "\"sample_type\":\"runtime_metrics\",\"schema_version\":1,"
+                           "\"read_only\":true,\"execution_allowed\":false,"
+                           "\"order_authoritative\":false");
     assert_contains(index, "\"no write command executed\"");
+    assert_contains(index, "INFOJSON and STATSJSON carry their own read-only diagnostics");
     assert_contains(index, "external control planes must treat samples as shape evidence, not production pass evidence");
 
     minikv::Store check_store;
@@ -89,22 +96,38 @@ int main() {
     minikv::CommandProcessor info_processor{info_store, nullptr, info_options};
     result = info_processor.execute("INFOJSON");
     assert(result.response == infojson_fixture);
-    assert_contains(result.response, "\"version\":\"0.58.0\"");
+    assert_contains(result.response, "\"schema_version\":1");
+    assert_contains(result.response, "\"read_only\":true");
+    assert_contains(result.response, "\"execution_allowed\":false");
+    assert_contains(result.response, "\"order_authoritative\":false");
+    assert_contains(result.response, "\"evidence_type\":\"runtime_identity\"");
+    assert_contains(result.response, "\"version\":\"0.59.0\"");
     assert_contains(result.response, "\"uptime_seconds\":0");
     assert_contains(result.response, "\"live_keys\":0");
     assert_contains(result.response, "\"wal\":{\"enabled\":false}");
     assert_contains(result.response, "\"metrics\":{\"enabled\":false}");
+    assert_contains(result.response, "\"diagnostics\":{\"write_commands_executed\":false,"
+                                     "\"dynamic_fields\":[\"server.uptime_seconds\"]}");
 
     minikv::Store stats_store;
     minikv::CommandProcessor stats_processor{stats_store};
     result = stats_processor.execute("STATSJSON");
     assert(result.response == statsjson_fixture);
+    assert_contains(result.response, "\"schema_version\":1");
+    assert_contains(result.response, "\"read_only\":true");
+    assert_contains(result.response, "\"execution_allowed\":false");
+    assert_contains(result.response, "\"order_authoritative\":false");
+    assert_contains(result.response, "\"evidence_type\":\"runtime_metrics\"");
     assert_contains(result.response, "\"live_keys\":0");
     assert_contains(result.response, "\"wal_enabled\":false");
     assert_contains(result.response, "\"wal\":null");
     assert_contains(result.response, "\"total_commands\":0");
     assert_contains(result.response, "\"breakdown\":[]");
     assert_contains(result.response, "\"connection_stats\":{\"available\":false}");
+    assert_contains(result.response, "\"diagnostics\":{\"write_commands_executed\":false,"
+                                     "\"dynamic_fields\":[\"commands.total_latency_ns\","
+                                     "\"commands.avg_latency_ns\",\"commands.max_latency_ns\","
+                                     "\"commands.breakdown[*].*_latency_ns\"]}");
 
     return 0;
 }

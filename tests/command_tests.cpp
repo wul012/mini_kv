@@ -227,6 +227,11 @@ int main() {
     assert(result.response == "ERR usage: INFOJSON");
 
     result = processor.execute("INFOJSON");
+    assert(result.response.find("\"schema_version\":1") != std::string::npos);
+    assert(result.response.find("\"read_only\":true") != std::string::npos);
+    assert(result.response.find("\"execution_allowed\":false") != std::string::npos);
+    assert(result.response.find("\"order_authoritative\":false") != std::string::npos);
+    assert(result.response.find("\"evidence_type\":\"runtime_identity\"") != std::string::npos);
     assert(result.response.find("\"version\":\"" + std::string{minikv::version} + "\"") != std::string::npos);
     assert(result.response.find("\"server\":{\"protocol\":[\"inline\"]") != std::string::npos);
     assert(result.response.find("\"uptime_seconds\":") != std::string::npos);
@@ -234,6 +239,7 @@ int main() {
     assert(result.response.find("\"store\":{\"live_keys\":1}") != std::string::npos);
     assert(result.response.find("\"wal\":{\"enabled\":false}") != std::string::npos);
     assert(result.response.find("\"metrics\":{\"enabled\":false}") != std::string::npos);
+    assert(result.response.find("\"diagnostics\":{\"write_commands_executed\":false") != std::string::npos);
 
     result = processor.execute("COMMANDS extra");
     assert(result.response == "ERR usage: COMMANDS");
@@ -579,6 +585,11 @@ int main() {
     assert(result.response.find("STATS:1/1/0/") != std::string::npos);
 
     result = metrics_processor.execute("STATSJSON");
+    assert(result.response.find("\"schema_version\":1") != std::string::npos);
+    assert(result.response.find("\"read_only\":true") != std::string::npos);
+    assert(result.response.find("\"execution_allowed\":false") != std::string::npos);
+    assert(result.response.find("\"order_authoritative\":false") != std::string::npos);
+    assert(result.response.find("\"evidence_type\":\"runtime_metrics\"") != std::string::npos);
     assert(result.response.find("\"live_keys\":0") != std::string::npos);
     assert(result.response.find("\"wal_enabled\":false") != std::string::npos);
     assert(result.response.find("\"wal\":null") != std::string::npos);
@@ -588,6 +599,7 @@ int main() {
     assert(result.response.find("\"command\":\"PING\"") != std::string::npos);
     assert(result.response.find("\"command\":\"UNKNOWN\"") != std::string::npos);
     assert(result.response.find("\"connection_stats\":{\"available\":false}") != std::string::npos);
+    assert(result.response.find("\"diagnostics\":{\"write_commands_executed\":false") != std::string::npos);
     assert(metrics_processor.metrics().total_commands == 6);
     metrics = metrics_processor.metrics();
     const auto* statsjson_metrics = find_command_metrics(metrics, "STATSJSON");
@@ -610,6 +622,7 @@ int main() {
     assert(result.response.find("\"protocol\":[\"inline\",\"resp\"]") != std::string::npos);
     assert(result.response.find("\"metrics\":{\"enabled\":true}") != std::string::npos);
     assert(result.response.find("\"max_request_bytes\":4096") != std::string::npos);
+    assert(result.response.find("\"evidence_type\":\"runtime_identity\"") != std::string::npos);
 
     result = metrics_processor.execute("RESETSTATS extra");
     assert(result.response == "ERR usage: RESETSTATS");
