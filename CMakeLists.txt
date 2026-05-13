@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.57.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.58.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -88,6 +88,19 @@ target_compile_definitions(minikv_command_tests
 )
 
 add_test(NAME command_tests COMMAND minikv_command_tests)
+
+add_executable(minikv_readonly_fixture_tests
+    tests/readonly_fixture_tests.cpp
+)
+
+target_link_libraries(minikv_readonly_fixture_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_readonly_fixture_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME readonly_fixture_tests COMMAND minikv_readonly_fixture_tests)
 
 add_executable(minikv_wal_tests
     tests/wal_tests.cpp

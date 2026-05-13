@@ -36,3 +36,7 @@ The side effect is store_read, matching mini-kv's current command explanation se
 ```
 
 The `command_tests` executable also compares this file with the real `CHECKJSON GET` response so read-command fixture consumers see the same shape as the runtime command.
+
+## Read-only fixture package
+
+`fixtures/readonly/index.json` points at both CHECKJSON samples and combines them with stable `INFOJSON` and `STATSJSON` read samples. That package is the preferred entry point for Node v152/v153 production pass evidence preparation because it keeps the write-contract samples and runtime read samples under one no-write boundary.

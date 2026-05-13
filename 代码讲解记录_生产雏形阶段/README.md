@@ -140,6 +140,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ```text
 113-version-57-recovery-index-boundaries.md
  -> 第五十七版 recovery index cost 与 retention boundary：restart/replay 成本、retention 边界、Node v107 消费提示、测试和归档
+
+114-version-58-readonly-evidence-fixtures.md
+ -> 第五十八版只读 evidence fixture 包：CHECKJSON、INFOJSON、STATSJSON 样本、动态字段边界、Node v152/v153 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。
