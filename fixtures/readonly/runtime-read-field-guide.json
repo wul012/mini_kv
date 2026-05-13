@@ -1,0 +1,202 @@
+{
+  "guide_version": "mini-kv-runtime-read-field-guide.v1",
+  "schema_version": 1,
+  "read_only": true,
+  "execution_allowed": false,
+  "order_authoritative": false,
+  "consumer_hint": "Node v159 read-only capture release evidence review",
+  "commands": [
+    {
+      "command": "INFOJSON",
+      "evidence_type": "runtime_identity",
+      "role": "runtime identity and boundary evidence",
+      "stable_fields": [
+        {
+          "path": "schema_version",
+          "meaning": "Version of the INFOJSON response shape.",
+          "control_plane_use": "Reject or quarantine unsupported response shapes before release review."
+        },
+        {
+          "path": "read_only",
+          "meaning": "The command only reports runtime state.",
+          "control_plane_use": "Must be true before treating the response as read-only capture evidence."
+        },
+        {
+          "path": "execution_allowed",
+          "meaning": "The response does not grant permission to execute write commands.",
+          "control_plane_use": "Must remain false while production operations are disabled."
+        },
+        {
+          "path": "order_authoritative",
+          "meaning": "mini-kv is not the order-system source of truth.",
+          "control_plane_use": "Must remain false when Node combines Java and mini-kv evidence."
+        },
+        {
+          "path": "evidence_type",
+          "meaning": "Labels the response as runtime identity evidence.",
+          "control_plane_use": "Use runtime_identity for version, protocol, WAL, metrics, and request-limit interpretation."
+        },
+        {
+          "path": "version",
+          "meaning": "mini-kv build version injected by CMake.",
+          "control_plane_use": "Compare with the expected mini-kv tag used by the release evidence review."
+        },
+        {
+          "path": "server.protocol",
+          "meaning": "Protocols enabled for the current command processor.",
+          "control_plane_use": "Expect inline for local fixtures and inline plus resp for the TCP server."
+        },
+        {
+          "path": "server.max_request_bytes",
+          "meaning": "Configured TCP request byte limit, or zero for inline-only processors.",
+          "control_plane_use": "Treat as runtime configuration evidence, not business data."
+        },
+        {
+          "path": "store.live_keys",
+          "meaning": "Current live key count after normal expiration pruning.",
+          "control_plane_use": "Use as runtime storage signal only; never treat as order count."
+        },
+        {
+          "path": "wal.enabled",
+          "meaning": "Whether this processor has a WAL attached.",
+          "control_plane_use": "Use to explain persistence mode for the observed mini-kv process."
+        },
+        {
+          "path": "metrics.enabled",
+          "meaning": "Whether periodic metrics output is enabled for the current runtime.",
+          "control_plane_use": "Use to explain why metrics stream evidence may or may not exist."
+        },
+        {
+          "path": "diagnostics.write_commands_executed",
+          "meaning": "The INFOJSON command did not execute any write command.",
+          "control_plane_use": "Must be false for read-only capture evidence."
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "path": "server.uptime_seconds",
+          "reason": "Changes with process lifetime.",
+          "comparison_rule": "Check type and presence; do not compare exact fixture value in live capture."
+        }
+      ]
+    },
+    {
+      "command": "STATSJSON",
+      "evidence_type": "runtime_metrics",
+      "role": "runtime metrics and boundary evidence",
+      "stable_fields": [
+        {
+          "path": "schema_version",
+          "meaning": "Version of the STATSJSON response shape.",
+          "control_plane_use": "Reject or quarantine unsupported metrics response shapes before release review."
+        },
+        {
+          "path": "read_only",
+          "meaning": "The command reports counters without mutating user data.",
+          "control_plane_use": "Must be true before treating the response as read-only capture evidence."
+        },
+        {
+          "path": "execution_allowed",
+          "meaning": "The response does not grant permission to execute write commands.",
+          "control_plane_use": "Must remain false while production operations are disabled."
+        },
+        {
+          "path": "order_authoritative",
+          "meaning": "Metrics do not make mini-kv an order-authoritative store.",
+          "control_plane_use": "Must remain false in cross-project release evidence."
+        },
+        {
+          "path": "evidence_type",
+          "meaning": "Labels the response as runtime metrics evidence.",
+          "control_plane_use": "Use runtime_metrics for command, latency, WAL, and connection-counter interpretation."
+        },
+        {
+          "path": "live_keys",
+          "meaning": "Current live key count as a runtime metric.",
+          "control_plane_use": "Use as observed KV state only; not as business order state."
+        },
+        {
+          "path": "wal_enabled",
+          "meaning": "Fast boolean for WAL presence.",
+          "control_plane_use": "Pair with the detailed wal object or null value."
+        },
+        {
+          "path": "wal",
+          "meaning": "WAL maintenance snapshot when WAL is enabled, otherwise null.",
+          "control_plane_use": "Use for persistence diagnostics; absence is valid when mini-kv is memory-only."
+        },
+        {
+          "path": "commands.total_commands",
+          "meaning": "Total commands observed before this STATSJSON command is accounted.",
+          "control_plane_use": "Use as runtime counter evidence; it can grow between captures."
+        },
+        {
+          "path": "connection_stats.available",
+          "meaning": "Whether TCP connection counters were supplied by the server.",
+          "control_plane_use": "Expect false for inline fixtures and true for TCP server captures."
+        },
+        {
+          "path": "diagnostics.write_commands_executed",
+          "meaning": "The STATSJSON command did not execute any write command.",
+          "control_plane_use": "Must be false for read-only capture evidence."
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "path": "commands.total_latency_ns",
+          "reason": "Aggregates measured command durations.",
+          "comparison_rule": "Check numeric type and monotonic plausibility; do not compare exact fixture value in live capture."
+        },
+        {
+          "path": "commands.avg_latency_ns",
+          "reason": "Derived from measured command durations.",
+          "comparison_rule": "Check numeric type; exact value is process and machine dependent."
+        },
+        {
+          "path": "commands.max_latency_ns",
+          "reason": "Derived from measured command durations.",
+          "comparison_rule": "Check numeric type; exact value is process and machine dependent."
+        },
+        {
+          "path": "commands.breakdown[*].*_latency_ns",
+          "reason": "Per-command latency counters depend on the observed command sequence.",
+          "comparison_rule": "Check shape and command buckets relevant to the smoke run."
+        }
+      ]
+    }
+  ],
+  "read_only_smoke": {
+    "allowed_commands": [
+      "INFOJSON",
+      "STATSJSON",
+      "CHECKJSON GET orderops:1",
+      "HEALTH",
+      "QUIT"
+    ],
+    "write_commands_not_used": [
+      "SET",
+      "DEL",
+      "EXPIRE"
+    ],
+    "state_changing_commands_not_used": [
+      "LOAD",
+      "RESETSTATS"
+    ],
+    "wal_rewrite_commands_not_used": [
+      "COMPACT"
+    ],
+    "release_semantics": [
+      "This guide explains read-only capture evidence only.",
+      "Skipped or mixed capture evidence is not a production pass.",
+      "No mini-kv response in this package authorizes writes or production operations."
+    ]
+  },
+  "diagnostics": {
+    "notes": [
+      "INFOJSON and STATSJSON are the primary real-read capture commands for mini-kv.",
+      "CHECKJSON remains useful for proving a target command contract without executing it.",
+      "HEALTH is liveness evidence and must not be promoted to order-authoritative evidence.",
+      "The field guide is explanatory evidence for Node v159 release review, not a new server endpoint."
+    ]
+  }
+}

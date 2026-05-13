@@ -1,5 +1,6 @@
 #include "minikv/command.hpp"
 #include "minikv/store.hpp"
+#include "minikv/version.hpp"
 
 #include <cassert>
 #include <chrono>
@@ -50,6 +51,8 @@ int main() {
         read_fixture_text(std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json");
     const auto statsjson_fixture =
         read_fixture_text(std::filesystem::path{"fixtures"} / "readonly" / "statsjson-empty-inline.json");
+    const auto field_guide =
+        read_fixture_text(std::filesystem::path{"fixtures"} / "readonly" / "runtime-read-field-guide.json");
     const auto checkjson_set_fixture =
         read_fixture_text(std::filesystem::path{"fixtures"} / "checkjson" / "set-orderops-write-contract.json");
     const auto checkjson_get_fixture =
@@ -61,9 +64,10 @@ int main() {
     assert_contains(index, "\"runtime_read_commands_allowed\":true");
     assert_contains(index, "\"write_execution_allowed\":false");
     assert_contains(index, "\"order_authoritative\":false");
-    assert_contains(index, "\"consumer_hint\":\"Node v156 real-read capture preparation\"");
-    assert_contains(index, "\"fixture_count\":4");
-    assert(count_occurrences(index, "\"path\":") == 4);
+    assert_contains(index,
+                    "\"consumer_hint\":\"Node v159 read-only capture release evidence review preparation\"");
+    assert_contains(index, "\"fixture_count\":5");
+    assert(count_occurrences(index, "\"path\":") == 5);
     assert_contains(index, "\"command\":\"CHECKJSON SET orderops:1 value\"");
     assert_contains(index, "\"path\":\"fixtures/checkjson/set-orderops-write-contract.json\"");
     assert_contains(index, "\"command\":\"CHECKJSON GET orderops:1\"");
@@ -79,9 +83,35 @@ int main() {
     assert_contains(index, "\"sample_type\":\"runtime_metrics\",\"schema_version\":1,"
                            "\"read_only\":true,\"execution_allowed\":false,"
                            "\"order_authoritative\":false");
+    assert_contains(index, "\"id\":\"runtime-read-field-guide\"");
+    assert_contains(index, "\"path\":\"fixtures/readonly/runtime-read-field-guide.json\"");
+    assert_contains(index, "\"sample_type\":\"field_guide\"");
+    assert_contains(index, "\"explains\":[\"INFOJSON fields\",\"STATSJSON fields\","
+                           "\"read-only smoke semantics\"]");
     assert_contains(index, "\"no write command executed\"");
     assert_contains(index, "INFOJSON and STATSJSON carry their own read-only diagnostics");
+    assert_contains(index, "field guide is explanatory evidence, not a runtime endpoint");
     assert_contains(index, "external control planes must treat samples as shape evidence, not production pass evidence");
+    assert_contains(index,
+                    "runtime-read-field-guide.json explains dynamic fields and read-only smoke interpretation for Node v159");
+
+    assert_contains(field_guide, "\"guide_version\": \"mini-kv-runtime-read-field-guide.v1\"");
+    assert_contains(field_guide, "\"consumer_hint\": \"Node v159 read-only capture release evidence review\"");
+    assert_contains(field_guide, "\"command\": \"INFOJSON\"");
+    assert_contains(field_guide, "\"evidence_type\": \"runtime_identity\"");
+    assert_contains(field_guide, "\"path\": \"server.uptime_seconds\"");
+    assert_contains(field_guide, "\"comparison_rule\": \"Check type and presence; do not compare exact fixture value in live capture.\"");
+    assert_contains(field_guide, "\"command\": \"STATSJSON\"");
+    assert_contains(field_guide, "\"evidence_type\": \"runtime_metrics\"");
+    assert_contains(field_guide, "\"path\": \"commands.total_latency_ns\"");
+    assert_contains(field_guide, "\"allowed_commands\": [");
+    assert_contains(field_guide, "\"CHECKJSON GET orderops:1\"");
+    assert_contains(field_guide, "\"write_commands_not_used\": [");
+    assert_contains(field_guide, "\"SET\"");
+    assert_contains(field_guide, "\"DEL\"");
+    assert_contains(field_guide, "\"EXPIRE\"");
+    assert_contains(field_guide, "Skipped or mixed capture evidence is not a production pass.");
+    assert_contains(field_guide, "not a new server endpoint");
 
     minikv::Store check_store;
     minikv::CommandProcessor check_processor{check_store};
@@ -101,7 +131,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
     assert_contains(result.response, "\"evidence_type\":\"runtime_identity\"");
-    assert_contains(result.response, "\"version\":\"0.59.0\"");
+    assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"uptime_seconds\":0");
     assert_contains(result.response, "\"live_keys\":0");
     assert_contains(result.response, "\"wal\":{\"enabled\":false}");

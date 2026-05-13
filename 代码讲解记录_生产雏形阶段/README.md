@@ -146,6 +146,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 115-version-59-runtime-read-self-description.md
  -> 第五十九版运行时只读自描述增强：INFOJSON/STATSJSON schema、read_only、execution_allowed、order_authoritative、diagnostics、Node v156 消费提示、测试和归档
+
+116-version-60-runtime-read-field-guide.md
+ -> 第六十版运行时只读字段说明增强：INFOJSON/STATSJSON 字段说明、动态字段解释、read-only smoke 边界、Node v159 release evidence review 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。
