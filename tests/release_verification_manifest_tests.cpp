@@ -45,17 +45,17 @@ int main() {
 
     assert_contains(manifest, "\"manifest_version\":\"mini-kv-release-verification-manifest.v1\"");
     assert_contains(manifest, "\"project\":\"mini-kv\"");
-    assert_contains(manifest, "\"project_version\":\"0.69.0\"");
-    assert_contains(manifest, "\"release_version\":\"v69\"");
+    assert_contains(manifest, "\"project_version\":\"0.70.0\"");
+    assert_contains(manifest, "\"release_version\":\"v70\"");
     assert_contains(manifest, "\"read_only\":true");
     assert_contains(manifest, "\"execution_allowed\":false");
     assert_contains(manifest, "\"order_authoritative\":false");
     assert_contains(manifest, "\"no_runtime_command_added\":true");
-    assert_contains(manifest, "\"consumer_hint\":\"Node v170 deployment evidence intake gate\"");
+    assert_contains(manifest, "\"consumer_hint\":\"Node v173 release window readiness packet\"");
 
-    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v69");
-    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v69 --parallel 2\"");
-    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v69 --output-on-failure\"");
+    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v70");
+    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v70 --parallel 2\"");
+    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v70 --output-on-failure\"");
     assert_contains(manifest, "\"minikv_command_tests\"");
     assert_contains(manifest, "\"minikv_readonly_fixture_tests\"");
     assert_contains(manifest, "\"minikv_recovery_fixture_index_tests\"");
@@ -67,14 +67,15 @@ int main() {
     assert_contains(manifest, "\"minikv_restore_dry_run_operator_package_tests\"");
     assert_contains(manifest, "\"minikv_artifact_digest_compatibility_matrix_tests\"");
     assert_contains(manifest, "\"minikv_release_artifact_digest_package_tests\"");
+    assert_contains(manifest, "\"minikv_restore_drill_evidence_tests\"");
 
     assert_contains(manifest, "\"INFOJSON\"");
-    assert_contains(manifest, "\"CHECKJSON LOAD data/release-artifact-drill.snap\"");
+    assert_contains(manifest, "\"CHECKJSON LOAD data/restore-drill.snap\"");
     assert_contains(manifest, "\"CHECKJSON COMPACT\"");
-    assert_contains(manifest, "\"CHECKJSON SETNXEX release:token 30 value\"");
+    assert_contains(manifest, "\"CHECKJSON SETNXEX restore:drill-token 30 value\"");
     assert_contains(manifest, "\"STORAGEJSON\"");
     assert_contains(manifest, "\"HEALTH\"");
-    assert_contains(manifest, "\"GET release:token\"");
+    assert_contains(manifest, "\"GET restore:drill-token\"");
     assert_contains(manifest, "\"write_commands_executed\":false");
     assert_contains(manifest, "\"admin_commands_executed\":false");
 
@@ -86,6 +87,7 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "restore-dry-run-operator-package.json",
         std::filesystem::path{"fixtures"} / "release" / "artifact-digest-compatibility-matrix.json",
         std::filesystem::path{"fixtures"} / "release" / "release-artifact-digest-package.json",
+        std::filesystem::path{"fixtures"} / "release" / "restore-drill-evidence.json",
         std::filesystem::path{"fixtures"} / "readonly" / "index.json",
         std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json",
         std::filesystem::path{"fixtures"} / "readonly" / "statsjson-empty-inline.json",
@@ -103,7 +105,7 @@ int main() {
         assert_contains(manifest, "\"path\":\"" + path.generic_string() + "\"");
     }
 
-    assert_contains(manifest, "\"cmake_project_version\":\"0.69.0\"");
+    assert_contains(manifest, "\"cmake_project_version\":\"0.70.0\"");
     assert_contains(manifest, "\"generated_header\":\"include/minikv/version.hpp.in\"");
     assert_contains(manifest, "\"fixtures/readonly/infojson-empty-inline.json\"");
     assert_contains(manifest, "\"fixtures/release/verification-manifest.json\"");
@@ -113,18 +115,20 @@ int main() {
     assert_contains(manifest, "\"fixtures/release/restore-dry-run-operator-package.json\"");
     assert_contains(manifest, "\"fixtures/release/artifact-digest-compatibility-matrix.json\"");
     assert_contains(manifest, "\"fixtures/release/release-artifact-digest-package.json\"");
+    assert_contains(manifest, "\"fixtures/release/restore-drill-evidence.json\"");
     assert_contains(manifest, "\"manifest only\"");
     assert_contains(manifest, "\"bundle manifest only\"");
     assert_contains(manifest, "\"restore compatibility handoff sample only\"");
     assert_contains(manifest, "\"restore dry-run operator package only\"");
     assert_contains(manifest, "\"artifact digest compatibility matrix only\"");
     assert_contains(manifest, "\"release artifact digest package only\"");
+    assert_contains(manifest, "\"restore drill evidence only\"");
     assert_contains(manifest, "\"no runtime command added\"");
     assert_contains(manifest, "\"not connected to Java transaction chain\"");
     assert_contains(manifest, "\"does not perform restore\"");
 
     const auto cmake_lists = read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "CMakeLists.txt");
-    assert_contains(cmake_lists, "project(mini_kv VERSION 0.69.0");
+    assert_contains(cmake_lists, "project(mini_kv VERSION 0.70.0");
     assert_contains(cmake_lists, "minikv_release_verification_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_rollback_evidence_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_bundle_manifest_tests");
@@ -132,6 +136,7 @@ int main() {
     assert_contains(cmake_lists, "minikv_restore_dry_run_operator_package_tests");
     assert_contains(cmake_lists, "minikv_artifact_digest_compatibility_matrix_tests");
     assert_contains(cmake_lists, "minikv_release_artifact_digest_package_tests");
+    assert_contains(cmake_lists, "minikv_restore_drill_evidence_tests");
 
     minikv::Store store;
     minikv::CommandProcessorOptions options;
@@ -140,12 +145,12 @@ int main() {
 
     auto result = processor.execute("INFOJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"version\":\"0.69.0\"");
+    assert_contains(result.response, "\"version\":\"0.70.0\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
 
-    result = processor.execute("CHECKJSON SETNXEX release:token 30 value");
+    result = processor.execute("CHECKJSON SETNXEX restore:drill-token 30 value");
     assert_contains(result.response, "\"command\":\"SETNXEX\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -158,7 +163,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
 
-    result = processor.execute("GET release:token");
+    result = processor.execute("GET restore:drill-token");
     assert(result.response == "(nil)");
 
     return 0;

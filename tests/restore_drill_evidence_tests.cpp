@@ -1,4 +1,4 @@
-﻿#include "minikv/command.hpp"
+#include "minikv/command.hpp"
 #include "minikv/store.hpp"
 #include "minikv/version.hpp"
 
@@ -37,53 +37,46 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 } // namespace
 
 int main() {
-    const auto package_path = std::filesystem::path{"fixtures"} / "release" /
-                              "release-artifact-digest-package.json";
-    const auto package = read_fixture_text(package_path);
+    const auto drill_path = std::filesystem::path{"fixtures"} / "release" / "restore-drill-evidence.json";
+    const auto drill = read_fixture_text(drill_path);
 
-    assert_contains(package, "\"package_version\":\"mini-kv-release-artifact-digest-package.v1\"");
-    assert_contains(package, "\"project\":\"mini-kv\"");
-    assert_contains(package, "\"project_version\":\"0.69.0\"");
-    assert_contains(package, "\"release_version\":\"v69\"");
-    assert_contains(package, "\"read_only\":true");
-    assert_contains(package, "\"execution_allowed\":false");
-    assert_contains(package, "\"restore_execution_allowed\":false");
-    assert_contains(package, "\"order_authoritative\":false");
-    assert_contains(package, "\"consumer_hint\":\"Node v170 deployment evidence intake gate\"");
+    assert_contains(drill, "\"drill_version\":\"mini-kv-restore-drill-evidence.v1\"");
+    assert_contains(drill, "\"project\":\"mini-kv\"");
+    assert_contains(drill, "\"project_version\":\"0.70.0\"");
+    assert_contains(drill, "\"release_version\":\"v70\"");
+    assert_contains(drill, "\"read_only\":true");
+    assert_contains(drill, "\"execution_allowed\":false");
+    assert_contains(drill, "\"restore_execution_allowed\":false");
+    assert_contains(drill, "\"order_authoritative\":false");
+    assert_contains(drill, "\"consumer_hint\":\"Node v173 release window readiness packet\"");
+    assert_contains(drill, "\"scope\":\"restore drill evidence fixture for target release, CHECKJSON risk explanation, and digest comparison placeholder\"");
 
-    assert_contains(package, "\"target_release_version\":\"v69\"");
-    assert_contains(package, "\"previous_release_version\":\"v68\"");
-    assert_contains(package, "\"id\":\"binary-digest\"");
-    assert_contains(package, "\"id\":\"wal-checksum-evidence\"");
-    assert_contains(package, "\"id\":\"snapshot-digest-evidence\"");
-    assert_contains(package, "\"id\":\"fixture-digest\"");
-    assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-binary-digest>\"");
-    assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-wal-evidence-digest>\"");
-    assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-snapshot-evidence-digest>\"");
-    assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-fixture-digest>\"");
-    assert_contains(package, "\"compatible_with\":[\"CMake project version 0.69.0\",\"INFOJSON runtime version 0.69.0\"]");
+    assert_contains(drill, "\"target_release_version\":\"v70\"");
+    assert_contains(drill, "\"current_release_version\":\"v70\"");
+    assert_contains(drill, "\"digest_comparison_placeholder\":\"sha256:<operator-recorded-restore-drill-digest>\"");
+    assert_contains(drill, "\"comparison_basis\":[\"release artifact digest package v69\",\"artifact digest compatibility matrix v68\"]");
+    assert_contains(drill, "\"operator_confirmation_required\":true");
+    assert_contains(drill, "\"boundary\":\"restore drill target review evidence only and does not switch traffic or execute restore\"");
 
-    assert_contains(package, "\"commands\":[\"INFOJSON\",\"CHECKJSON LOAD data/release-artifact-drill.snap\"");
-    assert_contains(package, "\"CHECKJSON COMPACT\"");
-    assert_contains(package, "\"CHECKJSON SETNXEX release:token 30 value\"");
-    assert_contains(package, "\"GET release:token\"");
-    assert_contains(package, "\"release_operator_id\"");
-    assert_contains(package, "\"binary_digest_recorded_at\"");
-    assert_contains(package, "\"wal_snapshot_digest_recorded_at\"");
-    assert_contains(package, "\"fixture_digest_recorded_at\"");
-    assert_contains(package, "\"artifact_matrix_cross_checked\"");
-    assert_contains(package, "\"write_commands_executed\":false");
-    assert_contains(package, "\"admin_commands_executed\":false");
-    assert_contains(package, "\"release artifact package is review evidence only");
-    assert_contains(package, "\"digest placeholders must be verified outside mini-kv before production use\"");
-    assert_contains(package, "\"binary/WAL/Snapshot/fixture digest is unclear or mismatched\"");
+    assert_contains(drill, "\"CHECKJSON LOAD data/restore-drill.snap\"");
+    assert_contains(drill, "\"CHECKJSON COMPACT\"");
+    assert_contains(drill, "\"CHECKJSON SETNXEX restore:drill-token 30 value\"");
+    assert_contains(drill, "\"GET restore:drill-token\"");
+    assert_contains(drill, "\"expected\":[\"INFOJSON version matches 0.70.0\"");
+    assert_contains(drill, "\"write_commands_executed\":false");
+    assert_contains(drill, "\"admin_commands_executed\":false");
+    assert_contains(drill, "\"restore drill evidence is not a restore executor\"");
+    assert_contains(drill, "\"digest comparison placeholder must be verified outside mini-kv before release window review\"");
+    assert_contains(drill, "\"restore target or digest comparison is unclear\"");
 
     const std::vector<std::filesystem::path> required_paths = {
-        package_path,
+        drill_path,
         std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json",
+        std::filesystem::path{"fixtures"} / "release" / "release-artifact-digest-package.json",
         std::filesystem::path{"fixtures"} / "release" / "artifact-digest-compatibility-matrix.json",
         std::filesystem::path{"fixtures"} / "release" / "restore-dry-run-operator-package.json",
         std::filesystem::path{"fixtures"} / "release" / "runtime-artifact-bundle-manifest.json",
+        std::filesystem::path{"fixtures"} / "release" / "restore-compatibility-handoff.json",
         std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json",
         std::filesystem::path{"fixtures"} / "recovery" / "restart-recovery-evidence.json",
         std::filesystem::path{"fixtures"} / "ttl-token" / "recovery-evidence.json",
@@ -91,7 +84,7 @@ int main() {
 
     for (const auto& path : required_paths) {
         assert_path_exists(path);
-        assert_contains(package, path.generic_string());
+        assert_contains(drill, path.generic_string());
     }
 
     minikv::Store store;
@@ -106,7 +99,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
 
-    result = processor.execute("CHECKJSON LOAD data/release-artifact-drill.snap");
+    result = processor.execute("CHECKJSON LOAD data/restore-drill.snap");
     assert_contains(result.response, "\"command\":\"LOAD\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -119,7 +112,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"side_effects\":[\"wal_rewrite_when_enabled\"]");
 
-    result = processor.execute("CHECKJSON SETNXEX release:token 30 value");
+    result = processor.execute("CHECKJSON SETNXEX restore:drill-token 30 value");
     assert_contains(result.response, "\"command\":\"SETNXEX\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -133,9 +126,8 @@ int main() {
     assert_contains(result.response, "\"order_authoritative\":false");
     assert_contains(result.response, "\"load_replaces_store\":true");
 
-    result = processor.execute("GET release:token");
+    result = processor.execute("GET restore:drill-token");
     assert(result.response == "(nil)");
 
     return 0;
 }
-

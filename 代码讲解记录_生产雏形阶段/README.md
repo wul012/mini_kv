@@ -176,6 +176,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 125-version-69-release-artifact-digest-package.md
  -> 第六十九版 Release Artifact Digest Package：binary/WAL/Snapshot/fixture digest 包、restore drill command profile、operator confirmation、Node v170 消费提示、测试和归档
+
+126-version-70-restore-drill-evidence.md
+ -> 第七十版 Restore Drill Evidence：restore target、digest comparison placeholder、operator confirmation、Node v173 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。
