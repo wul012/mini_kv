@@ -152,6 +152,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 117-version-61-ttl-token-primitive.md
  -> 第六十一版短 TTL Token Primitive：SETNXEX 原子占位、过期后 reclaim、SETEXAT WAL replay、TTL token evidence、非订单权威边界、测试和归档
+
+118-version-62-ttl-recovery-evidence.md
+ -> 第六十二版 TTL Token Recovery Evidence：WAL/Snapshot/restart 恢复证据、过期 token 不复活、compact 后 TTL replay、Node v161 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。

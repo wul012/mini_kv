@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.61.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.62.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -215,3 +215,16 @@ target_compile_definitions(minikv_recovery_fixture_index_tests
 )
 
 add_test(NAME recovery_fixture_index_tests COMMAND minikv_recovery_fixture_index_tests)
+
+add_executable(minikv_ttl_token_recovery_tests
+    tests/ttl_token_recovery_tests.cpp
+)
+
+target_link_libraries(minikv_ttl_token_recovery_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_ttl_token_recovery_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME ttl_token_recovery_tests COMMAND minikv_ttl_token_recovery_tests)
