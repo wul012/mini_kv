@@ -23,6 +23,9 @@ public:
     };
 
     bool set(std::string_view key, std::string_view value);
+    bool set_if_absent(std::string_view key,
+                       std::string_view value,
+                       std::optional<TimePoint> expires_at = std::nullopt);
     std::optional<std::string> get(std::string_view key) const;
     bool erase(std::string_view key);
     bool contains(std::string_view key) const;

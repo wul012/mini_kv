@@ -15,6 +15,25 @@ bool Store::set(std::string_view key, std::string_view value) {
     return inserted;
 }
 
+bool Store::set_if_absent(std::string_view key, std::string_view value, std::optional<TimePoint> expires_at) {
+    if (key.empty()) {
+        return false;
+    }
+
+    std::lock_guard lock(mutex_);
+    const auto now = Clock::now();
+    const auto existing = data_.find(std::string{key});
+    if (existing != data_.end()) {
+        if (!is_expired(existing->second, now)) {
+            return false;
+        }
+        data_.erase(existing);
+    }
+
+    data_.emplace(std::string{key}, Entry{std::string{value}, expires_at});
+    return true;
+}
+
 std::optional<std::string> Store::get(std::string_view key) const {
     std::lock_guard lock(mutex_);
     const auto it = data_.find(std::string{key});

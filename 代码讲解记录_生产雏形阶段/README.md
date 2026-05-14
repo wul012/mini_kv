@@ -149,6 +149,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 116-version-60-runtime-read-field-guide.md
  -> 第六十版运行时只读字段说明增强：INFOJSON/STATSJSON 字段说明、动态字段解释、read-only smoke 边界、Node v159 release evidence review 消费提示、测试和归档
+
+117-version-61-ttl-token-primitive.md
+ -> 第六十一版短 TTL Token Primitive：SETNXEX 原子占位、过期后 reclaim、SETEXAT WAL replay、TTL token evidence、非订单权威边界、测试和归档
 ```
 
 后续版本继续在本目录追加。

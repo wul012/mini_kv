@@ -33,6 +33,9 @@ int main() {
         result = processor.execute("EXPIRE name 60");
         assert(result.response == "1");
 
+        result = processor.execute("SETNXEX token 60 claimed");
+        assert(result.response == "1");
+
         result = processor.execute("DEL phrase");
         assert(result.response == "1");
 
@@ -60,9 +63,11 @@ int main() {
         minikv::WriteAheadLog wal{path};
         const auto applied = wal.replay(restored);
 
-        assert(applied == 6);
+        assert(applied == 7);
         assert(restored.get("name") == std::optional<std::string>{"mini-kv"});
         assert(restored.ttl("name").has_value());
+        assert(restored.get("token") == std::optional<std::string>{"claimed"});
+        assert(restored.ttl("token").has_value());
         assert(!restored.get("phrase").has_value());
         assert(!restored.get("stale").has_value());
     }

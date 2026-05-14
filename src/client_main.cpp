@@ -236,7 +236,7 @@ std::optional<std::string> key_argument(std::string_view line) {
 bool update_known_keys(minikv::ClientKeyCache& keys, std::string_view command_line, std::string_view response) {
     const std::string command = first_token(command_line);
 
-    if (command == "SET" && response.rfind("OK ", 0) == 0) {
+    if ((command == "SET" && response.rfind("OK ", 0) == 0) || (command == "SETNXEX" && response == "1")) {
         if (const auto key = key_argument(command_line)) {
             return keys.add(*key);
         }

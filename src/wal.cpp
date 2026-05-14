@@ -232,6 +232,28 @@ bool replay_record(Store& store, std::string_view record) {
         return true;
     }
 
+    if (command == "SETEXAT") {
+        std::string key;
+        long long epoch_millis = 0;
+        input >> key >> epoch_millis;
+
+        std::string value;
+        std::getline(input >> std::ws, value);
+
+        if (key.empty() || value.empty() || !input) {
+            return false;
+        }
+
+        const Store::TimePoint expires_at{std::chrono::milliseconds{epoch_millis}};
+        if (expires_at <= Store::Clock::now()) {
+            store.erase(key);
+        } else {
+            store.set(key, value);
+            store.expire_at(key, expires_at);
+        }
+        return true;
+    }
+
     return false;
 }
 

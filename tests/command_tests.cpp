@@ -160,6 +160,37 @@ int main() {
     result = processor.execute("TTL temp extra");
     assert(result.response == "ERR usage: TTL key");
 
+    result = processor.execute("SETNXEX token 1 first");
+    assert(result.response == "1");
+
+    result = processor.execute("SETNXEX token 1 duplicate");
+    assert(result.response == "0");
+
+    result = processor.execute("GET token");
+    assert(result.response == "first");
+
+    result = processor.execute("TTL token");
+    const long long token_remaining = std::stoll(result.response);
+    assert(token_remaining >= 0);
+    assert(token_remaining <= 1);
+
+    std::this_thread::sleep_for(1100ms);
+
+    result = processor.execute("GET token");
+    assert(result.response == "(nil)");
+
+    result = processor.execute("SETNXEX token 1 second");
+    assert(result.response == "1");
+
+    result = processor.execute("GET token");
+    assert(result.response == "second");
+
+    result = processor.execute("SETNXEX token 0 bad");
+    assert(result.response == "ERR usage: SETNXEX key seconds value");
+
+    result = processor.execute("SETNXEX token 1");
+    assert(result.response == "ERR usage: SETNXEX key seconds value");
+
     const auto snapshot_path = std::filesystem::path{"minikv-command-snapshot-test.snap"};
     std::filesystem::remove(snapshot_path);
 
@@ -245,9 +276,10 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=27") != std::string::npos);
+    assert(result.response.find("command_count=28") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
+    assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("GET(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("KEYSJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("COMPACT(category=admin,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -263,6 +295,8 @@ int main() {
     assert(result.response.find("\"commands\":[") != std::string::npos);
     assert(result.response.find("\"name\":\"PING\",\"category\":\"meta\",\"mutates_store\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"SET\",\"category\":\"write\",\"mutates_store\":true,\"touches_wal\":true") != std::string::npos);
+    assert(result.response.find("\"name\":\"SETNXEX\",\"category\":\"write\",\"mutates_store\":true,"
+                                "\"touches_wal\":true") != std::string::npos);
     assert(result.response.find("\"name\":\"GET\",\"category\":\"read\",\"mutates_store\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"KEYSJSON\",\"category\":\"read\",\"mutates_store\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"LOAD\",\"category\":\"admin\",\"mutates_store\":true") != std::string::npos);
@@ -316,6 +350,19 @@ int main() {
     assert_response_contains(result, "\"ttl_sensitive\":true");
     assert_response_contains(result, "\"side_effects\":[\"store_ttl_update\",\"wal_append_when_enabled\"]");
     assert_response_contains(result, "\"side_effect_count\":2");
+
+    result = processor.execute("EXPLAINJSON SETNXEX orderops:token 30 value");
+    assert_response_contains(result, "\"command\":\"SETNXEX\"");
+    assert_response_contains(result, "\"category\":\"write\"");
+    assert_response_contains(result, "\"mutates_store\":true");
+    assert_response_contains(result, "\"touches_wal\":true");
+    assert_response_contains(result, "\"key\":\"orderops:token\"");
+    assert_response_contains(result, "\"requires_value\":true");
+    assert_response_contains(result, "\"ttl_sensitive\":true");
+    assert_response_contains(result, "\"allowed_by_parser\":true");
+    assert_response_contains(result, "\"side_effects\":[\"store_write\",\"store_ttl_update\","
+                                     "\"wal_append_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":3");
 
     result = processor.execute("EXPLAINJSON GET orderops:1 extra");
     assert_response_contains(result, "\"command\":\"GET\"");
@@ -407,12 +454,37 @@ int main() {
                                      "\"append_when_enabled\":true,\"durability\":\"memory_only\"}");
     assert_response_contains(result, "\"warnings\":[\"wal disabled; write would be in-memory only\"]");
 
+    result = processor.execute("CHECKJSON SETNXEX orderops:token 30 value");
+    assert_response_contains(result, "\"command\":\"SETNXEX\"");
+    assert_response_contains(result, "\"write_command\":true");
+    assert_response_contains(result, "\"allowed_by_parser\":true");
+    assert_response_contains(result, "\"side_effects\":[\"store_write\",\"store_ttl_update\","
+                                     "\"wal_append_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":3");
+    assert_response_contains(result, "\"checks\":{\"parser_allowed\":true,\"write_command\":true,"
+                                     "\"wal_append_when_enabled\":true,\"wal_enabled\":false}");
+    assert_response_contains(result, "\"durability\":\"memory_only\"");
+    assert_response_contains(result, "\"warnings\":[\"wal disabled; write would be in-memory only\"]");
+
     result = processor.execute("GET orderops:1");
     assert(result.response == "(nil)");
 
     result = processor.execute("CHECKJSON GET orderops:1");
     const auto checkjson_get_fixture =
         read_fixture_text(std::filesystem::path{"fixtures"} / "checkjson" / "get-orderops-read-contract.json");
+    const auto ttl_token_index =
+        read_fixture_text(std::filesystem::path{"fixtures"} / "ttl-token" / "index.json");
+
+    assert_response_contains({ttl_token_index}, "\"index_version\":\"mini-kv-ttl-token-fixtures.v1\"");
+    assert_response_contains({ttl_token_index}, "\"command\":\"SETNXEX key seconds value\"");
+    assert_response_contains({ttl_token_index}, "\"order_authoritative\":false");
+    assert_response_contains({ttl_token_index}, "\"consumer_hint\":\"Node v160 idempotency vertical readiness review\"");
+    assert_response_contains({ttl_token_index}, "\"atomic_absent_claim\":true");
+    assert_response_contains({ttl_token_index}, "\"enabled_record\":\"SETEXAT key epoch_millis value\"");
+    assert_response_contains({ttl_token_index}, "\"single_record_claim\":true");
+    assert_response_contains({ttl_token_index}, "\"replay_drops_expired_token\":true");
+    assert_response_contains({ttl_token_index}, "not connected to Java transaction chain");
+    assert_response_contains({ttl_token_index}, "CHECKJSON SETNXEX can inspect the contract without executing the write");
     assert(result.response == checkjson_get_fixture);
     assert_response_contains(result, "\"command_digest\":\"" + get_digest + "\"");
     assert_response_contains(result, "\"command\":\"GET\"");
@@ -659,6 +731,7 @@ int main() {
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
     assert(result.response.find("CHECKJSON") != std::string::npos);
     assert(result.response.find("STORAGEJSON") != std::string::npos);
+    assert(result.response.find("SETNXEX") != std::string::npos);
 
     result = processor.execute("GET name extra");
     assert(result.response == "ERR usage: GET key");

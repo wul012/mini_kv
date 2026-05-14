@@ -85,5 +85,15 @@ int main() {
     assert(!store.ttl("session").has_value());
     assert(store.size() == 0);
 
+    assert(store.set_if_absent("token", "first", minikv::Store::Clock::now() + 1s));
+    assert(!store.set_if_absent("token", "second", minikv::Store::Clock::now() + 1s));
+    assert(store.get("token") == std::optional<std::string>{"first"});
+
+    std::this_thread::sleep_for(1100ms);
+
+    assert(!store.get("token").has_value());
+    assert(store.set_if_absent("token", "second", minikv::Store::Clock::now() + 1s));
+    assert(store.get("token") == std::optional<std::string>{"second"});
+
     return 0;
 }

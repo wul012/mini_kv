@@ -57,6 +57,7 @@ struct CommandCatalogEntry {
 constexpr CommandCatalogEntry command_catalog[] = {
     {"PING", "meta", false, false, true, "Liveness check with optional echo message"},
     {"SET", "write", true, true, true, "Set or update a key value"},
+    {"SETNXEX", "write", true, true, true, "Claim a key with value and TTL only when absent"},
     {"GET", "read", false, false, true, "Read a key value"},
     {"DEL", "write", true, true, true, "Delete a key"},
     {"EXPIRE", "write", true, true, true, "Set a positive TTL on an existing key"},
@@ -151,6 +152,12 @@ std::string format_expires_at(std::string_view key, Store::TimePoint expires_at)
     const auto epoch_millis =
         std::chrono::duration_cast<std::chrono::milliseconds>(expires_at.time_since_epoch()).count();
     return std::string{"EXPIREAT "} + std::string{key} + " " + std::to_string(epoch_millis);
+}
+
+std::string format_setex_at(std::string_view key, Store::TimePoint expires_at, std::string_view value) {
+    const auto epoch_millis =
+        std::chrono::duration_cast<std::chrono::milliseconds>(expires_at.time_since_epoch()).count();
+    return std::string{"SETEXAT "} + std::string{key} + " " + std::to_string(epoch_millis) + " " + std::string{value};
 }
 
 std::string format_yes_no(bool value) {
@@ -464,8 +471,8 @@ CommandExplain explain_command(std::string_view line) {
     explain.category = std::string{entry->category};
     explain.mutates_store = entry->mutates_store;
     explain.touches_wal = entry->touches_wal;
-    explain.requires_value = explain.command == "SET";
-    explain.ttl_sensitive = explain.command == "EXPIRE" || explain.command == "TTL";
+    explain.requires_value = explain.command == "SET" || explain.command == "SETNXEX";
+    explain.ttl_sensitive = explain.command == "EXPIRE" || explain.command == "TTL" || explain.command == "SETNXEX";
     explain.allowed_by_parser = true;
 
     if (explain.command == "PING") {
@@ -485,6 +492,24 @@ CommandExplain explain_command(std::string_view line) {
         }
         if (key.empty() || value.empty()) {
             mark_usage_warning(explain, "SET key value");
+        }
+        return explain;
+    }
+
+    if (explain.command == "SETNXEX") {
+        explain.side_effects.push_back("store_write");
+        explain.side_effects.push_back("store_ttl_update");
+        explain.side_effects.push_back("wal_append_when_enabled");
+        std::string key;
+        std::string seconds_text;
+        input >> key >> seconds_text;
+        std::string value;
+        std::getline(input >> std::ws, value);
+        if (!key.empty()) {
+            explain.key = key;
+        }
+        if (key.empty() || !parse_positive_seconds(seconds_text).has_value() || value.empty()) {
+            mark_usage_warning(explain, "SETNXEX key seconds value");
         }
         return explain;
     }
@@ -1022,6 +1047,38 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {inserted ? "OK inserted" : "OK updated"};
     }
 
+    if (command == "SETNXEX") {
+        std::string key;
+        std::string seconds_text;
+        input >> key >> seconds_text;
+
+        std::string value;
+        std::getline(input >> std::ws, value);
+
+        const auto seconds = parse_positive_seconds(seconds_text);
+        if (key.empty() || !seconds.has_value() || value.empty()) {
+            return usage("SETNXEX key seconds value");
+        }
+
+        const auto expires_at = Store::Clock::now() + *seconds;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            if (store_.contains(key)) {
+                return {"0"};
+            }
+
+            if (!wal_->append(format_setex_at(key, expires_at, value))) {
+                return wal_error();
+            }
+
+            const bool claimed = store_.set_if_absent(key, value, expires_at);
+            auto_compact_wal_if_needed();
+            return {claimed ? "1" : "0"};
+        }
+
+        return {store_.set_if_absent(key, value, expires_at) ? "1" : "0"};
+    }
+
     if (command == "GET") {
         std::string key;
         input >> key;
@@ -1361,6 +1418,7 @@ std::string CommandProcessor::help_text() {
     return "Commands:\n"
            "  PING [message]\n"
            "  SET key value\n"
+           "  SETNXEX key seconds value\n"
            "  GET key\n"
            "  DEL key\n"
            "  EXPIRE key seconds\n"

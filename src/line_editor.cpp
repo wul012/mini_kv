@@ -53,7 +53,8 @@ std::size_t token_end(std::string_view text, std::size_t cursor) {
 
 bool is_key_completion_command(std::string_view command) {
     const std::string upper = to_upper_copy(command);
-    return upper == "GET" || upper == "DEL" || upper == "EXPIRE" || upper == "TTL" || upper == "SET";
+    return upper == "GET" || upper == "DEL" || upper == "EXPIRE" || upper == "TTL" || upper == "SET" ||
+           upper == "SETNXEX";
 }
 
 std::size_t common_prefix_length(std::string_view left, std::string_view right, bool case_insensitive) {
@@ -517,11 +518,12 @@ KeyEvent read_key() {
 
 LineEditorCompletionOptions default_client_completion_options() {
     LineEditorCompletionOptions options;
-    options.command_candidates = {"PING",       "SET",      "GET",         "DEL",        "EXPIRE",   "TTL",
-                                  "SIZE",       "KEYS",     "KEYSJSON",    "SAVE",       "LOAD",     "COMPACT",
-                                  "COMMANDS",   "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON", "WALINFO",  "STATS",
-                                  "STATSJSON",  "STORAGEJSON", "RESETSTATS", "HEALTH",      "INFO",      "INFOJSON",
-                                  "HELP",       "EXIT",       "QUIT",       ":history"};
+    options.command_candidates = {"PING",        "SET",       "SETNXEX",     "GET",       "DEL",     "EXPIRE",
+                                  "TTL",         "SIZE",      "KEYS",        "KEYSJSON",  "SAVE",    "LOAD",
+                                  "COMPACT",     "COMMANDS",  "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
+                                  "WALINFO",     "STATS",     "STATSJSON",   "STORAGEJSON", "RESETSTATS",
+                                  "HEALTH",      "INFO",      "INFOJSON",    "HELP",      "EXIT",    "QUIT",
+                                  ":history"};
     return options;
 }
 

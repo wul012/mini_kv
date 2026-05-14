@@ -73,9 +73,9 @@ int main() {
     assert(!empty_navigator.next().has_value());
 
     minikv::LineEditorCompletion completion{
-        {"PING", "SET", "GET", "SAVE", "SIZE", "KEYS", "KEYSJSON", "COMPACT", "STATS", "STATSJSON", "RESETSTATS",
-         "STORAGEJSON", "HELP", "HEALTH", "INFO", "INFOJSON", "COMMANDS", "COMMANDSJSON", "EXPLAINJSON",
-         "CHECKJSON", "EXIT", "EXPIRE", ":history"}};
+        {"PING", "SET", "SETNXEX", "GET", "SAVE", "SIZE", "KEYS", "KEYSJSON", "COMPACT", "STATS", "STATSJSON",
+         "RESETSTATS", "STORAGEJSON", "HELP", "HEALTH", "INFO", "INFOJSON", "COMMANDS", "COMMANDSJSON",
+         "EXPLAINJSON", "CHECKJSON", "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
     assert(completion.complete("  pi", 4) == std::optional<std::string>{"  PING "});
@@ -89,6 +89,7 @@ int main() {
     assert(completion.complete("KEYSJ", 5) == std::optional<std::string>{"KEYSJSON "});
     assert(completion.complete("K", 1) == std::optional<std::string>{"KEYS"});
     assert(completion.complete("E", 1) == std::optional<std::string>{"EX"});
+    assert(completion.complete("SETN", 4) == std::optional<std::string>{"SETNXEX "});
     assert(completion.complete("EXPLAINJ", 8) == std::optional<std::string>{"EXPLAINJSON "});
     assert(completion.complete("CHECKJ", 6) == std::optional<std::string>{"CHECKJSON "});
     assert(completion.complete("R", 1) == std::optional<std::string>{"RESETSTATS "});
@@ -103,12 +104,13 @@ int main() {
 
     minikv::LineEditorCompletionOptions contextual_options;
     contextual_options.command_candidates =
-        {"PING", "SET", "GET", "DEL", "EXPIRE", "TTL", "KEYS", "STATS", "STATSJSON", "RESETSTATS"};
+        {"PING", "SET", "SETNXEX", "GET", "DEL", "EXPIRE", "TTL", "KEYS", "STATS", "STATSJSON", "RESETSTATS"};
     contextual_options.key_candidates = {"alpha", "alpine", "name", "user:1"};
     minikv::LineEditorCompletion contextual_completion{contextual_options};
     assert(contextual_completion.complete("GET na", 6) == std::optional<std::string>{"GET name "});
     assert(contextual_completion.complete("GET al", 6) == std::optional<std::string>{"GET alp"});
     assert(contextual_completion.complete("SET na", 6) == std::optional<std::string>{"SET name "});
+    assert(contextual_completion.complete("SETNXEX na", 10) == std::optional<std::string>{"SETNXEX name "});
     assert(contextual_completion.complete("EXPIRE na", 9) == std::optional<std::string>{"EXPIRE name "});
     assert(contextual_completion.complete("TTL user:", 9) == std::optional<std::string>{"TTL user:1 "});
     assert(!contextual_completion.complete("GET AL", 6).has_value());
