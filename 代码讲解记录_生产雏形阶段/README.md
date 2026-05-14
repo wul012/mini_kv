@@ -179,6 +179,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 126-version-70-restore-drill-evidence.md
  -> 第七十版 Restore Drill Evidence：restore target、digest comparison placeholder、operator confirmation、Node v173 消费提示、测试和归档
+
+127-version-71-restore-handoff-checklist.md
+ -> 第七十一版 Restore Handoff Checklist：restore operator、artifact digest target、Snapshot/WAL review placeholder、CHECKJSON 风险确认、Node v175 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。

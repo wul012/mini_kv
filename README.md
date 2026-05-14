@@ -4,7 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
-Version 70 is a runnable in-memory KV service with injected build version metadata, command catalog metadata, bounded JSON key inventory, digest-aware structured command risk explanation, read-only write-command execution contracts, a short-TTL token primitive with recovery evidence, release verification, runtime artifact rollback, runtime artifact bundle, restore compatibility handoff, restore dry-run operator package, artifact digest compatibility matrix, and release artifact digest package and restore drill evidence manifests, stable CHECKJSON write/read fixture samples, self-describing INFOJSON/STATSJSON read-only runtime evidence, an INFOJSON/STATSJSON field guide for release evidence review, read-only storage evidence, and indexed restart recovery evidence with restart/replay cost and retention boundaries:
+Version 71 is a runnable in-memory KV service with injected build version metadata, command catalog metadata, bounded JSON key inventory, digest-aware structured command risk explanation, read-only write-command execution contracts, a short-TTL token primitive with recovery evidence, release verification, runtime artifact rollback, runtime artifact bundle, restore compatibility handoff, restore dry-run operator package, artifact digest compatibility matrix, release artifact digest package, restore drill evidence, and restore handoff checklist manifests, stable CHECKJSON write/read fixture samples, self-describing INFOJSON/STATSJSON read-only runtime evidence, an INFOJSON/STATSJSON field guide for release evidence review, read-only storage evidence, and indexed restart recovery evidence with restart/replay cost and retention boundaries:
 
 - CMake project layout
 - Thread-safe in-memory key-value store
@@ -33,7 +33,7 @@ Version 70 is a runnable in-memory KV service with injected build version metada
 - Repository fixture `fixtures/readonly/index.json` groups CHECKJSON, INFOJSON, STATSJSON, and runtime read field-guide evidence for Node v159 release evidence review preparation
 - Repository fixture `fixtures/ttl-token/index.json` documents the `SETNXEX` token primitive, WAL record shape, repeat/expiry semantics, and non-order-authoritative boundary for Node v160 readiness review
 - Repository fixture `fixtures/ttl-token/recovery-evidence.json` documents WAL, Snapshot, restart, expired-token, and compaction recovery boundaries for the TTL token primitive before Node v161 consumes it
-- Repository fixture `fixtures/release/verification-manifest.json` documents the CMake configure/build, CTest, read-only command smoke, fixture inventory, version evidence, rollback evidence sample, runtime artifact bundle manifest, restore compatibility handoff sample, restore dry-run operator package, artifact digest compatibility matrix, release artifact digest package, and restore drill evidence expected before Node v173 consumes mini-kv release window readiness
+- Repository fixture `fixtures/release/verification-manifest.json` documents the CMake configure/build, CTest, read-only command smoke, fixture inventory, version evidence, rollback evidence sample, runtime artifact bundle manifest, restore compatibility handoff sample, restore dry-run operator package, artifact digest compatibility matrix, release artifact digest package, restore drill evidence, and restore handoff checklist expected before Node v175 consumes mini-kv release handoff readiness
 - Repository fixture `fixtures/release/runtime-artifact-rollback-evidence.json` documents binary/version, WAL, Snapshot, and fixture-version rollback boundaries without executing rollback or entering the Java transaction chain
 - Repository fixture `fixtures/release/runtime-artifact-bundle-manifest.json` groups binary version, release manifest, rollback evidence, WAL/Snapshot compatibility, CTest, read-only smoke, and fixture inventory into one read-only bundle manifest
 - Repository fixture `fixtures/release/restore-compatibility-handoff.json` records manual binary, WAL, Snapshot, and fixture compatibility confirmations for rollback window handoff without executing restore commands or creating Java order authority
@@ -41,6 +41,7 @@ Version 70 is a runnable in-memory KV service with injected build version metada
 - Repository fixture `fixtures/release/artifact-digest-compatibility-matrix.json` records binary, WAL, Snapshot, and fixture digest compatibility placeholders for Node v168 production environment preflight without executing restore commands or creating Java order authority
 - Repository fixture `fixtures/release/release-artifact-digest-package.json` records binary, WAL, Snapshot, and fixture digest placeholders plus a restore drill command profile for Node v170 deployment evidence intake without executing restore commands or creating Java order authority
 - Repository fixture `fixtures/release/restore-drill-evidence.json` records restore target, digest comparison placeholder, operator confirmation, and CHECKJSON dry-run commands for Node v173 without executing restore commands or creating Java order authority
+- Repository fixture `fixtures/release/restore-handoff-checklist.json` records restore operator checklist fields, artifact digest target, snapshot/WAL review placeholders, and CHECKJSON risk confirmation for Node v175 without executing LOAD, COMPACT, SETNXEX, or restore
 - Repository fixture `fixtures/readonly/infojson-empty-inline.json` captures a stable empty inline `INFOJSON` response with WAL disabled and metrics disabled
 - Repository fixture `fixtures/readonly/statsjson-empty-inline.json` captures a stable empty inline `STATSJSON` response before command accounting is recorded
 - Repository fixture `fixtures/readonly/runtime-read-field-guide.json` explains INFOJSON/STATSJSON stable fields, dynamic fields, read-only smoke commands, and no-write boundaries
@@ -289,6 +290,7 @@ After CLion finishes loading CMake, run these targets:
 - `minikv_artifact_digest_compatibility_matrix_tests`
 - `minikv_release_artifact_digest_package_tests`
 - `minikv_restore_drill_evidence_tests`
+- `minikv_restore_handoff_checklist_tests`
 
 ## CLI commands
 
@@ -388,11 +390,11 @@ Stable sample responses live under `fixtures/checkjson/`, `fixtures/readonly/`, 
 
 `fixtures/ttl-token/index.json` documents the v61 `SETNXEX` token primitive for Node v160 readiness review, and `fixtures/ttl-token/recovery-evidence.json` documents the v62 TTL recovery boundary across WAL, Snapshot, restart, expired-token, and compaction paths.
 
-`fixtures/release/verification-manifest.json` is the v70 release verification manifest for Node v173 release window readiness: it lists expected CMake configure/build, CTest, targeted tests, read-only command smoke, fixture inventory, version evidence, no-runtime-command boundary, rollback evidence sample, runtime artifact bundle manifest, restore compatibility handoff sample, restore dry-run operator package, artifact digest compatibility matrix, release artifact digest package, and restore drill evidence.
+`fixtures/release/verification-manifest.json` is the v71 release verification manifest for Node v175 release handoff readiness: it lists expected CMake configure/build, CTest, targeted tests, read-only command smoke, fixture inventory, version evidence, no-runtime-command boundary, rollback evidence sample, runtime artifact bundle manifest, restore compatibility handoff sample, restore dry-run operator package, artifact digest compatibility matrix, release artifact digest package, restore drill evidence, and restore handoff checklist.
 
-`fixtures/release/release-artifact-digest-package.json` records binary, WAL, Snapshot, and fixture digest placeholders plus restore drill commands for Node v170; it uses `CHECKJSON LOAD data/release-artifact-drill.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX release:token 30 value` only as read-only package checks, and `GET release:token` must remain `(nil)`. `fixtures/release/restore-drill-evidence.json` records the v70 restore drill target, digest comparison placeholder, operator confirmation, and CHECKJSON dry-run commands for Node v173; it uses `CHECKJSON LOAD data/restore-drill.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:drill-token 30 value` only as read-only drill checks, and `GET restore:drill-token` must remain `(nil)`.
+`fixtures/release/release-artifact-digest-package.json` records binary, WAL, Snapshot, and fixture digest placeholders plus restore drill commands for Node v170; it uses `CHECKJSON LOAD data/release-artifact-drill.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX release:token 30 value` only as read-only package checks, and `GET release:token` must remain `(nil)`. `fixtures/release/restore-drill-evidence.json` records the v70 restore drill target, digest comparison placeholder, operator confirmation, and CHECKJSON dry-run commands for Node v173; it uses `CHECKJSON LOAD data/restore-drill.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:drill-token 30 value` only as read-only drill checks, and `GET restore:drill-token` must remain `(nil)`. `fixtures/release/restore-handoff-checklist.json` records the v71 restore handoff checklist for Node v175; it uses `CHECKJSON LOAD data/handoff-restore.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:handoff-token 30 value` only as read-only risk confirmation, and `GET restore:handoff-token` must remain `(nil)`.
 
-`command_tests` compares both CHECKJSON fixtures with real command output and checks the TTL token fixture index, `readonly_fixture_tests` compares the read-only fixture package with real `CHECKJSON`, `INFOJSON`, and `STATSJSON` output plus the runtime read field guide, `recovery_evidence_tests` and `recovery_fixture_index_tests` protect restart evidence, `ttl_token_recovery_tests` exercises TTL recovery, and the release tests protect the manifest, rollback evidence, bundle manifest, restore handoff, dry-run operator package, digest matrix, release artifact digest package, and restore drill evidence no-execution boundaries.
+`command_tests` compares both CHECKJSON fixtures with real command output and checks the TTL token fixture index, `readonly_fixture_tests` compares the read-only fixture package with real `CHECKJSON`, `INFOJSON`, and `STATSJSON` output plus the runtime read field guide, `recovery_evidence_tests` and `recovery_fixture_index_tests` protect restart evidence, `ttl_token_recovery_tests` exercises TTL recovery, and the release tests protect the manifest, rollback evidence, bundle manifest, restore handoff, dry-run operator package, digest matrix, release artifact digest package, restore drill evidence, and restore handoff checklist no-execution boundaries.
 
 The server prints structured lifecycle logs using key-value fields:
 
@@ -527,8 +529,7 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 
 ## Roadmap
 
-1. Let Java v60 and mini-kv v69 progress in parallel on production deployment runbook contracts and release artifact digest packages without executing SQL or restore commands.
-2. Let Node v170 wait for Java v60 and mini-kv v69 evidence, then create a deployment evidence intake gate that stays read-only.
-3. Let Node v171 verify the intake gate digest, Java runbook fields, mini-kv digest package fields, and no-execution boundaries.
-4. Let Java v61 and mini-kv v70 progress in parallel on rollback approval record and restore drill evidence fixtures.
-5. Let Node v173 wait for Java v61, mini-kv v70, and Node v172, then create the release window readiness packet.
+1. Node v174 has completed the production release dry-run envelope without executing release, deployment, rollback, restore, SQL, or secret reads.
+2. Let Java v62 and mini-kv v71 progress in parallel on release/restore handoff checklist fixtures without executing deployment, rollback SQL, LOAD, COMPACT, SETNXEX, or restore.
+3. Let Node v175 wait for Java v62, mini-kv v71, and Node v174, then create the release handoff readiness review without authorizing real operations.
+4. Let Node v176 wait for Node v175, then create a CI evidence hardening packet for typecheck, tests, build, smoke, and screenshot expectations.
