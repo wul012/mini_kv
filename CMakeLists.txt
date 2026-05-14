@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.66.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.67.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -280,3 +280,16 @@ target_compile_definitions(minikv_restore_compatibility_handoff_tests
 )
 
 add_test(NAME restore_compatibility_handoff_tests COMMAND minikv_restore_compatibility_handoff_tests)
+
+add_executable(minikv_restore_dry_run_operator_package_tests
+    tests/restore_dry_run_operator_package_tests.cpp
+)
+
+target_link_libraries(minikv_restore_dry_run_operator_package_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_restore_dry_run_operator_package_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME restore_dry_run_operator_package_tests COMMAND minikv_restore_dry_run_operator_package_tests)

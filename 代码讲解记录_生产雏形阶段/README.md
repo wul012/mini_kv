@@ -167,6 +167,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 122-version-66-restore-compatibility-handoff.md
  -> 第六十六版 Restore Compatibility Handoff：binary/WAL/Snapshot/fixture 兼容性人工确认样本、Node v166 消费提示、只读 CHECKJSON smoke、测试和归档
+
+123-version-67-restore-dry-run-operator-package.md
+ -> 第六十七版 Restore Dry-Run Operator Package：restore target、artifact digest 占位、WAL/Snapshot compatibility、CHECKJSON dry-run 命令、Node v167 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。

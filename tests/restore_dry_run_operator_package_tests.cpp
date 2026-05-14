@@ -9,6 +9,7 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace {
 
@@ -36,37 +37,52 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 } // namespace
 
 int main() {
-    const auto evidence_path = std::filesystem::path{"fixtures"} / "release" /
-                               "runtime-artifact-rollback-evidence.json";
-    const auto evidence = read_fixture_text(evidence_path);
+    const auto package_path = std::filesystem::path{"fixtures"} / "release" /
+                              "restore-dry-run-operator-package.json";
+    const auto package = read_fixture_text(package_path);
 
-    assert_contains(evidence, "\"evidence_version\":\"mini-kv-runtime-artifact-rollback.v1\"");
-    assert_contains(evidence, "\"project\":\"mini-kv\"");
-    assert_contains(evidence, "\"project_version\":\"0.64.0\"");
-    assert_contains(evidence, "\"release_version\":\"v64\"");
-    assert_contains(evidence, "\"read_only\":true");
-    assert_contains(evidence, "\"execution_allowed\":false");
-    assert_contains(evidence, "\"order_authoritative\":false");
-    assert_contains(evidence, "\"consumer_hint\":\"Node v163 release rollback readiness runbook\"");
+    assert_contains(package, "\"package_version\":\"mini-kv-restore-dry-run-operator-package.v1\"");
+    assert_contains(package, "\"project\":\"mini-kv\"");
+    assert_contains(package, "\"project_version\":\"0.67.0\"");
+    assert_contains(package, "\"release_version\":\"v67\"");
+    assert_contains(package, "\"read_only\":true");
+    assert_contains(package, "\"execution_allowed\":false");
+    assert_contains(package, "\"restore_execution_allowed\":false");
+    assert_contains(package, "\"order_authoritative\":false");
+    assert_contains(package, "\"consumer_hint\":\"Node v167 rollback execution preflight contract\"");
 
-    assert_contains(evidence, "\"id\":\"binary-version\"");
-    assert_contains(evidence, "\"id\":\"wal\"");
-    assert_contains(evidence, "\"id\":\"snapshot\"");
-    assert_contains(evidence, "\"id\":\"fixtures\"");
-    assert_contains(evidence, "WAL replay can restore mini-kv keys but cannot create Java order authority");
-    assert_contains(evidence, "snapshot LOAD is a store replacement operation");
-    assert_contains(evidence, "\"CHECKJSON LOAD data/rollback.snap\"");
-    assert_contains(evidence, "\"CHECKJSON COMPACT\"");
-    assert_contains(evidence, "\"CHECKJSON SETNXEX rollback:token 30 value\"");
-    assert_contains(evidence, "\"GET rollback:token\"");
-    assert_contains(evidence, "\"write_commands_executed\":false");
-    assert_contains(evidence, "\"admin_commands_executed\":false");
-    assert_contains(evidence, "\"cannot forge Java order authoritative state\"");
-    assert_contains(evidence, "\"rollback target or version compatibility is unclear\"");
+    assert_contains(package, "\"target_release_version\":\"v67\"");
+    assert_contains(package, "\"id\":\"binary-digest\"");
+    assert_contains(package, "\"id\":\"fixture-digest\"");
+    assert_contains(package, "\"id\":\"handoff-digest\"");
+    assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-binary-digest>\"");
+    assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-fixture-digest>\"");
+    assert_contains(package, "\"id\":\"wal-compatibility\"");
+    assert_contains(package, "\"id\":\"snapshot-compatibility\"");
+    assert_contains(package, "\"id\":\"token-write-risk\"");
+    assert_contains(package, "\"CHECKJSON LOAD data/dry-run-restore.snap\"");
+    assert_contains(package, "\"CHECKJSON COMPACT\"");
+    assert_contains(package, "\"CHECKJSON SETNXEX dryrun:token 30 value\"");
+    assert_contains(package, "\"GET dryrun:token\"");
+    assert_contains(package, "\"write_commands_executed\":false");
+    assert_contains(package, "\"admin_commands_executed\":false");
+    assert_contains(package, "\"restore package cannot create Java order authority\"");
+    assert_contains(package, "\"artifact digests are operator-recorded placeholders");
+    assert_contains(package, "\"restore target or artifact digest is unclear\"");
 
-    assert_path_exists(evidence_path);
-    assert_path_exists(std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json");
-    assert_path_exists(std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json");
+    const std::vector<std::filesystem::path> required_paths = {
+        package_path,
+        std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json",
+        std::filesystem::path{"fixtures"} / "release" / "runtime-artifact-bundle-manifest.json",
+        std::filesystem::path{"fixtures"} / "release" / "restore-compatibility-handoff.json",
+        std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json",
+        std::filesystem::path{"fixtures"} / "ttl-token" / "recovery-evidence.json",
+    };
+
+    for (const auto& path : required_paths) {
+        assert_path_exists(path);
+        assert_contains(package, path.generic_string());
+    }
 
     minikv::Store store;
     minikv::CommandProcessorOptions options;
@@ -80,7 +96,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
 
-    result = processor.execute("CHECKJSON LOAD data/rollback.snap");
+    result = processor.execute("CHECKJSON LOAD data/dry-run-restore.snap");
     assert_contains(result.response, "\"command\":\"LOAD\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -93,7 +109,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"side_effects\":[\"wal_rewrite_when_enabled\"]");
 
-    result = processor.execute("CHECKJSON SETNXEX rollback:token 30 value");
+    result = processor.execute("CHECKJSON SETNXEX dryrun:token 30 value");
     assert_contains(result.response, "\"command\":\"SETNXEX\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -107,7 +123,7 @@ int main() {
     assert_contains(result.response, "\"order_authoritative\":false");
     assert_contains(result.response, "\"load_replaces_store\":true");
 
-    result = processor.execute("GET rollback:token");
+    result = processor.execute("GET dryrun:token");
     assert(result.response == "(nil)");
 
     return 0;
