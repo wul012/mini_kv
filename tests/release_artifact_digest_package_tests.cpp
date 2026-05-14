@@ -38,44 +38,54 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 
 int main() {
     const auto package_path = std::filesystem::path{"fixtures"} / "release" /
-                              "restore-dry-run-operator-package.json";
+                              "release-artifact-digest-package.json";
     const auto package = read_fixture_text(package_path);
 
-    assert_contains(package, "\"package_version\":\"mini-kv-restore-dry-run-operator-package.v1\"");
+    assert_contains(package, "\"package_version\":\"mini-kv-release-artifact-digest-package.v1\"");
     assert_contains(package, "\"project\":\"mini-kv\"");
-    assert_contains(package, "\"project_version\":\"0.67.0\"");
-    assert_contains(package, "\"release_version\":\"v67\"");
+    assert_contains(package, "\"project_version\":\"0.69.0\"");
+    assert_contains(package, "\"release_version\":\"v69\"");
     assert_contains(package, "\"read_only\":true");
     assert_contains(package, "\"execution_allowed\":false");
     assert_contains(package, "\"restore_execution_allowed\":false");
     assert_contains(package, "\"order_authoritative\":false");
-    assert_contains(package, "\"consumer_hint\":\"Node v167 rollback execution preflight contract\"");
+    assert_contains(package, "\"consumer_hint\":\"Node v170 deployment evidence intake gate\"");
 
-    assert_contains(package, "\"target_release_version\":\"v67\"");
+    assert_contains(package, "\"target_release_version\":\"v69\"");
+    assert_contains(package, "\"previous_release_version\":\"v68\"");
     assert_contains(package, "\"id\":\"binary-digest\"");
+    assert_contains(package, "\"id\":\"wal-checksum-evidence\"");
+    assert_contains(package, "\"id\":\"snapshot-digest-evidence\"");
     assert_contains(package, "\"id\":\"fixture-digest\"");
-    assert_contains(package, "\"id\":\"handoff-digest\"");
     assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-binary-digest>\"");
+    assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-wal-evidence-digest>\"");
+    assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-snapshot-evidence-digest>\"");
     assert_contains(package, "\"digest_placeholder\":\"sha256:<operator-recorded-fixture-digest>\"");
-    assert_contains(package, "\"id\":\"wal-compatibility\"");
-    assert_contains(package, "\"id\":\"snapshot-compatibility\"");
-    assert_contains(package, "\"id\":\"token-write-risk\"");
-    assert_contains(package, "\"CHECKJSON LOAD data/dry-run-restore.snap\"");
+    assert_contains(package, "\"compatible_with\":[\"CMake project version 0.69.0\",\"INFOJSON runtime version 0.69.0\"]");
+
+    assert_contains(package, "\"commands\":[\"INFOJSON\",\"CHECKJSON LOAD data/release-artifact-drill.snap\"");
     assert_contains(package, "\"CHECKJSON COMPACT\"");
-    assert_contains(package, "\"CHECKJSON SETNXEX dryrun:token 30 value\"");
-    assert_contains(package, "\"GET dryrun:token\"");
+    assert_contains(package, "\"CHECKJSON SETNXEX release:token 30 value\"");
+    assert_contains(package, "\"GET release:token\"");
+    assert_contains(package, "\"release_operator_id\"");
+    assert_contains(package, "\"binary_digest_recorded_at\"");
+    assert_contains(package, "\"wal_snapshot_digest_recorded_at\"");
+    assert_contains(package, "\"fixture_digest_recorded_at\"");
+    assert_contains(package, "\"artifact_matrix_cross_checked\"");
     assert_contains(package, "\"write_commands_executed\":false");
     assert_contains(package, "\"admin_commands_executed\":false");
-    assert_contains(package, "\"restore package cannot create Java order authority\"");
-    assert_contains(package, "\"artifact digests are operator-recorded placeholders");
-    assert_contains(package, "\"restore target or artifact digest is unclear\"");
+    assert_contains(package, "\"release artifact package is review evidence only");
+    assert_contains(package, "\"digest placeholders must be verified outside mini-kv before production use\"");
+    assert_contains(package, "\"binary/WAL/Snapshot/fixture digest is unclear or mismatched\"");
 
     const std::vector<std::filesystem::path> required_paths = {
         package_path,
         std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json",
+        std::filesystem::path{"fixtures"} / "release" / "artifact-digest-compatibility-matrix.json",
+        std::filesystem::path{"fixtures"} / "release" / "restore-dry-run-operator-package.json",
         std::filesystem::path{"fixtures"} / "release" / "runtime-artifact-bundle-manifest.json",
-        std::filesystem::path{"fixtures"} / "release" / "restore-compatibility-handoff.json",
         std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json",
+        std::filesystem::path{"fixtures"} / "recovery" / "restart-recovery-evidence.json",
         std::filesystem::path{"fixtures"} / "ttl-token" / "recovery-evidence.json",
     };
 
@@ -96,7 +106,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
 
-    result = processor.execute("CHECKJSON LOAD data/dry-run-restore.snap");
+    result = processor.execute("CHECKJSON LOAD data/release-artifact-drill.snap");
     assert_contains(result.response, "\"command\":\"LOAD\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -109,7 +119,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"side_effects\":[\"wal_rewrite_when_enabled\"]");
 
-    result = processor.execute("CHECKJSON SETNXEX dryrun:token 30 value");
+    result = processor.execute("CHECKJSON SETNXEX release:token 30 value");
     assert_contains(result.response, "\"command\":\"SETNXEX\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -123,8 +133,9 @@ int main() {
     assert_contains(result.response, "\"order_authoritative\":false");
     assert_contains(result.response, "\"load_replaces_store\":true");
 
-    result = processor.execute("GET dryrun:token");
+    result = processor.execute("GET release:token");
     assert(result.response == "(nil)");
 
     return 0;
 }
+

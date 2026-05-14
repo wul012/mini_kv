@@ -173,6 +173,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 124-version-68-artifact-digest-compatibility-matrix.md
  -> 第六十八版 Artifact Digest Compatibility Matrix：binary/WAL/Snapshot/fixture digest 矩阵、Node v168 消费提示、只读 CHECKJSON smoke、测试和归档
+
+125-version-69-release-artifact-digest-package.md
+ -> 第六十九版 Release Artifact Digest Package：binary/WAL/Snapshot/fixture digest 包、restore drill command profile、operator confirmation、Node v170 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。

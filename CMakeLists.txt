@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.68.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.69.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -306,3 +306,16 @@ target_compile_definitions(minikv_artifact_digest_compatibility_matrix_tests
 )
 
 add_test(NAME artifact_digest_compatibility_matrix_tests COMMAND minikv_artifact_digest_compatibility_matrix_tests)
+
+add_executable(minikv_release_artifact_digest_package_tests
+    tests/release_artifact_digest_package_tests.cpp
+)
+
+target_link_libraries(minikv_release_artifact_digest_package_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_release_artifact_digest_package_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME release_artifact_digest_package_tests COMMAND minikv_release_artifact_digest_package_tests)
