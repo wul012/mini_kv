@@ -155,6 +155,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 118-version-62-ttl-recovery-evidence.md
  -> 第六十二版 TTL Token Recovery Evidence：WAL/Snapshot/restart 恢复证据、过期 token 不复活、compact 后 TTL replay、Node v161 消费提示、测试和归档
+
+119-version-63-release-verification-manifest.md
+ -> 第六十三版 Release Verification Manifest：CMake/CTest/只读 smoke/fixture-version 清单、Node v162 消费提示、无新增 runtime 命令边界、测试和归档
 ```
 
 后续版本继续在本目录追加。
