@@ -164,6 +164,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 121-version-65-runtime-artifact-bundle-manifest.md
  -> 第六十五版 Runtime Artifact Bundle Manifest：binary version、release manifest、rollback evidence、WAL/Snapshot compatibility、CTest/read-only smoke、fixture inventory bundle、Node v164 消费提示、测试和归档
+
+122-version-66-restore-compatibility-handoff.md
+ -> 第六十六版 Restore Compatibility Handoff：binary/WAL/Snapshot/fixture 兼容性人工确认样本、Node v166 消费提示、只读 CHECKJSON smoke、测试和归档
 ```
 
 后续版本继续在本目录追加。
