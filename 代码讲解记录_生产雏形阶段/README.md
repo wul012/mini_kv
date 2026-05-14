@@ -170,6 +170,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 123-version-67-restore-dry-run-operator-package.md
  -> 第六十七版 Restore Dry-Run Operator Package：restore target、artifact digest 占位、WAL/Snapshot compatibility、CHECKJSON dry-run 命令、Node v167 消费提示、测试和归档
+
+124-version-68-artifact-digest-compatibility-matrix.md
+ -> 第六十八版 Artifact Digest Compatibility Matrix：binary/WAL/Snapshot/fixture digest 矩阵、Node v168 消费提示、只读 CHECKJSON smoke、测试和归档
 ```
 
 后续版本继续在本目录追加。

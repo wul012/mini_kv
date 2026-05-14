@@ -37,41 +37,53 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 } // namespace
 
 int main() {
-    const auto handoff_path = std::filesystem::path{"fixtures"} / "release" /
-                              "restore-compatibility-handoff.json";
-    const auto handoff = read_fixture_text(handoff_path);
+    const auto matrix_path = std::filesystem::path{"fixtures"} / "release" /
+                             "artifact-digest-compatibility-matrix.json";
+    const auto matrix = read_fixture_text(matrix_path);
 
-    assert_contains(handoff, "\"handoff_version\":\"mini-kv-restore-compatibility-handoff.v1\"");
-    assert_contains(handoff, "\"project\":\"mini-kv\"");
-    assert_contains(handoff, "\"project_version\":\"0.66.0\"");
-    assert_contains(handoff, "\"release_version\":\"v66\"");
-    assert_contains(handoff, "\"read_only\":true");
-    assert_contains(handoff, "\"execution_allowed\":false");
-    assert_contains(handoff, "\"restore_execution_allowed\":false");
-    assert_contains(handoff, "\"order_authoritative\":false");
-    assert_contains(handoff, "\"consumer_hint\":\"Node v166 rollback window readiness checklist\"");
+    assert_contains(matrix, "\"matrix_version\":\"mini-kv-artifact-digest-compatibility-matrix.v1\"");
+    assert_contains(matrix, "\"project\":\"mini-kv\"");
+    assert_contains(matrix, "\"project_version\":\"0.68.0\"");
+    assert_contains(matrix, "\"release_version\":\"v68\"");
+    assert_contains(matrix, "\"read_only\":true");
+    assert_contains(matrix, "\"execution_allowed\":false");
+    assert_contains(matrix, "\"restore_execution_allowed\":false");
+    assert_contains(matrix, "\"order_authoritative\":false");
+    assert_contains(matrix, "\"consumer_hint\":\"Node v168 production environment preflight checklist\"");
 
-    assert_contains(handoff, "\"id\":\"binary-compatibility\"");
-    assert_contains(handoff, "\"id\":\"wal-compatibility\"");
-    assert_contains(handoff, "\"id\":\"snapshot-compatibility\"");
-    assert_contains(handoff, "\"id\":\"fixture-compatibility\"");
-    assert_contains(handoff, "\"operator_confirmation_required\":true");
-    assert_contains(handoff, "\"load_replaces_store_acknowledged\"");
-    assert_contains(handoff, "\"CHECKJSON LOAD data/restore.snap\"");
-    assert_contains(handoff, "\"CHECKJSON COMPACT\"");
-    assert_contains(handoff, "\"CHECKJSON SETNXEX restore:token 30 value\"");
-    assert_contains(handoff, "\"GET restore:token\"");
-    assert_contains(handoff, "\"write_commands_executed\":false");
-    assert_contains(handoff, "\"admin_commands_executed\":false");
-    assert_contains(handoff, "\"does not execute LOAD/COMPACT/SETNXEX\"");
-    assert_contains(handoff, "\"restore compatibility cannot create Java order authority\"");
-    assert_contains(handoff, "\"restore target or version compatibility is unclear\"");
+    assert_contains(matrix, "\"target_release_version\":\"v68\"");
+    assert_contains(matrix, "\"previous_release_version\":\"v67\"");
+    assert_contains(matrix, "\"id\":\"binary-digest\"");
+    assert_contains(matrix, "\"id\":\"wal-checksum-evidence\"");
+    assert_contains(matrix, "\"id\":\"snapshot-digest-evidence\"");
+    assert_contains(matrix, "\"id\":\"fixture-digest\"");
+    assert_contains(matrix, "\"digest_placeholder\":\"sha256:<operator-recorded-binary-digest>\"");
+    assert_contains(matrix, "\"digest_placeholder\":\"sha256:<operator-recorded-wal-evidence-digest>\"");
+    assert_contains(matrix, "\"digest_placeholder\":\"sha256:<operator-recorded-snapshot-evidence-digest>\"");
+    assert_contains(matrix, "\"digest_placeholder\":\"sha256:<operator-recorded-fixture-digest>\"");
+    assert_contains(matrix, "\"compatible_with\":[\"CMake project version 0.68.0\",\"INFOJSON runtime version 0.68.0\"]");
+
+    assert_contains(matrix, "\"id\":\"binary-version-match\"");
+    assert_contains(matrix, "\"id\":\"wal-matrix-review\"");
+    assert_contains(matrix, "\"id\":\"snapshot-matrix-review\"");
+    assert_contains(matrix, "\"id\":\"fixture-matrix-review\"");
+    assert_contains(matrix, "\"CHECKJSON LOAD data/digest-matrix.snap\"");
+    assert_contains(matrix, "\"CHECKJSON COMPACT\"");
+    assert_contains(matrix, "\"CHECKJSON SETNXEX digest:token 30 value\"");
+    assert_contains(matrix, "\"GET digest:token\"");
+    assert_contains(matrix, "\"write_commands_executed\":false");
+    assert_contains(matrix, "\"admin_commands_executed\":false");
+    assert_contains(matrix, "\"does not execute LOAD/COMPACT/SETNXEX\"");
+    assert_contains(matrix, "\"mini-kv remains not Java order authority\"");
+    assert_contains(matrix, "\"digest placeholders must be verified outside mini-kv before production use\"");
+    assert_contains(matrix, "\"binary/WAL/Snapshot/fixture digest is unclear or mismatched\"");
 
     const std::vector<std::filesystem::path> required_paths = {
-        handoff_path,
+        matrix_path,
         std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json",
+        std::filesystem::path{"fixtures"} / "release" / "restore-dry-run-operator-package.json",
         std::filesystem::path{"fixtures"} / "release" / "runtime-artifact-bundle-manifest.json",
-        std::filesystem::path{"fixtures"} / "release" / "runtime-artifact-rollback-evidence.json",
+        std::filesystem::path{"fixtures"} / "release" / "restore-compatibility-handoff.json",
         std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json",
         std::filesystem::path{"fixtures"} / "recovery" / "restart-recovery-evidence.json",
         std::filesystem::path{"fixtures"} / "ttl-token" / "recovery-evidence.json",
@@ -79,7 +91,7 @@ int main() {
 
     for (const auto& path : required_paths) {
         assert_path_exists(path);
-        assert_contains(handoff, path.generic_string());
+        assert_contains(matrix, path.generic_string());
     }
 
     minikv::Store store;
@@ -94,7 +106,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
 
-    result = processor.execute("CHECKJSON LOAD data/restore.snap");
+    result = processor.execute("CHECKJSON LOAD data/digest-matrix.snap");
     assert_contains(result.response, "\"command\":\"LOAD\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -107,7 +119,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"side_effects\":[\"wal_rewrite_when_enabled\"]");
 
-    result = processor.execute("CHECKJSON SETNXEX restore:token 30 value");
+    result = processor.execute("CHECKJSON SETNXEX digest:token 30 value");
     assert_contains(result.response, "\"command\":\"SETNXEX\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -121,7 +133,7 @@ int main() {
     assert_contains(result.response, "\"order_authoritative\":false");
     assert_contains(result.response, "\"load_replaces_store\":true");
 
-    result = processor.execute("GET restore:token");
+    result = processor.execute("GET digest:token");
     assert(result.response == "(nil)");
 
     return 0;
