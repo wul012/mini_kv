@@ -203,6 +203,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 134-version-78-runtime-smoke-taxonomy-digest.md
  -> 第七十八版 Runtime Smoke Taxonomy Digest：SMOKEJSON taxonomy_digest、verification sample、Node v196 imported-window 结果导入前校验、测试和归档
+
+135-version-79-operator-window-identity-neutral-proof.md
+ -> 第七十九版 Operator-Window Identity-Neutral Proof：SMOKEJSON operator_window、identity_neutral_proof、Node v200 归档前身份中性证明、fixture/manifest、测试和归档。
 ```
 
 后续版本继续在本目录追加。

@@ -552,11 +552,14 @@ int main() {
     assert_response_contains(result, "\"write_commands_executed\":false");
     assert_response_contains(result, "\"admin_commands_executed\":false");
     assert_response_contains(result, "\"runtime_write_observed\":false");
+    assert_response_contains(result, "\"operator_window\":{\"consumer\":\"Node v200 real-read window CI archive artifact manifest\"");
+    assert_response_contains(result, "\"identity_neutral_proof\":true");
+    assert_response_contains(result, "\"node_action\":\"verify digest before importing manual window results\"}");
     assert_response_contains(result, "\"failure_taxonomy\":{\"schema_version\":1");
     assert_response_contains(result, "\"consumer\":\"Node v196 imported window result packet\"");
     assert_response_contains(result, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
-    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.78.0\"");
+    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.79.0\"");
     assert_response_contains(result, "\"expected_taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"node_action\":\"verify digest before importing manual window results\"");
     assert_response_contains(result, "\"id\":\"connection-refused\",\"source\":\"tcp_connect\"");
@@ -566,7 +569,7 @@ int main() {
     assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
-    assert_response_contains(result, "\"node_consumption\":\"Node v196 may verify this command before importing a manual real-read window result; mini-kv must already be running and the read-only window must be open\"");
+    assert_response_contains(result, "\"node_consumption\":\"Node v200 may verify taxonomy digest and operator-window identity-neutral proof before archiving a real-read window result; mini-kv must already be running and the read-only window must be open\"");
     assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"read_only_aggregate\","
                                      "\"not_order_authoritative\",\"does_not_execute_load_compact_setnxex_or_restore\"]");
 

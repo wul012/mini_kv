@@ -378,6 +378,18 @@ constexpr SmokeFailureTaxonomyEntry smoke_failure_taxonomy_entries[] = {
      true},
 };
 
+struct SmokeOperatorWindowProof {
+    std::string_view consumer;
+    std::string_view node_action;
+    bool identity_neutral_proof;
+};
+
+constexpr SmokeOperatorWindowProof smoke_operator_window_proof = {
+    "Node v200 real-read window CI archive artifact manifest",
+    "verify digest before importing manual window results",
+    true,
+};
+
 std::uint64_t fnv1a64(std::string_view text);
 std::string format_hex64(std::uint64_t value);
 void append_digest_part(std::string& source, std::string_view value);
@@ -428,6 +440,13 @@ std::string format_smoke_failure_taxonomy_json() {
     }
     response += "]}";
     return response;
+}
+
+std::string format_smoke_operator_window_proof_json() {
+    return "{\"consumer\":" + json_string(smoke_operator_window_proof.consumer) +
+           ",\"identity_neutral_proof\":" +
+           format_json_bool(smoke_operator_window_proof.identity_neutral_proof) +
+           ",\"node_action\":" + json_string(smoke_operator_window_proof.node_action) + "}";
 }
 
 std::uint64_t fnv1a64(std::string_view text) {
@@ -974,8 +993,9 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"forbidden_commands\":" + format_json_string_array(forbidden_commands) +
                 ",\"write_commands_executed\":false,\"admin_commands_executed\":false," +
                 "\"runtime_write_observed\":false}" +
+                ",\"operator_window\":" + format_smoke_operator_window_proof_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v196 may verify this command before importing a manual real-read window result; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v200 may verify taxonomy digest and operator-window identity-neutral proof before archiving a real-read window result; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;
