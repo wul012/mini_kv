@@ -45,17 +45,17 @@ int main() {
 
     assert_contains(manifest, "\"manifest_version\":\"mini-kv-release-verification-manifest.v1\"");
     assert_contains(manifest, "\"project\":\"mini-kv\"");
-    assert_contains(manifest, "\"project_version\":\"0.73.0\"");
-    assert_contains(manifest, "\"release_version\":\"v73\"");
+    assert_contains(manifest, "\"project_version\":\"0.74.0\"");
+    assert_contains(manifest, "\"release_version\":\"v74\"");
     assert_contains(manifest, "\"read_only\":true");
     assert_contains(manifest, "\"execution_allowed\":false");
     assert_contains(manifest, "\"order_authoritative\":false");
     assert_contains(manifest, "\"no_runtime_command_added\":true");
-    assert_contains(manifest, "\"consumer_hint\":\"Node v180 approval decision prerequisite gate\"");
+    assert_contains(manifest, "\"consumer_hint\":\"Node v182 release approval decision rehearsal packet\"");
 
-    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v73");
-    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v73 --parallel 2\"");
-    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v73 --output-on-failure\"");
+    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v74");
+    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v74 --parallel 2\"");
+    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v74 --output-on-failure\"");
     assert_contains(manifest, "\"minikv_command_tests\"");
     assert_contains(manifest, "\"minikv_readonly_fixture_tests\"");
     assert_contains(manifest, "\"minikv_recovery_fixture_index_tests\"");
@@ -71,14 +71,15 @@ int main() {
     assert_contains(manifest, "\"minikv_restore_handoff_checklist_tests\"");
     assert_contains(manifest, "\"minikv_restore_evidence_retention_tests\"");
     assert_contains(manifest, "\"minikv_retained_restore_artifact_digest_tests\"");
+    assert_contains(manifest, "\"minikv_restore_approval_boundary_tests\"");
 
     assert_contains(manifest, "\"INFOJSON\"");
-    assert_contains(manifest, "\"CHECKJSON LOAD data/retained-digest-restore.snap\"");
+    assert_contains(manifest, "\"CHECKJSON LOAD data/approval-boundary-restore.snap\"");
     assert_contains(manifest, "\"CHECKJSON COMPACT\"");
-    assert_contains(manifest, "\"CHECKJSON SETNXEX restore:digest-token 30 value\"");
+    assert_contains(manifest, "\"CHECKJSON SETNXEX restore:approval-token 30 value\"");
     assert_contains(manifest, "\"STORAGEJSON\"");
     assert_contains(manifest, "\"HEALTH\"");
-    assert_contains(manifest, "\"GET restore:digest-token\"");
+    assert_contains(manifest, "\"GET restore:approval-token\"");
     assert_contains(manifest, "\"write_commands_executed\":false");
     assert_contains(manifest, "\"admin_commands_executed\":false");
 
@@ -94,6 +95,7 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "restore-handoff-checklist.json",
         std::filesystem::path{"fixtures"} / "release" / "restore-evidence-retention.json",
         std::filesystem::path{"fixtures"} / "release" / "retained-restore-artifact-digest.json",
+        std::filesystem::path{"fixtures"} / "release" / "restore-approval-boundary.json",
         std::filesystem::path{"fixtures"} / "readonly" / "index.json",
         std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json",
         std::filesystem::path{"fixtures"} / "readonly" / "statsjson-empty-inline.json",
@@ -111,7 +113,7 @@ int main() {
         assert_contains(manifest, "\"path\":\"" + path.generic_string() + "\"");
     }
 
-    assert_contains(manifest, "\"cmake_project_version\":\"0.73.0\"");
+    assert_contains(manifest, "\"cmake_project_version\":\"0.74.0\"");
     assert_contains(manifest, "\"generated_header\":\"include/minikv/version.hpp.in\"");
     assert_contains(manifest, "\"fixtures/readonly/infojson-empty-inline.json\"");
     assert_contains(manifest, "\"fixtures/release/verification-manifest.json\"");
@@ -125,6 +127,7 @@ int main() {
     assert_contains(manifest, "\"fixtures/release/restore-handoff-checklist.json\"");
     assert_contains(manifest, "\"fixtures/release/restore-evidence-retention.json\"");
     assert_contains(manifest, "\"fixtures/release/retained-restore-artifact-digest.json\"");
+    assert_contains(manifest, "\"fixtures/release/restore-approval-boundary.json\"");
     assert_contains(manifest, "\"manifest only\"");
     assert_contains(manifest, "\"bundle manifest only\"");
     assert_contains(manifest, "\"restore compatibility handoff sample only\"");
@@ -135,12 +138,13 @@ int main() {
     assert_contains(manifest, "\"restore handoff checklist only\"");
     assert_contains(manifest, "\"restore evidence retention only\"");
     assert_contains(manifest, "\"retained restore artifact digest only\"");
+    assert_contains(manifest, "\"restore approval boundary only\"");
     assert_contains(manifest, "\"no runtime command added\"");
     assert_contains(manifest, "\"not connected to Java transaction chain\"");
     assert_contains(manifest, "\"does not perform restore\"");
 
     const auto cmake_lists = read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "CMakeLists.txt");
-    assert_contains(cmake_lists, "project(mini_kv VERSION 0.73.0");
+    assert_contains(cmake_lists, "project(mini_kv VERSION 0.74.0");
     assert_contains(cmake_lists, "minikv_release_verification_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_rollback_evidence_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_bundle_manifest_tests");
@@ -152,6 +156,7 @@ int main() {
     assert_contains(cmake_lists, "minikv_restore_handoff_checklist_tests");
     assert_contains(cmake_lists, "minikv_restore_evidence_retention_tests");
     assert_contains(cmake_lists, "minikv_retained_restore_artifact_digest_tests");
+    assert_contains(cmake_lists, "minikv_restore_approval_boundary_tests");
 
     minikv::Store store;
     minikv::CommandProcessorOptions options;
@@ -160,12 +165,12 @@ int main() {
 
     auto result = processor.execute("INFOJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"version\":\"0.73.0\"");
+    assert_contains(result.response, "\"version\":\"0.74.0\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
 
-    result = processor.execute("CHECKJSON SETNXEX restore:digest-token 30 value");
+    result = processor.execute("CHECKJSON SETNXEX restore:approval-token 30 value");
     assert_contains(result.response, "\"command\":\"SETNXEX\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
@@ -178,7 +183,7 @@ int main() {
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
 
-    result = processor.execute("GET restore:digest-token");
+    result = processor.execute("GET restore:approval-token");
     assert(result.response == "(nil)");
 
     return 0;

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.73.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.74.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -371,3 +371,16 @@ target_compile_definitions(minikv_retained_restore_artifact_digest_tests
 )
 
 add_test(NAME retained_restore_artifact_digest_tests COMMAND minikv_retained_restore_artifact_digest_tests)
+
+add_executable(minikv_restore_approval_boundary_tests
+    tests/restore_approval_boundary_tests.cpp
+)
+
+target_link_libraries(minikv_restore_approval_boundary_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_restore_approval_boundary_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME restore_approval_boundary_tests COMMAND minikv_restore_approval_boundary_tests)
