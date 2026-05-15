@@ -191,6 +191,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 130-version-74-restore-approval-boundary.md
  -> 第七十四版 Restore Approval Boundary：restore approver placeholder、restore target placeholder、artifact digest placeholder、Java transaction chain disconnected、Node v182 消费提示、测试和归档
+
+131-version-75-restore-boundary-smoke-manifest.md
+ -> 第七十五版 Restore Boundary Smoke Manifest：read-only smoke commands、runtime/client target、restore target placeholder、real-read token no-write proof、Node v185 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。
