@@ -1,5 +1,62 @@
 # mini-kv Agent Notes
 
+## Shared Four-Project Rules
+
+The central backup and index is:
+
+```text
+D:\C\四项目理解统筹\AGENTS.md
+```
+
+For normal mini-kv work, use this local file first. The shared file is only an upstream reference for cross-project research, planning, quality evaluation, and long-term direction checks across:
+
+- `D:\nodeproj\orderops-node`
+- `D:\javaproj\advanced-order-platform`
+- `D:\C\mini-kv`
+- `D:\aiproj`
+
+When doing cross-project evaluation, use `[MODE: RESEARCH]`: prefer read-only inspection, evidence-backed summaries, and clear separation between facts, judgments, and recommendations. Do not edit Node, Java, or aiproj unless the user explicitly asks for that project.
+
+## Four-Project Evaluation Baseline
+
+Use this baseline when judging overall developer/project capability unless newer evidence clearly changes it:
+
+| Dimension | Rating |
+|---|---|
+| Architecture design | A- |
+| Multi-language engineering | A |
+| Test engineering | B+ |
+| Output speed | S |
+| Refactoring and debt management | B |
+| Security and compliance awareness | A |
+| Engineering discipline and restraint | C+ |
+
+Core judgment: this is a high-output, strong-design, multi-stack developer with good safety awareness; the main growth area is knowing when to stop, refactor, and trade about 30% speed for restraint.
+
+Evaluation rules:
+- Praise speed, architecture, multi-language execution, and safety awareness, but do not overstate production readiness.
+- Be explicit that current maturity is mostly single-project validation plus cross-project contract alignment unless real integration tests exist.
+- Distinguish contract/evidence chain from live runtime integration.
+- Treat large files, long names, repeated report renderers, string-based fixture checks, and delayed refactoring as real debt signals.
+- Separate latest committed version from dirty working tree changes.
+- When judging tests, identify whether evidence is unit, integration, smoke, fixture, screenshot, or real CI.
+- Until real integration exists, describe the state as `single-project validation + cross-project contract alignment`.
+
+Do not claim real four-project joint testing unless there is evidence such as Node actually calling Java read-only endpoints, Node actually reading mini-kv runtime output or release fixtures, one command producing a cross-project readiness report, or tests proving Node cannot trigger Java writes, mini-kv restore/load/compact execution, deployment, rollback, or production secret access.
+
+## mini-kv Shared Direction
+
+- mini-kv is a C++ storage and recovery learning system with production-style evidence, not merely C++ syntax practice.
+- WAL, snapshot, restore, artifact digest, CHECKJSON, and retention fixtures must keep explicit no-order-authority and no-execution boundaries.
+- Node may consume mini-kv evidence, but mini-kv does not become Java order authority and must not execute restore/load/compact as part of evidence review.
+- Good future work strengthens evidence chain completeness, read-only/no-execution boundaries, audit/retention/release/rollback/restore/handoff contracts, focused boundary tests, and small reversible refactors that preserve public contracts.
+- Risky future work combines unrelated features and refactors, lets one file grow too large without a split plan, relies only on happy-path or string-fragment tests, or advances docs/screenshots faster than executable evidence.
+
+Refactoring rhythm:
+- After 3-4 feature versions, prefer 1 version of contract-preserving refactor, deduplication, or test hardening.
+- Prefer structured fixture parsing and reusable test helpers over ever-growing string-fragment assertions when the risk justifies it.
+- Move shared fixture loaders, report helpers, validators, renderers, and message collectors into common utilities when duplication is clear.
+
 ## C++ Ownership Rule
 
 本线程/本项目中，Codex 的默认职责是推进 C++ 侧，也就是 `D:\C\mini-kv`。
