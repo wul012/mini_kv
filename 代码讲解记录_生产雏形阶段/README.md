@@ -194,6 +194,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 131-version-75-restore-boundary-smoke-manifest.md
  -> 第七十五版 Restore Boundary Smoke Manifest：read-only smoke commands、runtime/client target、restore target placeholder、real-read token no-write proof、Node v185 消费提示、测试和归档
+
+132-version-76-runtime-smoke-evidence.md
+ -> 第七十六版 Runtime Smoke Evidence：SMOKEJSON 只读聚合入口、runtime smoke fixture、Node v191 real TCP read adapter rehearsal 消费边界、测试和归档
 ```
 
 后续版本继续在本目录追加。

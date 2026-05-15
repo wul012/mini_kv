@@ -71,6 +71,7 @@ constexpr CommandCatalogEntry command_catalog[] = {
     {"WALINFO", "read", false, true, true, "Read write-ahead log maintenance details"},
     {"STATS", "meta", false, true, true, "Read command and connection metrics as text"},
     {"STATSJSON", "meta", false, true, true, "Read command and connection metrics as JSON"},
+    {"SMOKEJSON", "meta", false, true, true, "Read combined runtime smoke evidence as JSON"},
     {"RESETSTATS", "admin", false, false, true, "Reset command metrics"},
     {"HEALTH", "meta", false, true, true, "Read liveness and maintenance health"},
     {"INFO", "meta", false, false, true, "Read server identity metadata as text"},
@@ -198,6 +199,7 @@ constexpr std::size_t key_inventory_limit = 1000;
 constexpr int explain_schema_version = 1;
 constexpr int runtime_identity_schema_version = 1;
 constexpr int runtime_metrics_schema_version = 1;
+constexpr int runtime_smoke_schema_version = 1;
 constexpr int storage_evidence_schema_version = 1;
 constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
 constexpr std::uint64_t fnv_prime = 1099511628211ull;
@@ -580,12 +582,12 @@ CommandExplain explain_command(std::string_view line) {
         return explain;
     }
 
-    if (explain.command == "STORAGEJSON") {
+    if (explain.command == "STORAGEJSON" || explain.command == "SMOKEJSON") {
         explain.side_effects.push_back("metadata_read");
         explain.side_effects.push_back("store_read");
         explain.side_effects.push_back("wal_metadata_read_when_enabled");
         if (has_extra_token(input)) {
-            mark_usage_warning(explain, "STORAGEJSON");
+            mark_usage_warning(explain, explain.command);
         }
         return explain;
     }
@@ -752,10 +754,10 @@ std::string format_info_json(std::size_t live_keys,
 }
 
 std::string format_stats_json(std::size_t live_keys,
-                              WriteAheadLog* wal,
-                              const std::optional<WalMaintenanceReport>& wal_report,
-                              const CommandProcessorMetrics& command_metrics,
-                              const CommandConnectionStats& stats) {
+                               WriteAheadLog* wal,
+                               const std::optional<WalMaintenanceReport>& wal_report,
+                               const CommandProcessorMetrics& command_metrics,
+                               const CommandConnectionStats& stats) {
     std::string response = "{\"schema_version\":" + std::to_string(runtime_metrics_schema_version) +
                            ",\"read_only\":true,\"execution_allowed\":false,\"order_authoritative\":false" +
                            ",\"evidence_type\":\"runtime_metrics\"" +
@@ -793,9 +795,87 @@ std::string format_stats_json(std::size_t live_keys,
     return response;
 }
 
+std::string format_smoke_json(std::size_t live_keys,
+                              WriteAheadLog* wal,
+                              const std::optional<WalMaintenanceReport>& wal_report,
+                              const CommandProcessorMetrics& command_metrics,
+                              const CommandConnectionStats& stats,
+                              const CommandRuntimeInfo& runtime_info) {
+    const std::vector<std::string> read_commands = {
+        "INFOJSON",
+        "STORAGEJSON",
+        "HEALTH",
+        "STATSJSON",
+    };
+    const std::vector<std::string> forbidden_commands = {
+        "LOAD",
+        "COMPACT",
+        "SETNXEX",
+        "RESTORE",
+    };
+    const std::vector<std::string> dynamic_fields = {
+        "server.uptime_seconds",
+        "commands.total_latency_ns",
+        "commands.avg_latency_ns",
+        "commands.max_latency_ns",
+        "commands.breakdown[*].*_latency_ns",
+    };
+    const std::vector<std::string> notes = {
+        "runtime_smoke_evidence",
+        "read_only_aggregate",
+        "not_order_authoritative",
+        "does_not_execute_load_compact_setnxex_or_restore",
+    };
+
+    const auto now = std::chrono::steady_clock::now();
+    const auto uptime =
+        now >= runtime_info.started_at
+            ? std::chrono::duration_cast<std::chrono::seconds>(now - runtime_info.started_at).count()
+            : 0;
+
+    std::string response = "{\"schema_version\":" + std::to_string(runtime_smoke_schema_version) +
+                           ",\"read_only\":true,\"execution_allowed\":false" +
+                           ",\"restore_execution_allowed\":false,\"order_authoritative\":false" +
+                           ",\"evidence_type\":\"runtime_smoke\"" +
+                           ",\"version\":" + json_string(version) +
+                           ",\"server\":{\"protocol\":" + format_protocol_json_array(runtime_info.protocol) +
+                           ",\"uptime_seconds\":" + std::to_string(uptime) +
+                           ",\"max_request_bytes\":" + std::to_string(runtime_info.max_request_bytes) +
+                           ",\"metrics_enabled\":" + format_json_bool(runtime_info.metrics_enabled) + "}" +
+                           ",\"store\":{\"live_keys\":" + std::to_string(live_keys) +
+                           ",\"order_authoritative\":false}" +
+                           ",\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr);
+
+    if (wal_report.has_value()) {
+        response += ",\"status\":\"enabled\",\"compact_recommended\":" +
+                    format_json_bool(wal_report->compact_recommended) +
+                    ",\"bytes\":" + std::to_string(wal_report->bytes) +
+                    ",\"records\":" + std::to_string(wal_report->records) + "}";
+    } else {
+        response += ",\"status\":\"disabled\",\"compact_recommended\":false}";
+    }
+
+    response += "," + format_command_metrics_json(command_metrics);
+    response += ",\"connection_stats\":{\"available\":" + format_json_bool(stats.available);
+    if (stats.available) {
+        response += ",\"active_connections\":" + std::to_string(stats.active_connections) +
+                    ",\"total_connections\":" + std::to_string(stats.total_connections) +
+                    ",\"peak_connections\":" + std::to_string(stats.peak_connections);
+    }
+    response += "},\"real_read\":{\"allowed\":true,\"commands\":" +
+                format_json_string_array(read_commands) +
+                ",\"forbidden_commands\":" + format_json_string_array(forbidden_commands) +
+                ",\"write_commands_executed\":false,\"admin_commands_executed\":false," +
+                "\"runtime_write_observed\":false}" +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v191 may read this command only when mini-kv is already running\"," +
+                "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
+                ",\"notes\":" + format_json_string_array(notes) + "}}";
+    return response;
+}
+
 std::string format_storage_evidence_json(std::size_t live_keys,
-                                         WriteAheadLog* wal,
-                                         const std::optional<WalMaintenanceReport>& wal_report) {
+                                          WriteAheadLog* wal,
+                                          const std::optional<WalMaintenanceReport>& wal_report) {
     const std::vector<std::string> side_effects = {
         "metadata_read",
         "store_read",
@@ -1304,6 +1384,22 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_stats_json(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
+    if (command == "SMOKEJSON") {
+        if (has_extra_token(input)) {
+            return usage("SMOKEJSON");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_smoke_json(
+            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_), options_.runtime_info)};
+    }
+
     if (command == "STORAGEJSON") {
         if (has_extra_token(input)) {
             return usage("STORAGEJSON");
@@ -1432,6 +1528,7 @@ std::string CommandProcessor::help_text() {
            "  WALINFO\n"
            "  STATS\n"
            "  STATSJSON\n"
+           "  SMOKEJSON\n"
            "  RESETSTATS\n"
            "  HEALTH\n"
            "  INFO\n"

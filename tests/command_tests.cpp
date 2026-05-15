@@ -276,7 +276,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=28") != std::string::npos);
+    assert(result.response.find("command_count=29") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -286,6 +286,7 @@ int main() {
     assert(result.response.find("COMMANDSJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("STORAGEJSON(category=read,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
 
     result = processor.execute("COMMANDSJSON extra");
@@ -303,6 +304,8 @@ int main() {
     assert(result.response.find("\"name\":\"COMMANDSJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
+    assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
+                                "\"touches_wal\":true") != std::string::npos);
     assert(result.response.find("\"name\":\"STORAGEJSON\",\"category\":\"read\",\"mutates_store\":false,"
                                 "\"touches_wal\":true") != std::string::npos);
     assert(result.response.find("\"description\":\"Read command catalog as JSON\"") != std::string::npos);
@@ -427,6 +430,15 @@ int main() {
                                      "\"wal_metadata_read_when_enabled\"]");
     assert_response_contains(result, "\"side_effect_count\":3");
 
+    result = processor.execute("EXPLAINJSON SMOKEJSON");
+    assert_response_contains(result, "\"command\":\"SMOKEJSON\"");
+    assert_response_contains(result, "\"category\":\"meta\"");
+    assert_response_contains(result, "\"mutates_store\":false");
+    assert_response_contains(result, "\"touches_wal\":true");
+    assert_response_contains(result, "\"side_effects\":[\"metadata_read\",\"store_read\","
+                                     "\"wal_metadata_read_when_enabled\"]");
+    assert_response_contains(result, "\"side_effect_count\":3");
+
     result = processor.execute("EXPLAINJSON QUIT");
     assert_response_contains(result, "\"command\":\"QUIT\"");
     assert_response_contains(result, "\"side_effects\":[\"connection_close\"]");
@@ -516,6 +528,36 @@ int main() {
                                      "\"order_authoritative\":false");
     assert_response_contains(result, "\"notes\":[\"read_only_storage_evidence\",\"not_order_authoritative\","
                                      "\"manual_snapshot_only\",\"wal_disabled\"]");
+
+    result = processor.execute("SMOKEJSON extra");
+    assert(result.response == "ERR usage: SMOKEJSON");
+
+    result = processor.execute("SMOKEJSON");
+    assert_response_contains(result, "\"schema_version\":1");
+    assert_response_contains(result, "\"read_only\":true");
+    assert_response_contains(result, "\"execution_allowed\":false");
+    assert_response_contains(result, "\"restore_execution_allowed\":false");
+    assert_response_contains(result, "\"order_authoritative\":false");
+    assert_response_contains(result, "\"evidence_type\":\"runtime_smoke\"");
+    assert_response_contains(result, "\"version\":\"" + std::string{minikv::version} + "\"");
+    assert_response_contains(result, "\"server\":{\"protocol\":[\"inline\"]");
+    assert_response_contains(result, "\"metrics_enabled\":false");
+    assert_response_contains(result, "\"store\":{\"live_keys\":1,\"order_authoritative\":false}");
+    assert_response_contains(result, "\"wal\":{\"enabled\":false,\"status\":\"disabled\","
+                                     "\"compact_recommended\":false}");
+    assert_response_contains(result, "\"connection_stats\":{\"available\":false}");
+    assert_response_contains(result, "\"real_read\":{\"allowed\":true,\"commands\":[\"INFOJSON\","
+                                     "\"STORAGEJSON\",\"HEALTH\",\"STATSJSON\"]");
+    assert_response_contains(result, "\"forbidden_commands\":[\"LOAD\",\"COMPACT\",\"SETNXEX\",\"RESTORE\"]");
+    assert_response_contains(result, "\"write_commands_executed\":false");
+    assert_response_contains(result, "\"admin_commands_executed\":false");
+    assert_response_contains(result, "\"runtime_write_observed\":false");
+    assert_response_contains(result, "\"node_consumption\":\"Node v191 may read this command only when mini-kv is already running\"");
+    assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"read_only_aggregate\","
+                                     "\"not_order_authoritative\",\"does_not_execute_load_compact_setnxex_or_restore\"]");
+
+    result = processor.execute("GET restore:real-read-token");
+    assert(result.response == "(nil)");
 
     result = processor.execute("CHECKJSON SET orderops:1");
     assert_response_contains(result, "\"command\":\"SET\"");
