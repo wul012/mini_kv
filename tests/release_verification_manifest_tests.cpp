@@ -45,17 +45,17 @@ int main() {
 
     assert_contains(manifest, "\"manifest_version\":\"mini-kv-release-verification-manifest.v1\"");
     assert_contains(manifest, "\"project\":\"mini-kv\"");
-    assert_contains(manifest, "\"project_version\":\"0.77.0\"");
-    assert_contains(manifest, "\"release_version\":\"v77\"");
+    assert_contains(manifest, "\"project_version\":\"0.78.0\"");
+    assert_contains(manifest, "\"release_version\":\"v78\"");
     assert_contains(manifest, "\"read_only\":true");
     assert_contains(manifest, "\"execution_allowed\":false");
     assert_contains(manifest, "\"order_authoritative\":false");
     assert_contains(manifest, "\"no_runtime_write_command_added\":true");
-    assert_contains(manifest, "\"consumer_hint\":\"Node v193 real-read adapter failure taxonomy\"");
+    assert_contains(manifest, "\"consumer_hint\":\"Node v196 imported window result packet\"");
 
-    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v77");
-    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v77 --parallel 2\"");
-    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v77 --output-on-failure\"");
+    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v78");
+    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v78 --parallel 2\"");
+    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v78 --output-on-failure\"");
     assert_contains(manifest, "\"minikv_command_tests\"");
     assert_contains(manifest, "\"minikv_readonly_fixture_tests\"");
     assert_contains(manifest, "\"minikv_recovery_fixture_index_tests\"");
@@ -80,9 +80,9 @@ int main() {
     assert_contains(manifest, "\"STORAGEJSON\"");
     assert_contains(manifest, "\"HEALTH\"");
     assert_contains(manifest, "\"GET restore:real-read-token\"");
-    assert_contains(manifest, "\"SMOKEJSON version matches 0.77.0\"");
+    assert_contains(manifest, "\"SMOKEJSON version matches 0.78.0\"");
     assert_contains(manifest, "\"SMOKEJSON returns runtime_smoke evidence\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes read-only failure taxonomy for Node v193\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes taxonomy_digest fnv1a64:f92fcba55feb26a2 for Node v196 imported-window verification\"");
     assert_contains(manifest, "\"write_commands_executed\":false");
     assert_contains(manifest, "\"admin_commands_executed\":false");
     assert_contains(manifest, "\"runtime_write_observed\":false");
@@ -119,7 +119,7 @@ int main() {
         assert_contains(manifest, "\"path\":\"" + path.generic_string() + "\"");
     }
 
-    assert_contains(manifest, "\"cmake_project_version\":\"0.77.0\"");
+    assert_contains(manifest, "\"cmake_project_version\":\"0.78.0\"");
     assert_contains(manifest, "\"generated_header\":\"include/minikv/version.hpp.in\"");
     assert_contains(manifest, "\"fixtures/readonly/infojson-empty-inline.json\"");
     assert_contains(manifest, "\"fixtures/release/verification-manifest.json\"");
@@ -149,11 +149,12 @@ int main() {
     assert_contains(manifest, "\"restore approval boundary only\"");
     assert_contains(manifest, "\"restore boundary smoke manifest only\"");
     assert_contains(manifest, "\"runtime smoke evidence only\"");
+    assert_contains(manifest, "\"taxonomy digest sample only\"");
     assert_contains(manifest, "\"not connected to Java transaction chain\"");
     assert_contains(manifest, "\"does not perform restore\"");
 
     const auto cmake_lists = read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "CMakeLists.txt");
-    assert_contains(cmake_lists, "project(mini_kv VERSION 0.77.0");
+    assert_contains(cmake_lists, "project(mini_kv VERSION 0.78.0");
     assert_contains(cmake_lists, "minikv_release_verification_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_rollback_evidence_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_bundle_manifest_tests");
@@ -176,7 +177,7 @@ int main() {
 
     auto result = processor.execute("INFOJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"version\":\"0.77.0\"");
+    assert_contains(result.response, "\"version\":\"0.78.0\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
@@ -189,7 +190,9 @@ int main() {
     assert_contains(result.response, "\"evidence_type\":\"runtime_smoke\"");
     assert_contains(result.response, "\"forbidden_commands\":[\"LOAD\",\"COMPACT\",\"SETNXEX\",\"RESTORE\"]");
     assert_contains(result.response, "\"failure_taxonomy\":{\"schema_version\":1");
-    assert_contains(result.response, "\"consumer\":\"Node v193 real-read adapter failure taxonomy\"");
+    assert_contains(result.response, "\"consumer\":\"Node v196 imported window result packet\"");
+    assert_contains(result.response, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
+    assert_contains(result.response, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

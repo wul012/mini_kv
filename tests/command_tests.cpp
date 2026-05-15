@@ -553,7 +553,12 @@ int main() {
     assert_response_contains(result, "\"admin_commands_executed\":false");
     assert_response_contains(result, "\"runtime_write_observed\":false");
     assert_response_contains(result, "\"failure_taxonomy\":{\"schema_version\":1");
-    assert_response_contains(result, "\"consumer\":\"Node v193 real-read adapter failure taxonomy\"");
+    assert_response_contains(result, "\"consumer\":\"Node v196 imported window result packet\"");
+    assert_response_contains(result, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
+    assert_response_contains(result, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
+    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.78.0\"");
+    assert_response_contains(result, "\"expected_taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
+    assert_response_contains(result, "\"node_action\":\"verify digest before importing manual window results\"");
     assert_response_contains(result, "\"id\":\"connection-refused\",\"source\":\"tcp_connect\"");
     assert_response_contains(result, "\"id\":\"invalid-json\",\"source\":\"SMOKEJSON_parse\"");
     assert_response_contains(result, "\"id\":\"read-command-failed\",\"source\":\"runtime_read_command\"");
@@ -561,7 +566,7 @@ int main() {
     assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
-    assert_response_contains(result, "\"node_consumption\":\"Node v193 may read this command only when mini-kv is already running and the real-read window is open\"");
+    assert_response_contains(result, "\"node_consumption\":\"Node v196 may verify this command before importing a manual real-read window result; mini-kv must already be running and the read-only window must be open\"");
     assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"read_only_aggregate\","
                                      "\"not_order_authoritative\",\"does_not_execute_load_compact_setnxex_or_restore\"]");
 

@@ -200,6 +200,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 133-version-77-runtime-smoke-failure-taxonomy.md
  -> 第七十七版 Runtime Smoke Failure Taxonomy：SMOKEJSON failure_taxonomy、Node v193 失败分类消费边界、unsafe-surface/write-risk 字段、测试和归档
+
+134-version-78-runtime-smoke-taxonomy-digest.md
+ -> 第七十八版 Runtime Smoke Taxonomy Digest：SMOKEJSON taxonomy_digest、verification sample、Node v196 imported-window 结果导入前校验、测试和归档
 ```
 
 后续版本继续在本目录追加。

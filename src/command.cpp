@@ -333,59 +333,91 @@ struct SmokeFailureTaxonomyEntry {
     bool write_risk;
 };
 
+constexpr SmokeFailureTaxonomyEntry smoke_failure_taxonomy_entries[] = {
+    {"closed-window",
+     "operator_window",
+     "The real-read adapter window is disabled, so Node should skip mini-kv reads.",
+     "Keep the rehearsal skipped until an operator opens the read-only window.",
+     true,
+     false},
+    {"connection-refused",
+     "tcp_connect",
+     "mini-kv is not listening or the operator has not started it for the window.",
+     "Report upstream_unreachable and do not auto-start mini-kv.",
+     true,
+     false},
+    {"timeout",
+     "tcp_read",
+     "mini-kv did not return the read-only response within the adapter timeout.",
+     "Record timeout evidence and keep commands read-only.",
+     true,
+     false},
+    {"invalid-json",
+     "SMOKEJSON_parse",
+     "The adapter did not receive parseable JSON from SMOKEJSON.",
+     "Classify the result before trusting runtime fields.",
+     false,
+     false},
+    {"read-command-failed",
+     "runtime_read_command",
+     "SMOKEJSON, INFOJSON, STORAGEJSON, HEALTH, or STATSJSON returned an error.",
+     "Record the failing command and stop the read window.",
+     false,
+     false},
+    {"unsafe-surface",
+     "adapter_command_plan",
+     "The adapter attempted LOAD, COMPACT, SETNXEX, RESTORE, or another forbidden command.",
+     "Block the rehearsal and require plan review.",
+     false,
+     true},
+    {"unexpected-write-signal",
+     "runtime_smoke_diagnostics",
+     "Runtime evidence reports write/admin execution or a token created by smoke.",
+     "Treat the rehearsal as failed and do not publish pass evidence.",
+     false,
+     true},
+};
+
+std::uint64_t fnv1a64(std::string_view text);
+std::string format_hex64(std::uint64_t value);
+void append_digest_part(std::string& source, std::string_view value);
+
+std::string smoke_failure_taxonomy_digest() {
+    std::string source;
+    append_digest_part(source, "mini-kv-smoke-failure-taxonomy");
+    append_digest_part(source, "1");
+    append_digest_part(source, "Node v196 imported window result packet");
+    append_digest_part(source, std::to_string(std::size(smoke_failure_taxonomy_entries)));
+    for (const auto& entry : smoke_failure_taxonomy_entries) {
+        append_digest_part(source, entry.id);
+        append_digest_part(source, entry.source);
+        append_digest_part(source, entry.meaning);
+        append_digest_part(source, entry.node_action);
+        append_digest_part(source, format_json_bool(entry.retryable));
+        append_digest_part(source, "false");
+        append_digest_part(source, format_json_bool(entry.write_risk));
+    }
+    return "fnv1a64:" + format_hex64(fnv1a64(source));
+}
+
 std::string format_smoke_failure_taxonomy_json() {
-    constexpr SmokeFailureTaxonomyEntry entries[] = {
-        {"closed-window",
-         "operator_window",
-         "The real-read adapter window is disabled, so Node should skip mini-kv reads.",
-         "Keep the rehearsal skipped until an operator opens the read-only window.",
-         true,
-         false},
-        {"connection-refused",
-         "tcp_connect",
-         "mini-kv is not listening or the operator has not started it for the window.",
-         "Report upstream_unreachable and do not auto-start mini-kv.",
-         true,
-         false},
-        {"timeout",
-         "tcp_read",
-         "mini-kv did not return the read-only response within the adapter timeout.",
-         "Record timeout evidence and keep commands read-only.",
-         true,
-         false},
-        {"invalid-json",
-         "SMOKEJSON_parse",
-         "The adapter did not receive parseable JSON from SMOKEJSON.",
-         "Classify the result before trusting runtime fields.",
-         false,
-         false},
-        {"read-command-failed",
-         "runtime_read_command",
-         "SMOKEJSON, INFOJSON, STORAGEJSON, HEALTH, or STATSJSON returned an error.",
-         "Record the failing command and stop the read window.",
-         false,
-         false},
-        {"unsafe-surface",
-         "adapter_command_plan",
-         "The adapter attempted LOAD, COMPACT, SETNXEX, RESTORE, or another forbidden command.",
-         "Block the rehearsal and require plan review.",
-         false,
-         true},
-        {"unexpected-write-signal",
-         "runtime_smoke_diagnostics",
-         "Runtime evidence reports write/admin execution or a token created by smoke.",
-         "Treat the rehearsal as failed and do not publish pass evidence.",
-         false,
-         true},
-    };
+    const auto digest = smoke_failure_taxonomy_digest();
 
     std::string response =
-        "{\"schema_version\":1,\"consumer\":\"Node v193 real-read adapter failure taxonomy\",\"categories\":[";
-    for (std::size_t index = 0; index < std::size(entries); ++index) {
+        "{\"schema_version\":1,\"consumer\":\"Node v196 imported window result packet\","
+        "\"taxonomy_digest\":" + json_string(digest) +
+        ",\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\","
+        "\"source_command\":\"SMOKEJSON\",\"source_version\":" + json_string(version) +
+        ","
+        "\"expected_taxonomy_digest\":" + json_string(digest) +
+        ",\"read_only\":true,\"execution_allowed\":false,\"restore_execution_allowed\":false,"
+        "\"order_authoritative\":false,\"node_action\":\"verify digest before importing manual window results\"},"
+        "\"categories\":[";
+    for (std::size_t index = 0; index < std::size(smoke_failure_taxonomy_entries); ++index) {
         if (index != 0) {
             response += ",";
         }
-        const auto& entry = entries[index];
+        const auto& entry = smoke_failure_taxonomy_entries[index];
         response += "{\"id\":" + json_string(entry.id) +
                     ",\"source\":" + json_string(entry.source) +
                     ",\"meaning\":" + json_string(entry.meaning) +
@@ -943,7 +975,7 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"write_commands_executed\":false,\"admin_commands_executed\":false," +
                 "\"runtime_write_observed\":false}" +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v193 may read this command only when mini-kv is already running and the real-read window is open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v196 may verify this command before importing a manual real-read window result; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;
