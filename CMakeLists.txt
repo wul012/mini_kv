@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.72.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.73.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -358,3 +358,16 @@ target_compile_definitions(minikv_restore_evidence_retention_tests
 )
 
 add_test(NAME restore_evidence_retention_tests COMMAND minikv_restore_evidence_retention_tests)
+
+add_executable(minikv_retained_restore_artifact_digest_tests
+    tests/retained_restore_artifact_digest_tests.cpp
+)
+
+target_link_libraries(minikv_retained_restore_artifact_digest_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_retained_restore_artifact_digest_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME retained_restore_artifact_digest_tests COMMAND minikv_retained_restore_artifact_digest_tests)

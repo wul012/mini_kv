@@ -185,6 +185,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 128-version-72-restore-evidence-retention.md
  -> 第七十二版 Restore Evidence Retention：restore checklist retention id、artifact digest placeholder、Snapshot/WAL review retention、CHECKJSON 风险证据保留、Node v178 消费提示、测试和归档
+
+129-version-73-retained-restore-artifact-digest.md
+ -> 第七十三版 Retained Restore Artifact Digest：restore artifact digest placeholder、Snapshot/WAL review digest、restore target placeholder、retention owner、Node v180 消费提示、测试和归档
 ```
 
 后续版本继续在本目录追加。
