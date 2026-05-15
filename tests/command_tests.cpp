@@ -552,7 +552,16 @@ int main() {
     assert_response_contains(result, "\"write_commands_executed\":false");
     assert_response_contains(result, "\"admin_commands_executed\":false");
     assert_response_contains(result, "\"runtime_write_observed\":false");
-    assert_response_contains(result, "\"node_consumption\":\"Node v191 may read this command only when mini-kv is already running\"");
+    assert_response_contains(result, "\"failure_taxonomy\":{\"schema_version\":1");
+    assert_response_contains(result, "\"consumer\":\"Node v193 real-read adapter failure taxonomy\"");
+    assert_response_contains(result, "\"id\":\"connection-refused\",\"source\":\"tcp_connect\"");
+    assert_response_contains(result, "\"id\":\"invalid-json\",\"source\":\"SMOKEJSON_parse\"");
+    assert_response_contains(result, "\"id\":\"read-command-failed\",\"source\":\"runtime_read_command\"");
+    assert_response_contains(result, "\"id\":\"unsafe-surface\",\"source\":\"adapter_command_plan\"");
+    assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
+    assert_response_contains(result, "\"safe_to_auto_start\":false");
+    assert_response_contains(result, "\"write_risk\":true");
+    assert_response_contains(result, "\"node_consumption\":\"Node v193 may read this command only when mini-kv is already running and the real-read window is open\"");
     assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"read_only_aggregate\","
                                      "\"not_order_authoritative\",\"does_not_execute_load_compact_setnxex_or_restore\"]");
 

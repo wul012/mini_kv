@@ -8,6 +8,7 @@
 #include <cctype>
 #include <cstdint>
 #include <iomanip>
+#include <iterator>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -320,6 +321,80 @@ std::string format_json_string_array(const std::vector<std::string>& values) {
         response += json_string(value);
     }
     response += "]";
+    return response;
+}
+
+struct SmokeFailureTaxonomyEntry {
+    std::string_view id;
+    std::string_view source;
+    std::string_view meaning;
+    std::string_view node_action;
+    bool retryable;
+    bool write_risk;
+};
+
+std::string format_smoke_failure_taxonomy_json() {
+    constexpr SmokeFailureTaxonomyEntry entries[] = {
+        {"closed-window",
+         "operator_window",
+         "The real-read adapter window is disabled, so Node should skip mini-kv reads.",
+         "Keep the rehearsal skipped until an operator opens the read-only window.",
+         true,
+         false},
+        {"connection-refused",
+         "tcp_connect",
+         "mini-kv is not listening or the operator has not started it for the window.",
+         "Report upstream_unreachable and do not auto-start mini-kv.",
+         true,
+         false},
+        {"timeout",
+         "tcp_read",
+         "mini-kv did not return the read-only response within the adapter timeout.",
+         "Record timeout evidence and keep commands read-only.",
+         true,
+         false},
+        {"invalid-json",
+         "SMOKEJSON_parse",
+         "The adapter did not receive parseable JSON from SMOKEJSON.",
+         "Classify the result before trusting runtime fields.",
+         false,
+         false},
+        {"read-command-failed",
+         "runtime_read_command",
+         "SMOKEJSON, INFOJSON, STORAGEJSON, HEALTH, or STATSJSON returned an error.",
+         "Record the failing command and stop the read window.",
+         false,
+         false},
+        {"unsafe-surface",
+         "adapter_command_plan",
+         "The adapter attempted LOAD, COMPACT, SETNXEX, RESTORE, or another forbidden command.",
+         "Block the rehearsal and require plan review.",
+         false,
+         true},
+        {"unexpected-write-signal",
+         "runtime_smoke_diagnostics",
+         "Runtime evidence reports write/admin execution or a token created by smoke.",
+         "Treat the rehearsal as failed and do not publish pass evidence.",
+         false,
+         true},
+    };
+
+    std::string response =
+        "{\"schema_version\":1,\"consumer\":\"Node v193 real-read adapter failure taxonomy\",\"categories\":[";
+    for (std::size_t index = 0; index < std::size(entries); ++index) {
+        if (index != 0) {
+            response += ",";
+        }
+        const auto& entry = entries[index];
+        response += "{\"id\":" + json_string(entry.id) +
+                    ",\"source\":" + json_string(entry.source) +
+                    ",\"meaning\":" + json_string(entry.meaning) +
+                    ",\"node_action\":" + json_string(entry.node_action) +
+                    ",\"retryable\":" + format_json_bool(entry.retryable) +
+                    ",\"safe_to_auto_start\":false" +
+                    ",\"write_risk\":" + format_json_bool(entry.write_risk) + "}";
+    }
+    response += "]}";
     return response;
 }
 
@@ -867,7 +942,8 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"forbidden_commands\":" + format_json_string_array(forbidden_commands) +
                 ",\"write_commands_executed\":false,\"admin_commands_executed\":false," +
                 "\"runtime_write_observed\":false}" +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v191 may read this command only when mini-kv is already running\"," +
+                ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v193 may read this command only when mini-kv is already running and the real-read window is open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;
