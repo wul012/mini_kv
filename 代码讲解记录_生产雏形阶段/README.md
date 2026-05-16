@@ -239,3 +239,4 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 - `141-version-85-retention-provenance-replay-marker.md`：说明 v85 如何在 `INFOJSON` / `SMOKEJSON` 中补充 `retention_provenance_replay_marker`，让 Node v213 能只读确认 Node v211 已消费过 mini-kv v84 retention provenance evidence，并继续保持不执行 restore、不写 managed audit、不进入 Java 订单权威链路。
 - `142-version-86-managed-audit-adapter-restore-boundary-receipt.md`：说明 v86 如何在 `INFOJSON` / `SMOKEJSON` 中补充 `managed_audit_adapter_restore_boundary_receipt`，让 Node v215 能只读确认 mini-kv 不执行 restore/write、不写 managed audit、不进入 Java 订单权威链路。
+- `146-version-90-external-adapter-non-participation-receipt.md`：说明 v90 如何在 `INFOJSON` / `SMOKEJSON` 中补充 `managed_audit_external_adapter_non_participation_receipt`，让 Node v223 能只读确认 mini-kv 不是 external adapter storage backend、不读取 credentials、不执行 migration、不参与真实 external adapter，并继续保持不写 managed audit、不过 Java order authority 边界。
