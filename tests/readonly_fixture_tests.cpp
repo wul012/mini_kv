@@ -136,6 +136,10 @@ int main() {
     assert_contains(result.response, "\"live_keys\":0");
     assert_contains(result.response, "\"wal\":{\"enabled\":false}");
     assert_contains(result.response, "\"metrics\":{\"enabled\":false}");
+    assert_contains(result.response, "\"ci_evidence\":{\"consumer\":\"Node v201 real-read window CI artifact manifest verification\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/80/\"");
+    assert_contains(result.response, "\"no_restore_proof\":true");
+    assert_contains(result.response, "\"upload_allowed\":false");
     assert_contains(result.response, "\"diagnostics\":{\"write_commands_executed\":false,"
                                      "\"dynamic_fields\":[\"server.uptime_seconds\"]}");
 

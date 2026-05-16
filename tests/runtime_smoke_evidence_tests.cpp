@@ -40,62 +40,76 @@ int main() {
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto smoke = read_fixture_text(smoke_path);
 
-    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v4\"");
+    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v5\"");
     assert_contains(smoke, "\"project\":\"mini-kv\"");
-    assert_contains(smoke, "\"project_version\":\"0.79.0\"");
-    assert_contains(smoke, "\"release_version\":\"v79\"");
+    assert_contains(smoke, "\"project_version\":\"0.80.0\"");
+    assert_contains(smoke, "\"release_version\":\"v80\"");
     assert_contains(smoke, "\"path\":\"fixtures/release/runtime-smoke-evidence.json\"");
     assert_contains(smoke, "\"read_only\":true");
     assert_contains(smoke, "\"execution_allowed\":false");
     assert_contains(smoke, "\"restore_execution_allowed\":false");
     assert_contains(smoke, "\"order_authoritative\":false");
     assert_contains(smoke, "\"java_transaction_chain_connected\":false");
-    assert_contains(smoke, "\"consumer_hint\":\"Node v200 real-read window CI archive artifact manifest\"");
+    assert_contains(smoke, "\"consumer_hint\":\"Node v201 real-read window CI artifact manifest verification\"");
 
     assert_contains(smoke, "\"primary\":\"SMOKEJSON\"");
     assert_contains(smoke, "\"supporting\":[\"INFOJSON\",\"STORAGEJSON\",\"HEALTH\",\"STATSJSON\"]");
     assert_contains(smoke, "\"forbidden\":[\"LOAD\",\"COMPACT\",\"SETNXEX\",\"RESTORE\"]");
-    assert_contains(smoke, "\"SMOKEJSON version matches 0.79.0\"");
+    assert_contains(smoke, "\"SMOKEJSON version matches 0.80.0\"");
     assert_contains(smoke, "\"SMOKEJSON reports write_commands_executed=false and runtime_write_observed=false\"");
     assert_contains(smoke, "SMOKEJSON exposes failure taxonomy categories and taxonomy_digest");
     assert_contains(smoke, "SMOKEJSON exposes operator_window.identity_neutral_proof=true");
+    assert_contains(smoke, "SMOKEJSON and INFOJSON expose ci_evidence.artifact_path_hint=c/80/ and no_restore_proof=true");
 
-    assert_contains(smoke, "\"server\":\"minikv_server 6417 127.0.0.1\"");
-    assert_contains(smoke, "\"client\":\"minikv_client 127.0.0.1 6417 5000 --connect-retries 10 --retry-delay-ms 100\"");
+    assert_contains(smoke, "\"server\":\"minikv_server 6418 127.0.0.1\"");
+    assert_contains(smoke, "\"client\":\"minikv_client 127.0.0.1 6418 5000 --connect-retries 10 --retry-delay-ms 100\"");
     assert_contains(smoke, "\"commands\":[\"SMOKEJSON\",\"INFOJSON\",\"STORAGEJSON\",\"HEALTH\",\"GET restore:real-read-token\",\"QUIT\"]");
 
-    assert_contains(smoke, "\"target_version\":\"Node v200\"");
-    assert_contains(smoke, "\"mode\":\"real-read window CI archive artifact manifest preparation\"");
+    assert_contains(smoke, "\"target_version\":\"Node v201\"");
+    assert_contains(smoke, "\"mode\":\"real-read window CI artifact manifest verification\"");
     assert_contains(smoke, "\"default_enabled\":false");
     assert_contains(smoke, "\"mini-kv is already running and user enabled a safe real-read window\"");
     assert_contains(smoke, "\"node_must_verify\":\"failure_taxonomy.taxonomy_digest equals fnv1a64:f92fcba55feb26a2");
     assert_contains(smoke, "operator_window.identity_neutral_proof is true");
+    assert_contains(smoke, "ci_evidence.artifact_path_hint equals c/80/");
+    assert_contains(smoke, "ci_evidence.no_restore_proof is true");
     assert_contains(smoke, "execute LOAD/COMPACT/SETNXEX/restore");
+    assert_contains(smoke, "upload CI artifacts");
     assert_contains(smoke, "infer operator identity from mini-kv");
 
     assert_contains(smoke, "\"operator_window\":{\"consumer\":\"Node v200 real-read window CI archive artifact manifest\"");
     assert_contains(smoke, "\"identity_neutral_proof\":true");
     assert_contains(smoke, "\"node_action\":\"verify digest before importing manual window results\"}");
+    assert_contains(smoke, "\"ci_evidence\":{\"consumer\":\"Node v201 real-read window CI artifact manifest verification\"");
+    assert_contains(smoke, "\"artifact_path_hint\":\"c/80/\"");
+    assert_contains(smoke, "\"no_restore_proof\":true");
+    assert_contains(smoke, "\"upload_allowed\":false");
 
     assert_contains(smoke, "\"runtime smoke evidence only\"");
     assert_contains(smoke, "\"read-only aggregate only\"");
+    assert_contains(smoke, "\"CI evidence hint only\"");
+    assert_contains(smoke, "\"artifact path hint only\"");
     assert_contains(smoke, "\"taxonomy digest sample only\"");
     assert_contains(smoke, "\"operator-window proof only\"");
     assert_contains(smoke, "\"identity-neutral proof only\"");
+    assert_contains(smoke, "\"no-restore proof only\"");
+    assert_contains(smoke, "\"no CI artifact upload\"");
     assert_contains(smoke, "\"no operator identity accepted or persisted\"");
     assert_contains(smoke, "\"does not execute LOAD/COMPACT/SETNXEX\"");
     assert_contains(smoke, "\"mini-kv remains not Java order authority\"");
     assert_contains(smoke, "\"SMOKEJSON is a read adapter target, not an execution gate\"");
-    assert_contains(smoke, "\"Node v200 must verify taxonomy_digest and operator_window.identity_neutral_proof before archiving real-read window evidence\"");
+    assert_contains(smoke, "\"Node v201 must verify taxonomy_digest, operator_window.identity_neutral_proof, and ci_evidence before checking the artifact manifest\"");
+    assert_contains(smoke, "\"CI evidence hint is a path and boundary hint, not a real GitHub artifact upload\"");
     assert_contains(smoke, "\"Operator-window proof is identity-neutral evidence, not authentication or production authorization\"");
     assert_contains(smoke, "\"real-read smoke scope is unclear\"");
     assert_contains(smoke, "\"taxonomy digest is missing or mismatched\"");
     assert_contains(smoke, "\"operator window proof is missing or unclear\"");
+    assert_contains(smoke, "\"ci evidence hint is missing or unclear\"");
     assert_contains(smoke, "\"failure_taxonomy\":{\"schema_version\":1");
     assert_contains(smoke, "\"consumer\":\"Node v196 imported window result packet\"");
     assert_contains(smoke, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_contains(smoke, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
-    assert_contains(smoke, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.79.0\"");
+    assert_contains(smoke, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.80.0\"");
     assert_contains(smoke, "\"expected_taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_contains(smoke, "\"node_action\":\"verify digest before importing manual window results\"");
     assert_contains(smoke, "\"id\":\"closed-window\",\"source\":\"operator_window\"");
@@ -133,7 +147,7 @@ int main() {
     assert_contains(result.response, "\"order_authoritative\":false");
     assert_contains(result.response, "\"evidence_type\":\"runtime_smoke\"");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"version\":\"0.79.0\"");
+    assert_contains(result.response, "\"version\":\"0.80.0\"");
     assert_contains(result.response, "\"server\":{\"protocol\":[\"inline\"]");
     assert_contains(result.response, "\"uptime_seconds\":0");
     assert_contains(result.response, "\"store\":{\"live_keys\":0,\"order_authoritative\":false}");
@@ -144,11 +158,15 @@ int main() {
     assert_contains(result.response, "\"operator_window\":{\"consumer\":\"Node v200 real-read window CI archive artifact manifest\"");
     assert_contains(result.response, "\"identity_neutral_proof\":true");
     assert_contains(result.response, "\"node_action\":\"verify digest before importing manual window results\"}");
+    assert_contains(result.response, "\"ci_evidence\":{\"consumer\":\"Node v201 real-read window CI artifact manifest verification\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/80/\"");
+    assert_contains(result.response, "\"no_restore_proof\":true");
+    assert_contains(result.response, "\"upload_allowed\":false");
     assert_contains(result.response, "\"failure_taxonomy\":{\"schema_version\":1");
     assert_contains(result.response, "\"consumer\":\"Node v196 imported window result packet\"");
     assert_contains(result.response, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_contains(result.response, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
-    assert_contains(result.response, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.79.0\"");
+    assert_contains(result.response, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.80.0\"");
     assert_contains(result.response, "\"expected_taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_contains(result.response, "\"node_action\":\"verify digest before importing manual window results\"");
     assert_contains(result.response, "\"id\":\"closed-window\",\"source\":\"operator_window\"");
@@ -163,7 +181,7 @@ int main() {
     assert_contains(result.response, "\"write_commands_executed\":false");
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v200 may verify taxonomy digest and operator-window identity-neutral proof before archiving a real-read window result; mini-kv must already be running and the read-only window must be open\"");
+    assert_contains(result.response, "\"node_consumption\":\"Node v201 may verify taxonomy digest, operator-window identity-neutral proof, and CI evidence hints before checking the artifact manifest; mini-kv must already be running and the read-only window must be open\"");
     assert_contains(result.response, "\"notes\":[\"runtime_smoke_evidence\",\"read_only_aggregate\",\"not_order_authoritative\","
                                      "\"does_not_execute_load_compact_setnxex_or_restore\"]");
 

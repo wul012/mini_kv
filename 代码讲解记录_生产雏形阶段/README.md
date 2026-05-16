@@ -206,6 +206,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 135-version-79-operator-window-identity-neutral-proof.md
  -> 第七十九版 Operator-Window Identity-Neutral Proof：SMOKEJSON operator_window、identity_neutral_proof、Node v200 归档前身份中性证明、fixture/manifest、测试和归档。
+
+136-version-80-ci-evidence-hint.md
+ -> 第八十版 CI Evidence Hint：INFOJSON/SMOKEJSON ci_evidence、artifact_path_hint、no_restore_proof、upload_allowed、Node v201 manifest verification、fixture/manifest、测试和归档。
 ```
 
 后续版本继续在本目录追加。

@@ -45,17 +45,17 @@ int main() {
 
     assert_contains(manifest, "\"manifest_version\":\"mini-kv-release-verification-manifest.v1\"");
     assert_contains(manifest, "\"project\":\"mini-kv\"");
-    assert_contains(manifest, "\"project_version\":\"0.79.0\"");
-    assert_contains(manifest, "\"release_version\":\"v79\"");
+    assert_contains(manifest, "\"project_version\":\"0.80.0\"");
+    assert_contains(manifest, "\"release_version\":\"v80\"");
     assert_contains(manifest, "\"read_only\":true");
     assert_contains(manifest, "\"execution_allowed\":false");
     assert_contains(manifest, "\"order_authoritative\":false");
     assert_contains(manifest, "\"no_runtime_write_command_added\":true");
-    assert_contains(manifest, "\"consumer_hint\":\"Node v200 real-read window CI archive artifact manifest\"");
+    assert_contains(manifest, "\"consumer_hint\":\"Node v201 real-read window CI artifact manifest verification\"");
 
-    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v79");
-    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v79 --parallel 2\"");
-    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v79 --output-on-failure\"");
+    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v80");
+    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v80 --parallel 2\"");
+    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v80 --output-on-failure\"");
     assert_contains(manifest, "\"minikv_command_tests\"");
     assert_contains(manifest, "\"minikv_readonly_fixture_tests\"");
     assert_contains(manifest, "\"minikv_recovery_fixture_index_tests\"");
@@ -80,13 +80,16 @@ int main() {
     assert_contains(manifest, "\"STORAGEJSON\"");
     assert_contains(manifest, "\"HEALTH\"");
     assert_contains(manifest, "\"GET restore:real-read-token\"");
-    assert_contains(manifest, "\"SMOKEJSON version matches 0.79.0\"");
+    assert_contains(manifest, "\"SMOKEJSON version matches 0.80.0\"");
     assert_contains(manifest, "\"SMOKEJSON returns runtime_smoke evidence\"");
+    assert_contains(manifest, "\"INFOJSON exposes ci_evidence.artifact_path_hint=c/80/\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes ci_evidence.no_restore_proof=true and upload_allowed=false\"");
     assert_contains(manifest, "\"SMOKEJSON exposes taxonomy_digest fnv1a64:f92fcba55feb26a2");
     assert_contains(manifest, "\"SMOKEJSON exposes operator_window.identity_neutral_proof=true for Node v200 archive handoff\"");
     assert_contains(manifest, "\"write_commands_executed\":false");
     assert_contains(manifest, "\"admin_commands_executed\":false");
     assert_contains(manifest, "\"runtime_write_observed\":false");
+    assert_contains(manifest, "\"ci_artifact_upload_executed\":false");
 
     const std::vector<std::filesystem::path> required_paths = {
         manifest_path,
@@ -120,7 +123,7 @@ int main() {
         assert_contains(manifest, "\"path\":\"" + path.generic_string() + "\"");
     }
 
-    assert_contains(manifest, "\"cmake_project_version\":\"0.79.0\"");
+    assert_contains(manifest, "\"cmake_project_version\":\"0.80.0\"");
     assert_contains(manifest, "\"generated_header\":\"include/minikv/version.hpp.in\"");
     assert_contains(manifest, "\"fixtures/readonly/infojson-empty-inline.json\"");
     assert_contains(manifest, "\"fixtures/release/verification-manifest.json\"");
@@ -150,16 +153,25 @@ int main() {
     assert_contains(manifest, "\"restore approval boundary only\"");
     assert_contains(manifest, "\"restore boundary smoke manifest only\"");
     assert_contains(manifest, "\"runtime smoke evidence only\"");
+    assert_contains(manifest, "\"CI evidence hint only\"");
+    assert_contains(manifest, "\"artifact path hint only\"");
     assert_contains(manifest, "\"taxonomy digest sample only\"");
     assert_contains(manifest, "\"operator-window proof only\"");
     assert_contains(manifest, "\"identity-neutral proof only\"");
+    assert_contains(manifest, "\"no-restore proof only\"");
+    assert_contains(manifest, "\"no CI artifact upload\"");
     assert_contains(manifest, "\"not connected to Java transaction chain\"");
     assert_contains(manifest, "\"does not perform restore\"");
-    assert_contains(manifest, "\"Node v200 may archive SMOKEJSON taxonomy digest and operator-window proof only after Java v70 and mini-kv v79 are complete\"");
+    assert_contains(manifest, "\"ci_evidence\":{\"consumer\":\"Node v201 real-read window CI artifact manifest verification\"");
+    assert_contains(manifest, "\"artifact_path_hint\":\"c/80/\"");
+    assert_contains(manifest, "\"no_restore_proof\":true");
+    assert_contains(manifest, "\"upload_allowed\":false");
+    assert_contains(manifest, "\"Node v201 may verify SMOKEJSON and INFOJSON CI evidence hints before checking the CI artifact manifest\"");
+    assert_contains(manifest, "\"CI evidence hint is read-only path evidence, not a real GitHub artifact upload\"");
     assert_contains(manifest, "\"SMOKEJSON operator-window proof is identity-neutral evidence, not authentication or production authorization\"");
 
     const auto cmake_lists = read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "CMakeLists.txt");
-    assert_contains(cmake_lists, "project(mini_kv VERSION 0.79.0");
+    assert_contains(cmake_lists, "project(mini_kv VERSION 0.80.0");
     assert_contains(cmake_lists, "minikv_release_verification_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_rollback_evidence_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_bundle_manifest_tests");
@@ -182,10 +194,14 @@ int main() {
 
     auto result = processor.execute("INFOJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"version\":\"0.79.0\"");
+    assert_contains(result.response, "\"version\":\"0.80.0\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
+    assert_contains(result.response, "\"ci_evidence\":{\"consumer\":\"Node v201 real-read window CI artifact manifest verification\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/80/\"");
+    assert_contains(result.response, "\"no_restore_proof\":true");
+    assert_contains(result.response, "\"upload_allowed\":false");
 
     result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"read_only\":true");
@@ -200,6 +216,10 @@ int main() {
     assert_contains(result.response, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
     assert_contains(result.response, "\"operator_window\":{\"consumer\":\"Node v200 real-read window CI archive artifact manifest\"");
     assert_contains(result.response, "\"identity_neutral_proof\":true");
+    assert_contains(result.response, "\"ci_evidence\":{\"consumer\":\"Node v201 real-read window CI artifact manifest verification\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/80/\"");
+    assert_contains(result.response, "\"no_restore_proof\":true");
+    assert_contains(result.response, "\"upload_allowed\":false");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

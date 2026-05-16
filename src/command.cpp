@@ -390,6 +390,24 @@ constexpr SmokeOperatorWindowProof smoke_operator_window_proof = {
     true,
 };
 
+struct RuntimeCiEvidenceHint {
+    std::string_view consumer;
+    std::string_view artifact_path_hint;
+    std::string_view node_action;
+    bool identity_neutral_proof;
+    bool no_restore_proof;
+    bool upload_allowed;
+};
+
+constexpr RuntimeCiEvidenceHint runtime_ci_evidence_hint = {
+    "Node v201 real-read window CI artifact manifest verification",
+    "c/80/",
+    "verify manifest path hints before CI artifact upload dry-run",
+    true,
+    true,
+    false,
+};
+
 std::uint64_t fnv1a64(std::string_view text);
 std::string format_hex64(std::uint64_t value);
 void append_digest_part(std::string& source, std::string_view value);
@@ -447,6 +465,16 @@ std::string format_smoke_operator_window_proof_json() {
            ",\"identity_neutral_proof\":" +
            format_json_bool(smoke_operator_window_proof.identity_neutral_proof) +
            ",\"node_action\":" + json_string(smoke_operator_window_proof.node_action) + "}";
+}
+
+std::string format_runtime_ci_evidence_hint_json() {
+    return "{\"consumer\":" + json_string(runtime_ci_evidence_hint.consumer) +
+           ",\"artifact_path_hint\":" + json_string(runtime_ci_evidence_hint.artifact_path_hint) +
+           ",\"identity_neutral_proof\":" +
+           format_json_bool(runtime_ci_evidence_hint.identity_neutral_proof) +
+           ",\"no_restore_proof\":" + format_json_bool(runtime_ci_evidence_hint.no_restore_proof) +
+           ",\"upload_allowed\":" + format_json_bool(runtime_ci_evidence_hint.upload_allowed) +
+           ",\"node_action\":" + json_string(runtime_ci_evidence_hint.node_action) + "}";
 }
 
 std::uint64_t fnv1a64(std::string_view text) {
@@ -876,7 +904,8 @@ std::string format_info_json(std::size_t live_keys,
            "},\"store\":{\"live_keys\":" + std::to_string(live_keys) +
            "},\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr) +
            "},\"metrics\":{\"enabled\":" + format_json_bool(runtime_info.metrics_enabled) +
-           "},\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
+           "},\"ci_evidence\":" + format_runtime_ci_evidence_hint_json() +
+           ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
 std::string format_stats_json(std::size_t live_keys,
@@ -994,8 +1023,9 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"write_commands_executed\":false,\"admin_commands_executed\":false," +
                 "\"runtime_write_observed\":false}" +
                 ",\"operator_window\":" + format_smoke_operator_window_proof_json() +
+                ",\"ci_evidence\":" + format_runtime_ci_evidence_hint_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v200 may verify taxonomy digest and operator-window identity-neutral proof before archiving a real-read window result; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v201 may verify taxonomy digest, operator-window identity-neutral proof, and CI evidence hints before checking the artifact manifest; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;
