@@ -436,6 +436,41 @@ std::uint64_t fnv1a64(std::string_view text);
 std::string format_hex64(std::uint64_t value);
 void append_digest_part(std::string& source, std::string_view value);
 
+std::string read_command_list_digest(const std::vector<std::string>& commands) {
+    std::string source;
+    append_digest_part(source, "mini-kv-read-command-list");
+    append_digest_part(source, std::to_string(commands.size()));
+    for (const auto& command : commands) {
+        append_digest_part(source, command);
+    }
+    return "fnv1a64:" + format_hex64(fnv1a64(source));
+}
+
+std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
+    if (uptime_seconds < 60) {
+        return "lt_60s";
+    }
+    if (uptime_seconds < 300) {
+        return "lt_5m";
+    }
+    if (uptime_seconds < 3600) {
+        return "lt_1h";
+    }
+    return "gte_1h";
+}
+
+std::string format_live_read_session_hint_json(std::int64_t uptime_seconds,
+                                               const std::vector<std::string>& read_commands) {
+    return "{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\","
+           "\"session_id_echo\":\"mini-kv-live-read-v82\","
+           "\"server_uptime_bucket\":" + json_string(uptime_bucket_for_seconds(uptime_seconds)) +
+           ",\"read_command_list_digest\":" + json_string(read_command_list_digest(read_commands)) +
+           ",\"read_command_count\":" + std::to_string(read_commands.size()) +
+           ",\"read_commands\":" + format_json_string_array(read_commands) +
+           ",\"write_commands_allowed\":false,\"auto_start_allowed\":false,"
+           "\"node_action\":\"verify session echo, uptime bucket, and read command digest before real-read execution packet\"}";
+}
+
 std::string smoke_failure_taxonomy_digest() {
     std::string source;
     append_digest_part(source, "mini-kv-smoke-failure-taxonomy");
@@ -1021,6 +1056,7 @@ std::string format_smoke_json(std::size_t live_keys,
     };
     const std::vector<std::string> notes = {
         "runtime_smoke_evidence",
+        "live_read_session_hint",
         "read_only_aggregate",
         "not_order_authoritative",
         "does_not_execute_load_compact_setnxex_or_restore",
@@ -1066,11 +1102,12 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"forbidden_commands\":" + format_json_string_array(forbidden_commands) +
                 ",\"write_commands_executed\":false,\"admin_commands_executed\":false," +
                 "\"runtime_write_observed\":false}" +
+                ",\"live_read_session\":" + format_live_read_session_hint_json(uptime, read_commands) +
                 ",\"operator_window\":" + format_smoke_operator_window_proof_json() +
                 ",\"ci_evidence\":" + format_runtime_ci_evidence_hint_json() +
                 ",\"artifact_retention\":" + format_runtime_artifact_retention_evidence_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v203 may verify taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before the cross-project retention gate; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v205 may verify live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before the real-read execution packet; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;

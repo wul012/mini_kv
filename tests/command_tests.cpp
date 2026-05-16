@@ -7,6 +7,7 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -25,6 +26,9 @@ const minikv::CommandBreakdownMetrics* find_command_metrics(const minikv::Comman
 }
 
 void assert_response_contains(const minikv::CommandResult& result, std::string_view expected) {
+    if (result.response.find(std::string{expected}) == std::string::npos) {
+        std::cerr << "missing expected text: " << expected << '\n';
+    }
     assert(result.response.find(std::string{expected}) != std::string::npos);
 }
 
@@ -563,6 +567,14 @@ int main() {
     assert_response_contains(result, "\"write_commands_executed\":false");
     assert_response_contains(result, "\"admin_commands_executed\":false");
     assert_response_contains(result, "\"runtime_write_observed\":false");
+    assert_response_contains(result, "\"live_read_session\":{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\"");
+    assert_response_contains(result, "\"session_id_echo\":\"mini-kv-live-read-v82\"");
+    assert_response_contains(result, "\"server_uptime_bucket\":\"lt_60s\"");
+    assert_response_contains(result, "\"read_command_list_digest\":\"fnv1a64:5bef33f2fbe65cc5\"");
+    assert_response_contains(result, "\"read_command_count\":4");
+    assert_response_contains(result, "\"read_commands\":[\"INFOJSON\",\"STORAGEJSON\",\"HEALTH\",\"STATSJSON\"]");
+    assert_response_contains(result, "\"write_commands_allowed\":false");
+    assert_response_contains(result, "\"auto_start_allowed\":false");
     assert_response_contains(result, "\"operator_window\":{\"consumer\":\"Node v200 real-read window CI archive artifact manifest\"");
     assert_response_contains(result, "\"identity_neutral_proof\":true");
     assert_response_contains(result, "\"node_action\":\"verify digest before importing manual window results\"}");
@@ -581,7 +593,7 @@ int main() {
     assert_response_contains(result, "\"consumer\":\"Node v196 imported window result packet\"");
     assert_response_contains(result, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
-    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.81.0\"");
+    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.82.0\"");
     assert_response_contains(result, "\"expected_taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"node_action\":\"verify digest before importing manual window results\"");
     assert_response_contains(result, "\"id\":\"connection-refused\",\"source\":\"tcp_connect\"");
@@ -591,8 +603,9 @@ int main() {
     assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
-    assert_response_contains(result, "\"node_consumption\":\"Node v203 may verify taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before the cross-project retention gate; mini-kv must already be running and the read-only window must be open\"");
-    assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"read_only_aggregate\","
+    assert_response_contains(result, "\"node_consumption\":\"Node v205 may verify live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before the real-read execution packet; mini-kv must already be running and the read-only window must be open\"");
+    assert_response_contains(result, "\"live_read_session_hint\"");
+    assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"live_read_session_hint\",\"read_only_aggregate\","
                                      "\"not_order_authoritative\",\"does_not_execute_load_compact_setnxex_or_restore\"]");
 
     result = processor.execute("GET restore:real-read-token");

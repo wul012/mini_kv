@@ -209,10 +209,13 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 136-version-80-ci-evidence-hint.md
  -> 第八十版 CI Evidence Hint：INFOJSON/SMOKEJSON ci_evidence、artifact_path_hint、no_restore_proof、upload_allowed、Node v201 manifest verification、fixture/manifest、测试和归档。
-```
 
 137-version-81-artifact-retention-evidence.md
  -> 第八十一版 Artifact Retention Evidence：INFOJSON/SMOKEJSON artifact_retention、artifact_root、artifact_path_hint、retention_days、github_artifact_upload_attempted、production_window_allowed、Node v203 retention gate、fixture/manifest、测试和归档。
+
+138-version-82-live-read-session-hint.md
+ -> 第八十二版 Live-Read Session Hint：SMOKEJSON live_read_session、session_id_echo、server_uptime_bucket、read_command_list_digest、write_commands_allowed、auto_start_allowed、Node v205 real-read execution packet、fixture/manifest、测试和归档。
+```
 
 后续版本继续在本目录追加。
 
