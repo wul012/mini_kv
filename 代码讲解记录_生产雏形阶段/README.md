@@ -1,5 +1,9 @@
 # mini-kv 代码讲解记录_生产雏形阶段
 
+## 最新新增
+
+- `143-version-87-managed-audit-adapter-non-authoritative-storage-receipt.md`：说明 v87 如何在 `INFOJSON` / `SMOKEJSON` 中补充 `managed_audit_adapter_non_authoritative_storage_receipt`，让 Node v217 只读确认 mini-kv 不是 managed audit store，不允许 storage write/admin/restore，也不承担 Java order authority。
+
 本目录从 v57 之后作为新的代码讲解入口使用，和旧目录同级。
 目录名里的“生产雏形阶段”表示当前项目进度：mini-kv 已经不只是内存 KV 练手项目，而是进入带 TCP/RESP、WAL、Snapshot、指标、只读 evidence、恢复证据和跨项目控制面消费雏形的阶段。
 
