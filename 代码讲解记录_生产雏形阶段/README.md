@@ -2,6 +2,7 @@
 
 ## 最新新增
 
+- `145-version-89-adapter-shell-non-storage-guard-receipt.md`：说明 v89 如何在 `INFOJSON` / `SMOKEJSON` / release fixture 中补入 `adapter_shell_non_storage_guard_receipt`，让 Node v221 只读确认 mini-kv 不是 adapter shell storage backend，不写 local dry-run records / managed audit state，也不改变 write/admin/WAL/snapshot/restore 或 Java order authority 边界。
 - `144-version-88-command-dispatch-quality-receipt.md`：说明 v88 如何把 runtime evidence 命令归入独立读侧分发路径，并在 `INFOJSON` / `SMOKEJSON` / release fixture 中补入 `command_dispatch_quality_receipt`，让 Node v219 只读确认本版没有改变 write/admin/WAL/snapshot/restore，也没有让 mini-kv 成为 managed audit store 或 Java order authority。
 - `143-version-87-managed-audit-adapter-non-authoritative-storage-receipt.md`：说明 v87 如何在 `INFOJSON` / `SMOKEJSON` 中补充 `managed_audit_adapter_non_authoritative_storage_receipt`，让 Node v217 只读确认 mini-kv 不是 managed audit store，不允许 storage write/admin/restore，也不承担 Java order authority。
 
