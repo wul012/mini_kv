@@ -228,3 +228,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## 一句话总览
 
 旧目录记录“mini-kv 如何一步步长到 v56”，本目录从 v57 开始继续记录“每版代码怎么实现、生产雏形阶段推进到哪里、成熟度发生了什么变化”。
+
+## 最新新增
+
+- `141-version-85-retention-provenance-replay-marker.md`：说明 v85 如何在 `INFOJSON` / `SMOKEJSON` 中补充 `retention_provenance_replay_marker`，让 Node v213 能只读确认 Node v211 已消费过 mini-kv v84 retention provenance evidence，并继续保持不执行 restore、不写 managed audit、不进入 Java 订单权威链路。

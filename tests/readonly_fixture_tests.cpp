@@ -147,17 +147,25 @@ int main() {
     assert_contains(result.response, "\"github_artifact_upload_attempted\":false");
     assert_contains(result.response, "\"production_window_allowed\":false");
     assert_contains(result.response, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
-    assert_contains(result.response, "\"source_version\":\"0.84.0\"");
-    assert_contains(result.response, "\"artifact_path_hint\":\"c/84/\"");
+    assert_contains(result.response, "\"source_version\":\"0.85.0\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/85/\"");
     assert_contains(result.response, "\"release_manifest_path\":\"fixtures/release/verification-manifest.json\"");
     assert_contains(result.response, "\"runtime_smoke_evidence_path\":\"fixtures/release/runtime-smoke-evidence.json\"");
-    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:c682f9c827129e40\"");
+    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:384b81df32ac02e2\"");
     assert_contains(result.response, "\"load_restore_compact_executed\":false");
     assert_contains(result.response, "\"production_binary_claimed\":false");
     assert_contains(result.response, "\"retention_provenance_check\":{\"consumer\":\"Node v211 managed audit identity approval provenance dry-run packet\"");
-    assert_contains(result.response, "\"expected_binary_provenance_digest\":\"fnv1a64:c682f9c827129e40\"");
-    assert_contains(result.response, "\"check_digest\":\"fnv1a64:357cc7e9eec3f223\"");
+    assert_contains(result.response, "\"expected_binary_provenance_digest\":\"fnv1a64:384b81df32ac02e2\"");
+    assert_contains(result.response, "\"check_digest\":\"fnv1a64:d154e1434e5224da\"");
     assert_contains(result.response, "\"managed_audit_write_executed\":false");
+    assert_contains(result.response, "\"retention_provenance_replay_marker\":{\"consumer\":\"Node v213 managed audit packet restore drill plan\"");
+    assert_contains(result.response, "\"consumed_by\":\"Node v211 managed audit identity approval provenance dry-run packet\"");
+    assert_contains(result.response, "\"consumed_release_version\":\"v84\"");
+    assert_contains(result.response, "\"consumed_artifact_path_hint\":\"c/84/\"");
+    assert_contains(result.response, "\"consumed_check_digest\":\"fnv1a64:357cc7e9eec3f223\"");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"c/85/\"");
+    assert_contains(result.response, "\"marker_digest\":\"fnv1a64:1ea4570c967cfdb1\"");
+    assert_contains(result.response, "\"replay_executed\":false");
     assert_contains(result.response, "\"diagnostics\":{\"write_commands_executed\":false,"
                                      "\"dynamic_fields\":[\"server.uptime_seconds\"]}");
 

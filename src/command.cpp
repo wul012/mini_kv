@@ -446,8 +446,8 @@ struct RuntimeBinaryProvenanceHint {
 
 constexpr RuntimeBinaryProvenanceHint runtime_binary_provenance_hint = {
     "Node v208 managed audit persistence boundary candidate",
-    "c/84/",
-    "cmake-build-v84/minikv_server and cmake-build-v84/minikv_client from the current CMake build",
+    "c/85/",
+    "cmake-build-v85/minikv_server and cmake-build-v85/minikv_client from the current CMake build",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work",
@@ -471,13 +471,41 @@ struct RuntimeRetentionProvenanceCheck {
 
 constexpr RuntimeRetentionProvenanceCheck runtime_retention_provenance_check = {
     "Node v211 managed audit identity approval provenance dry-run packet",
-    "c/84/",
+    "c/85/",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "c/81/",
     "binary_provenance.provenance_digest",
     "verify runtime evidence retention and binary provenance alignment before managed audit dry-run packet work",
     true,
+    false,
+    false,
+};
+
+struct RuntimeRetentionProvenanceReplayMarker {
+    std::string_view consumer;
+    std::string_view consumed_by;
+    std::string_view consumed_release_version;
+    std::string_view consumed_artifact_path_hint;
+    std::string_view consumed_check_digest;
+    std::string_view current_artifact_path_hint;
+    std::string_view node_action;
+    bool read_only;
+    bool execution_allowed;
+    bool replay_executed;
+    bool managed_audit_write_executed;
+};
+
+constexpr RuntimeRetentionProvenanceReplayMarker runtime_retention_provenance_replay_marker = {
+    "Node v213 managed audit packet restore drill plan",
+    "Node v211 managed audit identity approval provenance dry-run packet",
+    "v84",
+    "c/84/",
+    "fnv1a64:357cc7e9eec3f223",
+    "c/85/",
+    "verify v84 retention provenance consumption before managed audit packet restore drill planning",
+    true,
+    false,
     false,
     false,
 };
@@ -512,7 +540,7 @@ std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
 std::string format_live_read_session_hint_json(std::int64_t uptime_seconds,
                                                const std::vector<std::string>& read_commands) {
     return "{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\","
-           "\"session_id_echo\":\"mini-kv-live-read-v84\","
+           "\"session_id_echo\":\"mini-kv-live-read-v85\","
            "\"server_uptime_bucket\":" + json_string(uptime_bucket_for_seconds(uptime_seconds)) +
            ",\"read_command_list_digest\":" + json_string(read_command_list_digest(read_commands)) +
            ",\"read_command_count\":" + std::to_string(read_commands.size()) +
@@ -671,6 +699,45 @@ std::string format_runtime_retention_provenance_check_json() {
            ",\"managed_audit_write_executed\":" +
            format_json_bool(runtime_retention_provenance_check.managed_audit_write_executed) +
            ",\"node_action\":" + json_string(runtime_retention_provenance_check.node_action) + "}";
+}
+
+std::string retention_provenance_replay_marker_digest() {
+    std::string source;
+    append_digest_part(source, "mini-kv-retention-provenance-replay-marker");
+    append_digest_part(source, version);
+    append_digest_part(source, runtime_retention_provenance_replay_marker.consumed_by);
+    append_digest_part(source, runtime_retention_provenance_replay_marker.consumed_release_version);
+    append_digest_part(source, runtime_retention_provenance_replay_marker.consumed_artifact_path_hint);
+    append_digest_part(source, runtime_retention_provenance_replay_marker.consumed_check_digest);
+    append_digest_part(source, runtime_retention_provenance_replay_marker.current_artifact_path_hint);
+    append_digest_part(source, format_json_bool(runtime_retention_provenance_replay_marker.read_only));
+    append_digest_part(source, format_json_bool(runtime_retention_provenance_replay_marker.execution_allowed));
+    append_digest_part(source, format_json_bool(runtime_retention_provenance_replay_marker.replay_executed));
+    append_digest_part(source, format_json_bool(runtime_retention_provenance_replay_marker.managed_audit_write_executed));
+    return "fnv1a64:" + format_hex64(fnv1a64(source));
+}
+
+std::string format_runtime_retention_provenance_replay_marker_json() {
+    return "{\"consumer\":" + json_string(runtime_retention_provenance_replay_marker.consumer) +
+           ",\"source_version\":" + json_string(version) +
+           ",\"consumed_by\":" + json_string(runtime_retention_provenance_replay_marker.consumed_by) +
+           ",\"consumed_release_version\":" +
+           json_string(runtime_retention_provenance_replay_marker.consumed_release_version) +
+           ",\"consumed_artifact_path_hint\":" +
+           json_string(runtime_retention_provenance_replay_marker.consumed_artifact_path_hint) +
+           ",\"consumed_check_digest\":" +
+           json_string(runtime_retention_provenance_replay_marker.consumed_check_digest) +
+           ",\"current_artifact_path_hint\":" +
+           json_string(runtime_retention_provenance_replay_marker.current_artifact_path_hint) +
+           ",\"marker_digest\":" + json_string(retention_provenance_replay_marker_digest()) +
+           ",\"read_only\":" + format_json_bool(runtime_retention_provenance_replay_marker.read_only) +
+           ",\"execution_allowed\":" +
+           format_json_bool(runtime_retention_provenance_replay_marker.execution_allowed) +
+           ",\"replay_executed\":" +
+           format_json_bool(runtime_retention_provenance_replay_marker.replay_executed) +
+           ",\"managed_audit_write_executed\":" +
+           format_json_bool(runtime_retention_provenance_replay_marker.managed_audit_write_executed) +
+           ",\"node_action\":" + json_string(runtime_retention_provenance_replay_marker.node_action) + "}";
 }
 
 std::uint64_t fnv1a64(std::string_view text) {
@@ -1104,6 +1171,8 @@ std::string format_info_json(std::size_t live_keys,
            ",\"artifact_retention\":" + format_runtime_artifact_retention_evidence_json() +
            ",\"binary_provenance\":" + format_runtime_binary_provenance_hint_json() +
            ",\"retention_provenance_check\":" + format_runtime_retention_provenance_check_json() +
+           ",\"retention_provenance_replay_marker\":" +
+           format_runtime_retention_provenance_replay_marker_json() +
            ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
@@ -1179,6 +1248,7 @@ std::string format_smoke_json(std::size_t live_keys,
         "live_read_session_hint",
         "binary_provenance_hint",
         "retention_provenance_check",
+        "retention_provenance_replay_marker",
         "read_only_aggregate",
         "not_order_authoritative",
         "does_not_execute_load_compact_setnxex_or_restore",
@@ -1230,8 +1300,10 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"artifact_retention\":" + format_runtime_artifact_retention_evidence_json() +
                 ",\"binary_provenance\":" + format_runtime_binary_provenance_hint_json() +
                 ",\"retention_provenance_check\":" + format_runtime_retention_provenance_check_json() +
+                ",\"retention_provenance_replay_marker\":" +
+                format_runtime_retention_provenance_replay_marker_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v211 may verify runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit identity approval provenance dry-run packet work; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v213 may verify the v84 retention provenance consumption marker, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit packet restore drill planning; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;
