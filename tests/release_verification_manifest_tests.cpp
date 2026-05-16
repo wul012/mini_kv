@@ -49,17 +49,17 @@ int main() {
 
     assert_contains(manifest, "\"manifest_version\":\"mini-kv-release-verification-manifest.v1\"");
     assert_contains(manifest, "\"project\":\"mini-kv\"");
-    assert_contains(manifest, "\"project_version\":\"0.82.0\"");
-    assert_contains(manifest, "\"release_version\":\"v82\"");
+    assert_contains(manifest, "\"project_version\":\"0.83.0\"");
+    assert_contains(manifest, "\"release_version\":\"v83\"");
     assert_contains(manifest, "\"read_only\":true");
     assert_contains(manifest, "\"execution_allowed\":false");
     assert_contains(manifest, "\"order_authoritative\":false");
     assert_contains(manifest, "\"no_runtime_write_command_added\":true");
-    assert_contains(manifest, "\"consumer_hint\":\"Node v205 three-project real-read runtime smoke execution packet\"");
+    assert_contains(manifest, "\"consumer_hint\":\"Node v208 managed audit persistence boundary candidate\"");
 
-    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v82");
-    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v82 --parallel 2\"");
-    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v82 --output-on-failure\"");
+    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v83");
+    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v83 --parallel 2\"");
+    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v83 --output-on-failure\"");
     assert_contains(manifest, "\"minikv_command_tests\"");
     assert_contains(manifest, "\"minikv_readonly_fixture_tests\"");
     assert_contains(manifest, "\"minikv_recovery_fixture_index_tests\"");
@@ -84,10 +84,12 @@ int main() {
     assert_contains(manifest, "\"STORAGEJSON\"");
     assert_contains(manifest, "\"HEALTH\"");
     assert_contains(manifest, "\"GET restore:real-read-token\"");
-    assert_contains(manifest, "\"SMOKEJSON version matches 0.82.0\"");
+    assert_contains(manifest, "\"SMOKEJSON version matches 0.83.0\"");
     assert_contains(manifest, "\"SMOKEJSON returns runtime_smoke evidence\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes live_read_session.session_id_echo=mini-kv-live-read-v82\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes live_read_session.session_id_echo=mini-kv-live-read-v83\"");
     assert_contains(manifest, "\"SMOKEJSON exposes live_read_session.read_command_list_digest=fnv1a64:5bef33f2fbe65cc5\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes binary_provenance.provenance_digest=fnv1a64:c1c0896fc6b77fe2\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes binary_provenance.production_binary_claimed=false\"");
     assert_contains(manifest, "\"INFOJSON exposes ci_evidence.artifact_path_hint=c/80/\"");
     assert_contains(manifest, "\"INFOJSON exposes artifact_retention.artifact_path_hint=c/81/\"");
     assert_contains(manifest, "\"SMOKEJSON exposes ci_evidence.no_restore_proof=true and upload_allowed=false\"");
@@ -132,7 +134,7 @@ int main() {
         assert_contains(manifest, "\"path\":\"" + path.generic_string() + "\"");
     }
 
-    assert_contains(manifest, "\"cmake_project_version\":\"0.82.0\"");
+    assert_contains(manifest, "\"cmake_project_version\":\"0.83.0\"");
     assert_contains(manifest, "\"generated_header\":\"include/minikv/version.hpp.in\"");
     assert_contains(manifest, "\"fixtures/readonly/infojson-empty-inline.json\"");
     assert_contains(manifest, "\"fixtures/release/verification-manifest.json\"");
@@ -163,6 +165,7 @@ int main() {
     assert_contains(manifest, "\"restore boundary smoke manifest only\"");
     assert_contains(manifest, "\"runtime smoke evidence only\"");
     assert_contains(manifest, "\"live-read session hint only\"");
+    assert_contains(manifest, "\"binary provenance hint only\"");
     assert_contains(manifest, "\"CI evidence hint only\"");
     assert_contains(manifest, "\"artifact path hint only\"");
     assert_contains(manifest, "\"artifact retention evidence only\"");
@@ -189,13 +192,25 @@ int main() {
     assert_contains(manifest, "\"production_window_allowed\":false");
     assert_contains(manifest, "\"node_action\":\"verify retention days and artifact path before cross-project retention gate\"");
     assert_contains(manifest, "\"live_read_session\":{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\"");
-    assert_contains(manifest, "\"session_id_echo\":\"mini-kv-live-read-v82\"");
+    assert_contains(manifest, "\"session_id_echo\":\"mini-kv-live-read-v83\"");
     assert_contains(manifest, "\"server_uptime_bucket\":\"lt_60s\"");
     assert_contains(manifest, "\"read_command_list_digest\":\"fnv1a64:5bef33f2fbe65cc5\"");
     assert_contains(manifest, "\"read_command_count\":4");
     assert_contains(manifest, "\"read_commands\":[\"INFOJSON\",\"STORAGEJSON\",\"HEALTH\",\"STATSJSON\"]");
     assert_contains(manifest, "\"write_commands_allowed\":false");
     assert_contains(manifest, "\"auto_start_allowed\":false");
+    assert_contains(manifest, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
+    assert_contains(manifest, "\"source_version\":\"0.83.0\"");
+    assert_contains(manifest, "\"artifact_path_hint\":\"c/83/\"");
+    assert_contains(manifest, "\"runtime_binary_hint\":\"cmake-build-v83/minikv_server and cmake-build-v83/minikv_client from the current CMake build\"");
+    assert_contains(manifest, "\"release_manifest_path\":\"fixtures/release/verification-manifest.json\"");
+    assert_contains(manifest, "\"runtime_smoke_evidence_path\":\"fixtures/release/runtime-smoke-evidence.json\"");
+    assert_contains(manifest, "\"provenance_digest\":\"fnv1a64:c1c0896fc6b77fe2\"");
+    assert_contains(manifest, "\"load_restore_compact_executed\":false");
+    assert_contains(manifest, "\"production_binary_claimed\":false");
+    assert_contains(manifest, "\"verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work\"");
+    assert_contains(manifest, "\"Node v208 may verify SMOKEJSON and INFOJSON binary provenance hints before managed audit persistence boundary work\"");
+    assert_contains(manifest, "\"Binary provenance hint is read-only path alignment evidence, not production binary attestation\"");
     assert_contains(manifest, "\"Node v205 may verify SMOKEJSON live-read session hints before the real-read execution packet\"");
     assert_contains(manifest, "\"Live-read session hint is read-only evidence, not permission to auto-start mini-kv\"");
     assert_contains(manifest, "\"Node v203 may verify SMOKEJSON and INFOJSON artifact retention evidence before the cross-project retention gate\"");
@@ -205,7 +220,7 @@ int main() {
     assert_contains(manifest, "\"SMOKEJSON operator-window proof is identity-neutral evidence, not authentication or production authorization\"");
 
     const auto cmake_lists = read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "CMakeLists.txt");
-    assert_contains(cmake_lists, "project(mini_kv VERSION 0.82.0");
+    assert_contains(cmake_lists, "project(mini_kv VERSION 0.83.0");
     assert_contains(cmake_lists, "minikv_release_verification_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_rollback_evidence_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_bundle_manifest_tests");
@@ -228,7 +243,7 @@ int main() {
 
     auto result = processor.execute("INFOJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"version\":\"0.82.0\"");
+    assert_contains(result.response, "\"version\":\"0.83.0\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
@@ -242,6 +257,12 @@ int main() {
     assert_contains(result.response, "\"retention_days\":30");
     assert_contains(result.response, "\"github_artifact_upload_attempted\":false");
     assert_contains(result.response, "\"production_window_allowed\":false");
+    assert_contains(result.response, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
+    assert_contains(result.response, "\"source_version\":\"0.83.0\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/83/\"");
+    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:c1c0896fc6b77fe2\"");
+    assert_contains(result.response, "\"load_restore_compact_executed\":false");
+    assert_contains(result.response, "\"production_binary_claimed\":false");
 
     result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"read_only\":true");
@@ -251,7 +272,7 @@ int main() {
     assert_contains(result.response, "\"evidence_type\":\"runtime_smoke\"");
     assert_contains(result.response, "\"forbidden_commands\":[\"LOAD\",\"COMPACT\",\"SETNXEX\",\"RESTORE\"]");
     assert_contains(result.response, "\"live_read_session\":{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\"");
-    assert_contains(result.response, "\"session_id_echo\":\"mini-kv-live-read-v82\"");
+    assert_contains(result.response, "\"session_id_echo\":\"mini-kv-live-read-v83\"");
     assert_contains(result.response, "\"read_command_list_digest\":\"fnv1a64:5bef33f2fbe65cc5\"");
     assert_contains(result.response, "\"write_commands_allowed\":false");
     assert_contains(result.response, "\"auto_start_allowed\":false");
@@ -271,7 +292,10 @@ int main() {
     assert_contains(result.response, "\"retention_days\":30");
     assert_contains(result.response, "\"github_artifact_upload_attempted\":false");
     assert_contains(result.response, "\"production_window_allowed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v205 may verify live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before the real-read execution packet; mini-kv must already be running and the read-only window must be open\"");
+    assert_contains(result.response, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
+    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:c1c0896fc6b77fe2\"");
+    assert_contains(result.response, "\"production_binary_claimed\":false");
+    assert_contains(result.response, "\"node_consumption\":\"Node v208 may verify binary provenance, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit persistence boundary work; mini-kv must already be running and the read-only window must be open\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

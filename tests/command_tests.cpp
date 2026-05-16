@@ -568,7 +568,7 @@ int main() {
     assert_response_contains(result, "\"admin_commands_executed\":false");
     assert_response_contains(result, "\"runtime_write_observed\":false");
     assert_response_contains(result, "\"live_read_session\":{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\"");
-    assert_response_contains(result, "\"session_id_echo\":\"mini-kv-live-read-v82\"");
+    assert_response_contains(result, "\"session_id_echo\":\"mini-kv-live-read-v83\"");
     assert_response_contains(result, "\"server_uptime_bucket\":\"lt_60s\"");
     assert_response_contains(result, "\"read_command_list_digest\":\"fnv1a64:5bef33f2fbe65cc5\"");
     assert_response_contains(result, "\"read_command_count\":4");
@@ -589,11 +589,22 @@ int main() {
     assert_response_contains(result, "\"retention_mode\":\"dry-run-contract-only\"");
     assert_response_contains(result, "\"github_artifact_upload_attempted\":false");
     assert_response_contains(result, "\"production_window_allowed\":false");
+    assert_response_contains(result, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
+    assert_response_contains(result, "\"source_version\":\"0.83.0\"");
+    assert_response_contains(result, "\"artifact_path_hint\":\"c/83/\"");
+    assert_response_contains(result, "\"runtime_binary_hint\":\"cmake-build-v83/minikv_server and cmake-build-v83/minikv_client from the current CMake build\"");
+    assert_response_contains(result, "\"release_manifest_path\":\"fixtures/release/verification-manifest.json\"");
+    assert_response_contains(result, "\"runtime_smoke_evidence_path\":\"fixtures/release/runtime-smoke-evidence.json\"");
+    assert_response_contains(result, "\"provenance_digest\":\"fnv1a64:c1c0896fc6b77fe2\"");
+    assert_response_contains(result, "\"read_only\":true");
+    assert_response_contains(result, "\"load_restore_compact_executed\":false");
+    assert_response_contains(result, "\"production_binary_claimed\":false");
+    assert_response_contains(result, "\"node_action\":\"verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work\"");
     assert_response_contains(result, "\"failure_taxonomy\":{\"schema_version\":1");
     assert_response_contains(result, "\"consumer\":\"Node v196 imported window result packet\"");
     assert_response_contains(result, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
-    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.82.0\"");
+    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.83.0\"");
     assert_response_contains(result, "\"expected_taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"node_action\":\"verify digest before importing manual window results\"");
     assert_response_contains(result, "\"id\":\"connection-refused\",\"source\":\"tcp_connect\"");
@@ -603,9 +614,10 @@ int main() {
     assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
-    assert_response_contains(result, "\"node_consumption\":\"Node v205 may verify live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before the real-read execution packet; mini-kv must already be running and the read-only window must be open\"");
+    assert_response_contains(result, "\"node_consumption\":\"Node v208 may verify binary provenance, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit persistence boundary work; mini-kv must already be running and the read-only window must be open\"");
     assert_response_contains(result, "\"live_read_session_hint\"");
-    assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"live_read_session_hint\",\"read_only_aggregate\","
+    assert_response_contains(result, "\"binary_provenance_hint\"");
+    assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"live_read_session_hint\",\"binary_provenance_hint\",\"read_only_aggregate\","
                                      "\"not_order_authoritative\",\"does_not_execute_load_compact_setnxex_or_restore\"]");
 
     result = processor.execute("GET restore:real-read-token");

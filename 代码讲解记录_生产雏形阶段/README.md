@@ -215,6 +215,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 138-version-82-live-read-session-hint.md
  -> 第八十二版 Live-Read Session Hint：SMOKEJSON live_read_session、session_id_echo、server_uptime_bucket、read_command_list_digest、write_commands_allowed、auto_start_allowed、Node v205 real-read execution packet、fixture/manifest、测试和归档。
+
+139-version-83-binary-provenance-hint.md
+ -> 第八十三版 Binary Provenance Hint：INFOJSON/SMOKEJSON binary_provenance、runtime_binary_hint、release_manifest_path、runtime_smoke_evidence_path、provenance_digest、production_binary_claimed=false、Node v208 managed audit persistence boundary candidate、fixture/manifest、测试和归档。
 ```
 
 后续版本继续在本目录追加。
