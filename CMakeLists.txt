@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.90.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.91.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,6 +17,7 @@ add_library(minikv
     src/command.cpp
     src/line_editor.cpp
     src/metrics_file.cpp
+    src/runtime_evidence.cpp
     src/recovery_evidence.cpp
     src/resp.cpp
     src/snapshot.cpp
