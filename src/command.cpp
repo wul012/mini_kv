@@ -55,6 +55,16 @@ struct CommandCatalogEntry {
     std::string_view description;
 };
 
+enum class CommandDispatchFamily {
+    Meta,
+    Read,
+    Write,
+    Admin,
+    RuntimeEvidence,
+    Session,
+    Unknown,
+};
+
 constexpr CommandCatalogEntry command_catalog[] = {
     {"PING", "meta", false, false, true, "Liveness check with optional echo message"},
     {"SET", "write", true, true, true, "Set or update a key value"},
@@ -94,6 +104,32 @@ const CommandCatalogEntry* find_command_catalog_entry(std::string_view command) 
         }
     }
     return nullptr;
+}
+
+CommandDispatchFamily dispatch_family_for(std::string_view command) {
+    if (command == "STATS" || command == "STATSJSON" || command == "SMOKEJSON" ||
+        command == "STORAGEJSON" || command == "HEALTH" || command == "INFO" ||
+        command == "INFOJSON" || command == "COMMANDS" || command == "COMMANDSJSON") {
+        return CommandDispatchFamily::RuntimeEvidence;
+    }
+    if (command == "EXIT" || command == "QUIT") {
+        return CommandDispatchFamily::Session;
+    }
+
+    const auto* entry = find_command_catalog_entry(command);
+    if (entry == nullptr) {
+        return CommandDispatchFamily::Unknown;
+    }
+    if (entry->category == "write") {
+        return CommandDispatchFamily::Write;
+    }
+    if (entry->category == "admin") {
+        return CommandDispatchFamily::Admin;
+    }
+    if (entry->category == "read") {
+        return CommandDispatchFamily::Read;
+    }
+    return CommandDispatchFamily::Meta;
 }
 
 bool is_known_command(std::string_view command) {
@@ -446,8 +482,8 @@ struct RuntimeBinaryProvenanceHint {
 
 constexpr RuntimeBinaryProvenanceHint runtime_binary_provenance_hint = {
     "Node v208 managed audit persistence boundary candidate",
-    "c/87/",
-    "cmake-build-v87/minikv_server and cmake-build-v87/minikv_client from the current CMake build",
+    "c/88/",
+    "cmake-build-v88/minikv_server and cmake-build-v88/minikv_client from the current CMake build",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work",
@@ -471,7 +507,7 @@ struct RuntimeRetentionProvenanceCheck {
 
 constexpr RuntimeRetentionProvenanceCheck runtime_retention_provenance_check = {
     "Node v211 managed audit identity approval provenance dry-run packet",
-    "c/87/",
+    "c/88/",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "c/81/",
@@ -502,7 +538,7 @@ constexpr RuntimeRetentionProvenanceReplayMarker runtime_retention_provenance_re
     "v84",
     "c/84/",
     "fnv1a64:357cc7e9eec3f223",
-    "c/87/",
+    "c/88/",
     "verify v84 retention provenance consumption before managed audit packet restore drill planning",
     true,
     false,
@@ -535,7 +571,7 @@ constexpr RuntimeManagedAuditAdapterRestoreBoundaryReceipt
         "v85",
         "c/85/",
         "fnv1a64:1ea4570c967cfdb1",
-        "c/87/",
+        "c/88/",
         "mini-kv remains a read-only evidence provider for managed audit adapter preparation",
         "verify mini-kv restore/write boundary before managed audit dry-run adapter candidate work",
         true,
@@ -574,7 +610,7 @@ constexpr RuntimeManagedAuditAdapterNonAuthoritativeStorageReceipt
         "v86",
         "c/86/",
         "fnv1a64:f39d8e3ef98654ea",
-        "c/87/",
+        "c/88/",
         "mini-kv is non-authoritative read-only storage evidence, not the managed audit store",
         "verify mini-kv storage is non-authoritative before managed audit adapter production-hardening readiness gate",
         true,
@@ -587,6 +623,52 @@ constexpr RuntimeManagedAuditAdapterNonAuthoritativeStorageReceipt
         false,
         false,
     };
+
+struct RuntimeCommandDispatchQualityReceipt {
+    std::string_view consumer;
+    std::string_view consumed_by;
+    std::string_view consumed_release_version;
+    std::string_view consumed_artifact_path_hint;
+    std::string_view consumed_receipt_digest;
+    std::string_view current_artifact_path_hint;
+    std::string_view dispatch_family;
+    std::string_view split_commands;
+    std::string_view boundary;
+    std::string_view node_action;
+    bool read_only;
+    bool execution_allowed;
+    bool dispatch_split_applied;
+    bool handler_table_required;
+    bool write_handler_changed;
+    bool admin_handler_changed;
+    bool wal_snapshot_restore_touched;
+    bool behavior_changed;
+    bool fixture_contract_preserved;
+    bool order_authoritative;
+};
+
+constexpr RuntimeCommandDispatchQualityReceipt runtime_command_dispatch_quality_receipt = {
+    "Node v219 managed audit adapter implementation precheck packet",
+    "Node v217 managed audit adapter production-hardening readiness gate",
+    "v87",
+    "c/87/",
+    "fnv1a64:111f0daf1283eab6",
+    "c/88/",
+    "runtime_evidence_command_family",
+    "STATS,STATSJSON,SMOKEJSON,STORAGEJSON,HEALTH,INFO,INFOJSON,COMMANDS,COMMANDSJSON",
+    "command dispatch quality receipt only; no write, admin, WAL, snapshot, restore, or managed audit storage behavior change",
+    "verify mini-kv command dispatch read-only quality before managed audit adapter implementation precheck",
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+};
 
 std::uint64_t fnv1a64(std::string_view text);
 std::string format_hex64(std::uint64_t value);
@@ -618,7 +700,7 @@ std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
 std::string format_live_read_session_hint_json(std::int64_t uptime_seconds,
                                                const std::vector<std::string>& read_commands) {
     return "{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\","
-           "\"session_id_echo\":\"mini-kv-live-read-v87\","
+           "\"session_id_echo\":\"mini-kv-live-read-v88\","
            "\"server_uptime_bucket\":" + json_string(uptime_bucket_for_seconds(uptime_seconds)) +
            ",\"read_command_list_digest\":" + json_string(read_command_list_digest(read_commands)) +
            ",\"read_command_count\":" + std::to_string(read_commands.size()) +
@@ -977,6 +1059,68 @@ std::string format_runtime_managed_audit_adapter_non_authoritative_storage_recei
            json_string(runtime_managed_audit_adapter_non_authoritative_storage_receipt.boundary) +
            ",\"node_action\":" +
            json_string(runtime_managed_audit_adapter_non_authoritative_storage_receipt.node_action) + "}";
+}
+
+std::string command_dispatch_quality_receipt_digest() {
+    std::string source;
+    append_digest_part(source, "mini-kv-command-dispatch-quality-receipt");
+    append_digest_part(source, version);
+    append_digest_part(source, runtime_command_dispatch_quality_receipt.consumed_by);
+    append_digest_part(source, runtime_command_dispatch_quality_receipt.consumed_release_version);
+    append_digest_part(source, runtime_command_dispatch_quality_receipt.consumed_artifact_path_hint);
+    append_digest_part(source, runtime_command_dispatch_quality_receipt.consumed_receipt_digest);
+    append_digest_part(source, runtime_command_dispatch_quality_receipt.current_artifact_path_hint);
+    append_digest_part(source, runtime_command_dispatch_quality_receipt.dispatch_family);
+    append_digest_part(source, runtime_command_dispatch_quality_receipt.split_commands);
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.read_only));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.execution_allowed));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.dispatch_split_applied));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.handler_table_required));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.write_handler_changed));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.admin_handler_changed));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.wal_snapshot_restore_touched));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.behavior_changed));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.fixture_contract_preserved));
+    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.order_authoritative));
+    return "fnv1a64:" + format_hex64(fnv1a64(source));
+}
+
+std::string format_runtime_command_dispatch_quality_receipt_json() {
+    return "{\"consumer\":" + json_string(runtime_command_dispatch_quality_receipt.consumer) +
+           ",\"source_version\":" + json_string(version) +
+           ",\"consumed_by\":" + json_string(runtime_command_dispatch_quality_receipt.consumed_by) +
+           ",\"consumed_release_version\":" +
+           json_string(runtime_command_dispatch_quality_receipt.consumed_release_version) +
+           ",\"consumed_artifact_path_hint\":" +
+           json_string(runtime_command_dispatch_quality_receipt.consumed_artifact_path_hint) +
+           ",\"consumed_receipt_digest\":" +
+           json_string(runtime_command_dispatch_quality_receipt.consumed_receipt_digest) +
+           ",\"current_artifact_path_hint\":" +
+           json_string(runtime_command_dispatch_quality_receipt.current_artifact_path_hint) +
+           ",\"dispatch_family\":" + json_string(runtime_command_dispatch_quality_receipt.dispatch_family) +
+           ",\"split_commands\":" + json_string(runtime_command_dispatch_quality_receipt.split_commands) +
+           ",\"receipt_digest\":" + json_string(command_dispatch_quality_receipt_digest()) +
+           ",\"read_only\":" + format_json_bool(runtime_command_dispatch_quality_receipt.read_only) +
+           ",\"execution_allowed\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.execution_allowed) +
+           ",\"dispatch_split_applied\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.dispatch_split_applied) +
+           ",\"handler_table_required\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.handler_table_required) +
+           ",\"write_handler_changed\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.write_handler_changed) +
+           ",\"admin_handler_changed\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.admin_handler_changed) +
+           ",\"wal_snapshot_restore_touched\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.wal_snapshot_restore_touched) +
+           ",\"behavior_changed\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.behavior_changed) +
+           ",\"fixture_contract_preserved\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.fixture_contract_preserved) +
+           ",\"order_authoritative\":" +
+           format_json_bool(runtime_command_dispatch_quality_receipt.order_authoritative) +
+           ",\"boundary\":" + json_string(runtime_command_dispatch_quality_receipt.boundary) +
+           ",\"node_action\":" + json_string(runtime_command_dispatch_quality_receipt.node_action) + "}";
 }
 
 std::uint64_t fnv1a64(std::string_view text) {
@@ -1416,6 +1560,8 @@ std::string format_info_json(std::size_t live_keys,
            format_runtime_managed_audit_adapter_restore_boundary_receipt_json() +
            ",\"managed_audit_adapter_non_authoritative_storage_receipt\":" +
            format_runtime_managed_audit_adapter_non_authoritative_storage_receipt_json() +
+           ",\"command_dispatch_quality_receipt\":" +
+           format_runtime_command_dispatch_quality_receipt_json() +
            ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
@@ -1494,6 +1640,7 @@ std::string format_smoke_json(std::size_t live_keys,
         "retention_provenance_replay_marker",
         "managed_audit_adapter_restore_boundary_receipt",
         "managed_audit_adapter_non_authoritative_storage_receipt",
+        "command_dispatch_quality_receipt",
         "read_only_aggregate",
         "not_order_authoritative",
         "does_not_execute_load_compact_setnxex_or_restore",
@@ -1551,8 +1698,10 @@ std::string format_smoke_json(std::size_t live_keys,
                 format_runtime_managed_audit_adapter_restore_boundary_receipt_json() +
                 ",\"managed_audit_adapter_non_authoritative_storage_receipt\":" +
                 format_runtime_managed_audit_adapter_non_authoritative_storage_receipt_json() +
+                ",\"command_dispatch_quality_receipt\":" +
+                format_runtime_command_dispatch_quality_receipt_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v217 may verify the mini-kv managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, the v85 retention provenance replay marker, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit adapter production-hardening readiness gate work; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v219 may verify the mini-kv command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit adapter implementation precheck work; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;
@@ -1748,6 +1897,118 @@ void CommandProcessor::auto_compact_wal_if_needed() {
     }
 
     (void)wal_->compact_if_recommended(store_);
+}
+
+CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_view command, std::istringstream& input) {
+    if (command == "STATS") {
+        if (has_extra_token(input)) {
+            return usage("STATS");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_stats(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+    }
+
+    if (command == "STATSJSON") {
+        if (has_extra_token(input)) {
+            return usage("STATSJSON");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_stats_json(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+    }
+
+    if (command == "SMOKEJSON") {
+        if (has_extra_token(input)) {
+            return usage("SMOKEJSON");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_smoke_json(
+            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_), options_.runtime_info)};
+    }
+
+    if (command == "STORAGEJSON") {
+        if (has_extra_token(input)) {
+            return usage("STORAGEJSON");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_storage_evidence_json(live_keys, wal_, wal_report)};
+    }
+
+    if (command == "HEALTH") {
+        if (has_extra_token(input)) {
+            return usage("HEALTH");
+        }
+
+        std::optional<WalMaintenanceReport> wal_report;
+        if (wal_ != nullptr) {
+            std::lock_guard lock(wal_command_mutex());
+            wal_report = wal_->maintenance_report(store_);
+        }
+
+        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
+        return {format_health(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+    }
+
+    if (command == "INFO") {
+        if (has_extra_token(input)) {
+            return usage("INFO");
+        }
+
+        return {format_info(store_.size(), wal_, options_.runtime_info)};
+    }
+
+    if (command == "INFOJSON") {
+        if (has_extra_token(input)) {
+            return usage("INFOJSON");
+        }
+
+        return {format_info_json(store_.size(), wal_, options_.runtime_info)};
+    }
+
+    if (command == "COMMANDS") {
+        if (has_extra_token(input)) {
+            return usage("COMMANDS");
+        }
+
+        return {format_commands()};
+    }
+
+    if (command == "COMMANDSJSON") {
+        if (has_extra_token(input)) {
+            return usage("COMMANDSJSON");
+        }
+
+        return {format_commands_json()};
+    }
+
+    return {"ERR unknown command"};
 }
 
 CommandResult CommandProcessor::execute(std::string_view line) {
@@ -2039,67 +2300,6 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {format_walinfo(wal_->maintenance_report(store_))};
     }
 
-    if (command == "STATS") {
-        if (has_extra_token(input)) {
-            return usage("STATS");
-        }
-
-        std::optional<WalMaintenanceReport> wal_report;
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            wal_report = wal_->maintenance_report(store_);
-        }
-
-        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_stats(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
-    }
-
-    if (command == "STATSJSON") {
-        if (has_extra_token(input)) {
-            return usage("STATSJSON");
-        }
-
-        std::optional<WalMaintenanceReport> wal_report;
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            wal_report = wal_->maintenance_report(store_);
-        }
-
-        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_stats_json(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
-    }
-
-    if (command == "SMOKEJSON") {
-        if (has_extra_token(input)) {
-            return usage("SMOKEJSON");
-        }
-
-        std::optional<WalMaintenanceReport> wal_report;
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            wal_report = wal_->maintenance_report(store_);
-        }
-
-        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_smoke_json(
-            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_), options_.runtime_info)};
-    }
-
-    if (command == "STORAGEJSON") {
-        if (has_extra_token(input)) {
-            return usage("STORAGEJSON");
-        }
-
-        std::optional<WalMaintenanceReport> wal_report;
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            wal_report = wal_->maintenance_report(store_);
-        }
-
-        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_storage_evidence_json(live_keys, wal_, wal_report)};
-    }
-
     if (command == "RESETSTATS") {
         if (has_extra_token(input)) {
             return usage("RESETSTATS");
@@ -2109,51 +2309,8 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {"OK stats reset"};
     }
 
-    if (command == "HEALTH") {
-        if (has_extra_token(input)) {
-            return usage("HEALTH");
-        }
-
-        std::optional<WalMaintenanceReport> wal_report;
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            wal_report = wal_->maintenance_report(store_);
-        }
-
-        const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_health(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
-    }
-
-    if (command == "INFO") {
-        if (has_extra_token(input)) {
-            return usage("INFO");
-        }
-
-        return {format_info(store_.size(), wal_, options_.runtime_info)};
-    }
-
-    if (command == "INFOJSON") {
-        if (has_extra_token(input)) {
-            return usage("INFOJSON");
-        }
-
-        return {format_info_json(store_.size(), wal_, options_.runtime_info)};
-    }
-
-    if (command == "COMMANDS") {
-        if (has_extra_token(input)) {
-            return usage("COMMANDS");
-        }
-
-        return {format_commands()};
-    }
-
-    if (command == "COMMANDSJSON") {
-        if (has_extra_token(input)) {
-            return usage("COMMANDSJSON");
-        }
-
-        return {format_commands_json()};
+    if (dispatch_family_for(command) == CommandDispatchFamily::RuntimeEvidence) {
+        return execute_runtime_evidence_command(command, input);
     }
 
     if (command == "EXPLAINJSON") {

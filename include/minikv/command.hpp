@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <iosfwd>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -92,6 +93,7 @@ public:
 
 private:
     CommandResult execute_trimmed(std::string_view trimmed);
+    CommandResult execute_runtime_evidence_command(std::string_view command, std::istringstream& input);
     void auto_compact_wal_if_needed();
 
     Store& store_;

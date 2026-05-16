@@ -2,6 +2,7 @@
 
 ## 最新新增
 
+- `144-version-88-command-dispatch-quality-receipt.md`：说明 v88 如何把 runtime evidence 命令归入独立读侧分发路径，并在 `INFOJSON` / `SMOKEJSON` / release fixture 中补入 `command_dispatch_quality_receipt`，让 Node v219 只读确认本版没有改变 write/admin/WAL/snapshot/restore，也没有让 mini-kv 成为 managed audit store 或 Java order authority。
 - `143-version-87-managed-audit-adapter-non-authoritative-storage-receipt.md`：说明 v87 如何在 `INFOJSON` / `SMOKEJSON` 中补充 `managed_audit_adapter_non_authoritative_storage_receipt`，让 Node v217 只读确认 mini-kv 不是 managed audit store，不允许 storage write/admin/restore，也不承担 Java order authority。
 
 本目录从 v57 之后作为新的代码讲解入口使用，和旧目录同级。
