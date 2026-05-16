@@ -140,6 +140,12 @@ int main() {
     assert_contains(result.response, "\"artifact_path_hint\":\"c/80/\"");
     assert_contains(result.response, "\"no_restore_proof\":true");
     assert_contains(result.response, "\"upload_allowed\":false");
+    assert_contains(result.response, "\"artifact_retention\":{\"consumer\":\"Node v203 cross-project CI artifact retention gate\"");
+    assert_contains(result.response, "\"artifact_root\":\"c/\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/81/\"");
+    assert_contains(result.response, "\"retention_days\":30");
+    assert_contains(result.response, "\"github_artifact_upload_attempted\":false");
+    assert_contains(result.response, "\"production_window_allowed\":false");
     assert_contains(result.response, "\"diagnostics\":{\"write_commands_executed\":false,"
                                      "\"dynamic_fields\":[\"server.uptime_seconds\"]}");
 

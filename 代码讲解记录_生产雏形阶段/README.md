@@ -211,6 +211,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
  -> 第八十版 CI Evidence Hint：INFOJSON/SMOKEJSON ci_evidence、artifact_path_hint、no_restore_proof、upload_allowed、Node v201 manifest verification、fixture/manifest、测试和归档。
 ```
 
+137-version-81-artifact-retention-evidence.md
+ -> 第八十一版 Artifact Retention Evidence：INFOJSON/SMOKEJSON artifact_retention、artifact_root、artifact_path_hint、retention_days、github_artifact_upload_attempted、production_window_allowed、Node v203 retention gate、fixture/manifest、测试和归档。
+
 后续版本继续在本目录追加。
 
 ## 一句话总览

@@ -408,6 +408,30 @@ constexpr RuntimeCiEvidenceHint runtime_ci_evidence_hint = {
     false,
 };
 
+struct RuntimeArtifactRetentionEvidence {
+    std::string_view consumer;
+    std::string_view artifact_root;
+    std::string_view artifact_path_hint;
+    std::string_view retention_mode;
+    std::string_view node_action;
+    int retention_days;
+    bool release_evidence_ready;
+    bool github_artifact_upload_attempted;
+    bool production_window_allowed;
+};
+
+constexpr RuntimeArtifactRetentionEvidence runtime_artifact_retention_evidence = {
+    "Node v203 cross-project CI artifact retention gate",
+    "c/",
+    "c/81/",
+    "dry-run-contract-only",
+    "verify retention days and artifact path before cross-project retention gate",
+    30,
+    true,
+    false,
+    false,
+};
+
 std::uint64_t fnv1a64(std::string_view text);
 std::string format_hex64(std::uint64_t value);
 void append_digest_part(std::string& source, std::string_view value);
@@ -475,6 +499,25 @@ std::string format_runtime_ci_evidence_hint_json() {
            ",\"no_restore_proof\":" + format_json_bool(runtime_ci_evidence_hint.no_restore_proof) +
            ",\"upload_allowed\":" + format_json_bool(runtime_ci_evidence_hint.upload_allowed) +
            ",\"node_action\":" + json_string(runtime_ci_evidence_hint.node_action) + "}";
+}
+
+std::string format_runtime_artifact_retention_evidence_json() {
+    return "{\"consumer\":" + json_string(runtime_artifact_retention_evidence.consumer) +
+           ",\"artifact_root\":" + json_string(runtime_artifact_retention_evidence.artifact_root) +
+           ",\"artifact_path_hint\":" +
+           json_string(runtime_artifact_retention_evidence.artifact_path_hint) +
+           ",\"retention_days\":" +
+           std::to_string(runtime_artifact_retention_evidence.retention_days) +
+           ",\"retention_mode\":" +
+           json_string(runtime_artifact_retention_evidence.retention_mode) +
+           ",\"release_evidence_ready\":" +
+           format_json_bool(runtime_artifact_retention_evidence.release_evidence_ready) +
+           ",\"github_artifact_upload_attempted\":" +
+           format_json_bool(runtime_artifact_retention_evidence.github_artifact_upload_attempted) +
+           ",\"production_window_allowed\":" +
+           format_json_bool(runtime_artifact_retention_evidence.production_window_allowed) +
+           ",\"node_action\":" +
+           json_string(runtime_artifact_retention_evidence.node_action) + "}";
 }
 
 std::uint64_t fnv1a64(std::string_view text) {
@@ -905,6 +948,7 @@ std::string format_info_json(std::size_t live_keys,
            "},\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr) +
            "},\"metrics\":{\"enabled\":" + format_json_bool(runtime_info.metrics_enabled) +
            "},\"ci_evidence\":" + format_runtime_ci_evidence_hint_json() +
+           ",\"artifact_retention\":" + format_runtime_artifact_retention_evidence_json() +
            ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
@@ -1024,8 +1068,9 @@ std::string format_smoke_json(std::size_t live_keys,
                 "\"runtime_write_observed\":false}" +
                 ",\"operator_window\":" + format_smoke_operator_window_proof_json() +
                 ",\"ci_evidence\":" + format_runtime_ci_evidence_hint_json() +
+                ",\"artifact_retention\":" + format_runtime_artifact_retention_evidence_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v201 may verify taxonomy digest, operator-window identity-neutral proof, and CI evidence hints before checking the artifact manifest; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v203 may verify taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before the cross-project retention gate; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;

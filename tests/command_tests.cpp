@@ -274,6 +274,13 @@ int main() {
     assert_response_contains(result, "\"artifact_path_hint\":\"c/80/\"");
     assert_response_contains(result, "\"no_restore_proof\":true");
     assert_response_contains(result, "\"upload_allowed\":false");
+    assert_response_contains(result, "\"artifact_retention\":{\"consumer\":\"Node v203 cross-project CI artifact retention gate\"");
+    assert_response_contains(result, "\"artifact_root\":\"c/\"");
+    assert_response_contains(result, "\"artifact_path_hint\":\"c/81/\"");
+    assert_response_contains(result, "\"retention_days\":30");
+    assert_response_contains(result, "\"retention_mode\":\"dry-run-contract-only\"");
+    assert_response_contains(result, "\"github_artifact_upload_attempted\":false");
+    assert_response_contains(result, "\"production_window_allowed\":false");
     assert(result.response.find("\"diagnostics\":{\"write_commands_executed\":false") != std::string::npos);
 
     result = processor.execute("COMMANDS extra");
@@ -563,11 +570,18 @@ int main() {
     assert_response_contains(result, "\"artifact_path_hint\":\"c/80/\"");
     assert_response_contains(result, "\"no_restore_proof\":true");
     assert_response_contains(result, "\"upload_allowed\":false");
+    assert_response_contains(result, "\"artifact_retention\":{\"consumer\":\"Node v203 cross-project CI artifact retention gate\"");
+    assert_response_contains(result, "\"artifact_root\":\"c/\"");
+    assert_response_contains(result, "\"artifact_path_hint\":\"c/81/\"");
+    assert_response_contains(result, "\"retention_days\":30");
+    assert_response_contains(result, "\"retention_mode\":\"dry-run-contract-only\"");
+    assert_response_contains(result, "\"github_artifact_upload_attempted\":false");
+    assert_response_contains(result, "\"production_window_allowed\":false");
     assert_response_contains(result, "\"failure_taxonomy\":{\"schema_version\":1");
     assert_response_contains(result, "\"consumer\":\"Node v196 imported window result packet\"");
     assert_response_contains(result, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
-    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.80.0\"");
+    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.81.0\"");
     assert_response_contains(result, "\"expected_taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"node_action\":\"verify digest before importing manual window results\"");
     assert_response_contains(result, "\"id\":\"connection-refused\",\"source\":\"tcp_connect\"");
@@ -577,7 +591,7 @@ int main() {
     assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
-    assert_response_contains(result, "\"node_consumption\":\"Node v201 may verify taxonomy digest, operator-window identity-neutral proof, and CI evidence hints before checking the artifact manifest; mini-kv must already be running and the read-only window must be open\"");
+    assert_response_contains(result, "\"node_consumption\":\"Node v203 may verify taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before the cross-project retention gate; mini-kv must already be running and the read-only window must be open\"");
     assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"read_only_aggregate\","
                                      "\"not_order_authoritative\",\"does_not_execute_load_compact_setnxex_or_restore\"]");
 
