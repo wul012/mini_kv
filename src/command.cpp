@@ -446,8 +446,8 @@ struct RuntimeBinaryProvenanceHint {
 
 constexpr RuntimeBinaryProvenanceHint runtime_binary_provenance_hint = {
     "Node v208 managed audit persistence boundary candidate",
-    "c/85/",
-    "cmake-build-v85/minikv_server and cmake-build-v85/minikv_client from the current CMake build",
+    "c/86/",
+    "cmake-build-v86/minikv_server and cmake-build-v86/minikv_client from the current CMake build",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work",
@@ -471,7 +471,7 @@ struct RuntimeRetentionProvenanceCheck {
 
 constexpr RuntimeRetentionProvenanceCheck runtime_retention_provenance_check = {
     "Node v211 managed audit identity approval provenance dry-run packet",
-    "c/85/",
+    "c/86/",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "c/81/",
@@ -502,13 +502,50 @@ constexpr RuntimeRetentionProvenanceReplayMarker runtime_retention_provenance_re
     "v84",
     "c/84/",
     "fnv1a64:357cc7e9eec3f223",
-    "c/85/",
+    "c/86/",
     "verify v84 retention provenance consumption before managed audit packet restore drill planning",
     true,
     false,
     false,
     false,
 };
+
+struct RuntimeManagedAuditAdapterRestoreBoundaryReceipt {
+    std::string_view consumer;
+    std::string_view consumed_by;
+    std::string_view consumed_release_version;
+    std::string_view consumed_artifact_path_hint;
+    std::string_view consumed_marker_digest;
+    std::string_view current_artifact_path_hint;
+    std::string_view boundary;
+    std::string_view node_action;
+    bool read_only;
+    bool execution_allowed;
+    bool adapter_write_allowed;
+    bool restore_execution_allowed;
+    bool load_restore_compact_executed;
+    bool managed_audit_write_executed;
+    bool order_authoritative;
+};
+
+constexpr RuntimeManagedAuditAdapterRestoreBoundaryReceipt
+    runtime_managed_audit_adapter_restore_boundary_receipt = {
+        "Node v215 managed audit dry-run adapter candidate",
+        "Node v213 managed audit packet restore drill plan",
+        "v85",
+        "c/85/",
+        "fnv1a64:1ea4570c967cfdb1",
+        "c/86/",
+        "mini-kv remains a read-only evidence provider for managed audit adapter preparation",
+        "verify mini-kv restore/write boundary before managed audit dry-run adapter candidate work",
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+    };
 
 std::uint64_t fnv1a64(std::string_view text);
 std::string format_hex64(std::uint64_t value);
@@ -540,7 +577,7 @@ std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
 std::string format_live_read_session_hint_json(std::int64_t uptime_seconds,
                                                const std::vector<std::string>& read_commands) {
     return "{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\","
-           "\"session_id_echo\":\"mini-kv-live-read-v85\","
+           "\"session_id_echo\":\"mini-kv-live-read-v86\","
            "\"server_uptime_bucket\":" + json_string(uptime_bucket_for_seconds(uptime_seconds)) +
            ",\"read_command_list_digest\":" + json_string(read_command_list_digest(read_commands)) +
            ",\"read_command_count\":" + std::to_string(read_commands.size()) +
@@ -738,6 +775,61 @@ std::string format_runtime_retention_provenance_replay_marker_json() {
            ",\"managed_audit_write_executed\":" +
            format_json_bool(runtime_retention_provenance_replay_marker.managed_audit_write_executed) +
            ",\"node_action\":" + json_string(runtime_retention_provenance_replay_marker.node_action) + "}";
+}
+
+std::string managed_audit_adapter_restore_boundary_receipt_digest() {
+    std::string source;
+    append_digest_part(source, "mini-kv-managed-audit-adapter-restore-boundary-receipt");
+    append_digest_part(source, version);
+    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.consumed_by);
+    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.consumed_release_version);
+    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.consumed_artifact_path_hint);
+    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.consumed_marker_digest);
+    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.current_artifact_path_hint);
+    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.read_only));
+    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.execution_allowed));
+    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.adapter_write_allowed));
+    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.restore_execution_allowed));
+    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.load_restore_compact_executed));
+    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.managed_audit_write_executed));
+    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.order_authoritative));
+    return "fnv1a64:" + format_hex64(fnv1a64(source));
+}
+
+std::string format_runtime_managed_audit_adapter_restore_boundary_receipt_json() {
+    return "{\"consumer\":" +
+           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumer) +
+           ",\"source_version\":" + json_string(version) +
+           ",\"consumed_by\":" +
+           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumed_by) +
+           ",\"consumed_release_version\":" +
+           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumed_release_version) +
+           ",\"consumed_artifact_path_hint\":" +
+           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumed_artifact_path_hint) +
+           ",\"consumed_marker_digest\":" +
+           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumed_marker_digest) +
+           ",\"current_artifact_path_hint\":" +
+           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.current_artifact_path_hint) +
+           ",\"receipt_digest\":" +
+           json_string(managed_audit_adapter_restore_boundary_receipt_digest()) +
+           ",\"read_only\":" +
+           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.read_only) +
+           ",\"execution_allowed\":" +
+           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.execution_allowed) +
+           ",\"adapter_write_allowed\":" +
+           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.adapter_write_allowed) +
+           ",\"restore_execution_allowed\":" +
+           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.restore_execution_allowed) +
+           ",\"load_restore_compact_executed\":" +
+           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.load_restore_compact_executed) +
+           ",\"managed_audit_write_executed\":" +
+           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.managed_audit_write_executed) +
+           ",\"order_authoritative\":" +
+           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.order_authoritative) +
+           ",\"boundary\":" +
+           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.boundary) +
+           ",\"node_action\":" +
+           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.node_action) + "}";
 }
 
 std::uint64_t fnv1a64(std::string_view text) {
@@ -1173,6 +1265,8 @@ std::string format_info_json(std::size_t live_keys,
            ",\"retention_provenance_check\":" + format_runtime_retention_provenance_check_json() +
            ",\"retention_provenance_replay_marker\":" +
            format_runtime_retention_provenance_replay_marker_json() +
+           ",\"managed_audit_adapter_restore_boundary_receipt\":" +
+           format_runtime_managed_audit_adapter_restore_boundary_receipt_json() +
            ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
@@ -1249,6 +1343,7 @@ std::string format_smoke_json(std::size_t live_keys,
         "binary_provenance_hint",
         "retention_provenance_check",
         "retention_provenance_replay_marker",
+        "managed_audit_adapter_restore_boundary_receipt",
         "read_only_aggregate",
         "not_order_authoritative",
         "does_not_execute_load_compact_setnxex_or_restore",
@@ -1302,8 +1397,10 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"retention_provenance_check\":" + format_runtime_retention_provenance_check_json() +
                 ",\"retention_provenance_replay_marker\":" +
                 format_runtime_retention_provenance_replay_marker_json() +
+                ",\"managed_audit_adapter_restore_boundary_receipt\":" +
+                format_runtime_managed_audit_adapter_restore_boundary_receipt_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v213 may verify the v84 retention provenance consumption marker, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit packet restore drill planning; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v215 may verify the mini-kv managed audit adapter restore boundary receipt, the v85 retention provenance replay marker, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit dry-run adapter candidate work; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;
