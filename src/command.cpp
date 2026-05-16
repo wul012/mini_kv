@@ -446,11 +446,37 @@ struct RuntimeBinaryProvenanceHint {
 
 constexpr RuntimeBinaryProvenanceHint runtime_binary_provenance_hint = {
     "Node v208 managed audit persistence boundary candidate",
-    "c/83/",
-    "cmake-build-v83/minikv_server and cmake-build-v83/minikv_client from the current CMake build",
+    "c/84/",
+    "cmake-build-v84/minikv_server and cmake-build-v84/minikv_client from the current CMake build",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work",
+    true,
+    false,
+    false,
+};
+
+struct RuntimeRetentionProvenanceCheck {
+    std::string_view consumer;
+    std::string_view artifact_path_hint;
+    std::string_view release_manifest_path;
+    std::string_view runtime_smoke_evidence_path;
+    std::string_view retention_source_path_hint;
+    std::string_view provenance_source;
+    std::string_view node_action;
+    bool read_only;
+    bool execution_allowed;
+    bool managed_audit_write_executed;
+};
+
+constexpr RuntimeRetentionProvenanceCheck runtime_retention_provenance_check = {
+    "Node v211 managed audit identity approval provenance dry-run packet",
+    "c/84/",
+    "fixtures/release/verification-manifest.json",
+    "fixtures/release/runtime-smoke-evidence.json",
+    "c/81/",
+    "binary_provenance.provenance_digest",
+    "verify runtime evidence retention and binary provenance alignment before managed audit dry-run packet work",
     true,
     false,
     false,
@@ -486,7 +512,7 @@ std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
 std::string format_live_read_session_hint_json(std::int64_t uptime_seconds,
                                                const std::vector<std::string>& read_commands) {
     return "{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\","
-           "\"session_id_echo\":\"mini-kv-live-read-v83\","
+           "\"session_id_echo\":\"mini-kv-live-read-v84\","
            "\"server_uptime_bucket\":" + json_string(uptime_bucket_for_seconds(uptime_seconds)) +
            ",\"read_command_list_digest\":" + json_string(read_command_list_digest(read_commands)) +
            ",\"read_command_count\":" + std::to_string(read_commands.size()) +
@@ -607,6 +633,44 @@ std::string format_runtime_binary_provenance_hint_json() {
            ",\"production_binary_claimed\":" +
            format_json_bool(runtime_binary_provenance_hint.production_binary_claimed) +
            ",\"node_action\":" + json_string(runtime_binary_provenance_hint.node_action) + "}";
+}
+
+std::string retention_provenance_check_digest() {
+    std::string source;
+    append_digest_part(source, "mini-kv-retention-provenance-check");
+    append_digest_part(source, version);
+    append_digest_part(source, runtime_retention_provenance_check.artifact_path_hint);
+    append_digest_part(source, runtime_retention_provenance_check.release_manifest_path);
+    append_digest_part(source, runtime_retention_provenance_check.runtime_smoke_evidence_path);
+    append_digest_part(source, runtime_retention_provenance_check.retention_source_path_hint);
+    append_digest_part(source, binary_provenance_digest());
+    append_digest_part(source, format_json_bool(runtime_retention_provenance_check.read_only));
+    append_digest_part(source, format_json_bool(runtime_retention_provenance_check.execution_allowed));
+    append_digest_part(source, format_json_bool(runtime_retention_provenance_check.managed_audit_write_executed));
+    return "fnv1a64:" + format_hex64(fnv1a64(source));
+}
+
+std::string format_runtime_retention_provenance_check_json() {
+    return "{\"consumer\":" + json_string(runtime_retention_provenance_check.consumer) +
+           ",\"source_version\":" + json_string(version) +
+           ",\"artifact_path_hint\":" +
+           json_string(runtime_retention_provenance_check.artifact_path_hint) +
+           ",\"release_manifest_path\":" +
+           json_string(runtime_retention_provenance_check.release_manifest_path) +
+           ",\"runtime_smoke_evidence_path\":" +
+           json_string(runtime_retention_provenance_check.runtime_smoke_evidence_path) +
+           ",\"retention_source_path_hint\":" +
+           json_string(runtime_retention_provenance_check.retention_source_path_hint) +
+           ",\"provenance_source\":" +
+           json_string(runtime_retention_provenance_check.provenance_source) +
+           ",\"expected_binary_provenance_digest\":" + json_string(binary_provenance_digest()) +
+           ",\"check_digest\":" + json_string(retention_provenance_check_digest()) +
+           ",\"read_only\":" + format_json_bool(runtime_retention_provenance_check.read_only) +
+           ",\"execution_allowed\":" +
+           format_json_bool(runtime_retention_provenance_check.execution_allowed) +
+           ",\"managed_audit_write_executed\":" +
+           format_json_bool(runtime_retention_provenance_check.managed_audit_write_executed) +
+           ",\"node_action\":" + json_string(runtime_retention_provenance_check.node_action) + "}";
 }
 
 std::uint64_t fnv1a64(std::string_view text) {
@@ -1039,6 +1103,7 @@ std::string format_info_json(std::size_t live_keys,
            "},\"ci_evidence\":" + format_runtime_ci_evidence_hint_json() +
            ",\"artifact_retention\":" + format_runtime_artifact_retention_evidence_json() +
            ",\"binary_provenance\":" + format_runtime_binary_provenance_hint_json() +
+           ",\"retention_provenance_check\":" + format_runtime_retention_provenance_check_json() +
            ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
@@ -1113,6 +1178,7 @@ std::string format_smoke_json(std::size_t live_keys,
         "runtime_smoke_evidence",
         "live_read_session_hint",
         "binary_provenance_hint",
+        "retention_provenance_check",
         "read_only_aggregate",
         "not_order_authoritative",
         "does_not_execute_load_compact_setnxex_or_restore",
@@ -1163,8 +1229,9 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"ci_evidence\":" + format_runtime_ci_evidence_hint_json() +
                 ",\"artifact_retention\":" + format_runtime_artifact_retention_evidence_json() +
                 ",\"binary_provenance\":" + format_runtime_binary_provenance_hint_json() +
+                ",\"retention_provenance_check\":" + format_runtime_retention_provenance_check_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v208 may verify binary provenance, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit persistence boundary work; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v211 may verify runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit identity approval provenance dry-run packet work; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;

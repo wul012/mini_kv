@@ -218,6 +218,9 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 
 139-version-83-binary-provenance-hint.md
  -> 第八十三版 Binary Provenance Hint：INFOJSON/SMOKEJSON binary_provenance、runtime_binary_hint、release_manifest_path、runtime_smoke_evidence_path、provenance_digest、production_binary_claimed=false、Node v208 managed audit persistence boundary candidate、fixture/manifest、测试和归档。
+
+140-version-84-retention-provenance-check.md
+ -> 第八十四版 Runtime Evidence Retention / Provenance Check：INFOJSON/SMOKEJSON retention_provenance_check、expected_binary_provenance_digest、check_digest、managed_audit_write_executed=false、Node v211 managed audit identity approval provenance dry-run packet、fixture/manifest、测试和归档。
 ```
 
 后续版本继续在本目录追加。

@@ -147,13 +147,17 @@ int main() {
     assert_contains(result.response, "\"github_artifact_upload_attempted\":false");
     assert_contains(result.response, "\"production_window_allowed\":false");
     assert_contains(result.response, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
-    assert_contains(result.response, "\"source_version\":\"0.83.0\"");
-    assert_contains(result.response, "\"artifact_path_hint\":\"c/83/\"");
+    assert_contains(result.response, "\"source_version\":\"0.84.0\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/84/\"");
     assert_contains(result.response, "\"release_manifest_path\":\"fixtures/release/verification-manifest.json\"");
     assert_contains(result.response, "\"runtime_smoke_evidence_path\":\"fixtures/release/runtime-smoke-evidence.json\"");
-    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:c1c0896fc6b77fe2\"");
+    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:c682f9c827129e40\"");
     assert_contains(result.response, "\"load_restore_compact_executed\":false");
     assert_contains(result.response, "\"production_binary_claimed\":false");
+    assert_contains(result.response, "\"retention_provenance_check\":{\"consumer\":\"Node v211 managed audit identity approval provenance dry-run packet\"");
+    assert_contains(result.response, "\"expected_binary_provenance_digest\":\"fnv1a64:c682f9c827129e40\"");
+    assert_contains(result.response, "\"check_digest\":\"fnv1a64:357cc7e9eec3f223\"");
+    assert_contains(result.response, "\"managed_audit_write_executed\":false");
     assert_contains(result.response, "\"diagnostics\":{\"write_commands_executed\":false,"
                                      "\"dynamic_fields\":[\"server.uptime_seconds\"]}");
 
