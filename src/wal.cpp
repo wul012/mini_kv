@@ -1,7 +1,7 @@
 #include "minikv/wal.hpp"
+#include "minikv/string_utils.hpp"
 
 #include <chrono>
-#include <cctype>
 #include <cstdint>
 #include <fstream>
 #include <iomanip>
@@ -69,14 +69,6 @@ private:
     std::filesystem::path path_;
     bool active_ = true;
 };
-
-std::string to_upper(std::string_view text) {
-    std::string result{text};
-    for (char& ch : result) {
-        ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
-    }
-    return result;
-}
 
 std::uint64_t wal_checksum(std::string_view text) {
     std::uint64_t hash = fnv_offset_basis;

@@ -2,11 +2,11 @@
 
 #include "minikv/command_contracts.hpp"
 #include "minikv/command_response_formatters.hpp"
+#include "minikv/string_utils.hpp"
 #include "minikv/snapshot.hpp"
 #include "minikv/wal.hpp"
 
 #include <chrono>
-#include <cctype>
 #include <cstdint>
 #include <memory>
 #include <mutex>
@@ -18,26 +18,6 @@
 
 namespace minikv {
 namespace {
-
-std::string trim_copy(std::string_view text) {
-    while (!text.empty() && std::isspace(static_cast<unsigned char>(text.front())) != 0) {
-        text.remove_prefix(1);
-    }
-
-    while (!text.empty() && std::isspace(static_cast<unsigned char>(text.back())) != 0) {
-        text.remove_suffix(1);
-    }
-
-    return std::string{text};
-}
-
-std::string to_upper(std::string_view text) {
-    std::string result{text};
-    for (char& ch : result) {
-        ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
-    }
-    return result;
-}
 
 std::string command_token(std::string_view text) {
     std::istringstream input{std::string{text}};

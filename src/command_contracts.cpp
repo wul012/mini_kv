@@ -1,8 +1,8 @@
 #include "minikv/command_contracts.hpp"
 
+#include "minikv/string_utils.hpp"
 #include "minikv/runtime_evidence.hpp"
 
-#include <cctype>
 #include <cstdint>
 #include <iomanip>
 #include <iterator>
@@ -18,26 +18,6 @@ namespace {
 constexpr int explain_schema_version = 1;
 constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
 constexpr std::uint64_t fnv_prime = 1099511628211ull;
-
-std::string trim_copy(std::string_view text) {
-    while (!text.empty() && std::isspace(static_cast<unsigned char>(text.front())) != 0) {
-        text.remove_prefix(1);
-    }
-
-    while (!text.empty() && std::isspace(static_cast<unsigned char>(text.back())) != 0) {
-        text.remove_suffix(1);
-    }
-
-    return std::string{text};
-}
-
-std::string to_upper(std::string_view text) {
-    std::string result{text};
-    for (char& ch : result) {
-        ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
-    }
-    return result;
-}
 
 bool has_extra_token(std::istringstream& input) {
     std::string extra;

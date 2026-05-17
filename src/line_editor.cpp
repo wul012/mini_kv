@@ -1,4 +1,5 @@
 #include "minikv/line_editor.hpp"
+#include "minikv/string_utils.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -25,14 +26,6 @@ namespace minikv {
 
 namespace {
 
-std::string to_upper_copy(std::string_view text) {
-    std::string result{text};
-    for (char& ch : result) {
-        ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
-    }
-    return result;
-}
-
 bool is_space(char ch) {
     return std::isspace(static_cast<unsigned char>(ch)) != 0;
 }
@@ -52,7 +45,7 @@ std::size_t token_end(std::string_view text, std::size_t cursor) {
 }
 
 bool is_key_completion_command(std::string_view command) {
-    const std::string upper = to_upper_copy(command);
+    const std::string upper = to_upper(command);
     return upper == "GET" || upper == "DEL" || upper == "EXPIRE" || upper == "TTL" || upper == "SET" ||
            upper == "SETNXEX";
 }
@@ -119,7 +112,7 @@ std::optional<std::string> complete_token(std::string_view text,
         }
         replacement = std::string{matches.front().substr(0, prefix_length)};
         if (case_insensitive) {
-            replacement = to_upper_copy(replacement);
+            replacement = to_upper(replacement);
         }
     }
 

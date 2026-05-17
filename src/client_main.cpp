@@ -1,5 +1,6 @@
 #include "minikv/client_history.hpp"
 #include "minikv/line_editor.hpp"
+#include "minikv/string_utils.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -196,14 +197,6 @@ int parse_nonnegative_int(const char* text, std::string_view name) {
     return static_cast<int>(value);
 }
 
-std::string to_upper(std::string_view text) {
-    std::string result{text};
-    for (char& ch : result) {
-        ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
-    }
-    return result;
-}
-
 std::string first_token(std::string_view line) {
     while (!line.empty() && std::isspace(static_cast<unsigned char>(line.front())) != 0) {
         line.remove_prefix(1);
@@ -211,9 +204,9 @@ std::string first_token(std::string_view line) {
 
     const std::size_t end = line.find_first_of(" \t\r\n");
     if (end == std::string_view::npos) {
-        return to_upper(line);
+        return minikv::to_upper(line);
     }
-    return to_upper(line.substr(0, end));
+    return minikv::to_upper(line.substr(0, end));
 }
 
 bool is_blank(std::string_view line) {

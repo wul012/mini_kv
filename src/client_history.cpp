@@ -1,7 +1,7 @@
 #include "minikv/client_history.hpp"
+#include "minikv/string_utils.hpp"
 
 #include <algorithm>
-#include <cctype>
 #include <filesystem>
 #include <fstream>
 #include <limits>
@@ -13,16 +13,6 @@
 namespace minikv {
 
 namespace {
-
-std::string trim_copy(std::string_view text) {
-    while (!text.empty() && std::isspace(static_cast<unsigned char>(text.front())) != 0) {
-        text.remove_prefix(1);
-    }
-    while (!text.empty() && std::isspace(static_cast<unsigned char>(text.back())) != 0) {
-        text.remove_suffix(1);
-    }
-    return std::string{text};
-}
 
 bool all_digits(std::string_view text) {
     return !text.empty() && std::ranges::all_of(text, [](unsigned char ch) {

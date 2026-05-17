@@ -2,10 +2,10 @@
 
 #include "minikv/managed_audit_receipts.hpp"
 #include "minikv/runtime_evidence_receipts.hpp"
+#include "minikv/string_utils.hpp"
 #include "minikv/version.hpp"
 
 #include <chrono>
-#include <cctype>
 #include <cstdint>
 #include <sstream>
 #include <string>
@@ -19,18 +19,6 @@ constexpr int runtime_identity_schema_version = 1;
 constexpr int runtime_metrics_schema_version = 1;
 constexpr int runtime_smoke_schema_version = 1;
 constexpr int storage_evidence_schema_version = 1;
-
-std::string trim_copy(std::string_view text) {
-    while (!text.empty() && std::isspace(static_cast<unsigned char>(text.front())) != 0) {
-        text.remove_prefix(1);
-    }
-
-    while (!text.empty() && std::isspace(static_cast<unsigned char>(text.back())) != 0) {
-        text.remove_suffix(1);
-    }
-
-    return std::string{text};
-}
 
 std::string format_yes_no(bool value) {
     return value ? "yes" : "no";
