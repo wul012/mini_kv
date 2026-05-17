@@ -156,8 +156,8 @@ struct RuntimeBinaryProvenanceHint {
 
 constexpr RuntimeBinaryProvenanceHint runtime_binary_provenance_hint = {
     "Node v208 managed audit persistence boundary candidate",
-    "c/96/",
-    "cmake-build-v96/minikv_server and cmake-build-v96/minikv_client from the current CMake build",
+    "c/97/",
+    "cmake-build-v97/minikv_server and cmake-build-v97/minikv_client from the current CMake build",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work",
@@ -181,7 +181,7 @@ struct RuntimeRetentionProvenanceCheck {
 
 constexpr RuntimeRetentionProvenanceCheck runtime_retention_provenance_check = {
     "Node v211 managed audit identity approval provenance dry-run packet",
-    "c/96/",
+    "c/97/",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "c/81/",
@@ -212,7 +212,7 @@ constexpr RuntimeRetentionProvenanceReplayMarker runtime_retention_provenance_re
     "v84",
     "c/84/",
     "fnv1a64:357cc7e9eec3f223",
-    "c/96/",
+    "c/97/",
     "verify v84 retention provenance consumption before managed audit packet restore drill planning",
     true,
     false,
@@ -247,7 +247,7 @@ std::string read_command_list_digest(const std::vector<std::string>& commands) {
 std::string format_live_read_session_hint_json(std::int64_t uptime_seconds,
                                                const std::vector<std::string>& read_commands) {
     return "{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\","
-           "\"session_id_echo\":\"mini-kv-live-read-v96\","
+           "\"session_id_echo\":\"mini-kv-live-read-v97\","
            "\"server_uptime_bucket\":" + field_string(uptime_bucket_for_seconds(uptime_seconds)) +
            ",\"read_command_list_digest\":" + field_string(read_command_list_digest(read_commands)) +
            ",\"read_command_count\":" + std::to_string(read_commands.size()) +

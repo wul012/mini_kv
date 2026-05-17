@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.96.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.97.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -93,6 +93,14 @@ target_compile_definitions(minikv_command_tests
 )
 
 add_test(NAME command_tests COMMAND minikv_command_tests)
+
+add_executable(minikv_managed_audit_receipts_tests
+    tests/managed_audit_receipts_tests.cpp
+)
+
+target_link_libraries(minikv_managed_audit_receipts_tests PRIVATE minikv)
+
+add_test(NAME managed_audit_receipts_tests COMMAND minikv_managed_audit_receipts_tests)
 
 add_executable(minikv_readonly_fixture_tests
     tests/readonly_fixture_tests.cpp

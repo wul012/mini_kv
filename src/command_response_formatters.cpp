@@ -368,6 +368,8 @@ std::string format_info_json(std::size_t live_keys,
            managed_audit_receipts::format_sandbox_adapter_non_participation_receipt_json() +
            ",\"managed_audit_sandbox_connection_receipt_echo_marker\":" +
            managed_audit_receipts::format_sandbox_connection_receipt_echo_marker_json() +
+           ",\"managed_audit_sandbox_connection_no_start_guard_receipt\":" +
+           managed_audit_receipts::format_sandbox_connection_no_start_guard_receipt_json() +
            ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
@@ -451,6 +453,7 @@ std::string format_smoke_json(std::size_t live_keys,
         "managed_audit_external_adapter_non_participation_receipt",
         "managed_audit_sandbox_adapter_non_participation_receipt",
         "managed_audit_sandbox_connection_receipt_echo_marker",
+        "managed_audit_sandbox_connection_no_start_guard_receipt",
         "read_only_aggregate",
         "not_order_authoritative",
         "does_not_execute_load_compact_setnxex_or_restore",
@@ -523,8 +526,10 @@ std::string format_smoke_json(std::size_t live_keys,
                 managed_audit_receipts::format_sandbox_adapter_non_participation_receipt_json() +
                 ",\"managed_audit_sandbox_connection_receipt_echo_marker\":" +
                 managed_audit_receipts::format_sandbox_connection_receipt_echo_marker_json() +
+                ",\"managed_audit_sandbox_connection_no_start_guard_receipt\":" +
+                managed_audit_receipts::format_sandbox_connection_no_start_guard_receipt_json() +
                 ",\"failure_taxonomy\":" + runtime_evidence_receipts::format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v229 may verify the mini-kv sandbox connection receipt echo marker, the v95 sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before manual sandbox connection packet verification; mini-kv must already be running and the read-only window must be open\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v231 may verify the mini-kv sandbox connection no-start guard receipt, the v96 sandbox connection receipt echo marker, the v95 sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before manual sandbox connection preflight verification; mini-kv must already be running and the read-only window must be open manually\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;
