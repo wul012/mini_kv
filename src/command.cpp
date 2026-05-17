@@ -8,6 +8,7 @@
 
 #include <chrono>
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -201,6 +202,26 @@ void CommandProcessor::auto_compact_wal_if_needed() {
     (void)wal_->compact_if_recommended(store_);
 }
 
+CommandResult CommandProcessor::execute_with_wal(std::function<std::optional<std::string>()> wal_record,
+                                                 std::function<CommandResult()> mutation) {
+    if (wal_ == nullptr) {
+        return mutation();
+    }
+
+    std::lock_guard lock(wal_command_mutex());
+    const auto record = wal_record();
+    if (!record.has_value()) {
+        return {"0"};
+    }
+    if (!wal_->append(*record)) {
+        return wal_error();
+    }
+
+    CommandResult result = mutation();
+    auto_compact_wal_if_needed();
+    return result;
+}
+
 CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_view command, std::istringstream& input) {
     if (command == "STATS") {
         if (has_extra_token(input)) {
@@ -363,19 +384,12 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             return usage("SET key value");
         }
 
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            if (!wal_->append(std::string{"SET "} + key + " " + value)) {
-                return wal_error();
-            }
-
-            const bool inserted = store_.set(key, value);
-            auto_compact_wal_if_needed();
-            return {inserted ? "OK inserted" : "OK updated"};
-        }
-
-        const bool inserted = store_.set(key, value);
-        return {inserted ? "OK inserted" : "OK updated"};
+        return execute_with_wal(
+            [key, value] { return std::optional<std::string>{std::string{"SET "} + key + " " + value}; },
+            [this, key, value] {
+                const bool inserted = store_.set(key, value);
+                return CommandResult{inserted ? "OK inserted" : "OK updated"};
+            });
     }
 
     if (command == "SETNXEX") {
@@ -392,22 +406,17 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         }
 
         const auto expires_at = Store::Clock::now() + *seconds;
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            if (store_.contains(key)) {
-                return {"0"};
-            }
-
-            if (!wal_->append(format_setex_at(key, expires_at, value))) {
-                return wal_error();
-            }
-
-            const bool claimed = store_.set_if_absent(key, value, expires_at);
-            auto_compact_wal_if_needed();
-            return {claimed ? "1" : "0"};
-        }
-
-        return {store_.set_if_absent(key, value, expires_at) ? "1" : "0"};
+        return execute_with_wal(
+            [this, key, expires_at, value]() -> std::optional<std::string> {
+                if (store_.contains(key)) {
+                    return std::nullopt;
+                }
+                return format_setex_at(key, expires_at, value);
+            },
+            [this, key, value, expires_at] {
+                const bool claimed = store_.set_if_absent(key, value, expires_at);
+                return CommandResult{claimed ? "1" : "0"};
+            });
     }
 
     if (command == "GET") {
@@ -434,26 +443,17 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             return usage("DEL key");
         }
 
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            if (!store_.contains(key)) {
-                return {"0"};
-            }
-
-            if (!wal_->append(std::string{"DEL "} + key)) {
-                return wal_error();
-            }
-
-            const bool erased = store_.erase(key);
-            auto_compact_wal_if_needed();
-            return {erased ? "1" : "0"};
-        }
-
-        if (!store_.contains(key)) {
-            return {"0"};
-        }
-
-        return {store_.erase(key) ? "1" : "0"};
+        return execute_with_wal(
+            [this, key]() -> std::optional<std::string> {
+                if (!store_.contains(key)) {
+                    return std::nullopt;
+                }
+                return std::string{"DEL "} + key;
+            },
+            [this, key] {
+                const bool erased = store_.erase(key);
+                return CommandResult{erased ? "1" : "0"};
+            });
     }
 
     if (command == "EXPIRE") {
@@ -466,28 +466,18 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             return usage("EXPIRE key seconds");
         }
 
-        if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
-            if (!store_.contains(key)) {
-                return {"0"};
-            }
-
-            const auto expires_at = Store::Clock::now() + *seconds;
-            if (!wal_->append(format_expires_at(key, expires_at))) {
-                return wal_error();
-            }
-
-            const bool updated = store_.expire_at(key, expires_at);
-            auto_compact_wal_if_needed();
-            return {updated ? "1" : "0"};
-        }
-
-        if (!store_.contains(key)) {
-            return {"0"};
-        }
-
         const auto expires_at = Store::Clock::now() + *seconds;
-        return {store_.expire_at(key, expires_at) ? "1" : "0"};
+        return execute_with_wal(
+            [this, key, expires_at]() -> std::optional<std::string> {
+                if (!store_.contains(key)) {
+                    return std::nullopt;
+                }
+                return format_expires_at(key, expires_at);
+            },
+            [this, key, expires_at] {
+                const bool updated = store_.expire_at(key, expires_at);
+                return CommandResult{updated ? "1" : "0"};
+            });
     }
 
     if (command == "TTL") {

@@ -36,8 +36,14 @@ int main() {
         result = processor.execute("SETNXEX token 60 claimed");
         assert(result.response == "1");
 
+        result = processor.execute("SETNXEX token 60 duplicate");
+        assert(result.response == "0");
+
         result = processor.execute("DEL phrase");
         assert(result.response == "1");
+
+        result = processor.execute("DEL missing");
+        assert(result.response == "0");
 
         result = processor.execute("SET stale old");
         assert(result.response == "OK inserted");
@@ -45,10 +51,15 @@ int main() {
         result = processor.execute("EXPIRE stale 1");
         assert(result.response == "1");
 
+        result = processor.execute("EXPIRE missing 60");
+        assert(result.response == "0");
+
         std::this_thread::sleep_for(1100ms);
 
         result = processor.execute("GET stale");
         assert(result.response == "(nil)");
+
+        assert(wal.maintenance_report(store).records == 7);
     }
 
     {

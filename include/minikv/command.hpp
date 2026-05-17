@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -94,6 +95,8 @@ public:
 private:
     CommandResult execute_trimmed(std::string_view trimmed);
     CommandResult execute_runtime_evidence_command(std::string_view command, std::istringstream& input);
+    CommandResult execute_with_wal(std::function<std::optional<std::string>()> wal_record,
+                                   std::function<CommandResult()> mutation);
     void auto_compact_wal_if_needed();
 
     Store& store_;
