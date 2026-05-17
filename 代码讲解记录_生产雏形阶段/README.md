@@ -1,5 +1,6 @@
 # mini-kv 代码讲解记录_生产雏形阶段
 
+- `152-version-96-sandbox-connection-receipt-echo-marker.md`: v96 adds `managed_audit_sandbox_connection_receipt_echo_marker` for Node v229, consumes the historical v95 sandbox receipt digest, and keeps mini-kv read-only with no connection execution, credential value read, schema rehearsal, managed audit write, restore/load/compact, or Java order authority.
 ## 最新新增
 
 - `151-version-95-string-utils-and-version-sweep.md`：说明 v95 如何把 `trim_copy` / `to_upper` 收拢到 `include/minikv/string_utils.hpp`，并把版本、fixture、runtime evidence 和测试同步到 `0.95.0` / `v95`，同时把 `command.cpp` 继续压到 1000 行以下。

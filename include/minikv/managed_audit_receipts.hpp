@@ -22,4 +22,7 @@ std::string format_external_adapter_non_participation_receipt_json();
 std::string sandbox_adapter_non_participation_receipt_digest();
 std::string format_sandbox_adapter_non_participation_receipt_json();
 
+std::string sandbox_connection_receipt_echo_marker_digest();
+std::string format_sandbox_connection_receipt_echo_marker_json();
+
 } // namespace minikv::managed_audit_receipts

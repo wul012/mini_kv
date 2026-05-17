@@ -52,7 +52,7 @@ constexpr RuntimeManagedAuditAdapterRestoreBoundaryReceipt restore_boundary_rece
     "v85",
     "c/85/",
     "fnv1a64:1ea4570c967cfdb1",
-    "c/95/",
+    "c/96/",
     "mini-kv remains a read-only evidence provider for managed audit adapter preparation",
     "verify mini-kv restore/write boundary before managed audit dry-run adapter candidate work",
     true,
@@ -90,7 +90,7 @@ constexpr RuntimeManagedAuditAdapterNonAuthoritativeStorageReceipt non_authorita
     "v86",
     "c/86/",
     "fnv1a64:f39d8e3ef98654ea",
-    "c/95/",
+    "c/96/",
     "mini-kv is non-authoritative read-only storage evidence, not the managed audit store",
     "verify mini-kv storage is non-authoritative before managed audit adapter production-hardening readiness gate",
     true,
@@ -133,7 +133,7 @@ constexpr RuntimeCommandDispatchQualityReceipt command_dispatch_quality_receipt 
     "v87",
     "c/87/",
     "fnv1a64:111f0daf1283eab6",
-    "c/95/",
+    "c/96/",
     "runtime_evidence_command_family",
     "STATS,STATSJSON,SMOKEJSON,STORAGEJSON,HEALTH,INFO,INFOJSON,COMMANDS,COMMANDSJSON",
     "command dispatch quality receipt only; no write, admin, WAL, snapshot, restore, or managed audit storage behavior change",
@@ -179,7 +179,7 @@ constexpr RuntimeAdapterShellNonStorageGuardReceipt adapter_shell_guard_receipt 
     "v88",
     "c/88/",
     "fnv1a64:4aa6d12fb067e2a6",
-    "c/95/",
+    "c/96/",
     "ManagedAuditAdapter disabled shell",
     "adapter shell non-storage guard receipt only; mini-kv remains runtime evidence and is not a managed audit adapter storage backend",
     "verify mini-kv is not the adapter shell storage backend before local adapter candidate dry-run",
@@ -231,7 +231,7 @@ constexpr RuntimeManagedAuditExternalAdapterNonParticipationReceipt external_ada
     "v89",
     "c/89/",
     "fnv1a64:76411286a0913dc8",
-    "c/95/",
+    "c/96/",
     "real external managed audit adapter",
     "runtime evidence provider only",
     "external adapter non-participation receipt only; mini-kv is not an external managed audit adapter storage backend and keeps runtime evidence provider role",
@@ -290,11 +290,89 @@ constexpr RuntimeManagedAuditSandboxAdapterNonParticipationReceipt sandbox_adapt
     "v90",
     "c/90/",
     "fnv1a64:0dfb07cd2f8de289",
-    "c/95/",
+    "c/96/",
     "sandbox managed audit adapter dry-run",
     "runtime evidence provider only",
     "sandbox adapter runtime evidence non-participation receipt only; mini-kv is not a sandbox audit storage backend and does not read credentials or write managed audit state",
     "verify mini-kv sandbox non-participation before managed audit sandbox adapter dry-run package",
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+};
+
+struct RuntimeManagedAuditSandboxConnectionReceiptEchoMarker {
+    std::string_view consumer;
+    std::string_view consumed_by;
+    std::string_view consumed_release_version;
+    std::string_view consumed_artifact_path_hint;
+    std::string_view consumed_receipt_digest;
+    std::string_view current_artifact_path_hint;
+    std::string_view source_operator_packet_version;
+    std::string_view source_operator_packet_profile;
+    std::string_view packet_mode;
+    std::string_view owner_approval_artifact_id_field;
+    std::string_view credential_handle_name_field;
+    std::string_view schema_rehearsal_id_field;
+    std::string_view rollback_path_id_field;
+    std::string_view manual_abort_marker;
+    std::string_view runtime_role;
+    std::string_view boundary;
+    std::string_view node_action;
+    int timeout_budget_ms;
+    int required_operator_field_count;
+    bool read_only;
+    bool execution_allowed;
+    bool connection_execution_allowed;
+    bool credential_value_required;
+    bool credential_value_read_allowed;
+    bool schema_migration_execution_allowed;
+    bool managed_audit_write_allowed;
+    bool sandbox_adapter_storage_backend;
+    bool participates_in_sandbox_connection;
+    bool sandbox_managed_audit_state_write_allowed;
+    bool node_auto_start_allowed;
+    bool restore_execution_allowed;
+    bool load_restore_compact_executed;
+    bool write_handler_changed;
+    bool admin_handler_changed;
+    bool wal_snapshot_restore_touched;
+    bool order_authoritative;
+};
+
+constexpr RuntimeManagedAuditSandboxConnectionReceiptEchoMarker sandbox_connection_echo_marker = {
+    "Node v229 manual sandbox connection packet verification",
+    "Node v228 managed audit manual sandbox connection operator packet",
+    "v95",
+    "c/95/",
+    "fnv1a64:ceaed265f7f9560c",
+    "c/96/",
+    "Node v228",
+    "managed-audit-manual-sandbox-connection-operator-packet.v1",
+    "manual-sandbox-connection-operator-packet-only",
+    "ORDEROPS_MANAGED_AUDIT_OWNER_APPROVAL_ARTIFACT_ID",
+    "ORDEROPS_MANAGED_AUDIT_SANDBOX_CREDENTIAL_HANDLE",
+    "ORDEROPS_MANAGED_AUDIT_SCHEMA_REHEARSAL_ID",
+    "ORDEROPS_MANAGED_AUDIT_ROLLBACK_PATH_ID",
+    "ORDEROPS_MANAGED_AUDIT_MANUAL_ABORT",
+    "runtime evidence provider only",
+    "sandbox connection receipt echo marker only; mini-kv echoes Node v228 operator packet field handles but remains outside managed audit connection, credential reads, schema migration, storage, and state writes",
+    "verify mini-kv receipt echo before Node v229 manual sandbox connection packet verification",
+    15000,
+    6,
     true,
     false,
     false,
@@ -647,6 +725,91 @@ std::string format_sandbox_adapter_non_participation_receipt_json() {
         {"order_authoritative", field_bool(receipt.order_authoritative)},
         {"boundary", field_string(receipt.boundary)},
         {"node_action", field_string(receipt.node_action)},
+    });
+}
+
+std::string sandbox_connection_receipt_echo_marker_digest() {
+    const auto& marker = sandbox_connection_echo_marker;
+    return runtime_evidence::digest(
+        "mini-kv-managed-audit-sandbox-connection-receipt-echo-marker",
+        {
+            {std::string{version}},
+            {std::string{marker.consumed_by}},
+            {std::string{marker.consumed_release_version}},
+            {std::string{marker.consumed_artifact_path_hint}},
+            {std::string{marker.consumed_receipt_digest}},
+            {std::string{marker.current_artifact_path_hint}},
+            {std::string{marker.source_operator_packet_version}},
+            {std::string{marker.source_operator_packet_profile}},
+            {std::string{marker.packet_mode}},
+            {std::string{marker.owner_approval_artifact_id_field}},
+            {std::string{marker.credential_handle_name_field}},
+            {std::string{marker.schema_rehearsal_id_field}},
+            {std::string{marker.rollback_path_id_field}},
+            {std::to_string(marker.timeout_budget_ms)},
+            {std::string{marker.manual_abort_marker}},
+            {std::to_string(marker.required_operator_field_count)},
+            {bool_part(marker.read_only)},
+            {bool_part(marker.execution_allowed)},
+            {bool_part(marker.connection_execution_allowed)},
+            {bool_part(marker.credential_value_required)},
+            {bool_part(marker.credential_value_read_allowed)},
+            {bool_part(marker.schema_migration_execution_allowed)},
+            {bool_part(marker.managed_audit_write_allowed)},
+            {bool_part(marker.sandbox_adapter_storage_backend)},
+            {bool_part(marker.participates_in_sandbox_connection)},
+            {bool_part(marker.sandbox_managed_audit_state_write_allowed)},
+            {bool_part(marker.node_auto_start_allowed)},
+            {bool_part(marker.restore_execution_allowed)},
+            {bool_part(marker.load_restore_compact_executed)},
+            {bool_part(marker.write_handler_changed)},
+            {bool_part(marker.admin_handler_changed)},
+            {bool_part(marker.wal_snapshot_restore_touched)},
+            {bool_part(marker.order_authoritative)},
+        });
+}
+
+std::string format_sandbox_connection_receipt_echo_marker_json() {
+    const auto& marker = sandbox_connection_echo_marker;
+    return json_object({
+        {"consumer", field_string(marker.consumer)},
+        {"source_version", field_string(version)},
+        {"consumed_by", field_string(marker.consumed_by)},
+        {"consumed_release_version", field_string(marker.consumed_release_version)},
+        {"consumed_artifact_path_hint", field_string(marker.consumed_artifact_path_hint)},
+        {"consumed_receipt_digest", field_string(marker.consumed_receipt_digest)},
+        {"current_artifact_path_hint", field_string(marker.current_artifact_path_hint)},
+        {"source_operator_packet_version", field_string(marker.source_operator_packet_version)},
+        {"source_operator_packet_profile", field_string(marker.source_operator_packet_profile)},
+        {"packet_mode", field_string(marker.packet_mode)},
+        {"owner_approval_artifact_id_field", field_string(marker.owner_approval_artifact_id_field)},
+        {"credential_handle_name_field", field_string(marker.credential_handle_name_field)},
+        {"schema_rehearsal_id_field", field_string(marker.schema_rehearsal_id_field)},
+        {"rollback_path_id_field", field_string(marker.rollback_path_id_field)},
+        {"timeout_budget_ms", std::to_string(marker.timeout_budget_ms)},
+        {"manual_abort_marker", field_string(marker.manual_abort_marker)},
+        {"required_operator_field_count", std::to_string(marker.required_operator_field_count)},
+        {"runtime_role", field_string(marker.runtime_role)},
+        {"marker_digest", field_string(sandbox_connection_receipt_echo_marker_digest())},
+        {"read_only", field_bool(marker.read_only)},
+        {"execution_allowed", field_bool(marker.execution_allowed)},
+        {"connection_execution_allowed", field_bool(marker.connection_execution_allowed)},
+        {"credential_value_required", field_bool(marker.credential_value_required)},
+        {"credential_value_read_allowed", field_bool(marker.credential_value_read_allowed)},
+        {"schema_migration_execution_allowed", field_bool(marker.schema_migration_execution_allowed)},
+        {"managed_audit_write_allowed", field_bool(marker.managed_audit_write_allowed)},
+        {"sandbox_adapter_storage_backend", field_bool(marker.sandbox_adapter_storage_backend)},
+        {"participates_in_sandbox_connection", field_bool(marker.participates_in_sandbox_connection)},
+        {"sandbox_managed_audit_state_write_allowed", field_bool(marker.sandbox_managed_audit_state_write_allowed)},
+        {"node_auto_start_allowed", field_bool(marker.node_auto_start_allowed)},
+        {"restore_execution_allowed", field_bool(marker.restore_execution_allowed)},
+        {"load_restore_compact_executed", field_bool(marker.load_restore_compact_executed)},
+        {"write_handler_changed", field_bool(marker.write_handler_changed)},
+        {"admin_handler_changed", field_bool(marker.admin_handler_changed)},
+        {"wal_snapshot_restore_touched", field_bool(marker.wal_snapshot_restore_touched)},
+        {"order_authoritative", field_bool(marker.order_authoritative)},
+        {"boundary", field_string(marker.boundary)},
+        {"node_action", field_string(marker.node_action)},
     });
 }
 
