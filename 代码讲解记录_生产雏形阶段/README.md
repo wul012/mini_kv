@@ -251,3 +251,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 - `146-version-90-external-adapter-non-participation-receipt.md`：说明 v90 如何在 `INFOJSON` / `SMOKEJSON` 中补充 `managed_audit_external_adapter_non_participation_receipt`，让 Node v223 能只读确认 mini-kv 不是 external adapter storage backend、不读取 credentials、不执行 migration、不参与真实 external adapter，并继续保持不写 managed audit、不过 Java order authority 边界。
 
 - `147-version-91-sandbox-adapter-runtime-evidence-guard.md`：说明 v91 如何在 `INFOJSON` / `SMOKEJSON` 中加入 `managed_audit_sandbox_adapter_non_participation_receipt`，让 Node v225 只读确认 mini-kv 不是 sandbox audit storage backend、不读 sandbox/production credentials、不执行 schema migration、不写 managed audit state，并继续保持不执行 restore、不进入 Java order authority 边界。
+
+## v101 latest addition
+
+- `157-version-101-runtime-no-start-no-write-follow-up.md`: explains v101 `SMOKEJSON.runtime_no_start_no_write_follow_up`, `fixtures/release/runtime-no-start-no-write-follow-up.json`, Node v236 dry-run envelope handle consumption for Node v237 readiness, no-start/no-write boundary fields, tests, real TCP smoke, and archive evidence.

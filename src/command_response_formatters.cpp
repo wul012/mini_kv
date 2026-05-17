@@ -106,6 +106,56 @@ std::string format_protocol_json_array(std::string_view protocol) {
     return response;
 }
 
+std::string format_runtime_no_start_no_write_follow_up_json(const std::vector<std::string>& read_commands) {
+    return "{\"follow_up_version\":\"mini-kv-runtime-no-start-no-write-follow-up.v1\","
+           "\"follow_up_fixture_path\":\"fixtures/release/runtime-no-start-no-write-follow-up.json\","
+           "\"source_envelope\":\"Node v236 manual sandbox connection dry-run request envelope\","
+           "\"consumer_hint\":\"Node v237 manual sandbox connection readiness gate\","
+           "\"current_project_version\":" + json_string(version) +
+           ",\"current_release_version\":\"v101\","
+           "\"current_artifact_path_hint\":\"c/101/\","
+           "\"current_live_read_session_echo\":\"mini-kv-live-read-v101\","
+           "\"binary_provenance_digest\":" +
+           json_string(runtime_evidence_receipts::binary_provenance_digest()) +
+           ",\"retention_check_digest\":" +
+           json_string(runtime_evidence_receipts::retention_provenance_check_digest()) +
+           ",\"retention_replay_marker_digest\":" +
+           json_string(runtime_evidence_receipts::retention_provenance_replay_marker_digest()) +
+           ",\"restore_boundary_receipt_digest\":" +
+           json_string(managed_audit_receipts::restore_boundary_receipt_digest()) +
+           ",\"non_authoritative_storage_receipt_digest\":" +
+           json_string(managed_audit_receipts::non_authoritative_storage_receipt_digest()) +
+           ",\"command_dispatch_receipt_digest\":" +
+           json_string(managed_audit_receipts::command_dispatch_quality_receipt_digest()) +
+           ",\"adapter_shell_receipt_digest\":" +
+           json_string(managed_audit_receipts::adapter_shell_non_storage_guard_receipt_digest()) +
+           ",\"external_adapter_receipt_digest\":" +
+           json_string(managed_audit_receipts::external_adapter_non_participation_receipt_digest()) +
+           ",\"sandbox_adapter_receipt_digest\":" +
+           json_string(managed_audit_receipts::sandbox_adapter_non_participation_receipt_digest()) +
+           ",\"sandbox_connection_echo_marker_digest\":" +
+           json_string(managed_audit_receipts::sandbox_connection_receipt_echo_marker_digest()) +
+           ",\"sandbox_no_start_receipt_digest\":" +
+           json_string(managed_audit_receipts::sandbox_connection_no_start_guard_receipt_digest()) +
+           ",\"failure_taxonomy_digest\":" +
+           json_string(runtime_evidence_receipts::smoke_failure_taxonomy_digest()) +
+           ",\"read_command_list_digest\":" +
+           json_string(runtime_evidence_receipts::read_command_list_digest(read_commands)) +
+           ",\"read_only\":true,\"execution_allowed\":false,"
+           "\"node_auto_start_allowed\":false,\"java_auto_start_allowed\":false,"
+           "\"mini_kv_auto_start_allowed\":false,\"connection_execution_allowed\":false,"
+           "\"write_commands_executed\":false,\"admin_commands_executed\":false,"
+           "\"runtime_write_observed\":false,\"managed_audit_store\":false,"
+           "\"storage_write_allowed\":false,\"managed_audit_write_executed\":false,"
+           "\"sandbox_managed_audit_state_write_allowed\":false,"
+           "\"credential_value_read_allowed\":false,"
+           "\"schema_rehearsal_execution_allowed\":false,"
+           "\"schema_migration_execution_allowed\":false,"
+           "\"restore_execution_allowed\":false,\"load_restore_compact_executed\":false,"
+           "\"order_authoritative\":false,"
+           "\"node_action\":\"verify no-start/no-write follow-up before Node v237 manual sandbox connection readiness gate\"}";
+}
+
 std::string format_connection_stats(const CommandConnectionStats& stats) {
     if (!stats.available) {
         return " connection_stats_available=no";
@@ -454,6 +504,7 @@ std::string format_smoke_json(std::size_t live_keys,
         "managed_audit_sandbox_adapter_non_participation_receipt",
         "managed_audit_sandbox_connection_receipt_echo_marker",
         "managed_audit_sandbox_connection_no_start_guard_receipt",
+        "runtime_no_start_no_write_follow_up",
         "read_only_aggregate",
         "not_order_authoritative",
         "does_not_execute_load_compact_setnxex_or_restore",
@@ -528,6 +579,8 @@ std::string format_smoke_json(std::size_t live_keys,
                 managed_audit_receipts::format_sandbox_connection_receipt_echo_marker_json() +
                 ",\"managed_audit_sandbox_connection_no_start_guard_receipt\":" +
                 managed_audit_receipts::format_sandbox_connection_no_start_guard_receipt_json() +
+                ",\"runtime_no_start_no_write_follow_up\":" +
+                format_runtime_no_start_no_write_follow_up_json(read_commands) +
                 ",\"failure_taxonomy\":" + runtime_evidence_receipts::format_smoke_failure_taxonomy_json() +
                 ",\"diagnostics\":{\"node_consumption\":\"Node v231 may verify the mini-kv sandbox connection no-start guard receipt, the v96 sandbox connection receipt echo marker, the v95 sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before manual sandbox connection preflight verification; mini-kv must already be running and the read-only window must be open manually\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +

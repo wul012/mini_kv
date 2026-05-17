@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.100.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.101.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -436,3 +436,16 @@ target_compile_definitions(minikv_current_runtime_fixture_rolling_guard_tests
 )
 
 add_test(NAME current_runtime_fixture_rolling_guard_tests COMMAND minikv_current_runtime_fixture_rolling_guard_tests)
+
+add_executable(minikv_runtime_no_start_no_write_follow_up_tests
+    tests/runtime_no_start_no_write_follow_up_tests.cpp
+)
+
+target_link_libraries(minikv_runtime_no_start_no_write_follow_up_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_runtime_no_start_no_write_follow_up_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME runtime_no_start_no_write_follow_up_tests COMMAND minikv_runtime_no_start_no_write_follow_up_tests)
