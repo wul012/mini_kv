@@ -1,6 +1,6 @@
 #include "minikv/command.hpp"
 
-#include "minikv/runtime_evidence.hpp"
+#include "minikv/managed_audit_receipts.hpp"
 #include "minikv/snapshot.hpp"
 #include "minikv/version.hpp"
 #include "minikv/wal.hpp"
@@ -16,6 +16,7 @@
 #include <sstream>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace minikv {
 namespace {
@@ -483,8 +484,8 @@ struct RuntimeBinaryProvenanceHint {
 
 constexpr RuntimeBinaryProvenanceHint runtime_binary_provenance_hint = {
     "Node v208 managed audit persistence boundary candidate",
-    "c/91/",
-    "cmake-build-v91/minikv_server and cmake-build-v91/minikv_client from the current CMake build",
+    "c/92/",
+    "cmake-build-v92/minikv_server and cmake-build-v92/minikv_client from the current CMake build",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work",
@@ -508,7 +509,7 @@ struct RuntimeRetentionProvenanceCheck {
 
 constexpr RuntimeRetentionProvenanceCheck runtime_retention_provenance_check = {
     "Node v211 managed audit identity approval provenance dry-run packet",
-    "c/91/",
+    "c/92/",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "c/81/",
@@ -539,304 +540,13 @@ constexpr RuntimeRetentionProvenanceReplayMarker runtime_retention_provenance_re
     "v84",
     "c/84/",
     "fnv1a64:357cc7e9eec3f223",
-    "c/91/",
+    "c/92/",
     "verify v84 retention provenance consumption before managed audit packet restore drill planning",
     true,
     false,
     false,
     false,
 };
-
-struct RuntimeManagedAuditAdapterRestoreBoundaryReceipt {
-    std::string_view consumer;
-    std::string_view consumed_by;
-    std::string_view consumed_release_version;
-    std::string_view consumed_artifact_path_hint;
-    std::string_view consumed_marker_digest;
-    std::string_view current_artifact_path_hint;
-    std::string_view boundary;
-    std::string_view node_action;
-    bool read_only;
-    bool execution_allowed;
-    bool adapter_write_allowed;
-    bool restore_execution_allowed;
-    bool load_restore_compact_executed;
-    bool managed_audit_write_executed;
-    bool order_authoritative;
-};
-
-constexpr RuntimeManagedAuditAdapterRestoreBoundaryReceipt
-    runtime_managed_audit_adapter_restore_boundary_receipt = {
-        "Node v215 managed audit dry-run adapter candidate",
-        "Node v213 managed audit packet restore drill plan",
-        "v85",
-        "c/85/",
-        "fnv1a64:1ea4570c967cfdb1",
-        "c/91/",
-        "mini-kv remains a read-only evidence provider for managed audit adapter preparation",
-        "verify mini-kv restore/write boundary before managed audit dry-run adapter candidate work",
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-    };
-
-struct RuntimeManagedAuditAdapterNonAuthoritativeStorageReceipt {
-    std::string_view consumer;
-    std::string_view consumed_by;
-    std::string_view consumed_release_version;
-    std::string_view consumed_artifact_path_hint;
-    std::string_view consumed_receipt_digest;
-    std::string_view current_artifact_path_hint;
-    std::string_view boundary;
-    std::string_view node_action;
-    bool read_only;
-    bool execution_allowed;
-    bool managed_audit_store;
-    bool storage_write_allowed;
-    bool admin_commands_allowed;
-    bool restore_execution_allowed;
-    bool load_restore_compact_executed;
-    bool managed_audit_write_executed;
-    bool order_authoritative;
-};
-
-constexpr RuntimeManagedAuditAdapterNonAuthoritativeStorageReceipt
-    runtime_managed_audit_adapter_non_authoritative_storage_receipt = {
-        "Node v217 managed audit adapter production-hardening readiness gate",
-        "Node v215 managed audit dry-run adapter candidate",
-        "v86",
-        "c/86/",
-        "fnv1a64:f39d8e3ef98654ea",
-        "c/91/",
-        "mini-kv is non-authoritative read-only storage evidence, not the managed audit store",
-        "verify mini-kv storage is non-authoritative before managed audit adapter production-hardening readiness gate",
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-    };
-
-struct RuntimeCommandDispatchQualityReceipt {
-    std::string_view consumer;
-    std::string_view consumed_by;
-    std::string_view consumed_release_version;
-    std::string_view consumed_artifact_path_hint;
-    std::string_view consumed_receipt_digest;
-    std::string_view current_artifact_path_hint;
-    std::string_view dispatch_family;
-    std::string_view split_commands;
-    std::string_view boundary;
-    std::string_view node_action;
-    bool read_only;
-    bool execution_allowed;
-    bool dispatch_split_applied;
-    bool handler_table_required;
-    bool write_handler_changed;
-    bool admin_handler_changed;
-    bool wal_snapshot_restore_touched;
-    bool behavior_changed;
-    bool fixture_contract_preserved;
-    bool order_authoritative;
-};
-
-constexpr RuntimeCommandDispatchQualityReceipt runtime_command_dispatch_quality_receipt = {
-    "Node v219 managed audit adapter implementation precheck packet",
-    "Node v217 managed audit adapter production-hardening readiness gate",
-    "v87",
-    "c/87/",
-    "fnv1a64:111f0daf1283eab6",
-    "c/91/",
-    "runtime_evidence_command_family",
-    "STATS,STATSJSON,SMOKEJSON,STORAGEJSON,HEALTH,INFO,INFOJSON,COMMANDS,COMMANDSJSON",
-    "command dispatch quality receipt only; no write, admin, WAL, snapshot, restore, or managed audit storage behavior change",
-    "verify mini-kv command dispatch read-only quality before managed audit adapter implementation precheck",
-    true,
-    false,
-    true,
-    false,
-    false,
-    false,
-    false,
-    false,
-    true,
-    false,
-};
-
-struct RuntimeAdapterShellNonStorageGuardReceipt {
-    std::string_view consumer;
-    std::string_view consumed_by;
-    std::string_view consumed_release_version;
-    std::string_view consumed_artifact_path_hint;
-    std::string_view consumed_receipt_digest;
-    std::string_view current_artifact_path_hint;
-    std::string_view adapter_shell;
-    std::string_view boundary;
-    std::string_view node_action;
-    bool read_only;
-    bool execution_allowed;
-    bool adapter_shell_storage_backend;
-    bool storage_backend_allowed;
-    bool write_handler_changed;
-    bool admin_handler_changed;
-    bool restore_execution_allowed;
-    bool load_restore_compact_executed;
-    bool managed_audit_write_executed;
-    bool local_dry_run_records_written;
-    bool order_authoritative;
-};
-
-constexpr RuntimeAdapterShellNonStorageGuardReceipt
-    runtime_adapter_shell_non_storage_guard_receipt = {
-        "Node v221 managed audit local adapter candidate dry-run",
-        "Node v220 managed audit adapter interface and disabled shell",
-        "v88",
-        "c/88/",
-        "fnv1a64:4aa6d12fb067e2a6",
-        "c/91/",
-        "ManagedAuditAdapter disabled shell",
-        "adapter shell non-storage guard receipt only; mini-kv remains runtime evidence and is not a managed audit adapter storage backend",
-        "verify mini-kv is not the adapter shell storage backend before local adapter candidate dry-run",
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-    };
-
-struct RuntimeManagedAuditExternalAdapterNonParticipationReceipt {
-    std::string_view consumer;
-    std::string_view consumed_by;
-    std::string_view consumed_release_version;
-    std::string_view consumed_artifact_path_hint;
-    std::string_view consumed_receipt_digest;
-    std::string_view current_artifact_path_hint;
-    std::string_view adapter_target;
-    std::string_view runtime_role;
-    std::string_view boundary;
-    std::string_view node_action;
-    bool read_only;
-    bool execution_allowed;
-    bool external_adapter_storage_backend;
-    bool participates_in_external_adapter;
-    bool credential_required;
-    bool credential_read_allowed;
-    bool migration_required;
-    bool migration_execution_allowed;
-    bool schema_authoritative;
-    bool write_handler_changed;
-    bool admin_handler_changed;
-    bool restore_execution_allowed;
-    bool load_restore_compact_executed;
-    bool managed_audit_write_executed;
-    bool local_dry_run_records_written;
-    bool order_authoritative;
-};
-
-struct RuntimeManagedAuditSandboxAdapterNonParticipationReceipt {
-    std::string_view consumer;
-    std::string_view consumed_by;
-    std::string_view consumed_release_version;
-    std::string_view consumed_artifact_path_hint;
-    std::string_view consumed_receipt_digest;
-    std::string_view current_artifact_path_hint;
-    std::string_view adapter_target;
-    std::string_view runtime_role;
-    std::string_view boundary;
-    std::string_view node_action;
-    bool read_only;
-    bool execution_allowed;
-    bool sandbox_adapter_storage_backend;
-    bool participates_in_sandbox_adapter;
-    bool credential_value_required;
-    bool credential_value_read_allowed;
-    bool production_credential_read_allowed;
-    bool schema_migration_execution_allowed;
-    bool sandbox_schema_authoritative;
-    bool sandbox_managed_audit_state_write_allowed;
-    bool write_handler_changed;
-    bool admin_handler_changed;
-    bool restore_execution_allowed;
-    bool load_restore_compact_executed;
-    bool managed_audit_write_executed;
-    bool sandbox_dry_run_records_written;
-    bool order_authoritative;
-};
-
-constexpr RuntimeManagedAuditExternalAdapterNonParticipationReceipt
-    runtime_managed_audit_external_adapter_non_participation_receipt = {
-        "Node v223 managed audit external adapter connection readiness review",
-        "Node v222 managed audit local adapter candidate verification report",
-        "v89",
-        "c/89/",
-        "fnv1a64:76411286a0913dc8",
-        "c/91/",
-        "real external managed audit adapter",
-        "runtime evidence provider only",
-        "external adapter non-participation receipt only; mini-kv is not an external managed audit adapter storage backend and keeps runtime evidence provider role",
-        "verify mini-kv non-participation before external adapter connection readiness review",
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-    };
-
-constexpr RuntimeManagedAuditSandboxAdapterNonParticipationReceipt
-    runtime_managed_audit_sandbox_adapter_non_participation_receipt = {
-        "Node v225 managed audit sandbox adapter dry-run package",
-        "Node v224 managed audit sandbox adapter dry-run plan",
-        "v90",
-        "c/90/",
-        "fnv1a64:0dfb07cd2f8de289",
-        "c/91/",
-        "sandbox managed audit adapter dry-run",
-        "runtime evidence provider only",
-        "sandbox adapter runtime evidence non-participation receipt only; mini-kv is not a sandbox audit storage backend and does not read credentials or write managed audit state",
-        "verify mini-kv sandbox non-participation before managed audit sandbox adapter dry-run package",
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-    };
 
 std::uint64_t fnv1a64(std::string_view text);
 std::string format_hex64(std::uint64_t value);
@@ -868,7 +578,7 @@ std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
 std::string format_live_read_session_hint_json(std::int64_t uptime_seconds,
                                                const std::vector<std::string>& read_commands) {
     return "{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\","
-           "\"session_id_echo\":\"mini-kv-live-read-v91\","
+           "\"session_id_echo\":\"mini-kv-live-read-v92\","
            "\"server_uptime_bucket\":" + json_string(uptime_bucket_for_seconds(uptime_seconds)) +
            ",\"read_command_list_digest\":" + json_string(read_command_list_digest(read_commands)) +
            ",\"read_command_count\":" + std::to_string(read_commands.size()) +
@@ -1066,511 +776,6 @@ std::string format_runtime_retention_provenance_replay_marker_json() {
            ",\"managed_audit_write_executed\":" +
            format_json_bool(runtime_retention_provenance_replay_marker.managed_audit_write_executed) +
            ",\"node_action\":" + json_string(runtime_retention_provenance_replay_marker.node_action) + "}";
-}
-
-std::string managed_audit_adapter_restore_boundary_receipt_digest() {
-    std::string source;
-    append_digest_part(source, "mini-kv-managed-audit-adapter-restore-boundary-receipt");
-    append_digest_part(source, version);
-    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.consumed_by);
-    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.consumed_release_version);
-    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.consumed_artifact_path_hint);
-    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.consumed_marker_digest);
-    append_digest_part(source, runtime_managed_audit_adapter_restore_boundary_receipt.current_artifact_path_hint);
-    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.read_only));
-    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.execution_allowed));
-    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.adapter_write_allowed));
-    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.restore_execution_allowed));
-    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.load_restore_compact_executed));
-    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.managed_audit_write_executed));
-    append_digest_part(source, format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.order_authoritative));
-    return "fnv1a64:" + format_hex64(fnv1a64(source));
-}
-
-std::string format_runtime_managed_audit_adapter_restore_boundary_receipt_json() {
-    return "{\"consumer\":" +
-           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumer) +
-           ",\"source_version\":" + json_string(version) +
-           ",\"consumed_by\":" +
-           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumed_by) +
-           ",\"consumed_release_version\":" +
-           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumed_release_version) +
-           ",\"consumed_artifact_path_hint\":" +
-           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumed_artifact_path_hint) +
-           ",\"consumed_marker_digest\":" +
-           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.consumed_marker_digest) +
-           ",\"current_artifact_path_hint\":" +
-           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.current_artifact_path_hint) +
-           ",\"receipt_digest\":" +
-           json_string(managed_audit_adapter_restore_boundary_receipt_digest()) +
-           ",\"read_only\":" +
-           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.read_only) +
-           ",\"execution_allowed\":" +
-           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.execution_allowed) +
-           ",\"adapter_write_allowed\":" +
-           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.adapter_write_allowed) +
-           ",\"restore_execution_allowed\":" +
-           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.restore_execution_allowed) +
-           ",\"load_restore_compact_executed\":" +
-           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.load_restore_compact_executed) +
-           ",\"managed_audit_write_executed\":" +
-           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.managed_audit_write_executed) +
-           ",\"order_authoritative\":" +
-           format_json_bool(runtime_managed_audit_adapter_restore_boundary_receipt.order_authoritative) +
-           ",\"boundary\":" +
-           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.boundary) +
-           ",\"node_action\":" +
-           json_string(runtime_managed_audit_adapter_restore_boundary_receipt.node_action) + "}";
-}
-
-std::string managed_audit_adapter_non_authoritative_storage_receipt_digest() {
-    std::string source;
-    append_digest_part(source, "mini-kv-managed-audit-adapter-non-authoritative-storage-receipt");
-    append_digest_part(source, version);
-    append_digest_part(source,
-                       runtime_managed_audit_adapter_non_authoritative_storage_receipt.consumed_by);
-    append_digest_part(
-        source,
-        runtime_managed_audit_adapter_non_authoritative_storage_receipt.consumed_release_version);
-    append_digest_part(
-        source,
-        runtime_managed_audit_adapter_non_authoritative_storage_receipt.consumed_artifact_path_hint);
-    append_digest_part(
-        source,
-        runtime_managed_audit_adapter_non_authoritative_storage_receipt.consumed_receipt_digest);
-    append_digest_part(
-        source,
-        runtime_managed_audit_adapter_non_authoritative_storage_receipt.current_artifact_path_hint);
-    append_digest_part(
-        source, format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt.read_only));
-    append_digest_part(source,
-                       format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                                            .execution_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_adapter_non_authoritative_storage_receipt.managed_audit_store));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_adapter_non_authoritative_storage_receipt.storage_write_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_adapter_non_authoritative_storage_receipt.admin_commands_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                             .restore_execution_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                             .load_restore_compact_executed));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                             .managed_audit_write_executed));
-    append_digest_part(source,
-                       format_json_bool(
-                           runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                               .order_authoritative));
-    return "fnv1a64:" + format_hex64(fnv1a64(source));
-}
-
-std::string format_runtime_managed_audit_adapter_non_authoritative_storage_receipt_json() {
-    return "{\"consumer\":" +
-           json_string(runtime_managed_audit_adapter_non_authoritative_storage_receipt.consumer) +
-           ",\"source_version\":" + json_string(version) +
-           ",\"consumed_by\":" +
-           json_string(runtime_managed_audit_adapter_non_authoritative_storage_receipt.consumed_by) +
-           ",\"consumed_release_version\":" +
-           json_string(
-               runtime_managed_audit_adapter_non_authoritative_storage_receipt.consumed_release_version) +
-           ",\"consumed_artifact_path_hint\":" +
-           json_string(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                           .consumed_artifact_path_hint) +
-           ",\"consumed_receipt_digest\":" +
-           json_string(
-               runtime_managed_audit_adapter_non_authoritative_storage_receipt.consumed_receipt_digest) +
-           ",\"current_artifact_path_hint\":" +
-           json_string(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                           .current_artifact_path_hint) +
-           ",\"receipt_digest\":" +
-           json_string(managed_audit_adapter_non_authoritative_storage_receipt_digest()) +
-           ",\"read_only\":" +
-           format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt.read_only) +
-           ",\"execution_allowed\":" +
-           format_json_bool(
-               runtime_managed_audit_adapter_non_authoritative_storage_receipt.execution_allowed) +
-           ",\"managed_audit_store\":" +
-           format_json_bool(
-               runtime_managed_audit_adapter_non_authoritative_storage_receipt.managed_audit_store) +
-           ",\"storage_write_allowed\":" +
-           format_json_bool(
-               runtime_managed_audit_adapter_non_authoritative_storage_receipt.storage_write_allowed) +
-           ",\"admin_commands_allowed\":" +
-           format_json_bool(
-               runtime_managed_audit_adapter_non_authoritative_storage_receipt.admin_commands_allowed) +
-           ",\"restore_execution_allowed\":" +
-           format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                                .restore_execution_allowed) +
-           ",\"load_restore_compact_executed\":" +
-           format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                                .load_restore_compact_executed) +
-           ",\"managed_audit_write_executed\":" +
-           format_json_bool(runtime_managed_audit_adapter_non_authoritative_storage_receipt
-                                .managed_audit_write_executed) +
-           ",\"order_authoritative\":" +
-           format_json_bool(
-               runtime_managed_audit_adapter_non_authoritative_storage_receipt.order_authoritative) +
-           ",\"boundary\":" +
-           json_string(runtime_managed_audit_adapter_non_authoritative_storage_receipt.boundary) +
-           ",\"node_action\":" +
-           json_string(runtime_managed_audit_adapter_non_authoritative_storage_receipt.node_action) + "}";
-}
-
-std::string command_dispatch_quality_receipt_digest() {
-    std::string source;
-    append_digest_part(source, "mini-kv-command-dispatch-quality-receipt");
-    append_digest_part(source, version);
-    append_digest_part(source, runtime_command_dispatch_quality_receipt.consumed_by);
-    append_digest_part(source, runtime_command_dispatch_quality_receipt.consumed_release_version);
-    append_digest_part(source, runtime_command_dispatch_quality_receipt.consumed_artifact_path_hint);
-    append_digest_part(source, runtime_command_dispatch_quality_receipt.consumed_receipt_digest);
-    append_digest_part(source, runtime_command_dispatch_quality_receipt.current_artifact_path_hint);
-    append_digest_part(source, runtime_command_dispatch_quality_receipt.dispatch_family);
-    append_digest_part(source, runtime_command_dispatch_quality_receipt.split_commands);
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.read_only));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.execution_allowed));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.dispatch_split_applied));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.handler_table_required));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.write_handler_changed));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.admin_handler_changed));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.wal_snapshot_restore_touched));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.behavior_changed));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.fixture_contract_preserved));
-    append_digest_part(source, format_json_bool(runtime_command_dispatch_quality_receipt.order_authoritative));
-    return "fnv1a64:" + format_hex64(fnv1a64(source));
-}
-
-std::string format_runtime_command_dispatch_quality_receipt_json() {
-    return "{\"consumer\":" + json_string(runtime_command_dispatch_quality_receipt.consumer) +
-           ",\"source_version\":" + json_string(version) +
-           ",\"consumed_by\":" + json_string(runtime_command_dispatch_quality_receipt.consumed_by) +
-           ",\"consumed_release_version\":" +
-           json_string(runtime_command_dispatch_quality_receipt.consumed_release_version) +
-           ",\"consumed_artifact_path_hint\":" +
-           json_string(runtime_command_dispatch_quality_receipt.consumed_artifact_path_hint) +
-           ",\"consumed_receipt_digest\":" +
-           json_string(runtime_command_dispatch_quality_receipt.consumed_receipt_digest) +
-           ",\"current_artifact_path_hint\":" +
-           json_string(runtime_command_dispatch_quality_receipt.current_artifact_path_hint) +
-           ",\"dispatch_family\":" + json_string(runtime_command_dispatch_quality_receipt.dispatch_family) +
-           ",\"split_commands\":" + json_string(runtime_command_dispatch_quality_receipt.split_commands) +
-           ",\"receipt_digest\":" + json_string(command_dispatch_quality_receipt_digest()) +
-           ",\"read_only\":" + format_json_bool(runtime_command_dispatch_quality_receipt.read_only) +
-           ",\"execution_allowed\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.execution_allowed) +
-           ",\"dispatch_split_applied\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.dispatch_split_applied) +
-           ",\"handler_table_required\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.handler_table_required) +
-           ",\"write_handler_changed\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.write_handler_changed) +
-           ",\"admin_handler_changed\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.admin_handler_changed) +
-           ",\"wal_snapshot_restore_touched\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.wal_snapshot_restore_touched) +
-           ",\"behavior_changed\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.behavior_changed) +
-           ",\"fixture_contract_preserved\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.fixture_contract_preserved) +
-           ",\"order_authoritative\":" +
-           format_json_bool(runtime_command_dispatch_quality_receipt.order_authoritative) +
-           ",\"boundary\":" + json_string(runtime_command_dispatch_quality_receipt.boundary) +
-           ",\"node_action\":" + json_string(runtime_command_dispatch_quality_receipt.node_action) + "}";
-}
-
-std::string adapter_shell_non_storage_guard_receipt_digest() {
-    std::string source;
-    append_digest_part(source, "mini-kv-adapter-shell-non-storage-guard-receipt");
-    append_digest_part(source, version);
-    append_digest_part(source, runtime_adapter_shell_non_storage_guard_receipt.consumed_by);
-    append_digest_part(source, runtime_adapter_shell_non_storage_guard_receipt.consumed_release_version);
-    append_digest_part(source, runtime_adapter_shell_non_storage_guard_receipt.consumed_artifact_path_hint);
-    append_digest_part(source, runtime_adapter_shell_non_storage_guard_receipt.consumed_receipt_digest);
-    append_digest_part(source, runtime_adapter_shell_non_storage_guard_receipt.current_artifact_path_hint);
-    append_digest_part(source, runtime_adapter_shell_non_storage_guard_receipt.adapter_shell);
-    append_digest_part(source, format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.read_only));
-    append_digest_part(source, format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.execution_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.adapter_shell_storage_backend));
-    append_digest_part(source,
-                       format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.storage_backend_allowed));
-    append_digest_part(source, format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.write_handler_changed));
-    append_digest_part(source, format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.admin_handler_changed));
-    append_digest_part(source,
-                       format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.restore_execution_allowed));
-    append_digest_part(source,
-                       format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.load_restore_compact_executed));
-    append_digest_part(source,
-                       format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.managed_audit_write_executed));
-    append_digest_part(source,
-                       format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.local_dry_run_records_written));
-    append_digest_part(source, format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.order_authoritative));
-    return "fnv1a64:" + format_hex64(fnv1a64(source));
-}
-
-std::string format_runtime_adapter_shell_non_storage_guard_receipt_json() {
-    return "{\"consumer\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.consumer) +
-           ",\"source_version\":" + json_string(version) +
-           ",\"consumed_by\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.consumed_by) +
-           ",\"consumed_release_version\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.consumed_release_version) +
-           ",\"consumed_artifact_path_hint\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.consumed_artifact_path_hint) +
-           ",\"consumed_receipt_digest\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.consumed_receipt_digest) +
-           ",\"current_artifact_path_hint\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.current_artifact_path_hint) +
-           ",\"adapter_shell\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.adapter_shell) +
-           ",\"receipt_digest\":" +
-           json_string(adapter_shell_non_storage_guard_receipt_digest()) +
-           ",\"read_only\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.read_only) +
-           ",\"execution_allowed\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.execution_allowed) +
-           ",\"adapter_shell_storage_backend\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.adapter_shell_storage_backend) +
-           ",\"storage_backend_allowed\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.storage_backend_allowed) +
-           ",\"write_handler_changed\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.write_handler_changed) +
-           ",\"admin_handler_changed\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.admin_handler_changed) +
-           ",\"restore_execution_allowed\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.restore_execution_allowed) +
-           ",\"load_restore_compact_executed\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.load_restore_compact_executed) +
-           ",\"managed_audit_write_executed\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.managed_audit_write_executed) +
-           ",\"local_dry_run_records_written\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.local_dry_run_records_written) +
-           ",\"order_authoritative\":" +
-           format_json_bool(runtime_adapter_shell_non_storage_guard_receipt.order_authoritative) +
-           ",\"boundary\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.boundary) +
-           ",\"node_action\":" +
-           json_string(runtime_adapter_shell_non_storage_guard_receipt.node_action) + "}";
-}
-
-std::string managed_audit_external_adapter_non_participation_receipt_digest() {
-    std::string source;
-    append_digest_part(source, "mini-kv-managed-audit-external-adapter-non-participation-receipt");
-    append_digest_part(source, version);
-    append_digest_part(source, runtime_managed_audit_external_adapter_non_participation_receipt.consumed_by);
-    append_digest_part(source,
-                       runtime_managed_audit_external_adapter_non_participation_receipt.consumed_release_version);
-    append_digest_part(source,
-                       runtime_managed_audit_external_adapter_non_participation_receipt.consumed_artifact_path_hint);
-    append_digest_part(source,
-                       runtime_managed_audit_external_adapter_non_participation_receipt.consumed_receipt_digest);
-    append_digest_part(source,
-                       runtime_managed_audit_external_adapter_non_participation_receipt.current_artifact_path_hint);
-    append_digest_part(source, runtime_managed_audit_external_adapter_non_participation_receipt.adapter_target);
-    append_digest_part(source, runtime_managed_audit_external_adapter_non_participation_receipt.runtime_role);
-    append_digest_part(source,
-                       format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.read_only));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.execution_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_external_adapter_non_participation_receipt.external_adapter_storage_backend));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_external_adapter_non_participation_receipt.participates_in_external_adapter));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.credential_required));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.credential_read_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.migration_required));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_external_adapter_non_participation_receipt.migration_execution_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.schema_authoritative));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.write_handler_changed));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.admin_handler_changed));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_external_adapter_non_participation_receipt.restore_execution_allowed));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_external_adapter_non_participation_receipt.load_restore_compact_executed));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_external_adapter_non_participation_receipt.managed_audit_write_executed));
-    append_digest_part(
-        source,
-        format_json_bool(
-            runtime_managed_audit_external_adapter_non_participation_receipt.local_dry_run_records_written));
-    append_digest_part(
-        source,
-        format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.order_authoritative));
-    return "fnv1a64:" + format_hex64(fnv1a64(source));
-}
-
-std::string format_runtime_managed_audit_external_adapter_non_participation_receipt_json() {
-    return "{\"consumer\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.consumer) +
-           ",\"source_version\":" + json_string(version) +
-           ",\"consumed_by\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.consumed_by) +
-           ",\"consumed_release_version\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.consumed_release_version) +
-           ",\"consumed_artifact_path_hint\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.consumed_artifact_path_hint) +
-           ",\"consumed_receipt_digest\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.consumed_receipt_digest) +
-           ",\"current_artifact_path_hint\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.current_artifact_path_hint) +
-           ",\"adapter_target\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.adapter_target) +
-           ",\"runtime_role\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.runtime_role) +
-           ",\"receipt_digest\":" +
-           json_string(managed_audit_external_adapter_non_participation_receipt_digest()) +
-           ",\"read_only\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.read_only) +
-           ",\"execution_allowed\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.execution_allowed) +
-           ",\"external_adapter_storage_backend\":" +
-           format_json_bool(
-               runtime_managed_audit_external_adapter_non_participation_receipt.external_adapter_storage_backend) +
-           ",\"participates_in_external_adapter\":" +
-           format_json_bool(
-               runtime_managed_audit_external_adapter_non_participation_receipt.participates_in_external_adapter) +
-           ",\"credential_required\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.credential_required) +
-           ",\"credential_read_allowed\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.credential_read_allowed) +
-           ",\"migration_required\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.migration_required) +
-           ",\"migration_execution_allowed\":" +
-           format_json_bool(
-               runtime_managed_audit_external_adapter_non_participation_receipt.migration_execution_allowed) +
-           ",\"schema_authoritative\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.schema_authoritative) +
-           ",\"write_handler_changed\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.write_handler_changed) +
-           ",\"admin_handler_changed\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.admin_handler_changed) +
-           ",\"restore_execution_allowed\":" +
-           format_json_bool(
-               runtime_managed_audit_external_adapter_non_participation_receipt.restore_execution_allowed) +
-           ",\"load_restore_compact_executed\":" +
-           format_json_bool(
-               runtime_managed_audit_external_adapter_non_participation_receipt.load_restore_compact_executed) +
-           ",\"managed_audit_write_executed\":" +
-           format_json_bool(
-               runtime_managed_audit_external_adapter_non_participation_receipt.managed_audit_write_executed) +
-           ",\"local_dry_run_records_written\":" +
-           format_json_bool(
-               runtime_managed_audit_external_adapter_non_participation_receipt.local_dry_run_records_written) +
-           ",\"order_authoritative\":" +
-           format_json_bool(runtime_managed_audit_external_adapter_non_participation_receipt.order_authoritative) +
-           ",\"boundary\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.boundary) +
-           ",\"node_action\":" +
-           json_string(runtime_managed_audit_external_adapter_non_participation_receipt.node_action) + "}";
-}
-
-std::string managed_audit_sandbox_adapter_non_participation_receipt_digest() {
-    const auto& receipt = runtime_managed_audit_sandbox_adapter_non_participation_receipt;
-    return runtime_evidence::digest(
-        "mini-kv-managed-audit-sandbox-adapter-non-participation-receipt",
-        {
-            {std::string{version}},
-            {std::string{receipt.consumed_by}},
-            {std::string{receipt.consumed_release_version}},
-            {std::string{receipt.consumed_artifact_path_hint}},
-            {std::string{receipt.consumed_receipt_digest}},
-            {std::string{receipt.current_artifact_path_hint}},
-            {std::string{receipt.adapter_target}},
-            {std::string{receipt.runtime_role}},
-            {runtime_evidence::json_bool(receipt.read_only)},
-            {runtime_evidence::json_bool(receipt.execution_allowed)},
-            {runtime_evidence::json_bool(receipt.sandbox_adapter_storage_backend)},
-            {runtime_evidence::json_bool(receipt.participates_in_sandbox_adapter)},
-            {runtime_evidence::json_bool(receipt.credential_value_required)},
-            {runtime_evidence::json_bool(receipt.credential_value_read_allowed)},
-            {runtime_evidence::json_bool(receipt.production_credential_read_allowed)},
-            {runtime_evidence::json_bool(receipt.schema_migration_execution_allowed)},
-            {runtime_evidence::json_bool(receipt.sandbox_schema_authoritative)},
-            {runtime_evidence::json_bool(receipt.sandbox_managed_audit_state_write_allowed)},
-            {runtime_evidence::json_bool(receipt.write_handler_changed)},
-            {runtime_evidence::json_bool(receipt.admin_handler_changed)},
-            {runtime_evidence::json_bool(receipt.restore_execution_allowed)},
-            {runtime_evidence::json_bool(receipt.load_restore_compact_executed)},
-            {runtime_evidence::json_bool(receipt.managed_audit_write_executed)},
-            {runtime_evidence::json_bool(receipt.sandbox_dry_run_records_written)},
-            {runtime_evidence::json_bool(receipt.order_authoritative)},
-        });
-}
-
-std::string format_runtime_managed_audit_sandbox_adapter_non_participation_receipt_json() {
-    const auto& receipt = runtime_managed_audit_sandbox_adapter_non_participation_receipt;
-    return runtime_evidence::json_object({
-        {"consumer", runtime_evidence::json_string(receipt.consumer)},
-        {"source_version", runtime_evidence::json_string(version)},
-        {"consumed_by", runtime_evidence::json_string(receipt.consumed_by)},
-        {"consumed_release_version", runtime_evidence::json_string(receipt.consumed_release_version)},
-        {"consumed_artifact_path_hint", runtime_evidence::json_string(receipt.consumed_artifact_path_hint)},
-        {"consumed_receipt_digest", runtime_evidence::json_string(receipt.consumed_receipt_digest)},
-        {"current_artifact_path_hint", runtime_evidence::json_string(receipt.current_artifact_path_hint)},
-        {"adapter_target", runtime_evidence::json_string(receipt.adapter_target)},
-        {"runtime_role", runtime_evidence::json_string(receipt.runtime_role)},
-        {"receipt_digest", runtime_evidence::json_string(managed_audit_sandbox_adapter_non_participation_receipt_digest())},
-        {"read_only", runtime_evidence::json_bool(receipt.read_only)},
-        {"execution_allowed", runtime_evidence::json_bool(receipt.execution_allowed)},
-        {"sandbox_adapter_storage_backend", runtime_evidence::json_bool(receipt.sandbox_adapter_storage_backend)},
-        {"participates_in_sandbox_adapter", runtime_evidence::json_bool(receipt.participates_in_sandbox_adapter)},
-        {"credential_value_required", runtime_evidence::json_bool(receipt.credential_value_required)},
-        {"credential_value_read_allowed", runtime_evidence::json_bool(receipt.credential_value_read_allowed)},
-        {"production_credential_read_allowed", runtime_evidence::json_bool(receipt.production_credential_read_allowed)},
-        {"schema_migration_execution_allowed", runtime_evidence::json_bool(receipt.schema_migration_execution_allowed)},
-        {"sandbox_schema_authoritative", runtime_evidence::json_bool(receipt.sandbox_schema_authoritative)},
-        {"sandbox_managed_audit_state_write_allowed", runtime_evidence::json_bool(receipt.sandbox_managed_audit_state_write_allowed)},
-        {"write_handler_changed", runtime_evidence::json_bool(receipt.write_handler_changed)},
-        {"admin_handler_changed", runtime_evidence::json_bool(receipt.admin_handler_changed)},
-        {"restore_execution_allowed", runtime_evidence::json_bool(receipt.restore_execution_allowed)},
-        {"load_restore_compact_executed", runtime_evidence::json_bool(receipt.load_restore_compact_executed)},
-        {"managed_audit_write_executed", runtime_evidence::json_bool(receipt.managed_audit_write_executed)},
-        {"sandbox_dry_run_records_written", runtime_evidence::json_bool(receipt.sandbox_dry_run_records_written)},
-        {"order_authoritative", runtime_evidence::json_bool(receipt.order_authoritative)},
-        {"boundary", runtime_evidence::json_string(receipt.boundary)},
-        {"node_action", runtime_evidence::json_string(receipt.node_action)},
-    });
 }
 
 std::uint64_t fnv1a64(std::string_view text) {
@@ -2007,17 +1212,17 @@ std::string format_info_json(std::size_t live_keys,
            ",\"retention_provenance_replay_marker\":" +
            format_runtime_retention_provenance_replay_marker_json() +
            ",\"managed_audit_adapter_restore_boundary_receipt\":" +
-           format_runtime_managed_audit_adapter_restore_boundary_receipt_json() +
+           managed_audit_receipts::format_restore_boundary_receipt_json() +
            ",\"managed_audit_adapter_non_authoritative_storage_receipt\":" +
-           format_runtime_managed_audit_adapter_non_authoritative_storage_receipt_json() +
+           managed_audit_receipts::format_non_authoritative_storage_receipt_json() +
            ",\"command_dispatch_quality_receipt\":" +
-           format_runtime_command_dispatch_quality_receipt_json() +
+           managed_audit_receipts::format_command_dispatch_quality_receipt_json() +
            ",\"adapter_shell_non_storage_guard_receipt\":" +
-           format_runtime_adapter_shell_non_storage_guard_receipt_json() +
+           managed_audit_receipts::format_adapter_shell_non_storage_guard_receipt_json() +
            ",\"managed_audit_external_adapter_non_participation_receipt\":" +
-           format_runtime_managed_audit_external_adapter_non_participation_receipt_json() +
+           managed_audit_receipts::format_external_adapter_non_participation_receipt_json() +
            ",\"managed_audit_sandbox_adapter_non_participation_receipt\":" +
-           format_runtime_managed_audit_sandbox_adapter_non_participation_receipt_json() +
+           managed_audit_receipts::format_sandbox_adapter_non_participation_receipt_json() +
            ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
 }
 
@@ -2154,17 +1359,17 @@ std::string format_smoke_json(std::size_t live_keys,
                 ",\"retention_provenance_replay_marker\":" +
                 format_runtime_retention_provenance_replay_marker_json() +
                 ",\"managed_audit_adapter_restore_boundary_receipt\":" +
-                format_runtime_managed_audit_adapter_restore_boundary_receipt_json() +
+                managed_audit_receipts::format_restore_boundary_receipt_json() +
                 ",\"managed_audit_adapter_non_authoritative_storage_receipt\":" +
-                format_runtime_managed_audit_adapter_non_authoritative_storage_receipt_json() +
+                managed_audit_receipts::format_non_authoritative_storage_receipt_json() +
                 ",\"command_dispatch_quality_receipt\":" +
-                format_runtime_command_dispatch_quality_receipt_json() +
+                managed_audit_receipts::format_command_dispatch_quality_receipt_json() +
                 ",\"adapter_shell_non_storage_guard_receipt\":" +
-                format_runtime_adapter_shell_non_storage_guard_receipt_json() +
+                managed_audit_receipts::format_adapter_shell_non_storage_guard_receipt_json() +
                 ",\"managed_audit_external_adapter_non_participation_receipt\":" +
-                format_runtime_managed_audit_external_adapter_non_participation_receipt_json() +
+                managed_audit_receipts::format_external_adapter_non_participation_receipt_json() +
                 ",\"managed_audit_sandbox_adapter_non_participation_receipt\":" +
-                format_runtime_managed_audit_sandbox_adapter_non_participation_receipt_json() +
+                managed_audit_receipts::format_sandbox_adapter_non_participation_receipt_json() +
                 ",\"failure_taxonomy\":" + format_smoke_failure_taxonomy_json() +
                 ",\"diagnostics\":{\"node_consumption\":\"Node v225 may verify the mini-kv sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit sandbox adapter dry-run package; mini-kv must already be running and the read-only window must be open\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
