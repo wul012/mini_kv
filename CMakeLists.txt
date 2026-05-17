@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.99.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.100.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -423,3 +423,16 @@ target_compile_definitions(minikv_runtime_smoke_evidence_tests
 )
 
 add_test(NAME runtime_smoke_evidence_tests COMMAND minikv_runtime_smoke_evidence_tests)
+
+add_executable(minikv_current_runtime_fixture_rolling_guard_tests
+    tests/current_runtime_fixture_rolling_guard_tests.cpp
+)
+
+target_link_libraries(minikv_current_runtime_fixture_rolling_guard_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_current_runtime_fixture_rolling_guard_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME current_runtime_fixture_rolling_guard_tests COMMAND minikv_current_runtime_fixture_rolling_guard_tests)

@@ -1,5 +1,6 @@
 # mini-kv 代码讲解记录_生产雏形阶段
 
+- `156-version-100-current-runtime-fixture-rolling-guard.md`: v100 adds a current runtime fixture rolling guard for Node v235, allowing current version/artifact/digest evidence to roll while keeping historical consumed digest anchors fixed.
 - `155-version-99-wal-helper-regression-evidence.md`: v99 adds execute-with-wal regression coverage for SET, SETNXEX, DEL, and EXPIRE usage-error, no-op miss, expired-key miss, and append-before-mutation behavior while rolling current runtime evidence to `0.99.0` / `v99` for Node v234 blocked execution rehearsal.
 - `154-version-98-execute-with-wal-helper.md`: v98 adds `CommandProcessor::execute_with_wal` to consolidate SET/SETNXEX/DEL/EXPIRE WAL and no-WAL branches while preserving append-before-mutation order, no-op miss behavior, write responses, runtime JSON contracts, snapshot/restore/admin boundaries, and Node/Java non-authoritative limits.
 - `153-version-97-sandbox-connection-no-start-guard.md`: v97 adds `managed_audit_sandbox_connection_no_start_guard_receipt` for Node v231, consumes the historical v96 echo marker digest, and keeps manual window closed by default with no Node/Java/mini-kv auto-start, no connection execution, no credential value read, no schema rehearsal, no managed audit write, no restore/load/compact, and no Java order authority.
