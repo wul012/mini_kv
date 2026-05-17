@@ -568,7 +568,7 @@ int main() {
     assert_response_contains(result, "\"admin_commands_executed\":false");
     assert_response_contains(result, "\"runtime_write_observed\":false");
     assert_response_contains(result, "\"live_read_session\":{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\"");
-    assert_response_contains(result, "\"session_id_echo\":\"mini-kv-live-read-v98\"");
+    assert_response_contains(result, "\"session_id_echo\":\"mini-kv-live-read-v99\"");
     assert_response_contains(result, "\"server_uptime_bucket\":\"lt_60s\"");
     assert_response_contains(result, "\"read_command_list_digest\":\"fnv1a64:5bef33f2fbe65cc5\"");
     assert_response_contains(result, "\"read_command_count\":4");
@@ -590,12 +590,12 @@ int main() {
     assert_response_contains(result, "\"github_artifact_upload_attempted\":false");
     assert_response_contains(result, "\"production_window_allowed\":false");
     assert_response_contains(result, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
-    assert_response_contains(result, "\"source_version\":\"0.98.0\"");
-    assert_response_contains(result, "\"artifact_path_hint\":\"c/98/\"");
-    assert_response_contains(result, "\"runtime_binary_hint\":\"cmake-build-v98/minikv_server and cmake-build-v98/minikv_client from the current CMake build\"");
+    assert_response_contains(result, "\"source_version\":\"0.99.0\"");
+    assert_response_contains(result, "\"artifact_path_hint\":\"c/99/\"");
+    assert_response_contains(result, "\"runtime_binary_hint\":\"cmake-build-v99/minikv_server and cmake-build-v99/minikv_client from the current CMake build\"");
     assert_response_contains(result, "\"release_manifest_path\":\"fixtures/release/verification-manifest.json\"");
     assert_response_contains(result, "\"runtime_smoke_evidence_path\":\"fixtures/release/runtime-smoke-evidence.json\"");
-    assert_response_contains(result, "\"provenance_digest\":\"fnv1a64:4be577ac4f8347c6\"");
+    assert_response_contains(result, "\"provenance_digest\":\"fnv1a64:68ec9a2a032906f4\"");
     assert_response_contains(result, "\"read_only\":true");
     assert_response_contains(result, "\"load_restore_compact_executed\":false");
     assert_response_contains(result, "\"production_binary_claimed\":false");
@@ -603,8 +603,8 @@ int main() {
     assert_response_contains(result, "\"retention_provenance_check\":{\"consumer\":\"Node v211 managed audit identity approval provenance dry-run packet\"");
     assert_response_contains(result, "\"retention_source_path_hint\":\"c/81/\"");
     assert_response_contains(result, "\"provenance_source\":\"binary_provenance.provenance_digest\"");
-    assert_response_contains(result, "\"expected_binary_provenance_digest\":\"fnv1a64:4be577ac4f8347c6\"");
-    assert_response_contains(result, "\"check_digest\":\"fnv1a64:3397146bc78ee26f\"");
+    assert_response_contains(result, "\"expected_binary_provenance_digest\":\"fnv1a64:68ec9a2a032906f4\"");
+    assert_response_contains(result, "\"check_digest\":\"fnv1a64:56b28a6190be9fe9\"");
     assert_response_contains(result, "\"managed_audit_write_executed\":false");
     assert_response_contains(result, "\"node_action\":\"verify runtime evidence retention and binary provenance alignment before managed audit dry-run packet work\"");
     assert_response_contains(result, "\"retention_provenance_replay_marker\":{\"consumer\":\"Node v213 managed audit packet restore drill plan\"");
@@ -612,8 +612,8 @@ int main() {
     assert_response_contains(result, "\"consumed_release_version\":\"v84\"");
     assert_response_contains(result, "\"consumed_artifact_path_hint\":\"c/84/\"");
     assert_response_contains(result, "\"consumed_check_digest\":\"fnv1a64:357cc7e9eec3f223\"");
-    assert_response_contains(result, "\"current_artifact_path_hint\":\"c/98/\"");
-    assert_response_contains(result, "\"marker_digest\":\"fnv1a64:f8c7f073fdddb289\"");
+    assert_response_contains(result, "\"current_artifact_path_hint\":\"c/99/\"");
+    assert_response_contains(result, "\"marker_digest\":\"fnv1a64:03afe1be1ce63765\"");
     assert_response_contains(result, "\"replay_executed\":false");
     assert_response_contains(result, "\"node_action\":\"verify v84 retention provenance consumption before managed audit packet restore drill planning\"");
     assert_response_contains(result, "\"managed_audit_adapter_restore_boundary_receipt\":{\"consumer\":\"Node v215 managed audit dry-run adapter candidate\"");
@@ -621,8 +621,8 @@ int main() {
     assert_response_contains(result, "\"consumed_release_version\":\"v85\"");
     assert_response_contains(result, "\"consumed_artifact_path_hint\":\"c/85/\"");
     assert_response_contains(result, "\"consumed_marker_digest\":\"fnv1a64:1ea4570c967cfdb1\"");
-    assert_response_contains(result, "\"current_artifact_path_hint\":\"c/98/\"");
-    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:f006b4f4299a99ce\"");
+    assert_response_contains(result, "\"current_artifact_path_hint\":\"c/99/\"");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:3b406aed990b25d6\"");
     assert_response_contains(result, "\"adapter_write_allowed\":false");
     assert_response_contains(result, "\"restore_execution_allowed\":false");
     assert_response_contains(result, "\"load_restore_compact_executed\":false");
@@ -633,7 +633,7 @@ int main() {
     assert_response_contains(result, "\"consumed_release_version\":\"v86\"");
     assert_response_contains(result, "\"consumed_artifact_path_hint\":\"c/86/\"");
     assert_response_contains(result, "\"consumed_receipt_digest\":\"fnv1a64:f39d8e3ef98654ea\"");
-    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:e6ffb387b375879e\"");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:49eb9963647aecbe\"");
     assert_response_contains(result, "\"managed_audit_store\":false");
     assert_response_contains(result, "\"storage_write_allowed\":false");
     assert_response_contains(result, "\"admin_commands_allowed\":false");
@@ -645,7 +645,7 @@ int main() {
     assert_response_contains(result, "\"consumed_receipt_digest\":\"fnv1a64:111f0daf1283eab6\"");
     assert_response_contains(result, "\"dispatch_family\":\"runtime_evidence_command_family\"");
     assert_response_contains(result, "\"split_commands\":\"STATS,STATSJSON,SMOKEJSON,STORAGEJSON,HEALTH,INFO,INFOJSON,COMMANDS,COMMANDSJSON\"");
-    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:86f3d1ae4aaf7c62\"");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:27c7a66594fe5792\"");
     assert_response_contains(result, "\"dispatch_split_applied\":true");
     assert_response_contains(result, "\"handler_table_required\":false");
     assert_response_contains(result, "\"write_handler_changed\":false");
@@ -660,7 +660,7 @@ int main() {
     assert_response_contains(result, "\"consumed_artifact_path_hint\":\"c/88/\"");
     assert_response_contains(result, "\"consumed_receipt_digest\":\"fnv1a64:4aa6d12fb067e2a6\"");
     assert_response_contains(result, "\"adapter_shell\":\"ManagedAuditAdapter disabled shell\"");
-    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:7bce24ede1836a30\"");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:b46fadc02bfd129a\"");
     assert_response_contains(result, "\"adapter_shell_storage_backend\":false");
     assert_response_contains(result, "\"storage_backend_allowed\":false");
     assert_response_contains(result, "\"local_dry_run_records_written\":false");
@@ -672,7 +672,7 @@ int main() {
     assert_response_contains(result, "\"consumed_receipt_digest\":\"fnv1a64:76411286a0913dc8\"");
     assert_response_contains(result, "\"adapter_target\":\"real external managed audit adapter\"");
     assert_response_contains(result, "\"runtime_role\":\"runtime evidence provider only\"");
-    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:36b65e9c69f03b49\"");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:35fe7b1c42714d89\"");
     assert_response_contains(result, "\"external_adapter_storage_backend\":false");
     assert_response_contains(result, "\"participates_in_external_adapter\":false");
     assert_response_contains(result, "\"credential_required\":false");
@@ -687,7 +687,7 @@ int main() {
     assert_response_contains(result, "\"consumed_artifact_path_hint\":\"c/90/\"");
     assert_response_contains(result, "\"consumed_receipt_digest\":\"fnv1a64:0dfb07cd2f8de289\"");
     assert_response_contains(result, "\"adapter_target\":\"sandbox managed audit adapter dry-run\"");
-    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:9e89d248ca215706\"");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:e718f4de6ca49014\"");
     assert_response_contains(result, "\"sandbox_adapter_storage_backend\":false");
     assert_response_contains(result, "\"participates_in_sandbox_adapter\":false");
     assert_response_contains(result, "\"credential_value_required\":false");
@@ -713,7 +713,7 @@ int main() {
     assert_response_contains(result, "\"timeout_budget_ms\":15000");
     assert_response_contains(result, "\"manual_abort_marker\":\"ORDEROPS_MANAGED_AUDIT_MANUAL_ABORT\"");
     assert_response_contains(result, "\"required_operator_field_count\":6");
-    assert_response_contains(result, "\"marker_digest\":\"fnv1a64:c88b0bf6b974ac6b\"");
+    assert_response_contains(result, "\"marker_digest\":\"fnv1a64:0d5212cff01975af\"");
     assert_response_contains(result, "\"connection_execution_allowed\":false");
     assert_response_contains(result, "\"managed_audit_write_allowed\":false");
     assert_response_contains(result, "\"participates_in_sandbox_connection\":false");
@@ -724,11 +724,11 @@ int main() {
     assert_response_contains(result, "\"consumed_release_version\":\"v96\"");
     assert_response_contains(result, "\"consumed_artifact_path_hint\":\"c/96/\"");
     assert_response_contains(result, "\"consumed_marker_digest\":\"fnv1a64:b9fc556875ea625b\"");
-    assert_response_contains(result, "\"current_artifact_path_hint\":\"c/98/\"");
+    assert_response_contains(result, "\"current_artifact_path_hint\":\"c/99/\"");
     assert_response_contains(result, "\"preflight_gate_version\":\"Node v230\"");
     assert_response_contains(result, "\"manual_window_flag_name\":\"ORDEROPS_MANAGED_AUDIT_MANUAL_SANDBOX_WINDOW_APPROVED\"");
     assert_response_contains(result, "\"manual_window_mode\":\"manual-window-required-no-auto-start\"");
-    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:431780d3772a52a5\"");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:1f09161efd809c33\"");
     assert_response_contains(result, "\"manual_window_open_by_default\":false");
     assert_response_contains(result, "\"java_auto_start_allowed\":false");
     assert_response_contains(result, "\"mini_kv_auto_start_allowed\":false");
@@ -737,7 +737,7 @@ int main() {
     assert_response_contains(result, "\"consumer\":\"Node v196 imported window result packet\"");
     assert_response_contains(result, "\"taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"verification_sample\":{\"sample_version\":\"mini-kv-smoke-taxonomy-verification.v1\"");
-    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.98.0\"");
+    assert_response_contains(result, "\"source_command\":\"SMOKEJSON\",\"source_version\":\"0.99.0\"");
     assert_response_contains(result, "\"expected_taxonomy_digest\":\"fnv1a64:f92fcba55feb26a2\"");
     assert_response_contains(result, "\"node_action\":\"verify digest before importing manual window results\"");
     assert_response_contains(result, "\"id\":\"connection-refused\",\"source\":\"tcp_connect\"");

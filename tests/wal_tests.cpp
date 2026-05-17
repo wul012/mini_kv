@@ -54,11 +54,36 @@ int main() {
         result = processor.execute("EXPIRE missing 60");
         assert(result.response == "0");
 
+        const auto records_after_noop_misses = wal.maintenance_report(store).records;
+
+        result = processor.execute("SET only-key");
+        assert(result.response == "ERR usage: SET key value");
+
+        result = processor.execute("SETNXEX token 0 invalid");
+        assert(result.response == "ERR usage: SETNXEX key seconds value");
+
+        result = processor.execute("DEL");
+        assert(result.response == "ERR usage: DEL key");
+
+        result = processor.execute("EXPIRE name not-a-number");
+        assert(result.response == "ERR usage: EXPIRE key seconds");
+
+        assert(wal.maintenance_report(store).records == records_after_noop_misses);
+
         std::this_thread::sleep_for(1100ms);
 
         result = processor.execute("GET stale");
         assert(result.response == "(nil)");
 
+        const auto records_after_expired_prune = wal.maintenance_report(store).records;
+
+        result = processor.execute("DEL stale");
+        assert(result.response == "0");
+
+        result = processor.execute("EXPIRE stale 60");
+        assert(result.response == "0");
+
+        assert(wal.maintenance_report(store).records == records_after_expired_prune);
         assert(wal.maintenance_report(store).records == 7);
     }
 

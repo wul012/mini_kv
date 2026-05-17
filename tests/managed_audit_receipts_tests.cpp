@@ -19,10 +19,10 @@ void assert_contains(const std::string& text, std::string_view expected) {
 int main() {
     const auto echo_marker = minikv::managed_audit_receipts::format_sandbox_connection_receipt_echo_marker_json();
     assert_contains(echo_marker, "\"consumer\":\"Node v229 manual sandbox connection packet verification\"");
-    assert_contains(echo_marker, "\"source_version\":\"0.98.0\"");
+    assert_contains(echo_marker, "\"source_version\":\"0.99.0\"");
     assert_contains(echo_marker, "\"consumed_release_version\":\"v95\"");
     assert_contains(echo_marker, "\"consumed_receipt_digest\":\"fnv1a64:ceaed265f7f9560c\"");
-    assert_contains(echo_marker, "\"current_artifact_path_hint\":\"c/98/\"");
+    assert_contains(echo_marker, "\"current_artifact_path_hint\":\"c/99/\"");
     assert_contains(echo_marker, "\"marker_digest\":\"" +
                                      minikv::managed_audit_receipts::sandbox_connection_receipt_echo_marker_digest() +
                                      "\"");
@@ -36,12 +36,12 @@ int main() {
     const auto no_start =
         minikv::managed_audit_receipts::format_sandbox_connection_no_start_guard_receipt_json();
     assert_contains(no_start, "\"consumer\":\"Node v231 manual sandbox connection preflight verification\"");
-    assert_contains(no_start, "\"source_version\":\"0.98.0\"");
+    assert_contains(no_start, "\"source_version\":\"0.99.0\"");
     assert_contains(no_start, "\"consumed_by\":\"Node v230 manual sandbox connection preflight gate\"");
     assert_contains(no_start, "\"consumed_release_version\":\"v96\"");
     assert_contains(no_start, "\"consumed_artifact_path_hint\":\"c/96/\"");
     assert_contains(no_start, "\"consumed_marker_digest\":\"fnv1a64:b9fc556875ea625b\"");
-    assert_contains(no_start, "\"current_artifact_path_hint\":\"c/98/\"");
+    assert_contains(no_start, "\"current_artifact_path_hint\":\"c/99/\"");
     assert_contains(no_start, "\"preflight_gate_version\":\"Node v230\"");
     assert_contains(no_start,
                     "\"manual_window_flag_name\":\"ORDEROPS_MANAGED_AUDIT_MANUAL_SANDBOX_WINDOW_APPROVED\"");
