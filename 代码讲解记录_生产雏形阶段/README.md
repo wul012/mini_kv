@@ -2,6 +2,7 @@
 
 ## 最新新增
 
+- `150-version-94-command-contract-formatter-split.md`：说明 v94 如何把 command catalog、`EXPLAINJSON`、`CHECKJSON` 的命令契约 formatter 拆到 `include/minikv/command_contracts.hpp` / `src/command_contracts.cpp`，并把运行响应 formatter 拆到 `include/minikv/command_response_formatters.hpp` / `src/command_response_formatters.cpp`，让 `command.cpp` 降到 713 个物理行，同时保持 CHECKJSON/EXPLAINJSON 字段契约、运行响应契约、command digest、write/admin/WAL/snapshot/restore 和 Node/Java 边界不变。
 - `149-version-93-runtime-evidence-receipt-formatter-split.md`：说明 v93 如何把 live-read session、failure taxonomy、operator-window proof、binary provenance、retention provenance 等 runtime evidence receipt 的 JSON/digest formatter 从 `src/command.cpp` 拆到 `include/minikv/runtime_evidence_receipts.hpp` 和 `src/runtime_evidence_receipts.cpp`，保持 `INFOJSON` / `SMOKEJSON` 字段契约不扩张，也不触碰 write/admin/WAL/snapshot/restore 或 Node/Java 边界。
 - `148-version-92-managed-audit-receipt-formatter-split.md`：说明 v92 如何把 managed audit receipt 的 JSON/digest 格式化从 `src/command.cpp` 拆到 `include/minikv/managed_audit_receipts.hpp` 和 `src/managed_audit_receipts.cpp`，保持 `INFOJSON` / `SMOKEJSON` 字段契约不扩张，同时继续证明 mini-kv 不参与 sandbox adapter storage、credential read、schema migration 或 managed audit state write。
 - `145-version-89-adapter-shell-non-storage-guard-receipt.md`：说明 v89 如何在 `INFOJSON` / `SMOKEJSON` / release fixture 中补入 `adapter_shell_non_storage_guard_receipt`，让 Node v221 只读确认 mini-kv 不是 adapter shell storage backend，不写 local dry-run records / managed audit state，也不改变 write/admin/WAL/snapshot/restore 或 Java order authority 边界。

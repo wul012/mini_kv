@@ -1,16 +1,13 @@
 #include "minikv/command.hpp"
 
-#include "minikv/managed_audit_receipts.hpp"
-#include "minikv/runtime_evidence_receipts.hpp"
+#include "minikv/command_contracts.hpp"
+#include "minikv/command_response_formatters.hpp"
 #include "minikv/snapshot.hpp"
-#include "minikv/version.hpp"
 #include "minikv/wal.hpp"
 
 #include <chrono>
 #include <cctype>
 #include <cstdint>
-#include <iomanip>
-#include <iterator>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -49,15 +46,6 @@ std::string command_token(std::string_view text) {
     return to_upper(command);
 }
 
-struct CommandCatalogEntry {
-    std::string_view name;
-    std::string_view category;
-    bool mutates_store;
-    bool touches_wal;
-    bool stable;
-    std::string_view description;
-};
-
 enum class CommandDispatchFamily {
     Meta,
     Read,
@@ -67,47 +55,6 @@ enum class CommandDispatchFamily {
     Session,
     Unknown,
 };
-
-constexpr CommandCatalogEntry command_catalog[] = {
-    {"PING", "meta", false, false, true, "Liveness check with optional echo message"},
-    {"SET", "write", true, true, true, "Set or update a key value"},
-    {"SETNXEX", "write", true, true, true, "Claim a key with value and TTL only when absent"},
-    {"GET", "read", false, false, true, "Read a key value"},
-    {"DEL", "write", true, true, true, "Delete a key"},
-    {"EXPIRE", "write", true, true, true, "Set a positive TTL on an existing key"},
-    {"TTL", "read", false, false, true, "Read a key TTL state"},
-    {"SIZE", "read", false, false, true, "Return the live key count"},
-    {"KEYS", "read", false, false, true, "List live keys, optionally filtered by prefix"},
-    {"KEYSJSON", "read", false, false, true, "List live keys as JSON, optionally filtered by prefix"},
-    {"SAVE", "admin", false, false, true, "Save a snapshot file"},
-    {"LOAD", "admin", true, false, true, "Load a snapshot file into the store"},
-    {"COMPACT", "admin", false, true, true, "Compact the write-ahead log"},
-    {"WALINFO", "read", false, true, true, "Read write-ahead log maintenance details"},
-    {"STATS", "meta", false, true, true, "Read command and connection metrics as text"},
-    {"STATSJSON", "meta", false, true, true, "Read command and connection metrics as JSON"},
-    {"SMOKEJSON", "meta", false, true, true, "Read combined runtime smoke evidence as JSON"},
-    {"RESETSTATS", "admin", false, false, true, "Reset command metrics"},
-    {"HEALTH", "meta", false, true, true, "Read liveness and maintenance health"},
-    {"INFO", "meta", false, false, true, "Read server identity metadata as text"},
-    {"INFOJSON", "meta", false, false, true, "Read server identity metadata as JSON"},
-    {"COMMANDS", "meta", false, false, true, "Read command catalog as text"},
-    {"COMMANDSJSON", "meta", false, false, true, "Read command catalog as JSON"},
-    {"EXPLAINJSON", "meta", false, false, true, "Explain a command risk profile as JSON without executing it"},
-    {"CHECKJSON", "meta", false, false, true, "Read a write command execution contract as JSON without executing it"},
-    {"STORAGEJSON", "read", false, true, true, "Read storage evidence as JSON without mutating data"},
-    {"HELP", "meta", false, false, true, "Show command help"},
-    {"EXIT", "meta", false, false, true, "Close the current client session"},
-    {"QUIT", "meta", false, false, true, "Close the current client session"},
-};
-
-const CommandCatalogEntry* find_command_catalog_entry(std::string_view command) {
-    for (const auto& entry : command_catalog) {
-        if (entry.name == command) {
-            return &entry;
-        }
-    }
-    return nullptr;
-}
 
 CommandDispatchFamily dispatch_family_for(std::string_view command) {
     if (command == "STATS" || command == "STATSJSON" || command == "SMOKEJSON" ||
@@ -119,7 +66,7 @@ CommandDispatchFamily dispatch_family_for(std::string_view command) {
         return CommandDispatchFamily::Session;
     }
 
-    const auto* entry = find_command_catalog_entry(command);
+    const auto* entry = command_contracts::find_command_catalog_entry(command);
     if (entry == nullptr) {
         return CommandDispatchFamily::Unknown;
     }
@@ -135,13 +82,9 @@ CommandDispatchFamily dispatch_family_for(std::string_view command) {
     return CommandDispatchFamily::Meta;
 }
 
-bool is_known_command(std::string_view command) {
-    return find_command_catalog_entry(command) != nullptr;
-}
-
 std::string metrics_command_name(std::string_view command) {
     std::string name = to_upper(command);
-    if (name.empty() || !is_known_command(name)) {
+    if (name.empty() || !command_contracts::is_known_command(name)) {
         return "UNKNOWN";
     }
     return name;
@@ -201,470 +144,6 @@ std::string format_setex_at(std::string_view key, Store::TimePoint expires_at, s
     return std::string{"SETEXAT "} + std::string{key} + " " + std::to_string(epoch_millis) + " " + std::string{value};
 }
 
-std::string format_yes_no(bool value) {
-    return value ? "yes" : "no";
-}
-
-std::string format_json_bool(bool value) {
-    return value ? "true" : "false";
-}
-
-std::string format_keys(const std::vector<std::string>& keys) {
-    std::string response = "key_count=" + std::to_string(keys.size()) + " keys=";
-    bool first = true;
-    for (const auto& key : keys) {
-        if (!first) {
-            response.push_back(' ');
-        }
-        first = false;
-        response += key;
-    }
-    return response;
-}
-
-std::string format_prefixed_keys(std::string_view prefix, const std::vector<std::string>& keys) {
-    std::string response = "key_count=" + std::to_string(keys.size()) + " prefix=" + std::string{prefix} + " keys=";
-    bool first = true;
-    for (const auto& key : keys) {
-        if (!first) {
-            response.push_back(' ');
-        }
-        first = false;
-        response += key;
-    }
-    return response;
-}
-
-constexpr std::size_t key_inventory_limit = 1000;
-constexpr int explain_schema_version = 1;
-constexpr int runtime_identity_schema_version = 1;
-constexpr int runtime_metrics_schema_version = 1;
-constexpr int runtime_smoke_schema_version = 1;
-constexpr int storage_evidence_schema_version = 1;
-constexpr std::uint64_t fnv_offset_basis = 14695981039346656037ull;
-constexpr std::uint64_t fnv_prime = 1099511628211ull;
-
-std::uint64_t fnv1a64(std::string_view text) {
-    std::uint64_t hash = fnv_offset_basis;
-    for (const unsigned char ch : text) {
-        hash ^= static_cast<std::uint64_t>(ch);
-        hash *= fnv_prime;
-    }
-    return hash;
-}
-
-std::string format_hex64(std::uint64_t value) {
-    std::ostringstream output;
-    output << std::hex << std::nouppercase << std::setfill('0') << std::setw(16) << value;
-    return output.str();
-}
-
-void append_digest_part(std::string& source, std::string_view value) {
-    source += std::to_string(value.size());
-    source.push_back(':');
-    source += value;
-    source.push_back(';');
-}
-
-std::string json_string(std::string_view value) {
-    constexpr char hex[] = "0123456789ABCDEF";
-    std::string result = "\"";
-    for (const unsigned char ch : value) {
-        switch (ch) {
-        case '"':
-            result += "\\\"";
-            break;
-        case '\\':
-            result += "\\\\";
-            break;
-        case '\b':
-            result += "\\b";
-            break;
-        case '\f':
-            result += "\\f";
-            break;
-        case '\n':
-            result += "\\n";
-            break;
-        case '\r':
-            result += "\\r";
-            break;
-        case '\t':
-            result += "\\t";
-            break;
-        default:
-            if (ch < 0x20) {
-                result += "\\u00";
-                result.push_back(hex[(ch >> 4) & 0x0F]);
-                result.push_back(hex[ch & 0x0F]);
-            } else {
-                result.push_back(static_cast<char>(ch));
-            }
-            break;
-        }
-    }
-    result.push_back('"');
-    return result;
-}
-
-std::string format_keys_json(std::optional<std::string_view> prefix, std::vector<std::string> keys) {
-    bool truncated = false;
-    if (keys.size() > key_inventory_limit) {
-        keys.resize(key_inventory_limit);
-        truncated = true;
-    }
-
-    std::string response = "{\"prefix\":";
-    if (prefix.has_value()) {
-        response += json_string(*prefix);
-    } else {
-        response += "null";
-    }
-
-    response += ",\"key_count\":" + std::to_string(keys.size()) + ",\"keys\":[";
-    bool first = true;
-    for (const auto& key : keys) {
-        if (!first) {
-            response += ",";
-        }
-        first = false;
-        response += json_string(key);
-    }
-    response += "],\"truncated\":" + format_json_bool(truncated) +
-                ",\"limit\":" + std::to_string(key_inventory_limit) + "}";
-    return response;
-}
-
-std::string format_commands() {
-    std::string response = "command_count=" + std::to_string(std::size(command_catalog)) + " commands=";
-    bool first = true;
-    for (const auto& entry : command_catalog) {
-        if (!first) {
-            response.push_back(';');
-        }
-        first = false;
-        response += std::string{entry.name} + "(" +
-                    "category=" + std::string{entry.category} +
-                    ",mutates_store=" + format_yes_no(entry.mutates_store) +
-                    ",touches_wal=" + format_yes_no(entry.touches_wal) +
-                    ",stable=" + format_yes_no(entry.stable) + ")";
-    }
-    return response;
-}
-
-std::string format_commands_json() {
-    std::string response = "{\"commands\":[";
-    bool first = true;
-    for (const auto& entry : command_catalog) {
-        if (!first) {
-            response += ",";
-        }
-        first = false;
-        response += "{\"name\":" + json_string(entry.name) +
-                    ",\"category\":" + json_string(entry.category) +
-                    ",\"mutates_store\":" + format_json_bool(entry.mutates_store) +
-                    ",\"touches_wal\":" + format_json_bool(entry.touches_wal) +
-                    ",\"stable\":" + format_json_bool(entry.stable) +
-                    ",\"description\":" + json_string(entry.description) + "}";
-    }
-    response += "]}";
-    return response;
-}
-
-std::string format_json_string_array(const std::vector<std::string>& values) {
-    std::string response = "[";
-    bool first = true;
-    for (const auto& value : values) {
-        if (!first) {
-            response += ",";
-        }
-        first = false;
-        response += json_string(value);
-    }
-    response += "]";
-    return response;
-}
-
-struct CommandExplain {
-    std::string command;
-    std::string category = "unknown";
-    bool mutates_store = false;
-    bool touches_wal = false;
-    std::optional<std::string> key;
-    bool requires_value = false;
-    bool ttl_sensitive = false;
-    bool allowed_by_parser = false;
-    std::vector<std::string> side_effects;
-    std::vector<std::string> warnings;
-};
-
-std::string command_digest(const CommandExplain& explain) {
-    std::string source;
-    append_digest_part(source, std::to_string(explain_schema_version));
-    append_digest_part(source, explain.command);
-    append_digest_part(source, explain.category);
-    append_digest_part(source, format_json_bool(explain.mutates_store));
-    append_digest_part(source, format_json_bool(explain.touches_wal));
-    append_digest_part(source, explain.key.value_or(""));
-    append_digest_part(source, explain.key.has_value() ? "present" : "null");
-    append_digest_part(source, format_json_bool(explain.requires_value));
-    append_digest_part(source, format_json_bool(explain.ttl_sensitive));
-    append_digest_part(source, format_json_bool(explain.allowed_by_parser));
-    append_digest_part(source, std::to_string(explain.side_effects.size()));
-    for (const auto& side_effect : explain.side_effects) {
-        append_digest_part(source, side_effect);
-    }
-    append_digest_part(source, std::to_string(explain.warnings.size()));
-    for (const auto& warning : explain.warnings) {
-        append_digest_part(source, warning);
-    }
-    return "fnv1a64:" + format_hex64(fnv1a64(source));
-}
-
-std::string format_explain_json(const CommandExplain& explain) {
-    std::string response = "{\"schema_version\":" + std::to_string(explain_schema_version) +
-                           ",\"command_digest\":" + json_string(command_digest(explain)) +
-                           ",\"command\":" + json_string(explain.command) +
-                           ",\"category\":" + json_string(explain.category) +
-                           ",\"mutates_store\":" + format_json_bool(explain.mutates_store) +
-                           ",\"touches_wal\":" + format_json_bool(explain.touches_wal) +
-                           ",\"key\":";
-    if (explain.key.has_value()) {
-        response += json_string(*explain.key);
-    } else {
-        response += "null";
-    }
-    response += ",\"requires_value\":" + format_json_bool(explain.requires_value) +
-                ",\"ttl_sensitive\":" + format_json_bool(explain.ttl_sensitive) +
-                ",\"allowed_by_parser\":" + format_json_bool(explain.allowed_by_parser) +
-                ",\"side_effects\":" + format_json_string_array(explain.side_effects) +
-                ",\"side_effect_count\":" + std::to_string(explain.side_effects.size()) +
-                ",\"warnings\":" + format_json_string_array(explain.warnings) + "}";
-    return response;
-}
-
-std::string execution_contract_durability(const CommandExplain& explain, bool wal_enabled) {
-    if (!explain.mutates_store) {
-        return "not_applicable";
-    }
-    if (!explain.touches_wal) {
-        return "not_wal_backed";
-    }
-    return wal_enabled ? "wal_backed" : "memory_only";
-}
-
-std::vector<std::string> execution_contract_warnings(const CommandExplain& explain, bool wal_enabled) {
-    std::vector<std::string> warnings = explain.warnings;
-    if (!explain.mutates_store) {
-        warnings.push_back("not a write command");
-    } else if (!explain.touches_wal) {
-        warnings.push_back("write command is not wal-backed");
-    } else if (!wal_enabled) {
-        warnings.push_back("wal disabled; write would be in-memory only");
-    }
-    return warnings;
-}
-
-std::string format_check_json(const CommandExplain& explain, bool wal_enabled) {
-    const auto warnings = execution_contract_warnings(explain, wal_enabled);
-    std::string response = "{\"schema_version\":" + std::to_string(explain_schema_version) +
-                           ",\"read_only\":true,\"execution_allowed\":false" +
-                           ",\"command_digest\":" + json_string(command_digest(explain)) +
-                           ",\"command\":" + json_string(explain.command) +
-                           ",\"write_command\":" + format_json_bool(explain.mutates_store) +
-                           ",\"allowed_by_parser\":" + format_json_bool(explain.allowed_by_parser) +
-                           ",\"side_effects\":" + format_json_string_array(explain.side_effects) +
-                           ",\"side_effect_count\":" + std::to_string(explain.side_effects.size()) +
-                           ",\"checks\":{\"parser_allowed\":" + format_json_bool(explain.allowed_by_parser) +
-                           ",\"write_command\":" + format_json_bool(explain.mutates_store) +
-                           ",\"wal_append_when_enabled\":" + format_json_bool(explain.touches_wal) +
-                           ",\"wal_enabled\":" + format_json_bool(wal_enabled) + "}" +
-                           ",\"wal\":{\"enabled\":" + format_json_bool(wal_enabled) +
-                           ",\"touches_wal\":" + format_json_bool(explain.touches_wal) +
-                           ",\"append_when_enabled\":" + format_json_bool(explain.touches_wal) +
-                           ",\"durability\":" + json_string(execution_contract_durability(explain, wal_enabled)) + "}" +
-                           ",\"warnings\":" + format_json_string_array(warnings) + "}";
-    return response;
-}
-
-void mark_usage_warning(CommandExplain& explain, std::string_view command_usage) {
-    explain.allowed_by_parser = false;
-    explain.warnings.push_back(std::string{"usage: "} + std::string{command_usage});
-}
-
-CommandExplain explain_command(std::string_view line) {
-    CommandExplain explain;
-    const std::string trimmed = trim_copy(line);
-    std::istringstream input{trimmed};
-    input >> explain.command;
-    explain.command = to_upper(explain.command);
-
-    if (explain.command.empty()) {
-        explain.warnings.push_back("missing command");
-        return explain;
-    }
-
-    const auto* entry = find_command_catalog_entry(explain.command);
-    if (entry == nullptr) {
-        explain.warnings.push_back("unknown command");
-        return explain;
-    }
-
-    explain.category = std::string{entry->category};
-    explain.mutates_store = entry->mutates_store;
-    explain.touches_wal = entry->touches_wal;
-    explain.requires_value = explain.command == "SET" || explain.command == "SETNXEX";
-    explain.ttl_sensitive = explain.command == "EXPIRE" || explain.command == "TTL" || explain.command == "SETNXEX";
-    explain.allowed_by_parser = true;
-
-    if (explain.command == "PING") {
-        explain.side_effects.push_back("metadata_read");
-        return explain;
-    }
-
-    if (explain.command == "SET") {
-        explain.side_effects.push_back("store_write");
-        explain.side_effects.push_back("wal_append_when_enabled");
-        std::string key;
-        input >> key;
-        std::string value;
-        std::getline(input >> std::ws, value);
-        if (!key.empty()) {
-            explain.key = key;
-        }
-        if (key.empty() || value.empty()) {
-            mark_usage_warning(explain, "SET key value");
-        }
-        return explain;
-    }
-
-    if (explain.command == "SETNXEX") {
-        explain.side_effects.push_back("store_write");
-        explain.side_effects.push_back("store_ttl_update");
-        explain.side_effects.push_back("wal_append_when_enabled");
-        std::string key;
-        std::string seconds_text;
-        input >> key >> seconds_text;
-        std::string value;
-        std::getline(input >> std::ws, value);
-        if (!key.empty()) {
-            explain.key = key;
-        }
-        if (key.empty() || !parse_positive_seconds(seconds_text).has_value() || value.empty()) {
-            mark_usage_warning(explain, "SETNXEX key seconds value");
-        }
-        return explain;
-    }
-
-    if (explain.command == "GET" || explain.command == "DEL" || explain.command == "TTL") {
-        if (explain.command == "GET" || explain.command == "TTL") {
-            explain.side_effects.push_back("store_read");
-        } else {
-            explain.side_effects.push_back("store_write");
-            explain.side_effects.push_back("wal_append_when_enabled");
-        }
-        std::string key;
-        input >> key;
-        if (!key.empty()) {
-            explain.key = key;
-        }
-        if (key.empty() || has_extra_token(input)) {
-            mark_usage_warning(explain, explain.command + " key");
-        }
-        return explain;
-    }
-
-    if (explain.command == "EXPIRE") {
-        explain.side_effects.push_back("store_ttl_update");
-        explain.side_effects.push_back("wal_append_when_enabled");
-        std::string key;
-        std::string seconds_text;
-        input >> key >> seconds_text;
-        if (!key.empty()) {
-            explain.key = key;
-        }
-        if (key.empty() || !parse_positive_seconds(seconds_text).has_value() || has_extra_token(input)) {
-            mark_usage_warning(explain, "EXPIRE key seconds");
-        }
-        return explain;
-    }
-
-    if (explain.command == "KEYS" || explain.command == "KEYSJSON") {
-        explain.side_effects.push_back("store_read");
-        std::string prefix;
-        if (input >> prefix && has_extra_token(input)) {
-            mark_usage_warning(explain, explain.command + " [prefix]");
-        }
-        return explain;
-    }
-
-    if (explain.command == "SAVE" || explain.command == "LOAD") {
-        if (explain.command == "SAVE") {
-            explain.side_effects.push_back("snapshot_file_write");
-        } else {
-            explain.side_effects.push_back("store_replace_from_snapshot");
-        }
-        std::string path;
-        std::getline(input >> std::ws, path);
-        if (path.empty()) {
-            mark_usage_warning(explain, explain.command + " path");
-        }
-        return explain;
-    }
-
-    if (explain.command == "EXPLAINJSON" || explain.command == "CHECKJSON") {
-        explain.side_effects.push_back("metadata_read");
-        std::string nested_command;
-        input >> nested_command;
-        if (nested_command.empty()) {
-            mark_usage_warning(explain, explain.command + " command");
-        }
-        return explain;
-    }
-
-    if (explain.command == "STORAGEJSON" || explain.command == "SMOKEJSON") {
-        explain.side_effects.push_back("metadata_read");
-        explain.side_effects.push_back("store_read");
-        explain.side_effects.push_back("wal_metadata_read_when_enabled");
-        if (has_extra_token(input)) {
-            mark_usage_warning(explain, explain.command);
-        }
-        return explain;
-    }
-
-    if (explain.command == "COMPACT") {
-        explain.side_effects.push_back("wal_rewrite_when_enabled");
-    } else if (explain.command == "RESETSTATS") {
-        explain.side_effects.push_back("metrics_reset");
-    } else if (explain.command == "EXIT" || explain.command == "QUIT") {
-        explain.side_effects.push_back("connection_close");
-    } else if (explain.category == "read") {
-        explain.side_effects.push_back("metadata_read");
-    } else {
-        explain.side_effects.push_back("metadata_read");
-    }
-
-    if (has_extra_token(input)) {
-        mark_usage_warning(explain, explain.command);
-    }
-    return explain;
-}
-
-std::string format_walinfo(const WalMaintenanceReport& report) {
-    return "wal_bytes=" + std::to_string(report.bytes) + " wal_records=" + std::to_string(report.records) +
-           " live_keys=" + std::to_string(report.live_keys) +
-           " compact_recommended=" + format_yes_no(report.compact_recommended) +
-           " compact_min_records=" + std::to_string(report.options.compact_min_records) +
-           " compact_record_ratio=" + std::to_string(report.options.compact_record_ratio) +
-           " compact_min_bytes=" + std::to_string(report.options.compact_min_bytes) +
-           " manual_compactions=" + std::to_string(report.compaction_stats.manual_compactions) +
-           " auto_compactions=" + std::to_string(report.compaction_stats.auto_compactions) +
-           " repair_compactions=" + std::to_string(report.compaction_stats.repair_compactions) +
-           " compacted_keys=" + std::to_string(report.compaction_stats.compacted_keys) +
-           " records_removed=" + std::to_string(report.compaction_stats.records_removed) +
-           " bytes_saved=" + std::to_string(report.compaction_stats.bytes_saved);
-}
-
 CommandConnectionStats connection_stats(const CommandProcessorOptions& options) {
     if (options.connection_stats) {
         return options.connection_stats();
@@ -672,392 +151,7 @@ CommandConnectionStats connection_stats(const CommandProcessorOptions& options) 
     return {};
 }
 
-std::string format_connection_stats(const CommandConnectionStats& stats) {
-    if (!stats.available) {
-        return " connection_stats_available=no";
-    }
-
-    return " connection_stats_available=yes active_connections=" + std::to_string(stats.active_connections) +
-           " total_connections=" + std::to_string(stats.total_connections) +
-           " peak_connections=" + std::to_string(stats.peak_connections);
-}
-
-std::string format_stats(std::size_t live_keys,
-                         WriteAheadLog* wal,
-                         const std::optional<WalMaintenanceReport>& wal_report,
-                         const CommandProcessorMetrics& command_metrics,
-                         const CommandConnectionStats& stats) {
-    std::string response = "live_keys=" + std::to_string(live_keys) +
-                           " wal_enabled=" + format_yes_no(wal != nullptr);
-
-    if (wal_report.has_value()) {
-        response += " wal_bytes=" + std::to_string(wal_report->bytes) +
-                    " wal_records=" + std::to_string(wal_report->records) +
-                    " wal_live_keys=" + std::to_string(wal_report->live_keys) +
-                    " compact_recommended=" + format_yes_no(wal_report->compact_recommended) +
-                    " compact_min_records=" + std::to_string(wal_report->options.compact_min_records) +
-                    " compact_record_ratio=" + std::to_string(wal_report->options.compact_record_ratio) +
-                    " compact_min_bytes=" + std::to_string(wal_report->options.compact_min_bytes) +
-                    " manual_compactions=" + std::to_string(wal_report->compaction_stats.manual_compactions) +
-                    " auto_compactions=" + std::to_string(wal_report->compaction_stats.auto_compactions) +
-                    " repair_compactions=" + std::to_string(wal_report->compaction_stats.repair_compactions) +
-                    " compacted_keys=" + std::to_string(wal_report->compaction_stats.compacted_keys) +
-                    " records_removed=" + std::to_string(wal_report->compaction_stats.records_removed) +
-                    " bytes_saved=" + std::to_string(wal_report->compaction_stats.bytes_saved);
-    }
-
-    response += " " + format_command_metrics(command_metrics);
-    response += format_connection_stats(stats);
-    return response;
-}
-
-std::string format_health(std::size_t live_keys,
-                          WriteAheadLog* wal,
-                          const std::optional<WalMaintenanceReport>& wal_report,
-                          const CommandProcessorMetrics& command_metrics,
-                          const CommandConnectionStats& stats) {
-    std::string response = "OK live_keys=" + std::to_string(live_keys) +
-                           " wal_enabled=" + format_yes_no(wal != nullptr);
-
-    if (wal_report.has_value()) {
-        response += " compact_recommended=" + format_yes_no(wal_report->compact_recommended);
-    } else {
-        response += " compact_recommended=na";
-    }
-
-    response += " " + format_command_metrics(command_metrics);
-    response += format_connection_stats(stats);
-    return response;
-}
-
-std::string format_info(std::size_t live_keys,
-                        WriteAheadLog* wal,
-                        const CommandRuntimeInfo& runtime_info) {
-    const auto now = std::chrono::steady_clock::now();
-    const auto uptime =
-        now >= runtime_info.started_at
-            ? std::chrono::duration_cast<std::chrono::seconds>(now - runtime_info.started_at).count()
-            : 0;
-
-    return "version=" + std::string{version} +
-           " protocol=" + runtime_info.protocol +
-           " uptime_seconds=" + std::to_string(uptime) +
-           " live_keys=" + std::to_string(live_keys) +
-           " wal_enabled=" + format_yes_no(wal != nullptr) +
-           " metrics_enabled=" + format_yes_no(runtime_info.metrics_enabled) +
-           " max_request_bytes=" + std::to_string(runtime_info.max_request_bytes);
-}
-
-std::string format_protocol_json_array(std::string_view protocol) {
-    std::string response = "[";
-    bool first = true;
-    while (!protocol.empty()) {
-        const auto comma = protocol.find(',');
-        const std::string token = trim_copy(protocol.substr(0, comma));
-        if (!token.empty()) {
-            if (!first) {
-                response += ",";
-            }
-            first = false;
-            response += json_string(token);
-        }
-
-        if (comma == std::string_view::npos) {
-            break;
-        }
-        protocol.remove_prefix(comma + 1);
-    }
-    response += "]";
-    return response;
-}
-
-std::string format_info_json(std::size_t live_keys,
-                             WriteAheadLog* wal,
-                             const CommandRuntimeInfo& runtime_info) {
-    const auto now = std::chrono::steady_clock::now();
-    const auto uptime =
-        now >= runtime_info.started_at
-            ? std::chrono::duration_cast<std::chrono::seconds>(now - runtime_info.started_at).count()
-            : 0;
-
-    return "{\"schema_version\":" + std::to_string(runtime_identity_schema_version) +
-           ",\"read_only\":true,\"execution_allowed\":false,\"order_authoritative\":false" +
-           ",\"evidence_type\":\"runtime_identity\"" +
-           ",\"version\":" + json_string(version) +
-           ",\"server\":{\"protocol\":" + format_protocol_json_array(runtime_info.protocol) +
-           ",\"uptime_seconds\":" + std::to_string(uptime) +
-           ",\"max_request_bytes\":" + std::to_string(runtime_info.max_request_bytes) +
-           "},\"store\":{\"live_keys\":" + std::to_string(live_keys) +
-           "},\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr) +
-           "},\"metrics\":{\"enabled\":" + format_json_bool(runtime_info.metrics_enabled) +
-           "},\"ci_evidence\":" + runtime_evidence_receipts::format_runtime_ci_evidence_hint_json() +
-           ",\"artifact_retention\":" +
-           runtime_evidence_receipts::format_runtime_artifact_retention_evidence_json() +
-           ",\"binary_provenance\":" +
-           runtime_evidence_receipts::format_runtime_binary_provenance_hint_json() +
-           ",\"retention_provenance_check\":" +
-           runtime_evidence_receipts::format_runtime_retention_provenance_check_json() +
-           ",\"retention_provenance_replay_marker\":" +
-           runtime_evidence_receipts::format_runtime_retention_provenance_replay_marker_json() +
-           ",\"managed_audit_adapter_restore_boundary_receipt\":" +
-           managed_audit_receipts::format_restore_boundary_receipt_json() +
-           ",\"managed_audit_adapter_non_authoritative_storage_receipt\":" +
-           managed_audit_receipts::format_non_authoritative_storage_receipt_json() +
-           ",\"command_dispatch_quality_receipt\":" +
-           managed_audit_receipts::format_command_dispatch_quality_receipt_json() +
-           ",\"adapter_shell_non_storage_guard_receipt\":" +
-           managed_audit_receipts::format_adapter_shell_non_storage_guard_receipt_json() +
-           ",\"managed_audit_external_adapter_non_participation_receipt\":" +
-           managed_audit_receipts::format_external_adapter_non_participation_receipt_json() +
-           ",\"managed_audit_sandbox_adapter_non_participation_receipt\":" +
-           managed_audit_receipts::format_sandbox_adapter_non_participation_receipt_json() +
-           ",\"diagnostics\":{\"write_commands_executed\":false,\"dynamic_fields\":[\"server.uptime_seconds\"]}}";
-}
-
-std::string format_stats_json(std::size_t live_keys,
-                               WriteAheadLog* wal,
-                               const std::optional<WalMaintenanceReport>& wal_report,
-                               const CommandProcessorMetrics& command_metrics,
-                               const CommandConnectionStats& stats) {
-    std::string response = "{\"schema_version\":" + std::to_string(runtime_metrics_schema_version) +
-                           ",\"read_only\":true,\"execution_allowed\":false,\"order_authoritative\":false" +
-                           ",\"evidence_type\":\"runtime_metrics\"" +
-                           ",\"live_keys\":" + std::to_string(live_keys) +
-                           ",\"wal_enabled\":" + format_json_bool(wal != nullptr);
-
-    if (wal_report.has_value()) {
-        response += ",\"wal\":{\"bytes\":" + std::to_string(wal_report->bytes) +
-                    ",\"records\":" + std::to_string(wal_report->records) +
-                    ",\"live_keys\":" + std::to_string(wal_report->live_keys) +
-                    ",\"compact_recommended\":" + format_json_bool(wal_report->compact_recommended) +
-                    ",\"compact_min_records\":" + std::to_string(wal_report->options.compact_min_records) +
-                    ",\"compact_record_ratio\":" + std::to_string(wal_report->options.compact_record_ratio) +
-                    ",\"compact_min_bytes\":" + std::to_string(wal_report->options.compact_min_bytes) +
-                    ",\"manual_compactions\":" + std::to_string(wal_report->compaction_stats.manual_compactions) +
-                    ",\"auto_compactions\":" + std::to_string(wal_report->compaction_stats.auto_compactions) +
-                    ",\"repair_compactions\":" + std::to_string(wal_report->compaction_stats.repair_compactions) +
-                    ",\"compacted_keys\":" + std::to_string(wal_report->compaction_stats.compacted_keys) +
-                    ",\"records_removed\":" + std::to_string(wal_report->compaction_stats.records_removed) +
-                    ",\"bytes_saved\":" + std::to_string(wal_report->compaction_stats.bytes_saved) + "}";
-    } else {
-        response += ",\"wal\":null";
-    }
-
-    response += "," + format_command_metrics_json(command_metrics);
-    response += ",\"connection_stats\":{\"available\":" + format_json_bool(stats.available);
-    if (stats.available) {
-        response += ",\"active_connections\":" + std::to_string(stats.active_connections) +
-                    ",\"total_connections\":" + std::to_string(stats.total_connections) +
-                    ",\"peak_connections\":" + std::to_string(stats.peak_connections);
-    }
-    response += "},\"diagnostics\":{\"write_commands_executed\":false,"
-                "\"dynamic_fields\":[\"commands.total_latency_ns\",\"commands.avg_latency_ns\","
-                "\"commands.max_latency_ns\",\"commands.breakdown[*].*_latency_ns\"]}}";
-    return response;
-}
-
-std::string format_smoke_json(std::size_t live_keys,
-                              WriteAheadLog* wal,
-                              const std::optional<WalMaintenanceReport>& wal_report,
-                              const CommandProcessorMetrics& command_metrics,
-                              const CommandConnectionStats& stats,
-                              const CommandRuntimeInfo& runtime_info) {
-    const std::vector<std::string> read_commands = {
-        "INFOJSON",
-        "STORAGEJSON",
-        "HEALTH",
-        "STATSJSON",
-    };
-    const std::vector<std::string> forbidden_commands = {
-        "LOAD",
-        "COMPACT",
-        "SETNXEX",
-        "RESTORE",
-    };
-    const std::vector<std::string> dynamic_fields = {
-        "server.uptime_seconds",
-        "commands.total_latency_ns",
-        "commands.avg_latency_ns",
-        "commands.max_latency_ns",
-        "commands.breakdown[*].*_latency_ns",
-    };
-    const std::vector<std::string> notes = {
-        "runtime_smoke_evidence",
-        "live_read_session_hint",
-        "binary_provenance_hint",
-        "retention_provenance_check",
-        "retention_provenance_replay_marker",
-        "managed_audit_adapter_restore_boundary_receipt",
-        "managed_audit_adapter_non_authoritative_storage_receipt",
-        "command_dispatch_quality_receipt",
-        "adapter_shell_non_storage_guard_receipt",
-        "managed_audit_external_adapter_non_participation_receipt",
-        "managed_audit_sandbox_adapter_non_participation_receipt",
-        "read_only_aggregate",
-        "not_order_authoritative",
-        "does_not_execute_load_compact_setnxex_or_restore",
-    };
-
-    const auto now = std::chrono::steady_clock::now();
-    const auto uptime =
-        now >= runtime_info.started_at
-            ? std::chrono::duration_cast<std::chrono::seconds>(now - runtime_info.started_at).count()
-            : 0;
-
-    std::string response = "{\"schema_version\":" + std::to_string(runtime_smoke_schema_version) +
-                           ",\"read_only\":true,\"execution_allowed\":false" +
-                           ",\"restore_execution_allowed\":false,\"order_authoritative\":false" +
-                           ",\"evidence_type\":\"runtime_smoke\"" +
-                           ",\"version\":" + json_string(version) +
-                           ",\"server\":{\"protocol\":" + format_protocol_json_array(runtime_info.protocol) +
-                           ",\"uptime_seconds\":" + std::to_string(uptime) +
-                           ",\"max_request_bytes\":" + std::to_string(runtime_info.max_request_bytes) +
-                           ",\"metrics_enabled\":" + format_json_bool(runtime_info.metrics_enabled) + "}" +
-                           ",\"store\":{\"live_keys\":" + std::to_string(live_keys) +
-                           ",\"order_authoritative\":false}" +
-                           ",\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr);
-
-    if (wal_report.has_value()) {
-        response += ",\"status\":\"enabled\",\"compact_recommended\":" +
-                    format_json_bool(wal_report->compact_recommended) +
-                    ",\"bytes\":" + std::to_string(wal_report->bytes) +
-                    ",\"records\":" + std::to_string(wal_report->records) + "}";
-    } else {
-        response += ",\"status\":\"disabled\",\"compact_recommended\":false}";
-    }
-
-    response += "," + format_command_metrics_json(command_metrics);
-    response += ",\"connection_stats\":{\"available\":" + format_json_bool(stats.available);
-    if (stats.available) {
-        response += ",\"active_connections\":" + std::to_string(stats.active_connections) +
-                    ",\"total_connections\":" + std::to_string(stats.total_connections) +
-                    ",\"peak_connections\":" + std::to_string(stats.peak_connections);
-    }
-    response += "},\"real_read\":{\"allowed\":true,\"commands\":" +
-                format_json_string_array(read_commands) +
-                ",\"forbidden_commands\":" + format_json_string_array(forbidden_commands) +
-                ",\"write_commands_executed\":false,\"admin_commands_executed\":false," +
-                "\"runtime_write_observed\":false}" +
-                ",\"live_read_session\":" +
-                runtime_evidence_receipts::format_live_read_session_hint_json(uptime, read_commands) +
-                ",\"operator_window\":" +
-                runtime_evidence_receipts::format_smoke_operator_window_proof_json() +
-                ",\"ci_evidence\":" + runtime_evidence_receipts::format_runtime_ci_evidence_hint_json() +
-                ",\"artifact_retention\":" +
-                runtime_evidence_receipts::format_runtime_artifact_retention_evidence_json() +
-                ",\"binary_provenance\":" +
-                runtime_evidence_receipts::format_runtime_binary_provenance_hint_json() +
-                ",\"retention_provenance_check\":" +
-                runtime_evidence_receipts::format_runtime_retention_provenance_check_json() +
-                ",\"retention_provenance_replay_marker\":" +
-                runtime_evidence_receipts::format_runtime_retention_provenance_replay_marker_json() +
-                ",\"managed_audit_adapter_restore_boundary_receipt\":" +
-                managed_audit_receipts::format_restore_boundary_receipt_json() +
-                ",\"managed_audit_adapter_non_authoritative_storage_receipt\":" +
-                managed_audit_receipts::format_non_authoritative_storage_receipt_json() +
-                ",\"command_dispatch_quality_receipt\":" +
-                managed_audit_receipts::format_command_dispatch_quality_receipt_json() +
-                ",\"adapter_shell_non_storage_guard_receipt\":" +
-                managed_audit_receipts::format_adapter_shell_non_storage_guard_receipt_json() +
-                ",\"managed_audit_external_adapter_non_participation_receipt\":" +
-                managed_audit_receipts::format_external_adapter_non_participation_receipt_json() +
-                ",\"managed_audit_sandbox_adapter_non_participation_receipt\":" +
-                managed_audit_receipts::format_sandbox_adapter_non_participation_receipt_json() +
-                ",\"failure_taxonomy\":" + runtime_evidence_receipts::format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v225 may verify the mini-kv sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before managed audit sandbox adapter dry-run package; mini-kv must already be running and the read-only window must be open\"," +
-                "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
-                ",\"notes\":" + format_json_string_array(notes) + "}}";
-    return response;
-}
-
-std::string format_storage_evidence_json(std::size_t live_keys,
-                                          WriteAheadLog* wal,
-                                          const std::optional<WalMaintenanceReport>& wal_report) {
-    const std::vector<std::string> side_effects = {
-        "metadata_read",
-        "store_read",
-        "wal_metadata_read_when_enabled",
-    };
-    std::vector<std::string> notes = {
-        "read_only_storage_evidence",
-        "not_order_authoritative",
-        "manual_snapshot_only",
-    };
-    notes.push_back(wal != nullptr ? "wal_enabled" : "wal_disabled");
-
-    std::string response = "{\"schema_version\":" + std::to_string(storage_evidence_schema_version) +
-                           ",\"read_only\":true,\"execution_allowed\":false" +
-                           ",\"version\":" + json_string(version) +
-                           ",\"store\":{\"live_keys\":" + std::to_string(live_keys) +
-                           ",\"order_authoritative\":false}" +
-                           ",\"wal\":{\"enabled\":" + format_json_bool(wal != nullptr);
-
-    if (wal_report.has_value()) {
-        response += ",\"status\":\"enabled\"" +
-                    std::string{",\"bytes\":"} + std::to_string(wal_report->bytes) +
-                    ",\"records\":" + std::to_string(wal_report->records) +
-                    ",\"live_keys\":" + std::to_string(wal_report->live_keys) +
-                    ",\"compact_recommended\":" + format_json_bool(wal_report->compact_recommended) +
-                    ",\"options\":{\"compact_min_records\":" +
-                    std::to_string(wal_report->options.compact_min_records) +
-                    ",\"compact_record_ratio\":" + std::to_string(wal_report->options.compact_record_ratio) +
-                    ",\"compact_min_bytes\":" + std::to_string(wal_report->options.compact_min_bytes) + "}" +
-                    ",\"compactions\":{\"manual\":" +
-                    std::to_string(wal_report->compaction_stats.manual_compactions) +
-                    ",\"automatic\":" + std::to_string(wal_report->compaction_stats.auto_compactions) +
-                    ",\"repair\":" + std::to_string(wal_report->compaction_stats.repair_compactions) +
-                    ",\"compacted_keys\":" + std::to_string(wal_report->compaction_stats.compacted_keys) +
-                    ",\"records_removed\":" + std::to_string(wal_report->compaction_stats.records_removed) +
-                    ",\"bytes_saved\":" + std::to_string(wal_report->compaction_stats.bytes_saved) + "}";
-    } else {
-        response += ",\"status\":\"disabled\"";
-    }
-
-    response += "},\"snapshot\":{\"supported\":true,\"mode\":\"manual\",\"atomic_save\":true,"
-                "\"load_replaces_store\":true}" +
-                std::string{",\"side_effects\":"} + format_json_string_array(side_effects) +
-                ",\"side_effect_count\":" + std::to_string(side_effects.size()) +
-                ",\"diagnostics\":{\"read_only_command\":true,\"write_commands_executed\":false,"
-                "\"order_authoritative\":false,\"notes\":" +
-                format_json_string_array(notes) + "}}";
-    return response;
-}
-
 } // namespace
-
-std::string format_command_metrics_json(const CommandProcessorMetrics& metrics) {
-    const std::uint64_t average_latency_ns =
-        metrics.total_commands == 0 ? 0 : metrics.total_latency_ns / metrics.total_commands;
-
-    std::string response = "\"commands\":{\"total_commands\":" + std::to_string(metrics.total_commands) +
-                           ",\"successful_commands\":" + std::to_string(metrics.successful_commands) +
-                           ",\"error_commands\":" + std::to_string(metrics.error_commands) +
-                           ",\"total_latency_ns\":" + std::to_string(metrics.total_latency_ns) +
-                           ",\"avg_latency_ns\":" + std::to_string(average_latency_ns) +
-                           ",\"max_latency_ns\":" + std::to_string(metrics.max_latency_ns) +
-                           ",\"breakdown\":[";
-
-    bool first = true;
-    for (const auto& command_metrics : metrics.command_breakdown) {
-        const std::uint64_t command_average_latency_ns =
-            command_metrics.total_commands == 0 ? 0 : command_metrics.total_latency_ns / command_metrics.total_commands;
-        if (!first) {
-            response += ",";
-        }
-        first = false;
-
-        response += "{\"command\":" + json_string(command_metrics.command) +
-                    ",\"total_commands\":" + std::to_string(command_metrics.total_commands) +
-                    ",\"successful_commands\":" + std::to_string(command_metrics.successful_commands) +
-                    ",\"error_commands\":" + std::to_string(command_metrics.error_commands) +
-                    ",\"total_latency_ns\":" + std::to_string(command_metrics.total_latency_ns) +
-                    ",\"avg_latency_ns\":" + std::to_string(command_average_latency_ns) +
-                    ",\"max_latency_ns\":" + std::to_string(command_metrics.max_latency_ns) + "}";
-    }
-
-    response += "]}";
-    return response;
-}
 
 void CommandMetricsTracker::record(const CommandResult& result) {
     record("UNKNOWN", result, 0);
@@ -1112,41 +206,6 @@ CommandProcessorMetrics CommandMetricsTracker::stats() const {
     return snapshot;
 }
 
-std::string format_command_metrics(const CommandProcessorMetrics& metrics) {
-    const std::uint64_t average_latency_ns =
-        metrics.total_commands == 0 ? 0 : metrics.total_latency_ns / metrics.total_commands;
-
-    std::string result = "total_commands=" + std::to_string(metrics.total_commands) +
-                         " successful_commands=" + std::to_string(metrics.successful_commands) +
-                         " error_commands=" + std::to_string(metrics.error_commands) +
-                         " total_latency_ns=" + std::to_string(metrics.total_latency_ns) +
-                         " avg_latency_ns=" + std::to_string(average_latency_ns) +
-                         " max_latency_ns=" + std::to_string(metrics.max_latency_ns) +
-                         " command_breakdown=";
-
-    if (metrics.command_breakdown.empty()) {
-        return result + "none";
-    }
-
-    bool first = true;
-    for (const auto& command_metrics : metrics.command_breakdown) {
-        const std::uint64_t command_average_latency_ns =
-            command_metrics.total_commands == 0 ? 0 : command_metrics.total_latency_ns / command_metrics.total_commands;
-        if (!first) {
-            result += ";";
-        }
-        first = false;
-        result += command_metrics.command + ":" + std::to_string(command_metrics.total_commands) + "/" +
-                  std::to_string(command_metrics.successful_commands) + "/" +
-                  std::to_string(command_metrics.error_commands) + "/" +
-                  std::to_string(command_metrics.total_latency_ns) + "/" +
-                  std::to_string(command_average_latency_ns) + "/" +
-                  std::to_string(command_metrics.max_latency_ns);
-    }
-
-    return result;
-}
-
 CommandProcessor::CommandProcessor(Store& store, WriteAheadLog* wal, CommandProcessorOptions options)
     : store_(store),
       wal_(wal),
@@ -1175,7 +234,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_stats(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+        return {command_response_formatters::format_stats(
+            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
     if (command == "STATSJSON") {
@@ -1190,7 +250,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_stats_json(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+        return {command_response_formatters::format_stats_json(
+            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
     if (command == "SMOKEJSON") {
@@ -1205,7 +266,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_smoke_json(
+        return {command_response_formatters::format_smoke_json(
             live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_), options_.runtime_info)};
     }
 
@@ -1221,7 +282,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_storage_evidence_json(live_keys, wal_, wal_report)};
+        return {command_response_formatters::format_storage_evidence_json(live_keys, wal_, wal_report)};
     }
 
     if (command == "HEALTH") {
@@ -1236,7 +297,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {format_health(live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+        return {command_response_formatters::format_health(
+            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
     }
 
     if (command == "INFO") {
@@ -1244,7 +306,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("INFO");
         }
 
-        return {format_info(store_.size(), wal_, options_.runtime_info)};
+        return {command_response_formatters::format_info(store_.size(), wal_, options_.runtime_info)};
     }
 
     if (command == "INFOJSON") {
@@ -1252,7 +314,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("INFOJSON");
         }
 
-        return {format_info_json(store_.size(), wal_, options_.runtime_info)};
+        return {command_response_formatters::format_info_json(store_.size(), wal_, options_.runtime_info)};
     }
 
     if (command == "COMMANDS") {
@@ -1260,7 +322,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("COMMANDS");
         }
 
-        return {format_commands()};
+        return {command_contracts::format_commands()};
     }
 
     if (command == "COMMANDSJSON") {
@@ -1268,7 +330,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("COMMANDSJSON");
         }
 
-        return {format_commands_json()};
+        return {command_contracts::format_commands_json()};
     }
 
     return {"ERR unknown command"};
@@ -1479,10 +541,10 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
                 return usage("KEYS [prefix]");
             }
 
-            return {format_prefixed_keys(prefix, store_.keys_with_prefix(prefix))};
+            return {command_response_formatters::format_prefixed_keys(prefix, store_.keys_with_prefix(prefix))};
         }
 
-        return {format_keys(store_.keys())};
+        return {command_response_formatters::format_keys(store_.keys())};
     }
 
     if (command == "KEYSJSON") {
@@ -1492,10 +554,10 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
                 return usage("KEYSJSON [prefix]");
             }
 
-            return {format_keys_json(prefix, store_.keys_with_prefix(prefix))};
+            return {command_response_formatters::format_keys_json(prefix, store_.keys_with_prefix(prefix))};
         }
 
-        return {format_keys_json(std::nullopt, store_.keys())};
+        return {command_response_formatters::format_keys_json(std::nullopt, store_.keys())};
     }
 
     if (command == "SAVE") {
@@ -1560,7 +622,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         }
 
         std::lock_guard lock(wal_command_mutex());
-        return {format_walinfo(wal_->maintenance_report(store_))};
+        return {command_response_formatters::format_walinfo(wal_->maintenance_report(store_))};
     }
 
     if (command == "RESETSTATS") {
@@ -1583,7 +645,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             return usage("EXPLAINJSON command");
         }
 
-        return {format_explain_json(explain_command(target_command))};
+        return {command_contracts::format_explain_json(target_command)};
     }
 
     if (command == "CHECKJSON") {
@@ -1593,7 +655,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             return usage("CHECKJSON command");
         }
 
-        return {format_check_json(explain_command(target_command), wal_ != nullptr)};
+        return {command_contracts::format_check_json(target_command, wal_ != nullptr)};
     }
 
     if (command == "HELP") {

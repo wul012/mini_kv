@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.93.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.94.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,6 +15,8 @@ configure_file(
 add_library(minikv
     src/client_history.cpp
     src/command.cpp
+    src/command_contracts.cpp
+    src/command_response_formatters.cpp
     src/line_editor.cpp
     src/managed_audit_receipts.cpp
     src/metrics_file.cpp
