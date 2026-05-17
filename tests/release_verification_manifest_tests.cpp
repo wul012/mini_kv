@@ -49,8 +49,8 @@ int main() {
 
     assert_contains(manifest, "\"manifest_version\":\"mini-kv-release-verification-manifest.v1\"");
     assert_contains(manifest, "\"project\":\"mini-kv\"");
-    assert_contains(manifest, "\"project_version\":\"0.92.0\"");
-    assert_contains(manifest, "\"release_version\":\"v92\"");
+    assert_contains(manifest, "\"project_version\":\"0.93.0\"");
+    assert_contains(manifest, "\"release_version\":\"v93\"");
     assert_contains(manifest, "\"read_only\":true");
     assert_contains(manifest, "\"execution_allowed\":false");
     assert_contains(manifest, "\"order_authoritative\":false");
@@ -58,9 +58,9 @@ int main() {
     assert_contains(manifest,
                     "\"consumer_hint\":\"Node v225 managed audit sandbox adapter dry-run package\"");
 
-    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v92");
-    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v92 --parallel 2\"");
-    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v92 --output-on-failure\"");
+    assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v93");
+    assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v93 --parallel 2\"");
+    assert_contains(manifest, "\"command\":\"ctest --test-dir cmake-build-v93 --output-on-failure\"");
     assert_contains(manifest, "\"minikv_command_tests\"");
     assert_contains(manifest, "\"minikv_readonly_fixture_tests\"");
     assert_contains(manifest, "\"minikv_recovery_fixture_index_tests\"");
@@ -85,21 +85,21 @@ int main() {
     assert_contains(manifest, "\"STORAGEJSON\"");
     assert_contains(manifest, "\"HEALTH\"");
     assert_contains(manifest, "\"GET restore:real-read-token\"");
-    assert_contains(manifest, "\"SMOKEJSON version matches 0.92.0\"");
+    assert_contains(manifest, "\"SMOKEJSON version matches 0.93.0\"");
     assert_contains(manifest, "\"SMOKEJSON read_only=true and execution_allowed=false\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes live_read_session.session_id_echo=mini-kv-live-read-v92 and read_command_list_digest=fnv1a64:5bef33f2fbe65cc5\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes binary_provenance.provenance_digest=fnv1a64:701218da480de586 and production_binary_claimed=false\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes retention_provenance_check.check_digest=fnv1a64:ec3e995a50f55340 and managed_audit_write_executed=false\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes retention_provenance_replay_marker.marker_digest=fnv1a64:47fd2b9953efca35 and replay_executed=false\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_adapter_restore_boundary_receipt.receipt_digest=fnv1a64:df1d27c537c7c00a and adapter_write_allowed=false\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes live_read_session.session_id_echo=mini-kv-live-read-v93 and read_command_list_digest=fnv1a64:5bef33f2fbe65cc5\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes binary_provenance.provenance_digest=fnv1a64:077c4510bc08fe58 and production_binary_claimed=false\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes retention_provenance_check.check_digest=fnv1a64:123b13c1e2e31ba2 and managed_audit_write_executed=false\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes retention_provenance_replay_marker.marker_digest=fnv1a64:b0daa0cec61f2931 and replay_executed=false\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_adapter_restore_boundary_receipt.receipt_digest=fnv1a64:72e12ce65542a472 and adapter_write_allowed=false\"");
     assert_contains(manifest, "\"SMOKEJSON exposes adapter_shell_non_storage_guard_receipt.consumed_release_version=v88\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes adapter_shell_non_storage_guard_receipt.receipt_digest=fnv1a64:165a5348d9c7ca14\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes adapter_shell_non_storage_guard_receipt.receipt_digest=fnv1a64:5062dc664522b60a\"");
     assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_external_adapter_non_participation_receipt.consumed_release_version=v89\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_external_adapter_non_participation_receipt.receipt_digest=fnv1a64:e899fbe458fdee45\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_external_adapter_non_participation_receipt.receipt_digest=fnv1a64:a29e619cc23f2105\"");
     assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_external_adapter_non_participation_receipt.external_adapter_storage_backend=false\"");
     assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_external_adapter_non_participation_receipt.credential_read_allowed=false\"");
     assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_sandbox_adapter_non_participation_receipt.consumed_release_version=v90\"");
-    assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_sandbox_adapter_non_participation_receipt.receipt_digest=fnv1a64:717c8fd8ea62323a\"");
+    assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_sandbox_adapter_non_participation_receipt.receipt_digest=fnv1a64:a09d9fc409ab38ec\"");
     assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_sandbox_adapter_non_participation_receipt.sandbox_adapter_storage_backend=false\"");
     assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_sandbox_adapter_non_participation_receipt.credential_value_read_allowed=false\"");
     assert_contains(manifest, "\"SMOKEJSON exposes managed_audit_sandbox_adapter_non_participation_receipt.sandbox_managed_audit_state_write_allowed=false\"");
@@ -148,10 +148,12 @@ int main() {
         assert_contains(manifest, "\"path\":\"" + path.generic_string() + "\"");
     }
 
-    assert_contains(manifest, "\"cmake_project_version\":\"0.92.0\"");
+    assert_contains(manifest, "\"cmake_project_version\":\"0.93.0\"");
     assert_contains(manifest, "\"generated_header\":\"include/minikv/version.hpp.in\"");
     assert_contains(manifest, "\"managed_audit_receipts_header\":\"include/minikv/managed_audit_receipts.hpp\"");
     assert_contains(manifest, "\"managed_audit_receipts_source\":\"src/managed_audit_receipts.cpp\"");
+    assert_contains(manifest, "\"runtime_evidence_receipts_header\":\"include/minikv/runtime_evidence_receipts.hpp\"");
+    assert_contains(manifest, "\"runtime_evidence_receipts_source\":\"src/runtime_evidence_receipts.cpp\"");
     assert_contains(manifest, "\"command_aggregation_source\":\"src/command.cpp\"");
     assert_contains(manifest, "\"fixtures/readonly/infojson-empty-inline.json\"");
     assert_contains(manifest, "\"fixtures/release/verification-manifest.json\"");
@@ -212,7 +214,7 @@ int main() {
     assert_contains(manifest, "\"production_window_allowed\":false");
     assert_contains(manifest, "\"node_action\":\"verify retention days and artifact path before cross-project retention gate\"");
     assert_contains(manifest, "\"live_read_session\":{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\"");
-    assert_contains(manifest, "\"session_id_echo\":\"mini-kv-live-read-v92\"");
+    assert_contains(manifest, "\"session_id_echo\":\"mini-kv-live-read-v93\"");
     assert_contains(manifest, "\"server_uptime_bucket\":\"lt_60s\"");
     assert_contains(manifest, "\"read_command_list_digest\":\"fnv1a64:5bef33f2fbe65cc5\"");
     assert_contains(manifest, "\"read_command_count\":4");
@@ -220,18 +222,18 @@ int main() {
     assert_contains(manifest, "\"write_commands_allowed\":false");
     assert_contains(manifest, "\"auto_start_allowed\":false");
     assert_contains(manifest, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
-    assert_contains(manifest, "\"source_version\":\"0.92.0\"");
-    assert_contains(manifest, "\"artifact_path_hint\":\"c/92/\"");
-    assert_contains(manifest, "\"runtime_binary_hint\":\"cmake-build-v92/minikv_server and cmake-build-v92/minikv_client from the current CMake build\"");
+    assert_contains(manifest, "\"source_version\":\"0.93.0\"");
+    assert_contains(manifest, "\"artifact_path_hint\":\"c/93/\"");
+    assert_contains(manifest, "\"runtime_binary_hint\":\"cmake-build-v93/minikv_server and cmake-build-v93/minikv_client from the current CMake build\"");
     assert_contains(manifest, "\"release_manifest_path\":\"fixtures/release/verification-manifest.json\"");
     assert_contains(manifest, "\"runtime_smoke_evidence_path\":\"fixtures/release/runtime-smoke-evidence.json\"");
-    assert_contains(manifest, "\"provenance_digest\":\"fnv1a64:701218da480de586\"");
+    assert_contains(manifest, "\"provenance_digest\":\"fnv1a64:077c4510bc08fe58\"");
     assert_contains(manifest, "\"load_restore_compact_executed\":false");
     assert_contains(manifest, "\"production_binary_claimed\":false");
     assert_contains(manifest, "\"verify binary, fixture, and release evidence path alignment before managed audit persistence boundary work\"");
     assert_contains(manifest, "\"retention_provenance_check\":{\"consumer\":\"Node v211 managed audit identity approval provenance dry-run packet\"");
-    assert_contains(manifest, "\"expected_binary_provenance_digest\":\"fnv1a64:701218da480de586\"");
-    assert_contains(manifest, "\"check_digest\":\"fnv1a64:ec3e995a50f55340\"");
+    assert_contains(manifest, "\"expected_binary_provenance_digest\":\"fnv1a64:077c4510bc08fe58\"");
+    assert_contains(manifest, "\"check_digest\":\"fnv1a64:123b13c1e2e31ba2\"");
     assert_contains(manifest, "\"managed_audit_write_executed\":false");
     assert_contains(manifest, "\"verify runtime evidence retention and binary provenance alignment before managed audit dry-run packet work\"");
     assert_contains(manifest, "\"retention_provenance_replay_marker\":{\"consumer\":\"Node v213 managed audit packet restore drill plan\"");
@@ -239,15 +241,15 @@ int main() {
     assert_contains(manifest, "\"consumed_release_version\":\"v84\"");
     assert_contains(manifest, "\"consumed_artifact_path_hint\":\"c/84/\"");
     assert_contains(manifest, "\"consumed_check_digest\":\"fnv1a64:357cc7e9eec3f223\"");
-    assert_contains(manifest, "\"current_artifact_path_hint\":\"c/92/\"");
-    assert_contains(manifest, "\"marker_digest\":\"fnv1a64:47fd2b9953efca35\"");
+    assert_contains(manifest, "\"current_artifact_path_hint\":\"c/93/\"");
+    assert_contains(manifest, "\"marker_digest\":\"fnv1a64:b0daa0cec61f2931\"");
     assert_contains(manifest, "\"replay_executed\":false");
     assert_contains(manifest, "\"managed_audit_adapter_restore_boundary_receipt\":{\"consumer\":\"Node v215 managed audit dry-run adapter candidate\"");
     assert_contains(manifest, "\"consumed_by\":\"Node v213 managed audit packet restore drill plan\"");
     assert_contains(manifest, "\"consumed_release_version\":\"v85\"");
     assert_contains(manifest, "\"consumed_artifact_path_hint\":\"c/85/\"");
     assert_contains(manifest, "\"consumed_marker_digest\":\"fnv1a64:1ea4570c967cfdb1\"");
-    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:df1d27c537c7c00a\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:72e12ce65542a472\"");
     assert_contains(manifest, "\"adapter_write_allowed\":false");
     assert_contains(manifest, "\"restore_execution_allowed\":false");
     assert_contains(manifest, "\"load_restore_compact_executed\":false");
@@ -256,7 +258,7 @@ int main() {
     assert_contains(manifest, "\"consumed_release_version\":\"v86\"");
     assert_contains(manifest, "\"consumed_artifact_path_hint\":\"c/86/\"");
     assert_contains(manifest, "\"consumed_receipt_digest\":\"fnv1a64:f39d8e3ef98654ea\"");
-    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:d0f52bb9e15b79e6\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:790f02e1ed7726ce\"");
     assert_contains(manifest, "\"managed_audit_store\":false");
     assert_contains(manifest, "\"storage_write_allowed\":false");
     assert_contains(manifest, "\"admin_commands_allowed\":false");
@@ -269,7 +271,7 @@ int main() {
     assert_contains(manifest, "\"consumed_release_version\":\"v87\"");
     assert_contains(manifest, "\"consumed_artifact_path_hint\":\"c/87/\"");
     assert_contains(manifest, "\"consumed_receipt_digest\":\"fnv1a64:111f0daf1283eab6\"");
-    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:d4c86c761d51799e\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:1717cb8feca8551e\"");
     assert_contains(manifest, "\"dispatch_split_applied\":true");
     assert_contains(manifest, "\"wal_snapshot_restore_touched\":false");
     assert_contains(manifest, "\"fixture_contract_preserved\":true");
@@ -278,7 +280,7 @@ int main() {
     assert_contains(manifest, "\"consumed_release_version\":\"v88\"");
     assert_contains(manifest, "\"consumed_artifact_path_hint\":\"c/88/\"");
     assert_contains(manifest, "\"consumed_receipt_digest\":\"fnv1a64:4aa6d12fb067e2a6\"");
-    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:165a5348d9c7ca14\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:5062dc664522b60a\"");
     assert_contains(manifest, "\"adapter_shell_storage_backend\":false");
     assert_contains(manifest, "\"local_dry_run_records_written\":false");
     assert_contains(manifest, "\"managed_audit_external_adapter_non_participation_receipt\":{\"consumer\":\"Node v223 managed audit external adapter connection readiness review\"");
@@ -288,7 +290,7 @@ int main() {
     assert_contains(manifest, "\"consumed_receipt_digest\":\"fnv1a64:76411286a0913dc8\"");
     assert_contains(manifest, "\"adapter_target\":\"real external managed audit adapter\"");
     assert_contains(manifest, "\"runtime_role\":\"runtime evidence provider only\"");
-    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:e899fbe458fdee45\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:a29e619cc23f2105\"");
     assert_contains(manifest, "\"external_adapter_storage_backend\":false");
     assert_contains(manifest, "\"participates_in_external_adapter\":false");
     assert_contains(manifest, "\"credential_required\":false");
@@ -302,10 +304,10 @@ int main() {
     assert_contains(manifest, "\"consumed_release_version\":\"v90\"");
     assert_contains(manifest, "\"consumed_artifact_path_hint\":\"c/90/\"");
     assert_contains(manifest, "\"consumed_receipt_digest\":\"fnv1a64:0dfb07cd2f8de289\"");
-    assert_contains(manifest, "\"current_artifact_path_hint\":\"c/92/\"");
+    assert_contains(manifest, "\"current_artifact_path_hint\":\"c/93/\"");
     assert_contains(manifest, "\"adapter_target\":\"sandbox managed audit adapter dry-run\"");
     assert_contains(manifest, "\"runtime_role\":\"runtime evidence provider only\"");
-    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:717c8fd8ea62323a\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:a09d9fc409ab38ec\"");
     assert_contains(manifest, "\"sandbox_adapter_storage_backend\":false");
     assert_contains(manifest, "\"participates_in_sandbox_adapter\":false");
     assert_contains(manifest, "\"credential_value_required\":false");
@@ -328,6 +330,7 @@ int main() {
     assert_contains(manifest, "\"Node v225 may verify the mini-kv sandbox adapter non-participation receipt before sandbox adapter dry-run package\"");
     assert_contains(manifest, "\"Managed audit sandbox adapter non-participation receipt is read-only evidence that mini-kv is not sandbox audit storage, reads no credentials, and writes no managed audit state\"");
     assert_contains(manifest, "\"Managed audit receipt formatter module keeps digest/json formatting outside command.cpp while preserving read-only runtime contracts\"");
+    assert_contains(manifest, "\"Runtime evidence receipt formatter module keeps live-read, taxonomy, binary provenance, retention provenance, and operator-window formatting outside command.cpp while preserving INFOJSON/SMOKEJSON field contracts\"");
     assert_contains(manifest, "\"managed audit external adapter non-participation receipt only\"");
     assert_contains(manifest, "\"not external adapter storage backend\"");
     assert_contains(manifest, "\"no external adapter participation\"");
@@ -335,7 +338,9 @@ int main() {
     assert_contains(manifest, "\"no migration execution\"");
     assert_contains(manifest, "\"managed audit sandbox adapter non-participation receipt only\"");
     assert_contains(manifest, "\"managed audit receipt formatter split only\"");
+    assert_contains(manifest, "\"runtime evidence receipt formatter split only\"");
     assert_contains(manifest, "\"no INFOJSON/SMOKEJSON field contract expansion from formatter split\"");
+    assert_contains(manifest, "\"no INFOJSON/SMOKEJSON field contract expansion from runtime evidence receipt split\"");
     assert_contains(manifest, "\"not sandbox audit storage backend\"");
     assert_contains(manifest, "\"no sandbox adapter participation\"");
     assert_contains(manifest, "\"no sandbox credential value read\"");
@@ -344,8 +349,9 @@ int main() {
     assert_contains(manifest, "\"no sandbox schema migration execution\"");
 
     const auto cmake_lists = read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "CMakeLists.txt");
-    assert_contains(cmake_lists, "project(mini_kv VERSION 0.92.0");
+    assert_contains(cmake_lists, "project(mini_kv VERSION 0.93.0");
     assert_contains(cmake_lists, "src/managed_audit_receipts.cpp");
+    assert_contains(cmake_lists, "src/runtime_evidence_receipts.cpp");
     assert_contains(cmake_lists, "minikv_release_verification_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_rollback_evidence_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_bundle_manifest_tests");
@@ -368,7 +374,7 @@ int main() {
 
     auto result = processor.execute("INFOJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"version\":\"0.92.0\"");
+    assert_contains(result.response, "\"version\":\"0.93.0\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"order_authoritative\":false");
@@ -383,9 +389,9 @@ int main() {
     assert_contains(result.response, "\"github_artifact_upload_attempted\":false");
     assert_contains(result.response, "\"production_window_allowed\":false");
     assert_contains(result.response, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
-    assert_contains(result.response, "\"source_version\":\"0.92.0\"");
-    assert_contains(result.response, "\"artifact_path_hint\":\"c/92/\"");
-    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:701218da480de586\"");
+    assert_contains(result.response, "\"source_version\":\"0.93.0\"");
+    assert_contains(result.response, "\"artifact_path_hint\":\"c/93/\"");
+    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:077c4510bc08fe58\"");
     assert_contains(result.response, "\"load_restore_compact_executed\":false");
     assert_contains(result.response, "\"production_binary_claimed\":false");
 
@@ -397,7 +403,7 @@ int main() {
     assert_contains(result.response, "\"evidence_type\":\"runtime_smoke\"");
     assert_contains(result.response, "\"forbidden_commands\":[\"LOAD\",\"COMPACT\",\"SETNXEX\",\"RESTORE\"]");
     assert_contains(result.response, "\"live_read_session\":{\"consumer\":\"Node v205 three-project real-read runtime smoke execution packet\"");
-    assert_contains(result.response, "\"session_id_echo\":\"mini-kv-live-read-v92\"");
+    assert_contains(result.response, "\"session_id_echo\":\"mini-kv-live-read-v93\"");
     assert_contains(result.response, "\"read_command_list_digest\":\"fnv1a64:5bef33f2fbe65cc5\"");
     assert_contains(result.response, "\"write_commands_allowed\":false");
     assert_contains(result.response, "\"auto_start_allowed\":false");
@@ -418,20 +424,20 @@ int main() {
     assert_contains(result.response, "\"github_artifact_upload_attempted\":false");
     assert_contains(result.response, "\"production_window_allowed\":false");
     assert_contains(result.response, "\"binary_provenance\":{\"consumer\":\"Node v208 managed audit persistence boundary candidate\"");
-    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:701218da480de586\"");
+    assert_contains(result.response, "\"provenance_digest\":\"fnv1a64:077c4510bc08fe58\"");
     assert_contains(result.response, "\"production_binary_claimed\":false");
     assert_contains(result.response, "\"retention_provenance_check\":{\"consumer\":\"Node v211 managed audit identity approval provenance dry-run packet\"");
-    assert_contains(result.response, "\"check_digest\":\"fnv1a64:ec3e995a50f55340\"");
+    assert_contains(result.response, "\"check_digest\":\"fnv1a64:123b13c1e2e31ba2\"");
     assert_contains(result.response, "\"managed_audit_write_executed\":false");
     assert_contains(result.response, "\"retention_provenance_replay_marker\":{\"consumer\":\"Node v213 managed audit packet restore drill plan\"");
     assert_contains(result.response, "\"consumed_release_version\":\"v84\"");
     assert_contains(result.response, "\"consumed_check_digest\":\"fnv1a64:357cc7e9eec3f223\"");
-    assert_contains(result.response, "\"marker_digest\":\"fnv1a64:47fd2b9953efca35\"");
+    assert_contains(result.response, "\"marker_digest\":\"fnv1a64:b0daa0cec61f2931\"");
     assert_contains(result.response, "\"replay_executed\":false");
     assert_contains(result.response, "\"managed_audit_adapter_restore_boundary_receipt\":{\"consumer\":\"Node v215 managed audit dry-run adapter candidate\"");
     assert_contains(result.response, "\"consumed_release_version\":\"v85\"");
     assert_contains(result.response, "\"consumed_marker_digest\":\"fnv1a64:1ea4570c967cfdb1\"");
-    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:df1d27c537c7c00a\"");
+    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:72e12ce65542a472\"");
     assert_contains(result.response, "\"adapter_write_allowed\":false");
     assert_contains(result.response, "\"restore_execution_allowed\":false");
     assert_contains(result.response, "\"managed_audit_adapter_non_authoritative_storage_receipt\":{\"consumer\":\"Node v217 managed audit adapter production-hardening readiness gate\"");
@@ -439,11 +445,11 @@ int main() {
     assert_contains(result.response, "\"storage_write_allowed\":false");
     assert_contains(result.response, "\"admin_commands_allowed\":false");
     assert_contains(result.response, "\"command_dispatch_quality_receipt\":{\"consumer\":\"Node v219 managed audit adapter implementation precheck packet\"");
-    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:d4c86c761d51799e\"");
+    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:1717cb8feca8551e\"");
     assert_contains(result.response, "\"dispatch_split_applied\":true");
     assert_contains(result.response, "\"wal_snapshot_restore_touched\":false");
     assert_contains(result.response, "\"adapter_shell_non_storage_guard_receipt\":{\"consumer\":\"Node v221 managed audit local adapter candidate dry-run\"");
-    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:165a5348d9c7ca14\"");
+    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:5062dc664522b60a\"");
     assert_contains(result.response, "\"adapter_shell_storage_backend\":false");
     assert_contains(result.response, "\"local_dry_run_records_written\":false");
     assert_contains(result.response, "\"managed_audit_external_adapter_non_participation_receipt\":{\"consumer\":\"Node v223 managed audit external adapter connection readiness review\"");
@@ -453,7 +459,7 @@ int main() {
     assert_contains(result.response, "\"consumed_receipt_digest\":\"fnv1a64:76411286a0913dc8\"");
     assert_contains(result.response, "\"adapter_target\":\"real external managed audit adapter\"");
     assert_contains(result.response, "\"runtime_role\":\"runtime evidence provider only\"");
-    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:e899fbe458fdee45\"");
+    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:a29e619cc23f2105\"");
     assert_contains(result.response, "\"external_adapter_storage_backend\":false");
     assert_contains(result.response, "\"participates_in_external_adapter\":false");
     assert_contains(result.response, "\"credential_read_allowed\":false");
@@ -463,10 +469,10 @@ int main() {
     assert_contains(result.response, "\"consumed_release_version\":\"v90\"");
     assert_contains(result.response, "\"consumed_artifact_path_hint\":\"c/90/\"");
     assert_contains(result.response, "\"consumed_receipt_digest\":\"fnv1a64:0dfb07cd2f8de289\"");
-    assert_contains(result.response, "\"current_artifact_path_hint\":\"c/92/\"");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"c/93/\"");
     assert_contains(result.response, "\"adapter_target\":\"sandbox managed audit adapter dry-run\"");
     assert_contains(result.response, "\"runtime_role\":\"runtime evidence provider only\"");
-    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:717c8fd8ea62323a\"");
+    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:a09d9fc409ab38ec\"");
     assert_contains(result.response, "\"sandbox_adapter_storage_backend\":false");
     assert_contains(result.response, "\"participates_in_sandbox_adapter\":false");
     assert_contains(result.response, "\"credential_value_required\":false");
