@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(mini_kv VERSION 0.101.0 LANGUAGES CXX)
+project(mini_kv VERSION 0.102.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -449,3 +449,16 @@ target_compile_definitions(minikv_runtime_no_start_no_write_follow_up_tests
 )
 
 add_test(NAME runtime_no_start_no_write_follow_up_tests COMMAND minikv_runtime_no_start_no_write_follow_up_tests)
+
+add_executable(minikv_operator_window_no_start_no_write_receipt_tests
+    tests/operator_window_no_start_no_write_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_operator_window_no_start_no_write_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_operator_window_no_start_no_write_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME operator_window_no_start_no_write_receipt_tests COMMAND minikv_operator_window_no_start_no_write_receipt_tests)

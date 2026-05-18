@@ -38,21 +38,21 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 }
 
 void assert_current_rolling_digest_set(const std::string& text) {
-    assert_contains(text, "0.101.0");
-    assert_contains(text, "v101");
-    assert_contains(text, "c/101/");
-    assert_contains(text, "mini-kv-live-read-v101");
-    assert_contains(text, "fnv1a64:6b0e9514847a3e7a");
-    assert_contains(text, "fnv1a64:ef2742262316a25a");
-    assert_contains(text, "fnv1a64:3dcfdb4fc3986949");
-    assert_contains(text, "fnv1a64:03cb419f2029035e");
-    assert_contains(text, "fnv1a64:e0e0fb3648c2286e");
-    assert_contains(text, "fnv1a64:afdbb858cd603ace");
-    assert_contains(text, "fnv1a64:5655496384119854");
-    assert_contains(text, "fnv1a64:a206a5701755d819");
-    assert_contains(text, "fnv1a64:eea9770f26d0bade");
-    assert_contains(text, "fnv1a64:259cb68de0117847");
-    assert_contains(text, "fnv1a64:f5c9fa97c073ba43");
+    assert_contains(text, "0.102.0");
+    assert_contains(text, "v102");
+    assert_contains(text, "c/102/");
+    assert_contains(text, "mini-kv-live-read-v102");
+    assert_contains(text, "fnv1a64:d9776044d393ecbc");
+    assert_contains(text, "fnv1a64:8cf7cc0df218035f");
+    assert_contains(text, "fnv1a64:6b9ef93f40cbd343");
+    assert_contains(text, "fnv1a64:1177efbaceb52c1c");
+    assert_contains(text, "fnv1a64:667590b83f510a58");
+    assert_contains(text, "fnv1a64:0f2caa6931b482b8");
+    assert_contains(text, "fnv1a64:0174fa831d17cea4");
+    assert_contains(text, "fnv1a64:9bacde73d6d07097");
+    assert_contains(text, "fnv1a64:f0cae7a4ce0674c2");
+    assert_contains(text, "fnv1a64:beb8dd6a0b102a11");
+    assert_contains(text, "fnv1a64:69e377d01f15fd57");
     assert_contains(text, "fnv1a64:5bef33f2fbe65cc5");
 }
 
@@ -90,7 +90,7 @@ int main() {
     assert_contains(guard, "\"execution_allowed\":false");
     assert_contains(guard, "\"restore_execution_allowed\":false");
     assert_contains(guard, "\"order_authoritative\":false");
-    assert_contains(guard, "\"consumer_hint\":\"Node v237 manual sandbox connection readiness gate\"");
+    assert_contains(guard, "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
     assert_contains(guard, "current runtime fixture rolling evidence guard");
     assert_contains(guard, "\"source_fixture\":\"fixtures/release/runtime-smoke-evidence.json\"");
     assert_contains(guard, "\"release_manifest\":\"fixtures/release/verification-manifest.json\"");
@@ -113,13 +113,13 @@ int main() {
     assert_historical_consumed_digest_anchors(guard);
 
     const auto smoke = read_fixture_text(smoke_path);
-    assert_contains(smoke, "\"project_version\":\"0.101.0\"");
-    assert_contains(smoke, "\"release_version\":\"v101\"");
-    assert_contains(smoke, "\"consumer_hint\":\"Node v237 manual sandbox connection readiness gate\"");
+    assert_contains(smoke, "\"project_version\":\"0.102.0\"");
+    assert_contains(smoke, "\"release_version\":\"v102\"");
+    assert_contains(smoke, "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
     assert_contains(smoke, "\"current_runtime_fixture_rolling_guard\":");
     assert_contains(smoke, "\"guard_fixture_path\":\"fixtures/release/current-runtime-fixture-rolling-guard.json\"");
     assert_contains(smoke, "\"historical_consumed_digest_count\":9");
-    assert_contains(smoke, "Current runtime fixture rolling evidence guard lets Node v237 accept the v101 current fixture while preserving historical consumed digest anchors");
+    assert_contains(smoke, "Current runtime fixture rolling evidence guard lets Node v239 verify the v102 current fixture while preserving historical consumed digest anchors");
     assert_current_rolling_digest_set(smoke);
     assert_contains(smoke, "fnv1a64:f92fcba55feb26a2");
     assert_historical_consumed_digest_anchors(smoke);
@@ -141,7 +141,7 @@ int main() {
 
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"version\":\"0.101.0\"");
+    assert_contains(result.response, "\"version\":\"0.102.0\"");
     assert_contains(result.response, "\"read_only\":true");
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"restore_execution_allowed\":false");

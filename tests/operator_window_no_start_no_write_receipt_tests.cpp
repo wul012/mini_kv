@@ -33,6 +33,13 @@ void assert_contains(const std::string& text, std::string_view expected) {
     assert(text.find(std::string{expected}) != std::string::npos);
 }
 
+void assert_not_contains(const std::string& text, std::string_view forbidden) {
+    if (text.find(std::string{forbidden}) != std::string::npos) {
+        std::cerr << "unexpected text: " << forbidden << '\n';
+    }
+    assert(text.find(std::string{forbidden}) == std::string::npos);
+}
+
 void assert_path_exists(const std::filesystem::path& relative_path) {
     assert(std::filesystem::exists(std::filesystem::path{MINIKV_SOURCE_DIR} / relative_path));
 }
@@ -71,70 +78,67 @@ void assert_no_start_no_write_flags(const std::string& text) {
     assert_contains(text, "\"storage_write_allowed\":false");
     assert_contains(text, "\"managed_audit_write_executed\":false");
     assert_contains(text, "\"sandbox_managed_audit_state_write_allowed\":false");
+    assert_contains(text, "\"credential_value_required\":false");
     assert_contains(text, "\"credential_value_read_allowed\":false");
     assert_contains(text, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(text, "\"schema_migration_execution_allowed\":false");
     assert_contains(text, "\"restore_execution_allowed\":false");
     assert_contains(text, "\"load_restore_compact_executed\":false");
+    assert_contains(text, "\"setnxex_execution_allowed\":false");
+    assert_contains(text, "\"operator_window_write_allowed\":false");
     assert_contains(text, "\"order_authoritative\":false");
 }
 
 } // namespace
 
 int main() {
-    const auto follow_path = std::filesystem::path{"fixtures"} / "release" /
-                             "runtime-no-start-no-write-follow-up.json";
+    const auto receipt_path = std::filesystem::path{"fixtures"} / "release" /
+                              "operator-window-no-start-no-write-receipt.json";
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" /
                             "runtime-smoke-evidence.json";
     const auto manifest_path = std::filesystem::path{"fixtures"} / "release" /
                                "verification-manifest.json";
 
-    assert_path_exists(follow_path);
+    assert_path_exists(receipt_path);
     assert_path_exists(smoke_path);
     assert_path_exists(manifest_path);
 
-    const auto follow = read_fixture_text(follow_path);
-    assert_contains(follow, "\"follow_up_version\":\"mini-kv-runtime-no-start-no-write-follow-up.v1\"");
-    assert_contains(follow, "\"path\":\"fixtures/release/runtime-no-start-no-write-follow-up.json\"");
-    assert_contains(follow, "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
-    assert_contains(follow, "\"producer\":\"Node v236 manual sandbox connection dry-run request envelope\"");
-    assert_contains(follow, "\"operator_review_field_count\":6");
-    assert_contains(follow, "\"ORDEROPS_MANAGED_AUDIT_OWNER_APPROVAL_ARTIFACT_ID\"");
-    assert_contains(follow, "\"ORDEROPS_MANAGED_AUDIT_SANDBOX_CREDENTIAL_HANDLE\"");
-    assert_contains(follow, "\"ORDEROPS_MANAGED_AUDIT_SCHEMA_REHEARSAL_ID\"");
-    assert_contains(follow, "\"ORDEROPS_MANAGED_AUDIT_ROLLBACK_PATH_ID\"");
-    assert_contains(follow, "\"timeout_budget_ms\"");
-    assert_contains(follow, "\"ORDEROPS_MANAGED_AUDIT_MANUAL_ABORT\"");
-    assert_contains(follow, "\"credential_handle_only\":true");
-    assert_contains(follow, "\"credential_value_included\":false");
-    assert_contains(follow, "\"actual_connection_attempted\":false");
-    assert_contains(follow, "\"schema_migration_requested\":false");
-    assert_contains(follow, "\"managed_audit_state_write_requested\":false");
-    assert_contains(follow, "\"upstream_service_auto_start_requested\":false");
-    assert_contains(follow, "\"mini_kv_permission_requested\":false");
-    assert_contains(follow, "\"ready_for_managed_audit_sandbox_adapter_connection\":false");
-    assert_current_digest_set(follow);
-    assert_no_start_no_write_flags(follow);
-    assert_contains(follow, "\"follow-up fixture only\"");
-    assert_contains(follow, "\"Node v236 envelope field echo only\"");
-    assert_contains(follow, "\"no managed audit connection execution\"");
-    assert_contains(follow, "\"no Node, Java, or mini-kv auto-start permission\"");
-    assert_contains(follow, "\"no LOAD/COMPACT/RESTORE/SETNXEX execution\"");
+    const auto receipt = read_fixture_text(receipt_path);
+    assert_contains(receipt, "\"receipt_version\":\"mini-kv-operator-window-no-start-no-write-receipt.v1\"");
+    assert_contains(receipt, "\"path\":\"fixtures/release/operator-window-no-start-no-write-receipt.json\"");
+    assert_contains(receipt, "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
+    assert_contains(receipt, "\"producer\":\"Node v238 manual sandbox connection operator window checklist\"");
+    assert_contains(receipt, "\"checklist_state\":\"manual-sandbox-connection-operator-window-checklist-ready\"");
+    assert_contains(receipt, "\"approval_item_count\":3");
+    assert_contains(receipt, "\"checklist_step_count\":8");
+    assert_contains(receipt, "\"pause_condition_count\":8");
+    assert_contains(receipt, "\"forbidden_operation_count\":6");
+    assert_contains(receipt, "\"ready_for_java_v93_echo_receipt\":true");
+    assert_contains(receipt, "\"ready_for_managed_audit_sandbox_adapter_connection\":false");
+    assert_contains(receipt, "\"operator_window_materials_read_only\":true");
+    assert_not_contains(receipt, "credential_value\":\"");
+    assert_current_digest_set(receipt);
+    assert_no_start_no_write_flags(receipt);
+    assert_contains(receipt, "\"operator window receipt only\"");
+    assert_contains(receipt, "\"Node v238 checklist field echo only\"");
+    assert_contains(receipt, "\"no mini-kv auto-start permission\"");
+    assert_contains(receipt, "\"no storage write or managed audit state write\"");
+    assert_contains(receipt, "\"no LOAD/COMPACT/RESTORE/SETNXEX execution\"");
 
     const auto smoke = read_fixture_text(smoke_path);
     assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v16\"");
-    assert_contains(smoke, "fixtures/release/runtime-no-start-no-write-follow-up.json");
-    assert_contains(smoke, "\"runtime_no_start_no_write_follow_up\":");
-    assert_contains(smoke, "\"source_envelope\":\"Node v236 manual sandbox connection dry-run request envelope\"");
+    assert_contains(smoke, "fixtures/release/operator-window-no-start-no-write-receipt.json");
+    assert_contains(smoke, "\"operator_window_no_start_no_write_receipt\":");
+    assert_contains(smoke, "\"source_checklist\":\"Node v238 manual sandbox connection operator window checklist\"");
     assert_current_digest_set(smoke);
     assert_no_start_no_write_flags(smoke);
 
     const auto manifest = read_fixture_text(manifest_path);
-    assert_contains(manifest, "\"minikv_runtime_no_start_no_write_follow_up_tests\"");
-    assert_contains(manifest, "\"path\":\"fixtures/release/runtime-no-start-no-write-follow-up.json\"");
-    assert_contains(manifest, "\"runtime_no_start_no_write_follow_up\":");
-    assert_contains(manifest, "\"runtime no-start/no-write follow-up only\"");
-    assert_contains(manifest, "\"Node v236 envelope field echo only\"");
+    assert_contains(manifest, "\"minikv_operator_window_no_start_no_write_receipt_tests\"");
+    assert_contains(manifest, "\"path\":\"fixtures/release/operator-window-no-start-no-write-receipt.json\"");
+    assert_contains(manifest, "\"operator_window_no_start_no_write_receipt\":");
+    assert_contains(manifest, "\"operator window no-start/no-write receipt only\"");
+    assert_contains(manifest, "\"Node v238 checklist field echo only\"");
     assert_current_digest_set(manifest);
     assert_no_start_no_write_flags(manifest);
 
@@ -145,9 +149,9 @@ int main() {
 
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"runtime_no_start_no_write_follow_up\":");
-    assert_contains(result.response, "\"follow_up_fixture_path\":\"fixtures/release/runtime-no-start-no-write-follow-up.json\"");
-    assert_contains(result.response, "\"source_envelope\":\"Node v236 manual sandbox connection dry-run request envelope\"");
+    assert_contains(result.response, "\"operator_window_no_start_no_write_receipt\":");
+    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/operator-window-no-start-no-write-receipt.json\"");
+    assert_contains(result.response, "\"source_checklist\":\"Node v238 manual sandbox connection operator window checklist\"");
     assert_current_digest_set(result.response);
     assert_no_start_no_write_flags(result.response);
 

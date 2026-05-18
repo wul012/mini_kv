@@ -255,3 +255,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## v101 latest addition
 
 - `157-version-101-runtime-no-start-no-write-follow-up.md`: explains v101 `SMOKEJSON.runtime_no_start_no_write_follow_up`, `fixtures/release/runtime-no-start-no-write-follow-up.json`, Node v236 dry-run envelope handle consumption for Node v237 readiness, no-start/no-write boundary fields, tests, real TCP smoke, and archive evidence.
+
+## v102 latest addition
+
+- `158-version-102-operator-window-no-start-no-write-receipt.md`: explains v102 `SMOKEJSON.operator_window_no_start_no_write_receipt`, `fixtures/release/operator-window-no-start-no-write-receipt.json`, Node v238 checklist echo consumption for Node v239 verification, no-start/no-write/no-credential/no-schema/no-restore boundary fields, tests, real TCP smoke, and archive evidence.
