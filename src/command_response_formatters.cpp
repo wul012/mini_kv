@@ -113,7 +113,7 @@ std::string format_runtime_no_start_no_write_follow_up_json(const std::vector<st
            "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\","
            "\"current_project_version\":" + json_string(version) +
            ",\"current_release_version\":\"v102\","
-           "\"current_artifact_path_hint\":\"c/102/\","
+           "\"current_artifact_path_hint\":" + json_string(current_version_path_hint) + ","
            "\"current_live_read_session_echo\":\"mini-kv-live-read-v102\","
            "\"binary_provenance_digest\":" +
            json_string(runtime_evidence_receipts::binary_provenance_digest()) +
@@ -163,7 +163,7 @@ std::string format_operator_window_no_start_no_write_receipt_json(const std::vec
            "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\","
            "\"current_project_version\":" + json_string(version) +
            ",\"current_release_version\":\"v102\","
-           "\"current_artifact_path_hint\":\"c/102/\","
+           "\"current_artifact_path_hint\":" + json_string(current_version_path_hint) + ","
            "\"current_live_read_session_echo\":\"mini-kv-live-read-v102\","
            "\"source_checklist_state\":\"manual-sandbox-connection-operator-window-checklist-ready\","
            "\"approval_item_count\":3,\"checklist_step_count\":8,"

@@ -156,7 +156,7 @@ struct RuntimeBinaryProvenanceHint {
 
 constexpr RuntimeBinaryProvenanceHint runtime_binary_provenance_hint = {
     "Node v208 managed audit persistence boundary candidate",
-    "c/102/",
+    current_version_path_hint,
     "cmake-build-v102/minikv_server and cmake-build-v102/minikv_client from the current CMake build",
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
@@ -181,7 +181,7 @@ struct RuntimeRetentionProvenanceCheck {
 
 constexpr RuntimeRetentionProvenanceCheck runtime_retention_provenance_check = {
     "Node v211 managed audit identity approval provenance dry-run packet",
-    "c/102/",
+    current_version_path_hint,
     "fixtures/release/verification-manifest.json",
     "fixtures/release/runtime-smoke-evidence.json",
     "c/81/",
@@ -212,7 +212,7 @@ constexpr RuntimeRetentionProvenanceReplayMarker runtime_retention_provenance_re
     "v84",
     "c/84/",
     "fnv1a64:357cc7e9eec3f223",
-    "c/102/",
+    current_version_path_hint,
     "verify v84 retention provenance consumption before managed audit packet restore drill planning",
     true,
     false,

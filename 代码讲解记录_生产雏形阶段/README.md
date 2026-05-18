@@ -259,3 +259,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## v102 latest addition
 
 - `158-version-102-operator-window-no-start-no-write-receipt.md`: explains v102 `SMOKEJSON.operator_window_no_start_no_write_receipt`, `fixtures/release/operator-window-no-start-no-write-receipt.json`, Node v238 checklist echo consumption for Node v239 verification, no-start/no-write/no-credential/no-schema/no-restore boundary fields, tests, real TCP smoke, and archive evidence.
+
+## v103 latest addition
+
+- `159-version-103-current-version-path-hint.md`: explains v103 maintenance cleanup for `current_version_path_hint`, reducing repeated current runtime artifact path literals in production formatters while keeping the Node v239 v102 evidence contract unchanged.
