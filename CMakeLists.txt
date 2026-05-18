@@ -18,6 +18,9 @@ add_library(minikv
     src/command_contracts.cpp
     src/command_response_formatters.cpp
     src/line_editor.cpp
+    src/managed_audit_adapter_receipts.cpp
+    src/managed_audit_connection_receipts.cpp
+    src/managed_audit_core_receipts.cpp
     src/managed_audit_receipts.cpp
     src/metrics_file.cpp
     src/runtime_evidence.cpp
