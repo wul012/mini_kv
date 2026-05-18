@@ -254,6 +254,46 @@ constexpr std::string_view manual_sandbox_dry_run_command_node_action =
     "verify mini-kv non-participation after Node v241 dry-run command package and before Node v244 upstream echo verification";
 constexpr int manual_sandbox_dry_run_command_count = 6;
 
+constexpr std::string_view manual_sandbox_precheck_receipt_consumer =
+    "Node v246 manual sandbox connection precheck upstream receipt verification";
+constexpr std::string_view manual_sandbox_precheck_receipt_fixture_path =
+    "fixtures/release/manual-sandbox-connection-precheck-non-participation-receipt.json";
+constexpr std::string_view manual_sandbox_precheck_receipt_release_version = "v108";
+constexpr std::string_view manual_sandbox_precheck_receipt_artifact_path_hint = "c/108/";
+constexpr std::string_view manual_sandbox_precheck_source_packet =
+    "Node v245 manual sandbox connection precheck packet";
+constexpr std::string_view manual_sandbox_precheck_source_verification =
+    "Node v244 manual sandbox dry-run command upstream echo verification";
+constexpr std::string_view manual_sandbox_precheck_profile_version =
+    "managed-audit-manual-sandbox-connection-precheck-packet.v1";
+constexpr std::string_view manual_sandbox_precheck_state =
+    "manual-sandbox-connection-precheck-packet-ready";
+constexpr std::string_view manual_sandbox_precheck_packet_mode =
+    "manual-sandbox-connection-precheck-packet-only";
+constexpr std::string_view manual_sandbox_precheck_source_span =
+    "Node v244 upstream echo verification";
+constexpr std::string_view manual_sandbox_precheck_approval_artifact_field =
+    "ORDEROPS_MANAGED_AUDIT_OWNER_APPROVAL_ARTIFACT_ID";
+constexpr std::string_view manual_sandbox_precheck_credential_handle_field =
+    "ORDEROPS_MANAGED_AUDIT_SANDBOX_CREDENTIAL_HANDLE";
+constexpr std::string_view manual_sandbox_precheck_schema_rehearsal_field =
+    "ORDEROPS_MANAGED_AUDIT_SCHEMA_REHEARSAL_ID";
+constexpr std::string_view manual_sandbox_precheck_rollback_path_field =
+    "ORDEROPS_MANAGED_AUDIT_ROLLBACK_PATH_ID";
+constexpr std::string_view manual_sandbox_precheck_timeout_marker =
+    "ORDEROPS_MANAGED_AUDIT_TIMEOUT_BUDGET_MS";
+constexpr std::string_view manual_sandbox_precheck_abort_marker =
+    "ORDEROPS_MANAGED_AUDIT_MANUAL_ABORT";
+constexpr std::string_view manual_sandbox_precheck_runtime_role =
+    "runtime evidence provider only";
+constexpr std::string_view manual_sandbox_precheck_boundary =
+    "manual sandbox connection precheck non-participation receipt only; mini-kv stays runtime evidence only, does not auto-start, does not write storage, does not read credential values, does not execute restore/load/compact/SETNXEX, and does not become a managed audit storage backend";
+constexpr std::string_view manual_sandbox_precheck_node_action =
+    "verify mini-kv non-participation after Node v245 precheck packet and before Node v246 upstream receipt verification";
+constexpr int manual_sandbox_precheck_item_count = 7;
+constexpr int manual_sandbox_precheck_required_operator_field_count = 6;
+constexpr int manual_sandbox_precheck_timeout_budget_ms = 15000;
+
 std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
     if (uptime_seconds < 60) {
         return "lt_60s";
@@ -576,6 +616,137 @@ std::string format_manual_sandbox_dry_run_command_non_participation_receipt_json
            "\"setnxex_execution_allowed\":false,\"order_authoritative\":false,"
            "\"boundary\":" + field_string(manual_sandbox_dry_run_command_boundary) +
            ",\"node_action\":" + field_string(manual_sandbox_dry_run_command_node_action) + "}";
+}
+
+std::string manual_sandbox_connection_precheck_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands) {
+    const std::vector<DigestPart> parts = {
+        {std::string{version}},
+        {std::string{manual_sandbox_precheck_receipt_release_version}},
+        {std::string{manual_sandbox_precheck_receipt_artifact_path_hint}},
+        {std::string{manual_sandbox_precheck_source_packet}},
+        {std::string{manual_sandbox_precheck_source_verification}},
+        {std::string{manual_sandbox_precheck_profile_version}},
+        {std::string{manual_sandbox_precheck_state}},
+        {std::string{manual_sandbox_precheck_packet_mode}},
+        {std::string{manual_sandbox_precheck_source_span}},
+        {std::to_string(manual_sandbox_precheck_item_count)},
+        {std::to_string(manual_sandbox_precheck_required_operator_field_count)},
+        {std::string{manual_sandbox_precheck_approval_artifact_field}},
+        {std::string{manual_sandbox_precheck_credential_handle_field}},
+        {std::string{manual_sandbox_precheck_schema_rehearsal_field}},
+        {std::string{manual_sandbox_precheck_rollback_path_field}},
+        {std::string{manual_sandbox_precheck_timeout_marker}},
+        {std::string{manual_sandbox_precheck_abort_marker}},
+        {std::to_string(manual_sandbox_precheck_timeout_budget_ms)},
+        {"true"},
+        {"true"},
+        {"true"},
+        {"true"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {read_command_list_digest(read_commands)},
+    };
+    return receipt_digest("mini-kv-manual-sandbox-connection-precheck-non-participation", parts);
+}
+
+std::string format_manual_sandbox_connection_precheck_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands) {
+    return "{\"receipt_version\":\"mini-kv-manual-sandbox-connection-precheck-non-participation-receipt.v1\","
+           "\"receipt_fixture_path\":" + field_string(manual_sandbox_precheck_receipt_fixture_path) +
+           ",\"source_packet\":" + field_string(manual_sandbox_precheck_source_packet) +
+           ",\"source_verification\":" + field_string(manual_sandbox_precheck_source_verification) +
+           ",\"consumer_hint\":" + field_string(manual_sandbox_precheck_receipt_consumer) +
+           ",\"current_project_version\":" + field_string(version) +
+           ",\"runtime_project_version\":" + field_string(version) +
+           ",\"current_release_version\":" +
+           field_string(manual_sandbox_precheck_receipt_release_version) +
+           ",\"current_artifact_path_hint\":" +
+           field_string(manual_sandbox_precheck_receipt_artifact_path_hint) +
+           ",\"current_runtime_fixture_release_version\":\"v102\""
+           ",\"current_runtime_fixture_artifact_path_hint\":\"c/102/\""
+           ",\"current_live_read_session_echo\":\"mini-kv-live-read-v102\""
+           ",\"runtime_role\":" + field_string(manual_sandbox_precheck_runtime_role) +
+           ",\"source_precheck_profile_version\":" + field_string(manual_sandbox_precheck_profile_version) +
+           ",\"source_precheck_state\":" + field_string(manual_sandbox_precheck_state) +
+           ",\"source_precheck_packet_mode\":" + field_string(manual_sandbox_precheck_packet_mode) +
+           ",\"source_precheck_source_span\":" + field_string(manual_sandbox_precheck_source_span) +
+           ",\"source_precheck_item_count\":" + std::to_string(manual_sandbox_precheck_item_count) +
+           ",\"source_required_operator_field_count\":" +
+           std::to_string(manual_sandbox_precheck_required_operator_field_count) +
+           ",\"source_timeout_budget_ms\":" + std::to_string(manual_sandbox_precheck_timeout_budget_ms) +
+           ",\"source_ready_for_precheck_packet\":true"
+           ",\"source_ready_for_managed_audit_sandbox_adapter_connection\":false"
+           ",\"source_read_only_precheck_packet\":true"
+           ",\"source_execution_allowed\":false"
+           ",\"source_connects_managed_audit\":false"
+           ",\"source_reads_managed_audit_credential\":false"
+           ",\"source_stores_managed_audit_credential\":false"
+           ",\"source_schema_migration_executed\":false"
+           ",\"source_automatic_upstream_start\":false"
+           ",\"source_precheck_digest_required\":true"
+           ",\"source_precheck_digest_value_read\":false"
+           ",\"source_node_v244_ready\":true"
+           ",\"source_node_v244_boundaries_aligned\":true"
+           ",\"source_boundary_dry_run_only\":true"
+           ",\"source_boundary_actual_connection_attempted\":false"
+           ",\"source_boundary_managed_audit_state_write_requested\":false"
+           ",\"source_boundary_schema_migration_requested\":false"
+           ",\"source_boundary_approval_ledger_write_requested\":false"
+           ",\"source_boundary_java_sql_execution_requested\":false"
+           ",\"source_boundary_mini_kv_write_permission_requested\":false"
+           ",\"source_boundary_upstream_service_auto_start_requested\":false"
+           ",\"precheck_items\":[\"owner approval artifact\",\"credential handle review\","
+           "\"schema migration rehearsal id\",\"operator window\",\"rollback path\","
+           "\"manual abort marker\",\"timeout policy\"]"
+           ",\"operator_review_fields\":[" +
+           field_string(manual_sandbox_precheck_approval_artifact_field) + "," +
+           field_string(manual_sandbox_precheck_credential_handle_field) + "," +
+           field_string(manual_sandbox_precheck_schema_rehearsal_field) + "," +
+           field_string(manual_sandbox_precheck_rollback_path_field) + "," +
+           field_string(manual_sandbox_precheck_timeout_marker) + "," +
+           field_string(manual_sandbox_precheck_abort_marker) + "]"
+           ",\"binary_provenance_digest\":" + field_string(binary_provenance_digest()) +
+           ",\"retention_check_digest\":" + field_string(retention_provenance_check_digest()) +
+           ",\"retention_replay_marker_digest\":" + field_string(retention_provenance_replay_marker_digest()) +
+           ",\"read_command_list_digest\":" + field_string(read_command_list_digest(read_commands)) +
+           ",\"receipt_digest\":" +
+           field_string(manual_sandbox_connection_precheck_non_participation_receipt_digest(read_commands)) +
+           ",\"read_only\":true,\"execution_allowed\":false,\"dry_run_only\":true,"
+           "\"node_auto_start_allowed\":false,\"java_auto_start_allowed\":false,"
+           "\"mini_kv_auto_start_allowed\":false,\"connection_execution_allowed\":false,"
+           "\"write_commands_executed\":false,\"admin_commands_executed\":false,"
+           "\"runtime_write_observed\":false,\"managed_audit_store\":false,"
+           "\"managed_audit_storage_backend\":false,\"sandbox_audit_storage_backend\":false,"
+           "\"storage_write_allowed\":false,\"managed_audit_write_executed\":false,"
+           "\"sandbox_managed_audit_state_write_allowed\":false,"
+           "\"credential_value_required\":false,\"credential_value_read_allowed\":false,"
+           "\"schema_rehearsal_execution_allowed\":false,"
+           "\"schema_migration_execution_allowed\":false,"
+           "\"restore_execution_allowed\":false,\"load_restore_compact_executed\":false,"
+           "\"setnxex_execution_allowed\":false,\"order_authoritative\":false,"
+           "\"boundary\":" + field_string(manual_sandbox_precheck_boundary) +
+           ",\"node_action\":" + field_string(manual_sandbox_precheck_node_action) + "}";
 }
 
 } // namespace minikv::runtime_evidence_receipts

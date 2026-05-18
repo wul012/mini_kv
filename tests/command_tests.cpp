@@ -747,7 +747,8 @@ int main() {
     assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
-    assert_response_contains(result, "\"node_consumption\":\"Node v244 may verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
+    assert_response_contains(result, "\"node_consumption\":\"Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
+    assert_response_contains(result, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
     assert_response_contains(result, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
     assert_response_contains(result, "\"live_read_session_hint\"");
     assert_response_contains(result, "\"binary_provenance_hint\"");
@@ -756,6 +757,7 @@ int main() {
     assert_response_contains(result, "\"managed_audit_adapter_restore_boundary_receipt\"");
     assert_response_contains(result, "\"managed_audit_adapter_non_authoritative_storage_receipt\"");
     assert_response_contains(result, "\"manual_sandbox_dry_run_command_non_participation_receipt\"");
+    assert_response_contains(result, "\"manual_sandbox_connection_precheck_non_participation_receipt\"");
     assert_response_contains(result, "\"read_only_aggregate\"");
     assert_response_contains(result, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 

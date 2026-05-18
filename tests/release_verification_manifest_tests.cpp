@@ -56,7 +56,7 @@ int main() {
     assert_contains(manifest, "\"order_authoritative\":false");
     assert_contains(manifest, "\"no_runtime_write_command_added\":true");
     assert_contains(manifest,
-                    "\"consumer_hint\":\"Node v244 manual sandbox dry-run command upstream echo verification\"");
+                    "\"consumer_hint\":\"Node v246 manual sandbox connection precheck upstream receipt verification\"");
 
     assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v102");
     assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v102 --parallel 2\"");
@@ -155,6 +155,9 @@ int main() {
         std::filesystem::path{"fixtures"} / "recovery" / "restart-recovery-evidence.json",
         std::filesystem::path{"fixtures"} / "ttl-token" / "index.json",
         std::filesystem::path{"fixtures"} / "ttl-token" / "recovery-evidence.json",
+        std::filesystem::path{"fixtures"} / "release" / "operator-window-no-start-no-write-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" / "manual-sandbox-dry-run-command-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" / "manual-sandbox-connection-precheck-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -436,6 +439,7 @@ int main() {
     assert_contains(cmake_lists, "minikv_restore_boundary_smoke_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_smoke_evidence_tests");
     assert_contains(cmake_lists, "minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests");
+    assert_contains(cmake_lists, "minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests");
 
     minikv::Store store;
     minikv::CommandProcessorOptions options;
@@ -579,8 +583,10 @@ int main() {
     assert_contains(result.response, "\"java_auto_start_allowed\":false");
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v244 may verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
+    assert_contains(result.response, "\"node_consumption\":\"Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
+    assert_contains(result.response, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
     assert_contains(result.response, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
+    assert_contains(result.response, "\"manual_sandbox_connection_precheck_non_participation_receipt\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

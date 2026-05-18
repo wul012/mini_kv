@@ -44,7 +44,7 @@ int main() {
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto smoke = read_fixture_text(smoke_path);
 
-    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v16\"");
+    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v17\"");
     assert_contains(smoke, "\"project\":\"mini-kv\"");
     assert_contains(smoke, "\"project_version\":\"0.102.0\"");
     assert_contains(smoke, "\"release_version\":\"v102\"");
@@ -54,7 +54,7 @@ int main() {
     assert_contains(smoke, "\"restore_execution_allowed\":false");
     assert_contains(smoke, "\"order_authoritative\":false");
     assert_contains(smoke, "\"java_transaction_chain_connected\":false");
-    assert_contains(smoke, "\"consumer_hint\":\"Node v244 manual sandbox dry-run command upstream echo verification\"");
+    assert_contains(smoke, "\"consumer_hint\":\"Node v246 manual sandbox connection precheck upstream receipt verification\"");
     assert_contains(smoke, "command contract formatter module split");
     assert_contains(smoke, "command response formatter module split");
     assert_contains(smoke, "sandbox connection receipt echo marker");
@@ -625,9 +625,11 @@ int main() {
     assert_contains(result.response, "\"write_commands_executed\":false");
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v244 may verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
+    assert_contains(result.response, "\"node_consumption\":\"Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
+    assert_contains(result.response, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
     assert_contains(result.response, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
     assert_contains(result.response, "\"manual_sandbox_dry_run_command_non_participation_receipt\"");
+    assert_contains(result.response, "\"manual_sandbox_connection_precheck_non_participation_receipt\"");
     assert_contains(result.response, "\"read_only_aggregate\"");
     assert_contains(result.response, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 
