@@ -7,6 +7,7 @@
 #include "minikv/wal.hpp"
 
 #include <chrono>
+#include <condition_variable>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -96,9 +97,84 @@ CommandResult snapshot_error(std::string_view action) {
     return {std::string{"ERR snapshot "} + std::string{action} + " failed"};
 }
 
-std::mutex& wal_command_mutex() {
-    static std::mutex mutex;
-    return mutex;
+// Keeps WAL append+mutation atomic while letting compaction run outside the write command scope.
+class WalCommandGate {
+public:
+    class Scope {
+    public:
+        Scope() = default;
+        Scope(WalCommandGate& gate, bool compaction) : gate_(&gate), compaction_(compaction) {}
+
+        Scope(const Scope&) = delete;
+        Scope& operator=(const Scope&) = delete;
+
+        Scope(Scope&& other) noexcept : gate_(other.gate_), compaction_(other.compaction_) {
+            other.gate_ = nullptr;
+        }
+
+        Scope& operator=(Scope&& other) noexcept {
+            if (this != &other) {
+                release();
+                gate_ = other.gate_;
+                compaction_ = other.compaction_;
+                other.gate_ = nullptr;
+            }
+            return *this;
+        }
+
+        ~Scope() {
+            release();
+        }
+
+    private:
+        void release() {
+            if (gate_ == nullptr) {
+                return;
+            }
+            gate_->leave(compaction_);
+            gate_ = nullptr;
+        }
+
+        WalCommandGate* gate_ = nullptr;
+        bool compaction_ = false;
+    };
+
+    Scope enter_command() {
+        std::unique_lock lock{mutex_};
+        condition_.wait(lock, [this] { return !command_active_ && !compaction_active_; });
+        command_active_ = true;
+        return Scope{*this, false};
+    }
+
+    Scope enter_compaction() {
+        std::unique_lock lock{mutex_};
+        condition_.wait(lock, [this] { return !command_active_ && !compaction_active_; });
+        compaction_active_ = true;
+        return Scope{*this, true};
+    }
+
+private:
+    void leave(bool compaction) {
+        {
+            std::lock_guard lock{mutex_};
+            if (compaction) {
+                compaction_active_ = false;
+            } else {
+                command_active_ = false;
+            }
+        }
+        condition_.notify_all();
+    }
+
+    std::mutex mutex_;
+    std::condition_variable condition_;
+    bool command_active_ = false;
+    bool compaction_active_ = false;
+};
+
+WalCommandGate& wal_command_gate() {
+    static WalCommandGate gate;
+    return gate;
 }
 
 std::optional<std::chrono::seconds> parse_positive_seconds(std::string_view text) {
@@ -199,6 +275,7 @@ void CommandProcessor::auto_compact_wal_if_needed() {
         return;
     }
 
+    auto scope = wal_command_gate().enter_compaction();
     (void)wal_->compact_if_recommended(store_);
 }
 
@@ -208,16 +285,20 @@ CommandResult CommandProcessor::execute_with_wal(std::function<std::optional<std
         return mutation();
     }
 
-    std::lock_guard lock(wal_command_mutex());
-    const auto record = wal_record();
-    if (!record.has_value()) {
-        return {"0"};
-    }
-    if (!wal_->append(*record)) {
-        return wal_error();
+    CommandResult result;
+    {
+        auto scope = wal_command_gate().enter_command();
+        const auto record = wal_record();
+        if (!record.has_value()) {
+            return {"0"};
+        }
+        if (!wal_->append(*record)) {
+            return wal_error();
+        }
+
+        result = mutation();
     }
 
-    CommandResult result = mutation();
     auto_compact_wal_if_needed();
     return result;
 }
@@ -230,7 +311,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         std::optional<WalMaintenanceReport> wal_report;
         if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
+            auto scope = wal_command_gate().enter_command();
             wal_report = wal_->maintenance_report(store_);
         }
 
@@ -246,7 +327,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         std::optional<WalMaintenanceReport> wal_report;
         if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
+            auto scope = wal_command_gate().enter_command();
             wal_report = wal_->maintenance_report(store_);
         }
 
@@ -262,7 +343,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         std::optional<WalMaintenanceReport> wal_report;
         if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
+            auto scope = wal_command_gate().enter_command();
             wal_report = wal_->maintenance_report(store_);
         }
 
@@ -278,7 +359,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         std::optional<WalMaintenanceReport> wal_report;
         if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
+            auto scope = wal_command_gate().enter_command();
             wal_report = wal_->maintenance_report(store_);
         }
 
@@ -293,7 +374,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         std::optional<WalMaintenanceReport> wal_report;
         if (wal_ != nullptr) {
-            std::lock_guard lock(wal_command_mutex());
+            auto scope = wal_command_gate().enter_command();
             wal_report = wal_->maintenance_report(store_);
         }
 
@@ -573,7 +654,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
 
         std::size_t compacted = 0;
         {
-            std::lock_guard lock(wal_command_mutex());
+            auto scope = wal_command_gate().enter_compaction();
             if (!wal_->compact(store_, &compacted)) {
                 return wal_compact_error();
             }
@@ -591,7 +672,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             return wal_disabled_error();
         }
 
-        std::lock_guard lock(wal_command_mutex());
+        auto scope = wal_command_gate().enter_command();
         return {command_response_formatters::format_walinfo(wal_->maintenance_report(store_))};
     }
 

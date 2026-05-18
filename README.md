@@ -10,6 +10,8 @@ Version 103 is a maintenance-only cleanup on top of that v102 runtime evidence: 
 
 Version 104 is a maintenance-only internal split on top of that v103 runtime evidence: it moves the managed audit receipt implementation out of one 900+ line translation unit and into `src/managed_audit_core_receipts.cpp`, `src/managed_audit_adapter_receipts.cpp`, `src/managed_audit_connection_receipts.cpp`, and a tiny `src/managed_audit_receipts.cpp` coordinator, with the shared inline helpers living in `src/managed_audit_receipt_utils.hpp`. It keeps the public header contract, digest shapes, JSON field sets, and Node v239 no-start/no-write evidence chain unchanged.
 
+Version 105 is a WAL write-path quality pass: it replaces the single WAL command mutex with a small gate that keeps WAL append plus store mutation atomic while moving automatic and manual compaction into an explicit compaction scope. The change preserves append-before-mutation ordering, WAL replay correctness, auto-compaction counters, command responses, and all runtime evidence contracts while reducing the critical section that protects normal WAL-backed writes.
+
 - CMake project layout
 - Thread-safe in-memory key-value store
 - Interactive command-line client
@@ -23,6 +25,7 @@ Version 104 is a maintenance-only internal split on top of that v103 runtime evi
 - Startup WAL repair can rebuild damaged logs with `--repair-wal`
 - WAL maintenance reporting exposes log bytes, record count, live keys, and compact hints
 - Optional automatic WAL compaction can rewrite long-running logs at startup and after WAL-backed writes
+- WAL-backed writes keep append-before-mutation ordering through a short command gate, while manual and automatic compaction run through an explicit compaction gate so compaction IO is no longer part of the normal write command critical section
 - WAL compaction thresholds are configurable, and `WALINFO` reports compact counters and saved work
 - Runtime `STATS`, `STATSJSON`, and `HEALTH` commands expose live keys, WAL maintenance state, server connection counters, per-command counters, and latency counters
 - Runtime `INFO` exposes injected build version, protocol, uptime, live keys, WAL mode, metrics mode, and request limit metadata

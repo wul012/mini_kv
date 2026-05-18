@@ -1,5 +1,6 @@
 # mini-kv 代码讲解记录_生产雏形阶段
 
+- `161-version-105-wal-auto-compact-gate.md`: v105 replaces the single WAL command mutex with an explicit command/compaction gate, keeping append-before-mutation ordering intact while moving automatic/manual compaction out of the normal WAL write command critical section and adding a concurrent auto-compaction replay regression.
 - `160-version-104-managed-audit-receipt-implementation-split.md`: v104 splits the managed audit receipt implementation out of one 900+ line translation unit into boundary-specific source files plus a tiny coordinator, while keeping the public header contract, digest shapes, JSON field sets, INFOJSON/SMOKEJSON boundaries, and Node v239 no-start/no-write evidence chain unchanged.
 - `156-version-100-current-runtime-fixture-rolling-guard.md`: v100 adds a current runtime fixture rolling guard for Node v235, allowing current version/artifact/digest evidence to roll while keeping historical consumed digest anchors fixed.
 - `155-version-99-wal-helper-regression-evidence.md`: v99 adds execute-with-wal regression coverage for SET, SETNXEX, DEL, and EXPIRE usage-error, no-op miss, expired-key miss, and append-before-mutation behavior while rolling current runtime evidence to `0.99.0` / `v99` for Node v234 blocked execution rehearsal.

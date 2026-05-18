@@ -511,5 +511,57 @@ int main() {
 
     std::filesystem::remove(custom_compact_path);
 
+    const auto concurrent_compact_path =
+        std::filesystem::temp_directory_path() /
+        ("minikv-wal-concurrent-auto-compact-test-" + std::to_string(suffix) + ".wal");
+    std::filesystem::remove(concurrent_compact_path);
+
+    {
+        minikv::Store store;
+        minikv::WalMaintenanceOptions maintenance_options;
+        maintenance_options.compact_min_records = 2;
+        maintenance_options.compact_record_ratio = 1;
+        maintenance_options.compact_min_bytes = 1024 * 1024;
+
+        minikv::WriteAheadLog wal{concurrent_compact_path, maintenance_options};
+        minikv::CommandProcessorOptions command_options;
+        command_options.auto_compact_wal = true;
+        minikv::CommandProcessor processor{store, &wal, command_options};
+
+        std::vector<std::thread> writers;
+        for (int thread_index = 0; thread_index < 4; ++thread_index) {
+            writers.emplace_back([&processor, thread_index] {
+                for (int write_index = 0; write_index < 5; ++write_index) {
+                    const auto value = "value-" + std::to_string(thread_index) + "-" + std::to_string(write_index);
+                    const auto result = processor.execute("SET shared " + value);
+                    assert(result.response.rfind("OK ", 0) == 0);
+                }
+            });
+        }
+
+        for (auto& writer : writers) {
+            writer.join();
+        }
+
+        const auto final_value = store.get("shared");
+        assert(final_value.has_value());
+        assert(final_value->rfind("value-", 0) == 0);
+
+        const auto report = wal.maintenance_report(store);
+        assert(report.records == 1);
+        assert(report.live_keys == 1);
+        assert(report.compaction_stats.auto_compactions > 0);
+
+        minikv::Store restored;
+        minikv::WriteAheadLog replay_wal{concurrent_compact_path, maintenance_options};
+        const auto replay_report = replay_wal.replay_with_report(restored);
+        assert(replay_report.applied_records == 1);
+        assert(replay_report.skipped_records == 0);
+        assert(replay_report.checksum_failed_records == 0);
+        assert(restored.get("shared") == final_value);
+    }
+
+    std::filesystem::remove(concurrent_compact_path);
+
     return 0;
 }
