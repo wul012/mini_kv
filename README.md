@@ -20,6 +20,8 @@ Version 108 adds a manual sandbox connection precheck non-participation receipt 
 
 Version 109 adds a benchmark evidence guard: `minikv_benchmark --evidence-json` now emits a single machine-readable JSON line for local benchmark smoke review, and CTest registers `benchmark_evidence_guard` to protect the no-WAL, no-network, no-restore, no-credential, no-managed-audit-connection boundaries. The default human-readable benchmark table remains unchanged.
 
+Version 110 adds Dependabot security maintenance for GitHub Actions only: `.github/dependabot.yml` schedules weekly action update checks, groups minor/patch updates, ignores automatic semver-major version updates, and `dependabot_config_tests` protects the config from drifting into npm/Maven/C++ package ecosystems before mini-kv actually adopts one.
+
 - CMake project layout
 - Thread-safe in-memory key-value store
 - Interactive command-line client
@@ -115,6 +117,7 @@ Version 109 adds a benchmark evidence guard: `minikv_benchmark --evidence-json` 
 - RESP-over-TCP compatibility tests for null bulk replies, errors, `DEL`, `EXPIRE`, and `TTL`
 - Concurrent RESP-over-TCP raw-socket client coverage with active and peak connection checks
 - GitHub Actions CI for Linux, macOS, and Windows CMake build plus CTest
+- Dependabot maintenance for GitHub Actions updates only, with grouped minor/patch updates and semver-major auto-updates ignored
 
 ## Build
 
@@ -133,6 +136,14 @@ GitHub Actions runs the same CMake build and CTest flow on Linux, macOS, and Win
 ```
 
 Each CI job configures a Debug build, builds every target, and runs the registered CTest suite with failure output enabled. The test suite is assert-driven, so CI intentionally keeps assertions enabled.
+
+Dependabot is configured only for GitHub Actions:
+
+```text
+.github/dependabot.yml
+```
+
+It runs weekly, groups minor and patch action updates, and ignores semver-major automatic version updates. mini-kv does not currently configure npm, Maven, pip, cargo, Docker, vcpkg, or Conan updates; those should be added only after the repository actually adopts the corresponding dependency manager.
 
 ## Run
 
