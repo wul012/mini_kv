@@ -294,6 +294,54 @@ constexpr int manual_sandbox_precheck_item_count = 7;
 constexpr int manual_sandbox_precheck_required_operator_field_count = 6;
 constexpr int manual_sandbox_precheck_timeout_budget_ms = 15000;
 
+constexpr std::string_view disabled_adapter_client_receipt_consumer =
+    "Node v254 disabled adapter client upstream echo verification";
+constexpr std::string_view disabled_adapter_client_receipt_fixture_path =
+    "fixtures/release/disabled-adapter-client-non-participation-receipt.json";
+constexpr std::string_view disabled_adapter_client_receipt_release_version = "v111";
+constexpr std::string_view disabled_adapter_client_receipt_artifact_path_hint = "c/111/";
+constexpr std::string_view disabled_adapter_client_source_precheck =
+    "Node v252 disabled adapter client precheck";
+constexpr std::string_view disabled_adapter_client_source_shell =
+    "Node v253 test-only adapter shell contract";
+constexpr std::string_view disabled_adapter_client_precheck_profile_version =
+    "managed-audit-manual-sandbox-connection-disabled-adapter-client-precheck.v1";
+constexpr std::string_view disabled_adapter_client_precheck_state =
+    "disabled-adapter-client-precheck-ready";
+constexpr std::string_view disabled_adapter_client_adapter_mode =
+    "disabled-client-precheck-only";
+constexpr std::string_view disabled_adapter_client_shell_profile_version =
+    "managed-audit-manual-sandbox-connection-test-only-adapter-shell-contract.v1";
+constexpr std::string_view disabled_adapter_client_shell_state =
+    "test-only-adapter-shell-contract-ready";
+constexpr std::string_view disabled_adapter_client_shell_mode =
+    "test-only-fake-transport-contract";
+constexpr std::string_view disabled_adapter_client_transport_kind = "fake-in-memory";
+constexpr std::string_view disabled_adapter_client_opt_in_gate =
+    "ORDEROPS_MANAGED_AUDIT_ADAPTER_CLIENT_ENABLED";
+constexpr std::string_view disabled_adapter_client_endpoint_handle =
+    "ORDEROPS_MANAGED_AUDIT_SANDBOX_ENDPOINT_HANDLE";
+constexpr std::string_view disabled_adapter_client_credential_handle =
+    "ORDEROPS_MANAGED_AUDIT_SANDBOX_CREDENTIAL_HANDLE";
+constexpr std::string_view disabled_adapter_client_owner_approval_field =
+    "ORDEROPS_MANAGED_AUDIT_OWNER_APPROVAL_ARTIFACT_ID";
+constexpr std::string_view disabled_adapter_client_timeout_field =
+    "ORDEROPS_MANAGED_AUDIT_TIMEOUT_BUDGET_MS";
+constexpr std::string_view disabled_adapter_client_runtime_role =
+    "runtime evidence provider only";
+constexpr std::string_view disabled_adapter_client_boundary =
+    "disabled adapter client non-participation receipt only; mini-kv stays runtime evidence only, is not auto-started by Node v252/v253, does not write storage, does not read credential values, does not execute restore/load/compact/SETNXEX, and does not become a managed audit storage backend";
+constexpr std::string_view disabled_adapter_client_node_action =
+    "verify mini-kv non-participation with Node v252 disabled client precheck and Node v253 fake transport shell before Node v254 upstream echo verification";
+constexpr int disabled_adapter_client_required_env_handle_count = 5;
+constexpr int disabled_adapter_client_failure_class_count = 6;
+constexpr int disabled_adapter_client_dry_run_response_field_count = 10;
+constexpr int disabled_adapter_client_reused_no_go_condition_count = 8;
+constexpr int disabled_adapter_client_request_shape_field_count = 8;
+constexpr int disabled_adapter_client_response_shape_field_count = 9;
+constexpr int disabled_adapter_client_failure_mapping_count = 6;
+constexpr int disabled_adapter_client_guard_condition_count = 7;
+
 std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
     if (uptime_seconds < 60) {
         return "lt_60s";
@@ -747,6 +795,168 @@ std::string format_manual_sandbox_connection_precheck_non_participation_receipt_
            "\"setnxex_execution_allowed\":false,\"order_authoritative\":false,"
            "\"boundary\":" + field_string(manual_sandbox_precheck_boundary) +
            ",\"node_action\":" + field_string(manual_sandbox_precheck_node_action) + "}";
+}
+
+std::string disabled_adapter_client_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands) {
+    const std::vector<DigestPart> parts = {
+        {std::string{version}},
+        {std::string{disabled_adapter_client_receipt_release_version}},
+        {std::string{disabled_adapter_client_receipt_artifact_path_hint}},
+        {std::string{disabled_adapter_client_source_precheck}},
+        {std::string{disabled_adapter_client_source_shell}},
+        {std::string{disabled_adapter_client_precheck_profile_version}},
+        {std::string{disabled_adapter_client_precheck_state}},
+        {std::string{disabled_adapter_client_adapter_mode}},
+        {std::string{disabled_adapter_client_shell_profile_version}},
+        {std::string{disabled_adapter_client_shell_state}},
+        {std::string{disabled_adapter_client_shell_mode}},
+        {std::string{disabled_adapter_client_transport_kind}},
+        {std::string{disabled_adapter_client_opt_in_gate}},
+        {std::string{disabled_adapter_client_endpoint_handle}},
+        {std::string{disabled_adapter_client_credential_handle}},
+        {std::string{disabled_adapter_client_owner_approval_field}},
+        {std::string{disabled_adapter_client_timeout_field}},
+        {std::to_string(disabled_adapter_client_required_env_handle_count)},
+        {std::to_string(disabled_adapter_client_failure_class_count)},
+        {std::to_string(disabled_adapter_client_dry_run_response_field_count)},
+        {std::to_string(disabled_adapter_client_reused_no_go_condition_count)},
+        {std::to_string(disabled_adapter_client_request_shape_field_count)},
+        {std::to_string(disabled_adapter_client_response_shape_field_count)},
+        {std::to_string(disabled_adapter_client_failure_mapping_count)},
+        {std::to_string(disabled_adapter_client_guard_condition_count)},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"true"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {read_command_list_digest(read_commands)},
+    };
+    return receipt_digest("mini-kv-disabled-adapter-client-non-participation", parts);
+}
+
+std::string format_disabled_adapter_client_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands) {
+    return "{\"receipt_version\":\"mini-kv-disabled-adapter-client-non-participation-receipt.v1\","
+           "\"receipt_fixture_path\":" + field_string(disabled_adapter_client_receipt_fixture_path) +
+           ",\"source_precheck\":" + field_string(disabled_adapter_client_source_precheck) +
+           ",\"source_shell\":" + field_string(disabled_adapter_client_source_shell) +
+           ",\"consumer_hint\":" + field_string(disabled_adapter_client_receipt_consumer) +
+           ",\"current_project_version\":" + field_string(version) +
+           ",\"runtime_project_version\":" + field_string(version) +
+           ",\"current_release_version\":" +
+           field_string(disabled_adapter_client_receipt_release_version) +
+           ",\"current_artifact_path_hint\":" +
+           field_string(disabled_adapter_client_receipt_artifact_path_hint) +
+           ",\"current_runtime_fixture_release_version\":\"v102\""
+           ",\"current_runtime_fixture_artifact_path_hint\":\"c/102/\""
+           ",\"current_live_read_session_echo\":\"mini-kv-live-read-v102\""
+           ",\"runtime_role\":" + field_string(disabled_adapter_client_runtime_role) +
+           ",\"source_precheck_profile_version\":" +
+           field_string(disabled_adapter_client_precheck_profile_version) +
+           ",\"source_precheck_state\":" + field_string(disabled_adapter_client_precheck_state) +
+           ",\"source_adapter_mode\":" + field_string(disabled_adapter_client_adapter_mode) +
+           ",\"source_required_env_handle_count\":" +
+           std::to_string(disabled_adapter_client_required_env_handle_count) +
+           ",\"source_failure_class_count\":" +
+           std::to_string(disabled_adapter_client_failure_class_count) +
+           ",\"source_dry_run_response_field_count\":" +
+           std::to_string(disabled_adapter_client_dry_run_response_field_count) +
+           ",\"source_reused_no_go_condition_count\":" +
+           std::to_string(disabled_adapter_client_reused_no_go_condition_count) +
+           ",\"source_ready_for_disabled_adapter_client_precheck\":true"
+           ",\"source_ready_for_managed_audit_sandbox_adapter_connection\":false"
+           ",\"source_read_only_precheck\":true"
+           ",\"source_execution_allowed\":false"
+           ",\"source_connects_managed_audit\":false"
+           ",\"source_reads_managed_audit_credential\":false"
+           ",\"source_stores_managed_audit_credential\":false"
+           ",\"source_schema_migration_executed\":false"
+           ",\"source_automatic_upstream_start\":false"
+           ",\"source_client_implementation_status\":\"not-implemented\""
+           ",\"source_client_may_be_instantiated\":false"
+           ",\"source_external_request_may_be_sent\":false"
+           ",\"source_credential_value_may_be_loaded\":false"
+           ",\"source_opt_in_gate_required\":true"
+           ",\"source_opt_in_gate\":" + field_string(disabled_adapter_client_opt_in_gate) +
+           ",\"source_opt_in_gate_default\":\"false\""
+           ",\"source_precheck_treats_enabled_as_blocked\":true"
+           ",\"required_env_handles\":[" +
+           field_string(disabled_adapter_client_opt_in_gate) + "," +
+           field_string(disabled_adapter_client_endpoint_handle) + "," +
+           field_string(disabled_adapter_client_credential_handle) + "," +
+           field_string(disabled_adapter_client_owner_approval_field) + "," +
+           field_string(disabled_adapter_client_timeout_field) + "]"
+           ",\"failure_taxonomy_codes\":[\"ADAPTER_CLIENT_DISABLED\","
+           "\"CREDENTIAL_HANDLE_MISSING\",\"CREDENTIAL_VALUE_REQUESTED\","
+           "\"ENDPOINT_HANDLE_MISSING\",\"SCHEMA_REHEARSAL_MISSING\","
+           "\"MANUAL_WINDOW_NOT_OPEN\"]"
+           ",\"dry_run_response_shape\":{\"ready_state\":\"disabled-adapter-client-precheck-ready\","
+           "\"connection_attempted\":false,\"credential_value_read\":false,"
+           "\"external_request_sent\":false,\"schema_migration_executed\":false}"
+           ",\"source_shell_profile_version\":" +
+           field_string(disabled_adapter_client_shell_profile_version) +
+           ",\"source_shell_state\":" + field_string(disabled_adapter_client_shell_state) +
+           ",\"source_shell_mode\":" + field_string(disabled_adapter_client_shell_mode) +
+           ",\"source_transport_kind\":" + field_string(disabled_adapter_client_transport_kind) +
+           ",\"source_request_shape_field_count\":" +
+           std::to_string(disabled_adapter_client_request_shape_field_count) +
+           ",\"source_response_shape_field_count\":" +
+           std::to_string(disabled_adapter_client_response_shape_field_count) +
+           ",\"source_failure_mapping_count\":" +
+           std::to_string(disabled_adapter_client_failure_mapping_count) +
+           ",\"source_guard_condition_count\":" +
+           std::to_string(disabled_adapter_client_guard_condition_count) +
+           ",\"source_fake_transport_only\":true"
+           ",\"source_real_client_implemented\":false"
+           ",\"source_real_transport_allowed\":false"
+           ",\"source_client_may_be_instantiated_for_production\":false"
+           ",\"source_fake_transport_probe_covered\":true"
+           ",\"source_fake_transport_probe_no_external_request\":true"
+           ",\"source_fake_transport_probe_no_credential_read\":true"
+           ",\"source_fake_transport_probe_no_production_write\":true"
+           ",\"request_shape\":{\"credential_handle_only\":true,"
+           "\"credential_value_accepted\":false,\"endpoint_handle_only\":true,"
+           "\"external_url_accepted\":false,\"payload_may_contain_secrets\":false}"
+           ",\"response_shape\":{\"fake_transport_response_only\":true,"
+           "\"connection_attempted\":false,\"external_request_sent\":false,"
+           "\"credential_value_read\":false,\"schema_migration_executed\":false,"
+           "\"production_record_written\":false}"
+           ",\"binary_provenance_digest\":" + field_string(binary_provenance_digest()) +
+           ",\"retention_check_digest\":" + field_string(retention_provenance_check_digest()) +
+           ",\"retention_replay_marker_digest\":" + field_string(retention_provenance_replay_marker_digest()) +
+           ",\"read_command_list_digest\":" + field_string(read_command_list_digest(read_commands)) +
+           ",\"receipt_digest\":" +
+           field_string(disabled_adapter_client_non_participation_receipt_digest(read_commands)) +
+           ",\"read_only\":true,\"execution_allowed\":false,\"dry_run_only\":true,"
+           "\"node_auto_start_allowed\":false,\"java_auto_start_allowed\":false,"
+           "\"mini_kv_auto_start_allowed\":false,\"connection_execution_allowed\":false,"
+           "\"write_commands_executed\":false,\"admin_commands_executed\":false,"
+           "\"runtime_write_observed\":false,\"managed_audit_store\":false,"
+           "\"managed_audit_storage_backend\":false,\"sandbox_audit_storage_backend\":false,"
+           "\"storage_write_allowed\":false,\"managed_audit_write_executed\":false,"
+           "\"production_record_written\":false,"
+           "\"sandbox_managed_audit_state_write_allowed\":false,"
+           "\"credential_value_required\":false,\"credential_value_read_allowed\":false,"
+           "\"credential_value_loaded\":false,\"external_request_sent\":false,"
+           "\"schema_rehearsal_execution_allowed\":false,"
+           "\"schema_migration_execution_allowed\":false,"
+           "\"restore_execution_allowed\":false,\"load_restore_compact_executed\":false,"
+           "\"setnxex_execution_allowed\":false,\"order_authoritative\":false,"
+           "\"boundary\":" + field_string(disabled_adapter_client_boundary) +
+           ",\"node_action\":" + field_string(disabled_adapter_client_node_action) + "}";
 }
 
 } // namespace minikv::runtime_evidence_receipts

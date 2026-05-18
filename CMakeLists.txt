@@ -509,3 +509,16 @@ target_compile_definitions(minikv_manual_sandbox_connection_precheck_non_partici
 )
 
 add_test(NAME manual_sandbox_connection_precheck_non_participation_receipt_tests COMMAND minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests)
+
+add_executable(minikv_disabled_adapter_client_non_participation_receipt_tests
+    tests/disabled_adapter_client_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_disabled_adapter_client_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_disabled_adapter_client_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME disabled_adapter_client_non_participation_receipt_tests COMMAND minikv_disabled_adapter_client_non_participation_receipt_tests)
