@@ -18,6 +18,8 @@ Version 107 adds a manual sandbox dry-run command non-participation receipt for 
 
 Version 108 adds a manual sandbox connection precheck non-participation receipt for Node v246: `SMOKEJSON`, `fixtures/release/runtime-smoke-evidence.json`, and `fixtures/release/verification-manifest.json` now expose `manual_sandbox_connection_precheck_non_participation_receipt` plus `fixtures/release/manual-sandbox-connection-precheck-non-participation-receipt.json`. The receipt only echoes the Node v245 precheck packet shape and proves mini-kv will not auto-start, write storage, read credential values, execute LOAD/COMPACT/RESTORE/SETNXEX, or become a managed audit storage backend.
 
+Version 109 adds a benchmark evidence guard: `minikv_benchmark --evidence-json` now emits a single machine-readable JSON line for local benchmark smoke review, and CTest registers `benchmark_evidence_guard` to protect the no-WAL, no-network, no-restore, no-credential, no-managed-audit-connection boundaries. The default human-readable benchmark table remains unchanged.
+
 - CMake project layout
 - Thread-safe in-memory key-value store
 - Interactive command-line client
@@ -53,6 +55,7 @@ Version 108 adds a manual sandbox connection precheck non-participation receipt 
 - Runtime `STORAGEJSON` returns read-only storage evidence with version, live key count, WAL status, snapshot capability, side effects, and diagnostic boundary notes for external control planes
 - Runtime `SETNXEX key seconds value` atomically claims a missing key with a positive TTL for short token use cases, returning `1` on claim and `0` when a live token already exists
 - Runtime `SETNXEX` remains a mini-kv token primitive only: `order_authoritative=false` still applies, and Java remains the order source of truth
+- Benchmark `--evidence-json` provides local in-process benchmark evidence with explicit `wal_enabled=false`, `network_started=false`, `restore_executed=false`, `credential_value_read=false`, `managed_audit_connection_opened=false`, and `order_authoritative=false` guard fields
 - Repository fixture `fixtures/readonly/index.json` groups CHECKJSON, INFOJSON, STATSJSON, and runtime read field-guide evidence for Node v159 release evidence review preparation
 - Repository fixture `fixtures/ttl-token/index.json` documents the `SETNXEX` token primitive, WAL record shape, repeat/expiry semantics, and non-order-authoritative boundary for Node v160 readiness review
 - Repository fixture `fixtures/ttl-token/recovery-evidence.json` documents WAL, Snapshot, restart, expired-token, and compaction recovery boundaries for the TTL token primitive before Node v161 consumes it
@@ -534,10 +537,10 @@ Run a quick in-process benchmark:
 Arguments are optional:
 
 ```text
-minikv_benchmark.exe [operations] [key_count]
+minikv_benchmark.exe [--evidence-json] [operations] [key_count]
 ```
 
-The benchmark prints elapsed time and operations per second for direct `Store` operations and command-layer `SET` / `GET` operations. It is a lightweight local signal, not a replacement for full production-grade benchmarking.
+The benchmark prints elapsed time and operations per second for direct `Store` operations and command-layer `SET` / `GET` operations. With `--evidence-json`, it emits one JSON line for CI or local smoke checks. That JSON is still a lightweight local signal: it mutates only an ephemeral in-process store, does not enable WAL, does not start networking, does not execute snapshot/restore/load/compact, does not read credentials, and does not open a managed audit connection.
 
 The stress test is registered with CTest:
 

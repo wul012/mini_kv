@@ -76,6 +76,13 @@ target_link_libraries(minikv_benchmark PRIVATE minikv)
 
 enable_testing()
 
+add_test(NAME benchmark_evidence_guard COMMAND minikv_benchmark --evidence-json 12 4)
+
+set_tests_properties(benchmark_evidence_guard
+    PROPERTIES
+        PASS_REGULAR_EXPRESSION "\"evidence_type\":\"mini-kv-benchmark-evidence-guard\\.v1\".*\"wal_enabled\":false.*\"network_started\":false.*\"restore_executed\":false.*\"managed_audit_connection_opened\":false.*\"final_store_size\":0"
+)
+
 add_executable(minikv_store_tests
     tests/store_tests.cpp
 )
