@@ -56,7 +56,7 @@ int main() {
     assert_contains(manifest, "\"order_authoritative\":false");
     assert_contains(manifest, "\"no_runtime_write_command_added\":true");
     assert_contains(manifest,
-                    "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
+                    "\"consumer_hint\":\"Node v244 manual sandbox dry-run command upstream echo verification\"");
 
     assert_contains(manifest, "\"command\":\"cmake -S . -B cmake-build-v102");
     assert_contains(manifest, "\"command\":\"cmake --build cmake-build-v102 --parallel 2\"");
@@ -435,6 +435,7 @@ int main() {
     assert_contains(cmake_lists, "minikv_restore_approval_boundary_tests");
     assert_contains(cmake_lists, "minikv_restore_boundary_smoke_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_smoke_evidence_tests");
+    assert_contains(cmake_lists, "minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests");
 
     minikv::Store store;
     minikv::CommandProcessorOptions options;
@@ -578,7 +579,8 @@ int main() {
     assert_contains(result.response, "\"java_auto_start_allowed\":false");
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v239 may verify the mini-kv operator window no-start/no-write receipt, the v102 runtime no-start/no-write follow-up, the v96 sandbox connection receipt echo marker, the v95 sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before operator window evidence verification; mini-kv must already be running and the read-only window must be open manually\"");
+    assert_contains(result.response, "\"node_consumption\":\"Node v244 may verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
+    assert_contains(result.response, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

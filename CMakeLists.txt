@@ -465,3 +465,16 @@ target_compile_definitions(minikv_operator_window_no_start_no_write_receipt_test
 )
 
 add_test(NAME operator_window_no_start_no_write_receipt_tests COMMAND minikv_operator_window_no_start_no_write_receipt_tests)
+
+add_executable(minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests
+    tests/manual_sandbox_dry_run_command_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME manual_sandbox_dry_run_command_non_participation_receipt_tests COMMAND minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests)

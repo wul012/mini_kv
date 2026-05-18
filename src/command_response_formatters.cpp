@@ -564,6 +564,7 @@ std::string format_smoke_json(std::size_t live_keys,
         "managed_audit_sandbox_connection_no_start_guard_receipt",
         "runtime_no_start_no_write_follow_up",
         "operator_window_no_start_no_write_receipt",
+        "manual_sandbox_dry_run_command_non_participation_receipt",
         "read_only_aggregate",
         "not_order_authoritative",
         "does_not_execute_load_compact_setnxex_or_restore",
@@ -642,8 +643,11 @@ std::string format_smoke_json(std::size_t live_keys,
                 format_runtime_no_start_no_write_follow_up_json(read_commands) +
                 ",\"operator_window_no_start_no_write_receipt\":" +
                 format_operator_window_no_start_no_write_receipt_json(read_commands) +
+                ",\"manual_sandbox_dry_run_command_non_participation_receipt\":" +
+                runtime_evidence_receipts::format_manual_sandbox_dry_run_command_non_participation_receipt_json(
+                    read_commands) +
                 ",\"failure_taxonomy\":" + runtime_evidence_receipts::format_smoke_failure_taxonomy_json() +
-                ",\"diagnostics\":{\"node_consumption\":\"Node v239 may verify the mini-kv operator window no-start/no-write receipt, the v102 runtime no-start/no-write follow-up, the v96 sandbox connection receipt echo marker, the v95 sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before operator window evidence verification; mini-kv must already be running and the read-only window must be open manually\"," +
+                ",\"diagnostics\":{\"node_consumption\":\"Node v244 may verify the mini-kv v107 manual sandbox dry-run command non-participation receipt after Node v241/v243 command package evidence; Node v239 may still verify the mini-kv operator window no-start/no-write receipt, the v102 runtime no-start/no-write follow-up, the v96 sandbox connection receipt echo marker, the v95 sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before operator window evidence verification; mini-kv must already be running and the read-only window must be open manually\"," +
                 "\"dynamic_fields\":" + format_json_string_array(dynamic_fields) +
                 ",\"notes\":" + format_json_string_array(notes) + "}}";
     return response;

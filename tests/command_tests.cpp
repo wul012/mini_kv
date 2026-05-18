@@ -747,15 +747,17 @@ int main() {
     assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
-    assert_response_contains(result, "\"node_consumption\":\"Node v239 may verify the mini-kv operator window no-start/no-write receipt, the v102 runtime no-start/no-write follow-up, the v96 sandbox connection receipt echo marker, the v95 sandbox adapter non-participation receipt, the v90 external adapter non-participation receipt, the v89 adapter shell non-storage guard receipt, the v88 command dispatch quality receipt, the v87 managed audit adapter non-authoritative storage receipt, the v86 managed audit adapter restore boundary receipt, runtime evidence retention, binary provenance digest alignment, live-read session echo, uptime bucket, read command digest, taxonomy digest, operator-window identity-neutral proof, CI evidence hints, and artifact retention evidence before operator window evidence verification; mini-kv must already be running and the read-only window must be open manually\"");
+    assert_response_contains(result, "\"node_consumption\":\"Node v244 may verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
+    assert_response_contains(result, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
     assert_response_contains(result, "\"live_read_session_hint\"");
     assert_response_contains(result, "\"binary_provenance_hint\"");
     assert_response_contains(result, "\"retention_provenance_check\"");
     assert_response_contains(result, "\"retention_provenance_replay_marker\"");
     assert_response_contains(result, "\"managed_audit_adapter_restore_boundary_receipt\"");
     assert_response_contains(result, "\"managed_audit_adapter_non_authoritative_storage_receipt\"");
-    assert_response_contains(result, "\"notes\":[\"runtime_smoke_evidence\",\"live_read_session_hint\",\"binary_provenance_hint\",\"retention_provenance_check\",\"retention_provenance_replay_marker\",\"managed_audit_adapter_restore_boundary_receipt\",\"managed_audit_adapter_non_authoritative_storage_receipt\",\"command_dispatch_quality_receipt\",\"adapter_shell_non_storage_guard_receipt\",\"managed_audit_external_adapter_non_participation_receipt\",\"managed_audit_sandbox_adapter_non_participation_receipt\",\"managed_audit_sandbox_connection_receipt_echo_marker\",\"managed_audit_sandbox_connection_no_start_guard_receipt\",\"runtime_no_start_no_write_follow_up\",\"operator_window_no_start_no_write_receipt\",\"read_only_aggregate\","
-                                     "\"not_order_authoritative\",\"does_not_execute_load_compact_setnxex_or_restore\"]");
+    assert_response_contains(result, "\"manual_sandbox_dry_run_command_non_participation_receipt\"");
+    assert_response_contains(result, "\"read_only_aggregate\"");
+    assert_response_contains(result, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 
     result = processor.execute("GET restore:real-read-token");
     assert(result.response == "(nil)");

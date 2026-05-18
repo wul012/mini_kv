@@ -26,4 +26,9 @@ std::string format_runtime_retention_provenance_check_json();
 std::string retention_provenance_replay_marker_digest();
 std::string format_runtime_retention_provenance_replay_marker_json();
 
+std::string manual_sandbox_dry_run_command_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_manual_sandbox_dry_run_command_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts
