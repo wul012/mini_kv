@@ -6,6 +6,7 @@
 #include "minikv/snapshot.hpp"
 #include "minikv/wal.hpp"
 
+#include <array>
 #include <chrono>
 #include <condition_variable>
 #include <cstdint>
@@ -28,40 +29,74 @@ std::string command_token(std::string_view text) {
     return to_upper(command);
 }
 
-enum class CommandDispatchFamily {
-    Meta,
-    Read,
-    Write,
-    Admin,
+enum class CommandDispatchVerb {
+    Ping,
+    Set,
+    SetNxEx,
+    Get,
+    Del,
+    Expire,
+    Ttl,
+    Size,
+    Keys,
+    KeysJson,
+    Save,
+    Load,
+    Compact,
+    WalInfo,
+    ResetStats,
     RuntimeEvidence,
-    Session,
+    ExplainJson,
+    CheckJson,
+    Help,
+    Quit,
     Unknown,
 };
 
-CommandDispatchFamily dispatch_family_for(std::string_view command) {
-    if (command == "STATS" || command == "STATSJSON" || command == "SMOKEJSON" ||
-        command == "STORAGEJSON" || command == "HEALTH" || command == "INFO" ||
-        command == "INFOJSON" || command == "COMMANDS" || command == "COMMANDSJSON") {
-        return CommandDispatchFamily::RuntimeEvidence;
-    }
-    if (command == "EXIT" || command == "QUIT") {
-        return CommandDispatchFamily::Session;
-    }
+struct CommandDispatchEntry {
+    std::string_view command;
+    CommandDispatchVerb verb;
+};
 
-    const auto* entry = command_contracts::find_command_catalog_entry(command);
-    if (entry == nullptr) {
-        return CommandDispatchFamily::Unknown;
+constexpr std::array<CommandDispatchEntry, 29> command_dispatch_table = {{
+    {"PING", CommandDispatchVerb::Ping},
+    {"SET", CommandDispatchVerb::Set},
+    {"SETNXEX", CommandDispatchVerb::SetNxEx},
+    {"GET", CommandDispatchVerb::Get},
+    {"DEL", CommandDispatchVerb::Del},
+    {"EXPIRE", CommandDispatchVerb::Expire},
+    {"TTL", CommandDispatchVerb::Ttl},
+    {"SIZE", CommandDispatchVerb::Size},
+    {"KEYS", CommandDispatchVerb::Keys},
+    {"KEYSJSON", CommandDispatchVerb::KeysJson},
+    {"SAVE", CommandDispatchVerb::Save},
+    {"LOAD", CommandDispatchVerb::Load},
+    {"COMPACT", CommandDispatchVerb::Compact},
+    {"WALINFO", CommandDispatchVerb::WalInfo},
+    {"RESETSTATS", CommandDispatchVerb::ResetStats},
+    {"STATS", CommandDispatchVerb::RuntimeEvidence},
+    {"STATSJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SMOKEJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"STORAGEJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"HEALTH", CommandDispatchVerb::RuntimeEvidence},
+    {"INFO", CommandDispatchVerb::RuntimeEvidence},
+    {"INFOJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
+    {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
+    {"CHECKJSON", CommandDispatchVerb::CheckJson},
+    {"HELP", CommandDispatchVerb::Help},
+    {"EXIT", CommandDispatchVerb::Quit},
+    {"QUIT", CommandDispatchVerb::Quit},
+}};
+
+CommandDispatchVerb lookup_command_dispatch_verb(std::string_view command) {
+    for (const auto& entry : command_dispatch_table) {
+        if (entry.command == command) {
+            return entry.verb;
+        }
     }
-    if (entry->category == "write") {
-        return CommandDispatchFamily::Write;
-    }
-    if (entry->category == "admin") {
-        return CommandDispatchFamily::Admin;
-    }
-    if (entry->category == "read") {
-        return CommandDispatchFamily::Read;
-    }
-    return CommandDispatchFamily::Meta;
+    return CommandDispatchVerb::Unknown;
 }
 
 std::string metrics_command_name(std::string_view command) {
@@ -447,14 +482,15 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
     input >> command;
     command = to_upper(command);
 
-    if (command == "PING") {
+    switch (lookup_command_dispatch_verb(command)) {
+    case CommandDispatchVerb::Ping: {
         std::string message;
         std::getline(input >> std::ws, message);
 
         return {message.empty() ? "PONG" : message};
     }
 
-    if (command == "SET") {
+    case CommandDispatchVerb::Set: {
         std::string key;
         input >> key;
 
@@ -473,7 +509,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             });
     }
 
-    if (command == "SETNXEX") {
+    case CommandDispatchVerb::SetNxEx: {
         std::string key;
         std::string seconds_text;
         input >> key >> seconds_text;
@@ -500,7 +536,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             });
     }
 
-    if (command == "GET") {
+    case CommandDispatchVerb::Get: {
         std::string key;
         input >> key;
 
@@ -516,7 +552,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {*value};
     }
 
-    if (command == "DEL") {
+    case CommandDispatchVerb::Del: {
         std::string key;
         input >> key;
 
@@ -537,7 +573,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             });
     }
 
-    if (command == "EXPIRE") {
+    case CommandDispatchVerb::Expire: {
         std::string key;
         std::string seconds_text;
         input >> key >> seconds_text;
@@ -561,7 +597,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
             });
     }
 
-    if (command == "TTL") {
+    case CommandDispatchVerb::Ttl: {
         std::string key;
         input >> key;
 
@@ -577,7 +613,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {std::to_string(ttl->count())};
     }
 
-    if (command == "SIZE") {
+    case CommandDispatchVerb::Size: {
         if (has_extra_token(input)) {
             return usage("SIZE");
         }
@@ -585,7 +621,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {std::to_string(store_.size())};
     }
 
-    if (command == "KEYS") {
+    case CommandDispatchVerb::Keys: {
         std::string prefix;
         if (input >> prefix) {
             if (has_extra_token(input)) {
@@ -598,7 +634,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {command_response_formatters::format_keys(store_.keys())};
     }
 
-    if (command == "KEYSJSON") {
+    case CommandDispatchVerb::KeysJson: {
         std::string prefix;
         if (input >> prefix) {
             if (has_extra_token(input)) {
@@ -611,7 +647,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {command_response_formatters::format_keys_json(std::nullopt, store_.keys())};
     }
 
-    if (command == "SAVE") {
+    case CommandDispatchVerb::Save: {
         std::string path;
         std::getline(input >> std::ws, path);
 
@@ -627,7 +663,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {std::string{"OK saved "} + std::to_string(saved)};
     }
 
-    if (command == "LOAD") {
+    case CommandDispatchVerb::Load: {
         std::string path;
         std::getline(input >> std::ws, path);
 
@@ -643,7 +679,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {std::string{"OK loaded "} + std::to_string(loaded)};
     }
 
-    if (command == "COMPACT") {
+    case CommandDispatchVerb::Compact: {
         if (has_extra_token(input)) {
             return usage("COMPACT");
         }
@@ -663,7 +699,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {std::string{"OK compacted "} + std::to_string(compacted)};
     }
 
-    if (command == "WALINFO") {
+    case CommandDispatchVerb::WalInfo: {
         if (has_extra_token(input)) {
             return usage("WALINFO");
         }
@@ -676,7 +712,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {command_response_formatters::format_walinfo(wal_->maintenance_report(store_))};
     }
 
-    if (command == "RESETSTATS") {
+    case CommandDispatchVerb::ResetStats: {
         if (has_extra_token(input)) {
             return usage("RESETSTATS");
         }
@@ -685,11 +721,10 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {"OK stats reset"};
     }
 
-    if (dispatch_family_for(command) == CommandDispatchFamily::RuntimeEvidence) {
+    case CommandDispatchVerb::RuntimeEvidence:
         return execute_runtime_evidence_command(command, input);
-    }
 
-    if (command == "EXPLAINJSON") {
+    case CommandDispatchVerb::ExplainJson: {
         std::string target_command;
         std::getline(input >> std::ws, target_command);
         if (target_command.empty()) {
@@ -699,7 +734,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {command_contracts::format_explain_json(target_command)};
     }
 
-    if (command == "CHECKJSON") {
+    case CommandDispatchVerb::CheckJson: {
         std::string target_command;
         std::getline(input >> std::ws, target_command);
         if (target_command.empty()) {
@@ -709,22 +744,23 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
         return {command_contracts::format_check_json(target_command, wal_ != nullptr)};
     }
 
-    if (command == "HELP") {
+    case CommandDispatchVerb::Help:
         if (has_extra_token(input)) {
             return usage("HELP");
         }
 
         return {help_text()};
-    }
 
-    if (command == "EXIT" || command == "QUIT") {
+    case CommandDispatchVerb::Quit:
         if (has_extra_token(input)) {
             return usage("QUIT");
         }
 
         return {"BYE", true};
-    }
 
+    case CommandDispatchVerb::Unknown:
+        return {"ERR unknown command"};
+    }
     return {"ERR unknown command"};
 }
 
