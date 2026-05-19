@@ -1,45 +1,45 @@
-# v114 credential resolver non-participation receipt
+# v114 凭证解析器非参与回执
 
-## Goal and boundary
+## 目标和边界
 
-This version gives Node v261 a read-only mini-kv echo for the Node v260 sandbox endpoint credential resolver decision record.
+本版给 Node v261 增加一个 mini-kv 只读回显，用来对应 Node v260 的 sandbox endpoint credential resolver decision record。
 
-It is not a credential resolver, not a secret provider adapter, not a connection implementation, and not a managed audit storage backend. It does not start mini-kv or Java, does not read, load, store, or include credential values, does not parse raw endpoint URLs, does not send external requests, does not write approval ledger or managed audit state, and does not execute schema migration, `LOAD`, `COMPACT`, `RESTORE`, or `SETNXEX`.
+它不是 credential resolver，不是 secret provider adapter，不是连接实现，也不是 managed audit 存储后端。它不会启动 mini-kv 或 Java，不会读取、加载、存储或包含 credential value，不会解析 raw endpoint URL，不会发送外部请求，不会写 approval ledger 或 managed audit state，也不会执行 schema migration、`LOAD`、`COMPACT`、`RESTORE` 或 `SETNXEX`。
 
-## Version position
+## 版本位置
 
-Node v260 records a policy-only human decision envelope before any credential resolver rehearsal exists. mini-kv v114 mirrors that envelope as evidence: endpoint handle, credential handle, resolver policy handle, approval marker, operator identity requirement, approval correlation requirement, redaction policy, fallback rotation plan, required decision fields, and explicit no-go conditions.
+Node v260 在任何 credential resolver 演练存在之前，先记录一个 policy-only 的人工决策信封。mini-kv v114 把这个信封镜像成证据：endpoint handle、credential handle、resolver policy handle、approval marker、operator identity requirement、approval correlation requirement、redaction policy、fallback rotation plan、required decision fields 和 explicit no-go conditions。
 
-The version intentionally stays inside the existing runtime sandbox receipt module. `src/runtime_sandbox_receipts.cpp` remains below the current large-file threshold after this addition, so a new split would add more structure than the change needs.
+本版有意继续放在现有 runtime sandbox receipt 模块里。加入 v114 后，`src/runtime_sandbox_receipts.cpp` 仍低于当前的大文件阈值，所以再拆一个新文件反而会让结构比改动本身更重。
 
-## Code modules
+## 代码模块
 
-`src/runtime_sandbox_receipts.cpp` now owns `credential_resolver_non_participation_receipt_digest` and `format_credential_resolver_non_participation_receipt_json`. The formatter echoes the Node v260 source shape, records source counts, lists required decision fields and no-go conditions, and hard-codes the no credential/no resolver/no external request boundaries.
+`src/runtime_sandbox_receipts.cpp` 现在负责 `credential_resolver_non_participation_receipt_digest` 和 `format_credential_resolver_non_participation_receipt_json`。formatter 回显 Node v260 的来源形状，记录来源计数，列出 required decision fields 和 no-go conditions，并硬编码 no credential、no resolver、no external request 边界。
 
-`include/minikv/runtime_evidence_receipts.hpp` exposes the new digest and formatter through the same public receipt interface used by v111-v113.
+`include/minikv/runtime_evidence_receipts.hpp` 通过和 v111-v113 相同的公共 receipt 接口暴露新的 digest 和 formatter。
 
-`src/command_response_formatters.cpp` adds `credential_resolver_non_participation_receipt` to `SMOKEJSON`, includes it in the notes array, and adds the Node v261 diagnostics hint while preserving the older v108/v112/v113/v111/v107/v102 consumption hints.
+`src/command_response_formatters.cpp` 把 `credential_resolver_non_participation_receipt` 加入 `SMOKEJSON`，把它放进 notes 数组，并新增 Node v261 diagnostics hint，同时保留更早的 v108/v112/v113/v111/v107/v102 消费提示。
 
-## Contract fields
+## 契约字段
 
-The v114 receipt echoes these upstream facts from Node v260:
+v114 receipt 回显了 Node v260 的这些上游事实：
 
-- `source_required_decision_field_count=8`, `source_explicit_no_go_condition_count=9`, and `source_check_count=20`.
-- `endpoint_handle`, `credential_handle`, `resolver_policy_handle`, and `approval_marker` are names or markers only.
-- `operator_identity_required=true` and `approval_correlation_required=true` are requirements, not identity inference by mini-kv.
-- `resolver_mode=policy-record-only-no-value-read` and `resolver_candidate_implementation=not-implemented` keep the resolver unimplemented.
-- `source_credential_value_read=false`, `source_credential_value_loaded=false`, `source_credential_value_included=false`, `source_raw_endpoint_url_parsed=false`, `source_external_request_sent=false`, and `source_automatic_upstream_start=false`.
+- `source_required_decision_field_count=8`、`source_explicit_no_go_condition_count=9`、`source_check_count=20`。
+- `endpoint_handle`、`credential_handle`、`resolver_policy_handle` 和 `approval_marker` 都只是名称或 marker。
+- `operator_identity_required=true` 和 `approval_correlation_required=true` 是要求，不代表 mini-kv 推断操作者身份。
+- `resolver_mode=policy-record-only-no-value-read` 和 `resolver_candidate_implementation=not-implemented` 保持 resolver 未实现。
+- `source_credential_value_read=false`、`source_credential_value_loaded=false`、`source_credential_value_included=false`、`source_raw_endpoint_url_parsed=false`、`source_external_request_sent=false`、`source_automatic_upstream_start=false`。
 
-Control-plane readers should treat `read_only=true` and `execution_allowed=false` as evidence-only. `credential_resolver_implemented=false`, `credential_resolver_invoked=false`, `secret_provider_instantiated=false`, `mini_kv_auto_start_allowed=false`, `storage_write_allowed=false`, `managed_audit_storage_backend=false`, `restore_execution_allowed=false`, `load_restore_compact_executed=false`, `setnxex_execution_allowed=false`, and `order_authoritative=false` are the actual mini-kv boundary proof.
+控制面读取方应把 `read_only=true` 和 `execution_allowed=false` 理解为“仅证据”。`credential_resolver_implemented=false`、`credential_resolver_invoked=false`、`secret_provider_instantiated=false`、`mini_kv_auto_start_allowed=false`、`storage_write_allowed=false`、`managed_audit_storage_backend=false`、`restore_execution_allowed=false`、`load_restore_compact_executed=false`、`setnxex_execution_allowed=false`、`order_authoritative=false` 才是 mini-kv 实际提供的边界证明。
 
-## Fixtures and tests
+## Fixture 和测试
 
-`fixtures/release/credential-resolver-non-participation-receipt.json` is the standalone v114 receipt. `fixtures/release/runtime-smoke-evidence.json` and `fixtures/release/verification-manifest.json` embed the same receipt so Node can consume either the standalone fixture or the `SMOKEJSON` aggregate.
+`fixtures/release/credential-resolver-non-participation-receipt.json` 是 v114 独立 receipt。`fixtures/release/runtime-smoke-evidence.json` 和 `fixtures/release/verification-manifest.json` 内嵌同一份 receipt，因此 Node 既可以消费独立 fixture，也可以消费 `SMOKEJSON` 聚合结果。
 
-`tests/credential_resolver_non_participation_receipt_tests.cpp` checks the standalone fixture, runtime smoke fixture, release manifest, live `CommandProcessor` `SMOKEJSON`, and `GET restore:real-read-token`. It verifies the Node v260 source shape, decision record fields, no-go conditions, and hard no-start/no-write/no-credential/no-resolver/no-execution boundaries.
+`tests/credential_resolver_non_participation_receipt_tests.cpp` 检查独立 fixture、runtime smoke fixture、release manifest、真实 `CommandProcessor` 的 `SMOKEJSON`，以及 `GET restore:real-read-token`。它会验证 Node v260 来源形状、decision record 字段、no-go conditions，以及 hard no-start/no-write/no-credential/no-resolver/no-execution 边界。
 
-Existing runtime smoke, release manifest, and command tests were extended only for the new key and diagnostics hint. They keep the historical v102 runtime evidence and v107-v113 receipt contracts in place.
+既有 runtime smoke、release manifest 和 command tests 只为新 key 和 diagnostics hint 做了扩展。它们继续守住历史 v102 runtime evidence 以及 v107-v113 receipt 契约。
 
-## Summary
+## 总结
 
-v114 lets the cross-project chain acknowledge a credential resolver decision without letting mini-kv become the resolver, the credential reader, the endpoint parser, the transport, or the audit store.
+v114 让跨项目链路可以确认 credential resolver decision，但不让 mini-kv 成为 resolver、credential reader、endpoint parser、transport 或 audit store。

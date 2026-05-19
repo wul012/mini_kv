@@ -1,44 +1,44 @@
-# v113 sandbox endpoint handle non-participation receipt
+# v113 沙箱端点句柄非参与回执
 
-## Goal and boundary
+## 目标和边界
 
-This version gives Node v259 one more read-only upstream echo point: mini-kv now exposes `sandbox_endpoint_handle_non_participation_receipt` for the Node v258 sandbox endpoint handle preflight review.
+本版给 Node v259 增加一个只读上游回显点：mini-kv 现在通过 `sandbox_endpoint_handle_non_participation_receipt` 暴露 Node v258 沙箱端点句柄预检审查的非参与证据。
 
-It is not a connection implementation, not a credential resolver, not a managed audit storage backend, and not a new execution path. It does not start mini-kv or Java, does not parse raw endpoint URLs, does not read credential values, does not send external requests, does not write approval ledger or managed audit state, and does not execute `LOAD`, `COMPACT`, `RESTORE`, or `SETNXEX`.
+它不是连接实现，不是凭证解析器，不是 managed audit 存储后端，也不是新的执行入口。它不会启动 mini-kv 或 Java，不会解析 raw endpoint URL，不会读取 credential value，不会发送外部请求，不会写 approval ledger 或 managed audit state，也不会执行 `LOAD`、`COMPACT`、`RESTORE` 或 `SETNXEX`。
 
-## Version position
+## 版本位置
 
-Node v258 reviews only endpoint and credential handles plus the surrounding network allowlist, TLS policy, redaction policy, and closed operator window. mini-kv v113 mirrors that shape as evidence so the later Node v259 upstream echo can verify that mini-kv stayed outside the sandbox connection.
+Node v258 只审查 endpoint handle、credential handle，以及周边的 network allowlist、TLS policy、redaction policy 和关闭状态的 operator window。mini-kv v113 把这个形状镜像成证据，让后续 Node v259 的 upstream echo 能确认 mini-kv 仍然在沙箱连接之外。
 
-The version also keeps the refactoring rhythm under control: `src/runtime_evidence_receipts.cpp` had grown past 1100 lines, so the newer sandbox receipt implementations were moved into `src/runtime_sandbox_receipts.cpp`. The public header remains `include/minikv/runtime_evidence_receipts.hpp`.
+本版也顺手控制了重构节奏：`src/runtime_evidence_receipts.cpp` 已经增长到 1100 行以上，所以较新的 sandbox receipt 实现被移到 `src/runtime_sandbox_receipts.cpp`。对外公开头文件仍然是 `include/minikv/runtime_evidence_receipts.hpp`。
 
-## Code modules
+## 代码模块
 
-`src/runtime_sandbox_receipts.cpp` owns the v111, v112, and v113 sandbox-style receipt formatters and digest functions. For v113 it defines the Node v258 source fields, review counts, handle names, policy handles, boundary booleans, and `sandbox_endpoint_handle_non_participation_receipt_digest`.
+`src/runtime_sandbox_receipts.cpp` 负责 v111、v112、v113 这类 sandbox 风格 receipt 的 JSON formatter 和 digest 函数。对 v113 来说，它定义了 Node v258 的来源字段、审查计数、handle 名称、policy handle、边界布尔值，以及 `sandbox_endpoint_handle_non_participation_receipt_digest`。
 
-`src/runtime_evidence_receipts.cpp` keeps the core runtime evidence chain: live-read session, failure taxonomy, operator-window proof, CI/artifact retention hints, binary provenance, retention check, retention replay marker, and the earlier manual sandbox command/precheck receipts.
+`src/runtime_evidence_receipts.cpp` 保留核心 runtime evidence 链：live-read session、failure taxonomy、operator-window proof、CI/artifact retention hints、binary provenance、retention check、retention replay marker，以及更早的 manual sandbox command/precheck receipts。
 
-`src/command_response_formatters.cpp` adds the new receipt to `SMOKEJSON` and to the diagnostics notes. The diagnostics string now says Node v259 may verify the mini-kv v113 receipt after Node v258 endpoint handle preflight review, while the existing Node v246/v257/v254/v244/v239 hints remain intact.
+`src/command_response_formatters.cpp` 把新 receipt 接入 `SMOKEJSON` 和 diagnostics notes。diagnostics 字符串现在说明 Node v259 可以在 Node v258 endpoint handle preflight review 之后验证 mini-kv v113 receipt，同时保留既有的 Node v246/v257/v254/v244/v239 提示。
 
-## Contract fields
+## 契约字段
 
-The v113 receipt echoes these upstream facts from Node v258:
+v113 receipt 回显了 Node v258 的这些上游事实：
 
-- `source_required_review_item_count=7`, `source_completed_review_item_count=7`, `source_forbidden_operation_count=7`, and `source_check_count=19`.
-- `endpoint_handle` and `credential_handle` are handle names only.
-- `network_allowlist_review`, `tls_policy_review`, `redaction_policy`, and `operator_window` are reviewed without exposing raw host, CIDR, certificate material, private key, raw endpoint URL, or credential value.
-- `source_ready_for_managed_audit_sandbox_adapter_connection=false`, `source_external_request_sent=false`, `source_raw_endpoint_url_parsed=false`, `source_credential_value_read=false`, and `source_automatic_upstream_start=false`.
+- `source_required_review_item_count=7`、`source_completed_review_item_count=7`、`source_forbidden_operation_count=7`、`source_check_count=19`。
+- `endpoint_handle` 和 `credential_handle` 都只是 handle 名称。
+- `network_allowlist_review`、`tls_policy_review`、`redaction_policy`、`operator_window` 都只表示已审查，不暴露 raw host、CIDR、certificate material、private key、raw endpoint URL 或 credential value。
+- `source_ready_for_managed_audit_sandbox_adapter_connection=false`、`source_external_request_sent=false`、`source_raw_endpoint_url_parsed=false`、`source_credential_value_read=false`、`source_automatic_upstream_start=false`。
 
-Control-plane readers should interpret `read_only=true` and `execution_allowed=false` as evidence-only. `mini_kv_auto_start_allowed=false`, `storage_write_allowed=false`, `managed_audit_storage_backend=false`, `restore_execution_allowed=false`, `load_restore_compact_executed=false`, `setnxex_execution_allowed=false`, and `order_authoritative=false` are hard boundaries, not runtime toggles.
+控制面读取方应把 `read_only=true` 和 `execution_allowed=false` 理解为“仅证据”。`mini_kv_auto_start_allowed=false`、`storage_write_allowed=false`、`managed_audit_storage_backend=false`、`restore_execution_allowed=false`、`load_restore_compact_executed=false`、`setnxex_execution_allowed=false`、`order_authoritative=false` 是硬边界，不是运行时开关。
 
-## Fixtures and tests
+## Fixture 和测试
 
-`fixtures/release/sandbox-endpoint-handle-non-participation-receipt.json` is the standalone v113 receipt. `fixtures/release/runtime-smoke-evidence.json` and `fixtures/release/verification-manifest.json` embed the same receipt so Node can consume either the standalone fixture or the `SMOKEJSON` aggregate.
+`fixtures/release/sandbox-endpoint-handle-non-participation-receipt.json` 是 v113 独立 receipt。`fixtures/release/runtime-smoke-evidence.json` 和 `fixtures/release/verification-manifest.json` 内嵌同一份 receipt，因此 Node 既可以消费独立 fixture，也可以消费 `SMOKEJSON` 聚合结果。
 
-`tests/sandbox_endpoint_handle_non_participation_receipt_tests.cpp` checks the standalone fixture, runtime smoke fixture, release manifest, live `CommandProcessor` `SMOKEJSON`, and `GET restore:real-read-token`. The test rejects accidental credential value or raw endpoint URL fields and verifies the no-start, no-write, no-execution, and non-authoritative flags.
+`tests/sandbox_endpoint_handle_non_participation_receipt_tests.cpp` 检查独立 fixture、runtime smoke fixture、release manifest、真实 `CommandProcessor` 的 `SMOKEJSON`，以及 `GET restore:real-read-token`。测试会拒绝意外出现的 credential value 或 raw endpoint URL 字段，并验证 no-start、no-write、no-execution 和 non-authoritative 标志。
 
-Existing runtime smoke, release manifest, and command tests were extended only for the new key and diagnostics hint. They keep the historical v102 runtime evidence and v107-v112 receipt contracts in place.
+既有 runtime smoke、release manifest 和 command tests 只为新 key 和 diagnostics hint 做了扩展。它们继续守住历史 v102 runtime evidence 以及 v107-v112 receipt 契约。
 
-## Summary
+## 总结
 
-v113 gives the Node/Java/mini-kv integration chain a clean endpoint-handle preflight echo without letting mini-kv become the endpoint, the credential reader, the transport, or the audit store.
+v113 给 Node/Java/mini-kv 集成链提供了干净的 endpoint-handle preflight echo，同时不让 mini-kv 成为 endpoint、credential reader、transport 或 audit store。
