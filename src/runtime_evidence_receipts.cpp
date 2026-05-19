@@ -342,6 +342,53 @@ constexpr int disabled_adapter_client_response_shape_field_count = 9;
 constexpr int disabled_adapter_client_failure_mapping_count = 6;
 constexpr int disabled_adapter_client_guard_condition_count = 7;
 
+constexpr std::string_view fake_transport_packet_receipt_consumer =
+    "Node v257 fake transport packet upstream echo verification";
+constexpr std::string_view fake_transport_packet_receipt_fixture_path =
+    "fixtures/release/fake-transport-dry-run-packet-non-participation-receipt.json";
+constexpr std::string_view fake_transport_packet_receipt_release_version = "v112";
+constexpr std::string_view fake_transport_packet_receipt_artifact_path_hint = "c/112/";
+constexpr std::string_view fake_transport_packet_source_packet =
+    "Node v255 fake transport adapter dry-run verification packet";
+constexpr std::string_view fake_transport_packet_source_archive =
+    "Node v256 fake transport packet archive verification";
+constexpr std::string_view fake_transport_packet_profile_version =
+    "managed-audit-manual-sandbox-connection-fake-transport-adapter-dry-run-verification-packet.v1";
+constexpr std::string_view fake_transport_packet_state =
+    "fake-transport-adapter-dry-run-verification-packet-ready";
+constexpr std::string_view fake_transport_packet_archive_state =
+    "fake-transport-packet-archive-verification-ready";
+constexpr std::string_view fake_transport_packet_mode =
+    "fake-transport-adapter-dry-run-verification-only";
+constexpr std::string_view fake_transport_packet_source_span = "Node v253 + Node v254";
+constexpr std::string_view fake_transport_packet_request_id =
+    "managed-audit-v255-fake-transport-dry-run";
+constexpr std::string_view fake_transport_packet_operation =
+    "managed-audit-sandbox-connection-dry-run";
+constexpr std::string_view fake_transport_packet_transport_kind = "fake-in-memory";
+constexpr std::string_view fake_transport_packet_credential_handle =
+    "ORDEROPS_MANAGED_AUDIT_SANDBOX_CREDENTIAL_HANDLE";
+constexpr std::string_view fake_transport_packet_endpoint_handle =
+    "ORDEROPS_MANAGED_AUDIT_SANDBOX_ENDPOINT_HANDLE";
+constexpr std::string_view fake_transport_packet_owner_approval =
+    "owner-approval-artifact-review-only";
+constexpr std::string_view fake_transport_packet_response_status =
+    "fake-transport-dry-run-accepted";
+constexpr std::string_view fake_transport_packet_response_code =
+    "TEST_ONLY_FAKE_TRANSPORT_DRY_RUN";
+constexpr std::string_view fake_transport_packet_budget_source = "operator-review-field";
+constexpr std::string_view fake_transport_packet_runtime_role =
+    "runtime evidence provider only";
+constexpr std::string_view fake_transport_packet_boundary =
+    "fake transport dry-run packet non-participation receipt only; mini-kv stays runtime evidence only, is not auto-started by Node v255/v256, does not write storage, does not read credential values, does not send external requests, does not create temporary cleanup artifacts, does not execute restore/load/compact/SETNXEX, and does not become a managed audit storage backend";
+constexpr std::string_view fake_transport_packet_node_action =
+    "verify mini-kv non-participation with Node v255 fake transport dry-run packet and Node v256 archive verification before Node v257 upstream echo verification";
+constexpr int fake_transport_packet_request_shape_field_count = 8;
+constexpr int fake_transport_packet_response_shape_field_count = 9;
+constexpr int fake_transport_packet_failure_mapping_count = 6;
+constexpr int fake_transport_packet_timeout_budget_ms = 15000;
+constexpr int fake_transport_packet_cleanup_artifact_count = 0;
+
 std::string uptime_bucket_for_seconds(std::int64_t uptime_seconds) {
     if (uptime_seconds < 60) {
         return "lt_60s";
@@ -957,6 +1004,178 @@ std::string format_disabled_adapter_client_non_participation_receipt_json(
            "\"setnxex_execution_allowed\":false,\"order_authoritative\":false,"
            "\"boundary\":" + field_string(disabled_adapter_client_boundary) +
            ",\"node_action\":" + field_string(disabled_adapter_client_node_action) + "}";
+}
+
+std::string fake_transport_dry_run_packet_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands) {
+    const std::vector<DigestPart> parts = {
+        {std::string{version}},
+        {std::string{fake_transport_packet_receipt_release_version}},
+        {std::string{fake_transport_packet_receipt_artifact_path_hint}},
+        {std::string{fake_transport_packet_source_packet}},
+        {std::string{fake_transport_packet_source_archive}},
+        {std::string{fake_transport_packet_profile_version}},
+        {std::string{fake_transport_packet_state}},
+        {std::string{fake_transport_packet_archive_state}},
+        {std::string{fake_transport_packet_mode}},
+        {std::string{fake_transport_packet_source_span}},
+        {std::string{fake_transport_packet_request_id}},
+        {std::string{fake_transport_packet_operation}},
+        {std::string{fake_transport_packet_transport_kind}},
+        {std::string{fake_transport_packet_credential_handle}},
+        {std::string{fake_transport_packet_endpoint_handle}},
+        {std::string{fake_transport_packet_owner_approval}},
+        {std::string{fake_transport_packet_response_status}},
+        {std::string{fake_transport_packet_response_code}},
+        {std::string{fake_transport_packet_budget_source}},
+        {std::to_string(fake_transport_packet_request_shape_field_count)},
+        {std::to_string(fake_transport_packet_response_shape_field_count)},
+        {std::to_string(fake_transport_packet_failure_mapping_count)},
+        {std::to_string(fake_transport_packet_timeout_budget_ms)},
+        {std::to_string(fake_transport_packet_cleanup_artifact_count)},
+        {"true"},
+        {"true"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {"false"},
+        {read_command_list_digest(read_commands)},
+    };
+    return receipt_digest("mini-kv-fake-transport-dry-run-packet-non-participation", parts);
+}
+
+std::string format_fake_transport_dry_run_packet_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands) {
+    return "{\"receipt_version\":\"mini-kv-fake-transport-dry-run-packet-non-participation-receipt.v1\","
+           "\"receipt_fixture_path\":" + field_string(fake_transport_packet_receipt_fixture_path) +
+           ",\"source_packet\":" + field_string(fake_transport_packet_source_packet) +
+           ",\"source_archive_verification\":" + field_string(fake_transport_packet_source_archive) +
+           ",\"consumer_hint\":" + field_string(fake_transport_packet_receipt_consumer) +
+           ",\"current_project_version\":" + field_string(version) +
+           ",\"runtime_project_version\":" + field_string(version) +
+           ",\"current_release_version\":" +
+           field_string(fake_transport_packet_receipt_release_version) +
+           ",\"current_artifact_path_hint\":" +
+           field_string(fake_transport_packet_receipt_artifact_path_hint) +
+           ",\"current_runtime_fixture_release_version\":\"v102\""
+           ",\"current_runtime_fixture_artifact_path_hint\":\"c/102/\""
+           ",\"current_live_read_session_echo\":\"mini-kv-live-read-v102\""
+           ",\"runtime_role\":" + field_string(fake_transport_packet_runtime_role) +
+           ",\"source_packet_profile_version\":" + field_string(fake_transport_packet_profile_version) +
+           ",\"source_packet_state\":" + field_string(fake_transport_packet_state) +
+           ",\"source_archive_state\":" + field_string(fake_transport_packet_archive_state) +
+           ",\"source_archive_reruns_fake_transport_behavior\":false"
+           ",\"source_packet_mode\":" + field_string(fake_transport_packet_mode) +
+           ",\"source_span\":" + field_string(fake_transport_packet_source_span) +
+           ",\"source_ready_for_fake_transport_packet\":true"
+           ",\"source_ready_for_managed_audit_sandbox_adapter_connection\":false"
+           ",\"source_fake_transport_only\":true"
+           ",\"source_dry_run_only\":true"
+           ",\"source_execution_allowed\":false"
+           ",\"source_connects_managed_audit\":false"
+           ",\"source_reads_managed_audit_credential\":false"
+           ",\"source_stores_managed_audit_credential\":false"
+           ",\"source_schema_migration_executed\":false"
+           ",\"source_automatic_upstream_start\":false"
+           ",\"source_request_shape_field_count\":" +
+           std::to_string(fake_transport_packet_request_shape_field_count) +
+           ",\"source_response_shape_field_count\":" +
+           std::to_string(fake_transport_packet_response_shape_field_count) +
+           ",\"source_failure_mapping_count\":" +
+           std::to_string(fake_transport_packet_failure_mapping_count) +
+           ",\"source_timeout_budget_ms\":" + std::to_string(fake_transport_packet_timeout_budget_ms) +
+           ",\"source_cleanup_artifact_count\":" +
+           std::to_string(fake_transport_packet_cleanup_artifact_count) +
+           ",\"source_budget_spent\":false"
+           ",\"source_timer_started\":false"
+           ",\"source_cleanup_in_memory_only\":true"
+           ",\"source_temporary_directory_created\":false"
+           ",\"source_temporary_file_created\":false"
+           ",\"source_cleanup_required\":false"
+           ",\"source_cleanup_verified\":true"
+           ",\"source_node_service_started_by_packet\":false"
+           ",\"source_java_started\":false"
+           ",\"source_mini_kv_started\":false"
+           ",\"source_external_audit_service_started\":false"
+           ",\"request\":{\"request_id\":" + field_string(fake_transport_packet_request_id) +
+           ",\"operation\":" + field_string(fake_transport_packet_operation) +
+           ",\"transport_kind\":" + field_string(fake_transport_packet_transport_kind) +
+           ",\"credential_handle\":" + field_string(fake_transport_packet_credential_handle) +
+           ",\"endpoint_handle\":" + field_string(fake_transport_packet_endpoint_handle) +
+           ",\"owner_approval_artifact_id\":" + field_string(fake_transport_packet_owner_approval) +
+           ",\"timeout_budget_ms\":" + std::to_string(fake_transport_packet_timeout_budget_ms) +
+           ",\"dry_run\":true,\"fake_transport_only\":true,"
+           "\"credential_value_included\":false,\"raw_endpoint_url_included\":false,"
+           "\"payload_may_contain_secrets\":false,\"request_shape_field_count\":" +
+           std::to_string(fake_transport_packet_request_shape_field_count) + "}"
+           ",\"response\":{\"request_id\":" + field_string(fake_transport_packet_request_id) +
+           ",\"status\":" + field_string(fake_transport_packet_response_status) +
+           ",\"code\":" + field_string(fake_transport_packet_response_code) +
+           ",\"fake_transport_only\":true,\"timeout_budget_ms\":" +
+           std::to_string(fake_transport_packet_timeout_budget_ms) +
+           ",\"connection_attempted\":false,\"external_request_sent\":false,"
+           "\"credential_value_read\":false,\"schema_migration_executed\":false,"
+           "\"production_record_written\":false,\"response_shape_field_count\":" +
+           std::to_string(fake_transport_packet_response_shape_field_count) + "}"
+           ",\"timeout_budget\":{\"timeout_budget_ms\":" +
+           std::to_string(fake_transport_packet_timeout_budget_ms) +
+           ",\"finite_budget\":true,\"budget_source\":" +
+           field_string(fake_transport_packet_budget_source) +
+           ",\"budget_spent\":false,\"timer_started\":false,\"timeout_classifiable\":true}"
+           ",\"failure_mapping_verification\":{\"source_failure_mapping_count\":" +
+           std::to_string(fake_transport_packet_failure_mapping_count) +
+           ",\"mapped_failure_count\":" + std::to_string(fake_transport_packet_failure_mapping_count) +
+           ",\"all_failures_non_retryable\":true,\"credential_value_request_still_blocked\":true,"
+           "\"manual_window_closed_still_blocked\":true,\"failure_mapping_covered\":true}"
+           ",\"cleanup\":{\"in_memory_only\":true,\"temporary_directory_created\":false,"
+           "\"temporary_file_created\":false,\"cleanup_required\":false,\"cleanup_artifact_count\":" +
+           std::to_string(fake_transport_packet_cleanup_artifact_count) +
+           ",\"cleanup_verified\":true,\"node_service_started_by_packet\":false}"
+           ",\"boundaries\":{\"connection_attempted\":false,\"external_request_sent\":false,"
+           "\"credential_value_read\":false,\"schema_migration_executed\":false,"
+           "\"production_record_written\":false,\"java_started\":false,\"mini_kv_started\":false,"
+           "\"external_audit_service_started\":false}"
+           ",\"binary_provenance_digest\":" + field_string(binary_provenance_digest()) +
+           ",\"retention_check_digest\":" + field_string(retention_provenance_check_digest()) +
+           ",\"retention_replay_marker_digest\":" + field_string(retention_provenance_replay_marker_digest()) +
+           ",\"read_command_list_digest\":" + field_string(read_command_list_digest(read_commands)) +
+           ",\"receipt_digest\":" +
+           field_string(fake_transport_dry_run_packet_non_participation_receipt_digest(read_commands)) +
+           ",\"read_only\":true,\"execution_allowed\":false,\"dry_run_only\":true,"
+           "\"node_auto_start_allowed\":false,\"java_auto_start_allowed\":false,"
+           "\"mini_kv_auto_start_allowed\":false,\"external_audit_service_auto_start_allowed\":false,"
+           "\"connection_execution_allowed\":false,\"write_commands_executed\":false,"
+           "\"admin_commands_executed\":false,\"runtime_write_observed\":false,"
+           "\"managed_audit_store\":false,\"managed_audit_storage_backend\":false,"
+           "\"sandbox_audit_storage_backend\":false,\"storage_write_allowed\":false,"
+           "\"managed_audit_write_executed\":false,\"production_record_written\":false,"
+           "\"sandbox_managed_audit_state_write_allowed\":false,"
+           "\"credential_value_required\":false,\"credential_value_read_allowed\":false,"
+           "\"credential_value_loaded\":false,\"credential_value_included\":false,"
+           "\"raw_endpoint_url_included\":false,\"payload_may_contain_secrets\":false,"
+           "\"external_request_sent\":false,\"temporary_directory_created\":false,"
+           "\"temporary_file_created\":false,\"cleanup_artifact_count\":0,"
+           "\"schema_rehearsal_execution_allowed\":false,"
+           "\"schema_migration_execution_allowed\":false,"
+           "\"restore_execution_allowed\":false,\"load_restore_compact_executed\":false,"
+           "\"setnxex_execution_allowed\":false,\"order_authoritative\":false,"
+           "\"boundary\":" + field_string(fake_transport_packet_boundary) +
+           ",\"node_action\":" + field_string(fake_transport_packet_node_action) + "}";
 }
 
 } // namespace minikv::runtime_evidence_receipts

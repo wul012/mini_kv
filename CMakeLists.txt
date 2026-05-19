@@ -522,3 +522,16 @@ target_compile_definitions(minikv_disabled_adapter_client_non_participation_rece
 )
 
 add_test(NAME disabled_adapter_client_non_participation_receipt_tests COMMAND minikv_disabled_adapter_client_non_participation_receipt_tests)
+
+add_executable(minikv_fake_transport_dry_run_packet_non_participation_receipt_tests
+    tests/fake_transport_dry_run_packet_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_fake_transport_dry_run_packet_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_fake_transport_dry_run_packet_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME fake_transport_dry_run_packet_non_participation_receipt_tests COMMAND minikv_fake_transport_dry_run_packet_non_participation_receipt_tests)

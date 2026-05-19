@@ -41,4 +41,9 @@ std::string disabled_adapter_client_non_participation_receipt_digest(
 std::string format_disabled_adapter_client_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string fake_transport_dry_run_packet_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_fake_transport_dry_run_packet_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts
