@@ -1,4 +1,5 @@
 #include "minikv/client_history.hpp"
+#include "minikv/client_limits.hpp"
 #include "minikv/line_editor.hpp"
 #include "minikv/string_utils.hpp"
 
@@ -321,7 +322,7 @@ bool read_line(SocketHandle socket, std::string& line) {
             line.push_back(ch);
         }
 
-        if (line.size() > 64 * 1024) {
+        if (line.size() > minikv::client_max_response_line_bytes) {
             throw std::runtime_error{"response line too long"};
         }
     }

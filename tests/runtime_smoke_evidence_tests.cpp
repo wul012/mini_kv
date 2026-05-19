@@ -1,4 +1,5 @@
 #include "minikv/command.hpp"
+#include "minikv/client_limits.hpp"
 #include "minikv/store.hpp"
 #include "minikv/version.hpp"
 
@@ -43,6 +44,9 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 int main() {
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto smoke = read_fixture_text(smoke_path);
+
+    assert(smoke.size() > 64 * 1024);
+    assert(smoke.size() < minikv::client_max_response_line_bytes);
 
     assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v17\"");
     assert_contains(smoke, "\"project\":\"mini-kv\"");
@@ -627,6 +631,7 @@ int main() {
     assert_contains(result.response, "\"runtime_write_observed\":false");
     assert_contains(result.response, "\"node_consumption\":\"Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
     assert_contains(result.response, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
+    assert_contains(result.response, "Node v263 may verify the mini-kv v115 disabled credential resolver precheck non-participation receipt");
     assert_contains(result.response, "Node v261 may verify the mini-kv v114 credential resolver non-participation receipt");
     assert_contains(result.response, "Node v259 may verify the mini-kv v113 sandbox endpoint handle non-participation receipt");
     assert_contains(result.response, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
@@ -634,6 +639,7 @@ int main() {
     assert_contains(result.response, "\"manual_sandbox_connection_precheck_non_participation_receipt\"");
     assert_contains(result.response, "\"sandbox_endpoint_handle_non_participation_receipt\"");
     assert_contains(result.response, "\"credential_resolver_non_participation_receipt\"");
+    assert_contains(result.response, "\"disabled_credential_resolver_precheck_non_participation_receipt\"");
     assert_contains(result.response, "\"read_only_aggregate\"");
     assert_contains(result.response, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 

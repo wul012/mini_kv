@@ -24,6 +24,7 @@ add_library(minikv
     src/managed_audit_receipts.cpp
     src/metrics_file.cpp
     src/runtime_evidence.cpp
+    src/runtime_credential_resolver_receipts.cpp
     src/runtime_evidence_receipts.cpp
     src/runtime_sandbox_receipts.cpp
     src/recovery_evidence.cpp
@@ -562,3 +563,16 @@ target_compile_definitions(minikv_credential_resolver_non_participation_receipt_
 )
 
 add_test(NAME credential_resolver_non_participation_receipt_tests COMMAND minikv_credential_resolver_non_participation_receipt_tests)
+
+add_executable(minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests
+    tests/disabled_credential_resolver_precheck_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME disabled_credential_resolver_precheck_non_participation_receipt_tests COMMAND minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests)
