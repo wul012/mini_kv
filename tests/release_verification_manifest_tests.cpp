@@ -79,6 +79,7 @@ int main() {
     assert_contains(manifest, "\"minikv_restore_approval_boundary_tests\"");
     assert_contains(manifest, "\"minikv_restore_boundary_smoke_manifest_tests\"");
     assert_contains(manifest, "\"minikv_runtime_smoke_evidence_tests\"");
+    assert_contains(manifest, "\"minikv_credential_resolver_non_participation_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -159,6 +160,7 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "manual-sandbox-dry-run-command-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "manual-sandbox-connection-precheck-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "sandbox-endpoint-handle-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" / "credential-resolver-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -173,6 +175,13 @@ int main() {
     assert_contains(manifest, "\"runtime_evidence_receipts_header\":\"include/minikv/runtime_evidence_receipts.hpp\"");
     assert_contains(manifest, "\"runtime_evidence_receipts_source\":\"src/runtime_evidence_receipts.cpp\"");
     assert_contains(manifest, "\"runtime_sandbox_receipts_source\":\"src/runtime_sandbox_receipts.cpp\"");
+    assert_contains(manifest, "\"credential_resolver_non_participation_receipt\"");
+    assert_contains(manifest, "SMOKEJSON exposes credential_resolver_non_participation_receipt for Node v261");
+    assert_contains(manifest, "\"source_required_decision_field_count\":8");
+    assert_contains(manifest, "\"source_explicit_no_go_condition_count\":9");
+    assert_contains(manifest, "\"credential_resolver_invoked\":false");
+    assert_contains(manifest, "\"secret_provider_instantiated\":false");
+    assert_contains(manifest, "\"credential_value_stored\":false");
     assert_contains(manifest, "\"command_contracts_header\":\"include/minikv/command_contracts.hpp\"");
     assert_contains(manifest, "\"command_contracts_source\":\"src/command_contracts.cpp\"");
     assert_contains(manifest, "\"command_response_formatters_header\":\"include/minikv/command_response_formatters.hpp\"");

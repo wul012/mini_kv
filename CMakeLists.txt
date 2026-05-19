@@ -549,3 +549,16 @@ target_compile_definitions(minikv_sandbox_endpoint_handle_non_participation_rece
 )
 
 add_test(NAME sandbox_endpoint_handle_non_participation_receipt_tests COMMAND minikv_sandbox_endpoint_handle_non_participation_receipt_tests)
+
+add_executable(minikv_credential_resolver_non_participation_receipt_tests
+    tests/credential_resolver_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_credential_resolver_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_credential_resolver_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME credential_resolver_non_participation_receipt_tests COMMAND minikv_credential_resolver_non_participation_receipt_tests)

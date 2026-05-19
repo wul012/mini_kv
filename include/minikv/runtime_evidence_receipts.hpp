@@ -51,4 +51,9 @@ std::string sandbox_endpoint_handle_non_participation_receipt_digest(
 std::string format_sandbox_endpoint_handle_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string credential_resolver_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_credential_resolver_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts
