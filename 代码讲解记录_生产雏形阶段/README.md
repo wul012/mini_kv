@@ -274,3 +274,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## v103 latest addition
 
 - `159-version-103-current-version-path-hint.md`: explains v103 maintenance cleanup for `current_version_path_hint`, reducing repeated current runtime artifact path literals in production formatters while keeping the Node v239 v102 evidence contract unchanged.
+
+## v116 latest addition
+
+- `172-version-116-test-only-resolver-shell-non-participation-receipt.md`: explains v116 `SMOKEJSON.test_only_resolver_shell_non_participation_receipt`, `fixtures/release/test-only-resolver-shell-non-participation-receipt.json`, Node v264 test-only fake resolver shell contract consumption for Node v265 verification, request/response/failure/guard/probe fields, no-start/no-write/no-credential/no-resolver/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.

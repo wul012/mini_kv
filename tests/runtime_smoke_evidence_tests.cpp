@@ -629,7 +629,8 @@ int main() {
     assert_contains(result.response, "\"write_commands_executed\":false");
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
+    assert_contains(result.response, "\"node_consumption\":\"Node v265 may verify the mini-kv v116 test-only resolver shell non-participation receipt");
+    assert_contains(result.response, "Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
     assert_contains(result.response, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
     assert_contains(result.response, "Node v263 may verify the mini-kv v115 disabled credential resolver precheck non-participation receipt");
     assert_contains(result.response, "Node v261 may verify the mini-kv v114 credential resolver non-participation receipt");
@@ -640,6 +641,7 @@ int main() {
     assert_contains(result.response, "\"sandbox_endpoint_handle_non_participation_receipt\"");
     assert_contains(result.response, "\"credential_resolver_non_participation_receipt\"");
     assert_contains(result.response, "\"disabled_credential_resolver_precheck_non_participation_receipt\"");
+    assert_contains(result.response, "\"test_only_resolver_shell_non_participation_receipt\"");
     assert_contains(result.response, "\"read_only_aggregate\"");
     assert_contains(result.response, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 

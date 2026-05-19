@@ -61,4 +61,9 @@ std::string disabled_credential_resolver_precheck_non_participation_receipt_dige
 std::string format_disabled_credential_resolver_precheck_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string test_only_resolver_shell_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_test_only_resolver_shell_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts

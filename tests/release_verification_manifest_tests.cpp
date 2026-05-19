@@ -80,6 +80,7 @@ int main() {
     assert_contains(manifest, "\"minikv_restore_boundary_smoke_manifest_tests\"");
     assert_contains(manifest, "\"minikv_runtime_smoke_evidence_tests\"");
     assert_contains(manifest, "\"minikv_credential_resolver_non_participation_receipt_tests\"");
+    assert_contains(manifest, "\"minikv_test_only_resolver_shell_non_participation_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -161,6 +162,7 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "manual-sandbox-connection-precheck-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "sandbox-endpoint-handle-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "credential-resolver-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" / "test-only-resolver-shell-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -177,6 +179,13 @@ int main() {
     assert_contains(manifest, "\"runtime_sandbox_receipts_source\":\"src/runtime_sandbox_receipts.cpp\"");
     assert_contains(manifest, "\"credential_resolver_non_participation_receipt\"");
     assert_contains(manifest, "SMOKEJSON exposes credential_resolver_non_participation_receipt for Node v261");
+    assert_contains(manifest, "\"test_only_resolver_shell_non_participation_receipt\"");
+    assert_contains(manifest, "SMOKEJSON exposes test_only_resolver_shell_non_participation_receipt for Node v265");
+    assert_contains(manifest, "\"source_request_shape_field_count\":9");
+    assert_contains(manifest, "\"source_response_shape_field_count\":13");
+    assert_contains(manifest, "\"source_failure_mapping_count\":7");
+    assert_contains(manifest, "\"source_guard_condition_count\":10");
+    assert_contains(manifest, "\"fake_resolver_probe_executed\":false");
     assert_contains(manifest, "\"source_required_decision_field_count\":8");
     assert_contains(manifest, "\"source_explicit_no_go_condition_count\":9");
     assert_contains(manifest, "\"credential_resolver_invoked\":false");
@@ -596,12 +605,14 @@ int main() {
     assert_contains(result.response, "\"java_auto_start_allowed\":false");
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
+    assert_contains(result.response, "\"node_consumption\":\"Node v265 may verify the mini-kv v116 test-only resolver shell non-participation receipt");
+    assert_contains(result.response, "Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
     assert_contains(result.response, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
     assert_contains(result.response, "Node v259 may verify the mini-kv v113 sandbox endpoint handle non-participation receipt");
     assert_contains(result.response, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
     assert_contains(result.response, "\"manual_sandbox_connection_precheck_non_participation_receipt\"");
     assert_contains(result.response, "\"sandbox_endpoint_handle_non_participation_receipt\"");
+    assert_contains(result.response, "\"test_only_resolver_shell_non_participation_receipt\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");
