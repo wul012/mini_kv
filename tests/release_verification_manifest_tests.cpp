@@ -158,6 +158,7 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "operator-window-no-start-no-write-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "manual-sandbox-dry-run-command-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "manual-sandbox-connection-precheck-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" / "sandbox-endpoint-handle-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -171,6 +172,7 @@ int main() {
     assert_contains(manifest, "\"managed_audit_receipts_source\":\"src/managed_audit_receipts.cpp\"");
     assert_contains(manifest, "\"runtime_evidence_receipts_header\":\"include/minikv/runtime_evidence_receipts.hpp\"");
     assert_contains(manifest, "\"runtime_evidence_receipts_source\":\"src/runtime_evidence_receipts.cpp\"");
+    assert_contains(manifest, "\"runtime_sandbox_receipts_source\":\"src/runtime_sandbox_receipts.cpp\"");
     assert_contains(manifest, "\"command_contracts_header\":\"include/minikv/command_contracts.hpp\"");
     assert_contains(manifest, "\"command_contracts_source\":\"src/command_contracts.cpp\"");
     assert_contains(manifest, "\"command_response_formatters_header\":\"include/minikv/command_response_formatters.hpp\"");
@@ -424,6 +426,7 @@ int main() {
     assert_contains(cmake_lists, "src/command_response_formatters.cpp");
     assert_contains(cmake_lists, "src/managed_audit_receipts.cpp");
     assert_contains(cmake_lists, "src/runtime_evidence_receipts.cpp");
+    assert_contains(cmake_lists, "src/runtime_sandbox_receipts.cpp");
     assert_contains(cmake_lists, "minikv_release_verification_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_rollback_evidence_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_bundle_manifest_tests");
@@ -440,6 +443,7 @@ int main() {
     assert_contains(cmake_lists, "minikv_runtime_smoke_evidence_tests");
     assert_contains(cmake_lists, "minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests");
     assert_contains(cmake_lists, "minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests");
+    assert_contains(cmake_lists, "minikv_sandbox_endpoint_handle_non_participation_receipt_tests");
 
     minikv::Store store;
     minikv::CommandProcessorOptions options;
@@ -585,8 +589,10 @@ int main() {
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response, "\"node_consumption\":\"Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
     assert_contains(result.response, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
+    assert_contains(result.response, "Node v259 may verify the mini-kv v113 sandbox endpoint handle non-participation receipt");
     assert_contains(result.response, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
     assert_contains(result.response, "\"manual_sandbox_connection_precheck_non_participation_receipt\"");
+    assert_contains(result.response, "\"sandbox_endpoint_handle_non_participation_receipt\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

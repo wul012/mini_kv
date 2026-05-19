@@ -627,9 +627,11 @@ int main() {
     assert_contains(result.response, "\"runtime_write_observed\":false");
     assert_contains(result.response, "\"node_consumption\":\"Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
     assert_contains(result.response, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
+    assert_contains(result.response, "Node v259 may verify the mini-kv v113 sandbox endpoint handle non-participation receipt");
     assert_contains(result.response, "Node v239 may still verify the mini-kv operator window no-start/no-write receipt");
     assert_contains(result.response, "\"manual_sandbox_dry_run_command_non_participation_receipt\"");
     assert_contains(result.response, "\"manual_sandbox_connection_precheck_non_participation_receipt\"");
+    assert_contains(result.response, "\"sandbox_endpoint_handle_non_participation_receipt\"");
     assert_contains(result.response, "\"read_only_aggregate\"");
     assert_contains(result.response, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 

@@ -25,6 +25,7 @@ add_library(minikv
     src/metrics_file.cpp
     src/runtime_evidence.cpp
     src/runtime_evidence_receipts.cpp
+    src/runtime_sandbox_receipts.cpp
     src/recovery_evidence.cpp
     src/resp.cpp
     src/snapshot.cpp
@@ -535,3 +536,16 @@ target_compile_definitions(minikv_fake_transport_dry_run_packet_non_participatio
 )
 
 add_test(NAME fake_transport_dry_run_packet_non_participation_receipt_tests COMMAND minikv_fake_transport_dry_run_packet_non_participation_receipt_tests)
+
+add_executable(minikv_sandbox_endpoint_handle_non_participation_receipt_tests
+    tests/sandbox_endpoint_handle_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_sandbox_endpoint_handle_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_sandbox_endpoint_handle_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME sandbox_endpoint_handle_non_participation_receipt_tests COMMAND minikv_sandbox_endpoint_handle_non_participation_receipt_tests)
