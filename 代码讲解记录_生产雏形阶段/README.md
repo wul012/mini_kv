@@ -290,3 +290,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## v119 latest addition
 
 - `175-version-119-credential-resolver-pre-implementation-plan-intake-non-participation-receipt.md`: explains v119 `SMOKEJSON.credential_resolver_pre_implementation_plan_intake_non_participation_receipt`, `fixtures/release/credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json`, Node v270 plan-intake consumption for Node v272 verification, all ten defined plan boundaries, plan/intake digests, no-start/no-write/no-credential/no-resolver/no-secret-provider/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.
+
+## v120 latest addition
+
+- `176-version-120-credential-resolver-disabled-implementation-candidate-non-participation-receipt.md`: explains v120 `SMOKEJSON.credential_resolver_disabled_implementation_candidate_non_participation_receipt`, `fixtures/release/credential-resolver-disabled-implementation-candidate-non-participation-receipt.json`, Node v273 disabled implementation candidate review consumption for Node v274 verification, candidate/interface/fake-wiring counts, disabled-ready and approval-required boundaries, no-start/no-write/no-credential/no-resolver/no-secret-provider/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.

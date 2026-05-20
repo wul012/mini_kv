@@ -88,6 +88,9 @@ int main() {
     assert_contains(
         manifest,
         "\"minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests\"");
+    assert_contains(
+        manifest,
+        "\"minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -175,6 +178,8 @@ int main() {
             "credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-disabled-implementation-candidate-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -203,6 +208,10 @@ int main() {
     assert_contains(
         manifest,
         "SMOKEJSON exposes credential_resolver_pre_implementation_plan_intake_non_participation_receipt for Node v272");
+    assert_contains(manifest, "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\"");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_disabled_implementation_candidate_non_participation_receipt for Node v274");
     assert_contains(manifest, "\"plan_mode\":\"plan-intake-only\"");
     assert_contains(manifest, "\"boundary_count\":10");
     assert_contains(manifest, "\"defined_boundary_count\":10");
@@ -643,7 +652,10 @@ int main() {
     assert_contains(result.response, "\"java_auto_start_allowed\":false");
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v272 may verify the mini-kv v119 credential resolver pre-implementation plan intake non-participation receipt");
+    assert_contains(result.response,
+                    "\"node_consumption\":\"Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
+    assert_contains(result.response,
+                    "Node v272 may verify the mini-kv v119 credential resolver pre-implementation plan intake non-participation receipt");
     assert_contains(result.response, "Node v269 may verify the mini-kv v118 credential resolver production-readiness blocked-decision non-participation receipt");
     assert_contains(result.response, "Node v267 may verify the mini-kv v117 credential resolver fake-shell archive non-participation receipt");
     assert_contains(result.response, "Node v265 may verify the mini-kv v116 test-only resolver shell non-participation receipt");
@@ -659,6 +671,8 @@ int main() {
                     "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\"");
     assert_contains(result.response,
                     "\"credential_resolver_pre_implementation_plan_intake_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

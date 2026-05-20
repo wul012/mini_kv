@@ -81,4 +81,9 @@ std::string credential_resolver_pre_implementation_plan_intake_non_participation
 std::string format_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string credential_resolver_disabled_implementation_candidate_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_credential_resolver_disabled_implementation_candidate_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts
