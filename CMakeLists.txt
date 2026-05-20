@@ -123,6 +123,14 @@ target_compile_definitions(minikv_command_tests
 
 add_test(NAME command_tests COMMAND minikv_command_tests)
 
+add_executable(minikv_smokejson_command_receipt_tests
+    tests/smokejson_command_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_smokejson_command_receipt_tests PRIVATE minikv)
+
+add_test(NAME smokejson_command_receipt_tests COMMAND minikv_smokejson_command_receipt_tests)
+
 add_executable(minikv_managed_audit_receipts_tests
     tests/managed_audit_receipts_tests.cpp
 )
