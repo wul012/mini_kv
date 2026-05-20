@@ -298,3 +298,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## v121 latest addition
 
 - `177-version-121-credential-resolver-approval-required-boundary-non-participation-receipt.md`: explains v121 `SMOKEJSON.credential_resolver_approval_required_boundary_non_participation_receipt`, `fixtures/release/credential-resolver-approval-required-boundary-non-participation-receipt.json`, Node v274 disabled candidate upstream echo consumption for Node v275 approval-required boundary verification, the six approval-required boundaries, no-start/no-write/no-credential/no-resolver/no-secret-provider/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.
+
+## Next Sibling Folder
+
+- New walkthroughs from mini-kv v122 onward continue in `../代码讲解记录_生产雏形阶段_第二册/README.md`.

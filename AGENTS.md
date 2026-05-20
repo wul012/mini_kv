@@ -97,26 +97,49 @@ D:\nodeproj\orderops-node\docs\plans
 
 ## Command Result Archive
 
-每次执行关键命令后，需要把重要执行结果归档。
+### Archive Root Rotation
 
-归档目录按版本组织：
+Starting with mini-kv v122, new command screenshots and screenshot explanations must be written under the sibling archive root:
 
 ```text
-c/<version>/图片/
-c/<version>/解释/
+d/<version>/图片/
+d/<version>/解释/说明.md
+```
+
+Keep historical `a/`, `b/`, and `c/` archive roots exactly where they are. Do not move, rename, or rebalance old archive evidence just because a directory has grown large. If `d/` later becomes too large, add the next sibling archive root here first, then use that new root for future versions.
+
+每次执行关键命令后，需要把重要执行结果归档。
+
+v122 起的归档目录按版本组织：
+
+```text
+d/<version>/图片/
+d/<version>/解释/说明.md
 ```
 
 要求：
 
 - 关键命令包括配置、构建、测试、运行验证、服务端 smoke test 等。
-- 关键命令输出需要保存为 PNG 截图形式，放入 `c/<version>/图片/`。
+- 关键命令输出需要保存为 PNG 截图形式，放入 `d/<version>/图片/`。
 - 截图文件名使用数字前缀，例如 `01-cmake-configure.png`。
-- 在 `c/<version>/解释/` 中创建说明文档，解释每张截图对应的命令、结果和意义。
-- 历史归档目录 `a/`、`b/` 保留既有版本记录，不主动搬迁；后续新增运行截图和解释从下一版开始写入与 `a/`、`b/` 同级的 `c/`。
+- 在 `d/<version>/解释/` 中创建说明文档，解释每张截图对应的命令、结果和意义。
+- 历史归档目录 `a/`、`b/`、`c/` 保留既有版本记录，不主动搬迁；v122 起新增运行截图和解释写入与 `a/`、`b/`、`c/` 同级的 `d/`。
 - 如果启动了服务端或其他后台进程，验证结束后必须停止，并在说明文档中记录。
 - 最终回复中简要说明新增的归档文件、保留文件和清理结果。
 
 ## Code Explanation Record Rule
+
+### Walkthrough Directory Rotation
+
+Keep `代码讲解记录_生产雏形阶段/` as the historical code walkthrough folder through mini-kv v121.
+
+Starting with the next mini-kv version, write new code walkthrough documents to the sibling folder:
+
+```text
+代码讲解记录_生产雏形阶段_第二册/
+```
+
+Each walkthrough folder keeps its own `README.md` index. The old folder may point to the newer sibling, but old walkthrough files should not be moved unless the user explicitly asks for a historical cleanup pass.
 
 每个版本都要补充代码讲解，但篇数按实际内容量决定：
 
@@ -124,16 +147,16 @@ c/<version>/解释/
 - 如果本版核心实现较复杂，或测试/归档/文档本身也需要较多解释，可以拆成两篇。
 - 不为了固定篇数而硬拆文档；讲解应服务于后续回看和维护。
 - 历史讲解保留在 `代码讲解记录/`，不主动搬迁，除非用户明确要求整理旧文件，避免产生大规模无意义改名 diff。
-- 从下一版开始，新增代码讲解写入与 `代码讲解记录/` 同级的新大文件夹；目录命名格式为 `代码讲解记录_<项目阶段名>/`，例如当前阶段使用：
+- v122 起，新增代码讲解写入与 `代码讲解记录/` 同级的新大文件夹；目录命名格式为 `代码讲解记录_<项目阶段名>_第二册/`，例如当前阶段使用：
 
 ```text
-代码讲解记录_生产雏形阶段/
+代码讲解记录_生产雏形阶段_第二册/
 ```
 
 - 文件名继续延续编号和版本，例如：
 
 ```text
-代码讲解记录_生产雏形阶段/113-example-topic-v57.md
+代码讲解记录_生产雏形阶段_第二册/178-example-topic-v122.md
 ```
 
 - 讲解版式、编号延续、索引方式保持不变；以后新增索引优先写入当前阶段文件夹的 `README.md`，并指向该文件夹内的实际文件。
@@ -174,6 +197,19 @@ $env:PATH = 'D:\CLION\CLion 2025.1.1\bin\mingw\bin;' + $env:PATH
 
 ## Current Version
 
+From mini-kv v122 onward, new run screenshots and explanations should use:
+
+```text
+d/<version>/图片/
+d/<version>/解释/说明.md
+```
+
+From the next mini-kv version onward, new code walkthrough documents should use:
+
+```text
+代码讲解记录_生产雏形阶段_第二册/
+```
+
 当前第一版归档位置：
 
 ```text
@@ -181,9 +217,11 @@ a/1/图片/
 a/1/解释/说明.md
 ```
 
-后续新版本运行截图和解释归档位置：
+v2 到 v121 的运行截图和解释归档位置：
 
 ```text
 c/<version>/图片/
 c/<version>/解释/说明.md
 ```
+
+Note: The `c/<version>/...` block above is historical through v121. For v122 and later, use the `d/<version>/...` archive root defined in Command Result Archive.
