@@ -24,6 +24,7 @@ add_library(minikv
     src/managed_audit_receipts.cpp
     src/metrics_file.cpp
     src/runtime_evidence.cpp
+    src/runtime_credential_resolver_archive_receipts.cpp
     src/runtime_credential_resolver_receipts.cpp
     src/runtime_evidence_receipts.cpp
     src/runtime_sandbox_receipts.cpp
@@ -589,3 +590,16 @@ target_compile_definitions(minikv_test_only_resolver_shell_non_participation_rec
 )
 
 add_test(NAME test_only_resolver_shell_non_participation_receipt_tests COMMAND minikv_test_only_resolver_shell_non_participation_receipt_tests)
+
+add_executable(minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests
+    tests/credential_resolver_fake_shell_archive_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME credential_resolver_fake_shell_archive_non_participation_receipt_tests COMMAND minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests)
