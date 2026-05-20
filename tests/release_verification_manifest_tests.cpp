@@ -94,6 +94,7 @@ int main() {
     assert_contains(
         manifest,
         "\"minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests\"");
+    assert_contains(manifest, "\"minikv_credential_resolver_impl_readiness_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -185,6 +186,8 @@ int main() {
             "credential-resolver-disabled-implementation-candidate-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-approval-required-boundary-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -221,6 +224,23 @@ int main() {
     assert_contains(
         manifest,
         "SMOKEJSON exposes credential_resolver_approval_required_boundary_non_participation_receipt for Node v275");
+    assert_contains(manifest,
+                    "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\"");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_approval_required_implementation_readiness_non_participation_receipt for Node v282");
+    assert_contains(
+        manifest,
+        "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review.v1\"");
+    assert_contains(manifest,
+                    "\"source_review_state\":\"credential-resolver-approval-required-implementation-readiness-review-ready\"");
+    assert_contains(manifest,
+                    "\"readiness_review\":{\"review_mode\":\"node-v281-approval-required-implementation-readiness-review-only\"");
+    assert_contains(manifest, "\"required_artifact_count\":18");
+    assert_contains(manifest, "\"approval_required_implementation_readiness_non_participation_receipt_only\":true");
+    assert_contains(manifest, "\"ready_for_java_v116_mini_kv_v122_echo\":true");
+    assert_contains(manifest, "\"current_artifact_path_hint\":\"d/122/\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:b6e1efa8878b64d6\"");
     assert_contains(
         manifest,
         "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-disabled-candidate-upstream-echo-verification.v1\"");
@@ -681,7 +701,9 @@ int main() {
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
+                    "\"node_consumption\":\"Node v282 may verify the mini-kv v122 credential resolver approval-required implementation readiness non-participation receipt");
+    assert_contains(result.response,
+                    "Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
     assert_contains(result.response,
                     "Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
     assert_contains(result.response,
@@ -705,6 +727,8 @@ int main() {
                     "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\"");
     assert_contains(result.response,
                     "\"credential_resolver_approval_required_boundary_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

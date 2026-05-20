@@ -338,6 +338,30 @@ int main() {
     assert_contains(smoke, "\"java_auto_start_allowed\":false");
     assert_contains(smoke, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(smoke, "\"schema_rehearsal_execution_allowed\":false");
+    assert_contains(smoke,
+                    "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
+    assert_contains(smoke,
+                    "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review.v1\"");
+    assert_contains(smoke,
+                    "\"source_review_state\":\"credential-resolver-approval-required-implementation-readiness-review-ready\"");
+    assert_contains(smoke, "\"readiness_review\":{\"review_mode\":\"node-v281-approval-required-implementation-readiness-review-only\"");
+    assert_contains(smoke, "\"required_artifact_count\":18");
+    assert_contains(smoke, "\"approval_required_implementation_readiness_non_participation_receipt_only\":true");
+    assert_contains(smoke, "\"ready_for_java_v116_mini_kv_v122_echo\":true");
+    assert_contains(smoke, "\"current_artifact_path_hint\":\"d/122/\"");
+    assert_contains(smoke, "\"receipt_digest\":\"fnv1a64:b6e1efa8878b64d6\"");
+    assert_contains(
+        smoke,
+        "SMOKEJSON exposes credential_resolver_approval_required_implementation_readiness_non_participation_receipt for Node v282");
+    assert_contains(
+        smoke,
+        "SMOKEJSON credential resolver approval-required implementation readiness receipt keeps source Node v281 check_count=21, passed_check_count=21, boundary_count=6, echo_ready_boundary_count=6, blocked_for_implementation_boundary_count=6, required_artifact_count=18, java_v116_echo_hint_count=6, mini_kv_v122_receipt_hint_count=6, and production_blocker_count=0");
+    assert_contains(
+        smoke,
+        "SMOKEJSON credential resolver approval-required implementation readiness receipt keeps all six approval-required boundary codes and all eighteen required artifact ids for Java v116 and mini-kv v122 echo");
+    assert_contains(
+        smoke,
+        "SMOKEJSON credential resolver approval-required implementation readiness receipt keeps real_resolver_implementation_allowed=false, resolver_client_instantiated=false, secret_provider_instantiated=false, credential_value_read_allowed=false, raw_endpoint_url_parsed=false, external_request_sent=false, storage_write_allowed=false, approval_ledger_write_allowed=false, schema_migration_executed=false, load_restore_compact_executed=false, setnxex_execution_allowed=false, and managed_audit_storage_backend=false");
 
     assert_contains(smoke, "\"runtime smoke evidence only\"");
     assert_contains(smoke, "\"read-only aggregate only\"");
@@ -453,6 +477,8 @@ int main() {
     const std::vector<std::filesystem::path> required_paths = {
         smoke_path,
         std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "restore-boundary-smoke-manifest.json",
         std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json",
         std::filesystem::path{"fixtures"} / "readonly" / "runtime-read-field-guide.json",
@@ -630,7 +656,9 @@ int main() {
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
+                    "\"node_consumption\":\"Node v282 may verify the mini-kv v122 credential resolver approval-required implementation readiness non-participation receipt");
+    assert_contains(result.response,
+                    "Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
     assert_contains(result.response,
                     "Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
     assert_contains(result.response,
@@ -657,6 +685,21 @@ int main() {
                     "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\"");
     assert_contains(result.response,
                     "\"credential_resolver_approval_required_boundary_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\"");
+    assert_contains(
+        result.response,
+        "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review.v1\"");
+    assert_contains(result.response,
+                    "\"source_review_state\":\"credential-resolver-approval-required-implementation-readiness-review-ready\"");
+    assert_contains(result.response,
+                    "\"readiness_review\":{\"review_mode\":\"node-v281-approval-required-implementation-readiness-review-only\"");
+    assert_contains(result.response, "\"required_artifact_count\":18");
+    assert_contains(result.response,
+                    "\"approval_required_implementation_readiness_non_participation_receipt_only\":true");
+    assert_contains(result.response, "\"ready_for_java_v116_mini_kv_v122_echo\":true");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"d/122/\"");
+    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:b6e1efa8878b64d6\"");
     assert_contains(result.response, "\"read_only_aggregate\"");
     assert_contains(result.response, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 

@@ -748,7 +748,9 @@ int main() {
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
     assert_response_contains(result,
-                             "\"node_consumption\":\"Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
+                             "\"node_consumption\":\"Node v282 may verify the mini-kv v122 credential resolver approval-required implementation readiness non-participation receipt");
+    assert_response_contains(result,
+                             "Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
     assert_response_contains(result,
                              "Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
     assert_response_contains(result,
@@ -781,6 +783,16 @@ int main() {
                              "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\"");
     assert_response_contains(result,
                              "\"credential_resolver_approval_required_boundary_non_participation_receipt\"");
+    assert_response_contains(
+        result,
+        "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\"");
+    assert_response_contains(
+        result,
+        "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review.v1\"");
+    assert_response_contains(result, "\"required_artifact_count\":18");
+    assert_response_contains(result, "\"ready_for_java_v116_mini_kv_v122_echo\":true");
+    assert_response_contains(result, "\"current_artifact_path_hint\":\"d/122/\"");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:b6e1efa8878b64d6\"");
     assert_response_contains(result, "\"read_only_aggregate\"");
     assert_response_contains(result, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 
