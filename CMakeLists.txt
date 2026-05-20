@@ -32,6 +32,7 @@ add_library(minikv
     src/runtime_credential_resolver_disabled_candidate_receipts.cpp
     src/runtime_credential_resolver_plan_receipts.cpp
     src/runtime_credential_resolver_receipts.cpp
+    src/runtime_credential_resolver_test_only_shell_receipts.cpp
     src/runtime_evidence_receipts.cpp
     src/runtime_sandbox_receipts.cpp
     src/recovery_evidence.cpp
