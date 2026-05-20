@@ -96,4 +96,9 @@ std::string credential_resolver_approval_required_implementation_readiness_non_p
 std::string format_credential_resolver_approval_required_implementation_readiness_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string credential_resolver_implementation_plan_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_credential_resolver_implementation_plan_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts

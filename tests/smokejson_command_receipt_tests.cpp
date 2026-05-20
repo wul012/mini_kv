@@ -229,7 +229,9 @@ int main() {
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
     assert_response_contains(result,
-                             "\"node_consumption\":\"Node v282 may verify the mini-kv v122 credential resolver approval-required implementation readiness non-participation receipt");
+                             "\"node_consumption\":\"Node v284 may verify the mini-kv v126 credential resolver implementation plan non-participation receipt");
+    assert_response_contains(result,
+                             "Node v282 may verify the mini-kv v122 credential resolver approval-required implementation readiness non-participation receipt");
     assert_response_contains(result,
                              "Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
     assert_response_contains(result,
