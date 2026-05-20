@@ -748,7 +748,9 @@ int main() {
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
     assert_response_contains(result,
-                             "\"node_consumption\":\"Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
+                             "\"node_consumption\":\"Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
+    assert_response_contains(result,
+                             "Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
     assert_response_contains(result,
                              "Node v272 may verify the mini-kv v119 credential resolver pre-implementation plan intake non-participation receipt");
     assert_response_contains(result, "Node v269 may verify the mini-kv v118 credential resolver production-readiness blocked-decision non-participation receipt");
@@ -777,6 +779,8 @@ int main() {
     assert_response_contains(result, "\"credential_resolver_pre_implementation_plan_intake_non_participation_receipt\"");
     assert_response_contains(result,
                              "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\"");
+    assert_response_contains(result,
+                             "\"credential_resolver_approval_required_boundary_non_participation_receipt\"");
     assert_response_contains(result, "\"read_only_aggregate\"");
     assert_response_contains(result, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 

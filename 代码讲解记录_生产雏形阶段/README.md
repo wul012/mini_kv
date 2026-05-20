@@ -294,3 +294,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## v120 latest addition
 
 - `176-version-120-credential-resolver-disabled-implementation-candidate-non-participation-receipt.md`: explains v120 `SMOKEJSON.credential_resolver_disabled_implementation_candidate_non_participation_receipt`, `fixtures/release/credential-resolver-disabled-implementation-candidate-non-participation-receipt.json`, Node v273 disabled implementation candidate review consumption for Node v274 verification, candidate/interface/fake-wiring counts, disabled-ready and approval-required boundaries, no-start/no-write/no-credential/no-resolver/no-secret-provider/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.
+
+## v121 latest addition
+
+- `177-version-121-credential-resolver-approval-required-boundary-non-participation-receipt.md`: explains v121 `SMOKEJSON.credential_resolver_approval_required_boundary_non_participation_receipt`, `fixtures/release/credential-resolver-approval-required-boundary-non-participation-receipt.json`, Node v274 disabled candidate upstream echo consumption for Node v275 approval-required boundary verification, the six approval-required boundaries, no-start/no-write/no-credential/no-resolver/no-secret-provider/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.

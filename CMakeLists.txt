@@ -25,6 +25,7 @@ add_library(minikv
     src/metrics_file.cpp
     src/runtime_evidence.cpp
     src/runtime_credential_resolver_archive_receipts.cpp
+    src/runtime_credential_resolver_approval_boundary_receipts.cpp
     src/runtime_credential_resolver_decision_receipts.cpp
     src/runtime_credential_resolver_disabled_candidate_receipts.cpp
     src/runtime_credential_resolver_plan_receipts.cpp
@@ -645,3 +646,16 @@ target_compile_definitions(minikv_credential_resolver_disabled_implementation_ca
 )
 
 add_test(NAME credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests COMMAND minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests)
+
+add_executable(minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests
+    tests/credential_resolver_approval_required_boundary_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME credential_resolver_approval_required_boundary_non_participation_receipt_tests COMMAND minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests)

@@ -91,6 +91,9 @@ int main() {
     assert_contains(
         manifest,
         "\"minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests\"");
+    assert_contains(
+        manifest,
+        "\"minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -180,6 +183,8 @@ int main() {
             "credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-disabled-implementation-candidate-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-approval-required-boundary-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -212,6 +217,28 @@ int main() {
     assert_contains(
         manifest,
         "SMOKEJSON exposes credential_resolver_disabled_implementation_candidate_non_participation_receipt for Node v274");
+    assert_contains(manifest, "\"credential_resolver_approval_required_boundary_non_participation_receipt\"");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_approval_required_boundary_non_participation_receipt for Node v275");
+    assert_contains(
+        manifest,
+        "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-disabled-candidate-upstream-echo-verification.v1\"");
+    assert_contains(
+        manifest,
+        "\"source_verification_state\":\"credential-resolver-disabled-candidate-upstream-echo-verification-ready\"");
+    assert_contains(manifest, "\"source_node_v274_verification\":");
+    assert_contains(manifest, "\"source_node_v274_ready\":true");
+    assert_contains(manifest, "\"source_node_v274_read_only\":true");
+    assert_contains(manifest, "\"approval_required_boundary_count_preserved\":true");
+    assert_contains(manifest, "\"boundary_count\":6");
+    assert_contains(
+        manifest,
+        "\"boundary_codes\":[\"CREDENTIAL_HANDLE\",\"ENDPOINT_HANDLE\",\"OPERATOR_APPROVAL\",\"ROLLBACK_BOUNDARY\",\"SCHEMA_MIGRATION_POLICY\",\"AUDIT_LEDGER_WRITE_POLICY\"]");
+    assert_contains(manifest, "\"approval_required_boundary_non_participation_receipt_only\":true");
+    assert_contains(manifest, "\"approval_required_boundary_refinement_only\":true");
+    assert_contains(manifest, "\"ready_for_java_v115_parallel_echo\":true");
+    assert_contains(manifest, "\"ready_for_node_v275_upstream_echo\":true");
     assert_contains(manifest, "\"plan_mode\":\"plan-intake-only\"");
     assert_contains(manifest, "\"boundary_count\":10");
     assert_contains(manifest, "\"defined_boundary_count\":10");
@@ -492,6 +519,7 @@ int main() {
     assert_contains(cmake_lists, "src/managed_audit_receipts.cpp");
     assert_contains(cmake_lists, "src/runtime_evidence_receipts.cpp");
     assert_contains(cmake_lists, "src/runtime_sandbox_receipts.cpp");
+    assert_contains(cmake_lists, "src/runtime_credential_resolver_approval_boundary_receipts.cpp");
     assert_contains(cmake_lists, "minikv_release_verification_manifest_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_rollback_evidence_tests");
     assert_contains(cmake_lists, "minikv_runtime_artifact_bundle_manifest_tests");
@@ -653,7 +681,9 @@ int main() {
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
+                    "\"node_consumption\":\"Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
+    assert_contains(result.response,
+                    "Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
     assert_contains(result.response,
                     "Node v272 may verify the mini-kv v119 credential resolver pre-implementation plan intake non-participation receipt");
     assert_contains(result.response, "Node v269 may verify the mini-kv v118 credential resolver production-readiness blocked-decision non-participation receipt");
@@ -673,6 +703,8 @@ int main() {
                     "\"credential_resolver_pre_implementation_plan_intake_non_participation_receipt\"");
     assert_contains(result.response,
                     "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_approval_required_boundary_non_participation_receipt\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");
