@@ -629,7 +629,8 @@ int main() {
     assert_contains(result.response, "\"write_commands_executed\":false");
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v269 may verify the mini-kv v118 credential resolver production-readiness blocked-decision non-participation receipt");
+    assert_contains(result.response, "\"node_consumption\":\"Node v272 may verify the mini-kv v119 credential resolver pre-implementation plan intake non-participation receipt");
+    assert_contains(result.response, "Node v269 may verify the mini-kv v118 credential resolver production-readiness blocked-decision non-participation receipt");
     assert_contains(result.response, "Node v267 may verify the mini-kv v117 credential resolver fake-shell archive non-participation receipt");
     assert_contains(result.response, "Node v265 may verify the mini-kv v116 test-only resolver shell non-participation receipt");
     assert_contains(result.response, "Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
@@ -646,6 +647,7 @@ int main() {
     assert_contains(result.response, "\"test_only_resolver_shell_non_participation_receipt\"");
     assert_contains(result.response, "\"credential_resolver_fake_shell_archive_non_participation_receipt\"");
     assert_contains(result.response, "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\"");
+    assert_contains(result.response, "\"credential_resolver_pre_implementation_plan_intake_non_participation_receipt\"");
     assert_contains(result.response, "\"read_only_aggregate\"");
     assert_contains(result.response, "\"does_not_execute_load_compact_setnxex_or_restore\"");
 

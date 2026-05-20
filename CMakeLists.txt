@@ -26,6 +26,7 @@ add_library(minikv
     src/runtime_evidence.cpp
     src/runtime_credential_resolver_archive_receipts.cpp
     src/runtime_credential_resolver_decision_receipts.cpp
+    src/runtime_credential_resolver_plan_receipts.cpp
     src/runtime_credential_resolver_receipts.cpp
     src/runtime_evidence_receipts.cpp
     src/runtime_sandbox_receipts.cpp
@@ -617,3 +618,16 @@ target_compile_definitions(minikv_credential_resolver_production_readiness_block
 )
 
 add_test(NAME credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests COMMAND minikv_credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests)
+
+add_executable(minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests
+    tests/credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests COMMAND minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests)

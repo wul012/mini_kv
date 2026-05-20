@@ -286,3 +286,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## v118 latest addition
 
 - `174-version-118-credential-resolver-production-readiness-blocked-decision-non-participation-receipt.md`: explains v118 `SMOKEJSON.credential_resolver_production_readiness_blocked_decision_non_participation_receipt`, `fixtures/release/credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json`, Node v268 blocked production-readiness decision consumption for Node v269 verification, blocked readiness decision, missing pre-implementation requirement count 10, production blocker count 10, no-start/no-write/no-credential/no-resolver/no-secret-provider/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.
+
+## v119 latest addition
+
+- `175-version-119-credential-resolver-pre-implementation-plan-intake-non-participation-receipt.md`: explains v119 `SMOKEJSON.credential_resolver_pre_implementation_plan_intake_non_participation_receipt`, `fixtures/release/credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json`, Node v270 plan-intake consumption for Node v272 verification, all ten defined plan boundaries, plan/intake digests, no-start/no-write/no-credential/no-resolver/no-secret-provider/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.
