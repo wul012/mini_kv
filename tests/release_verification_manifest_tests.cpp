@@ -82,6 +82,9 @@ int main() {
     assert_contains(manifest, "\"minikv_credential_resolver_non_participation_receipt_tests\"");
     assert_contains(manifest, "\"minikv_test_only_resolver_shell_non_participation_receipt_tests\"");
     assert_contains(manifest, "\"minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests\"");
+    assert_contains(
+        manifest,
+        "\"minikv_credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -165,6 +168,8 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "credential-resolver-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "test-only-resolver-shell-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "credential-resolver-fake-shell-archive-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -185,6 +190,14 @@ int main() {
     assert_contains(manifest, "SMOKEJSON exposes test_only_resolver_shell_non_participation_receipt for Node v265");
     assert_contains(manifest, "\"credential_resolver_fake_shell_archive_non_participation_receipt\"");
     assert_contains(manifest, "SMOKEJSON exposes credential_resolver_fake_shell_archive_non_participation_receipt for Node v267");
+    assert_contains(manifest, "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\"");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_production_readiness_blocked_decision_non_participation_receipt for Node v269");
+    assert_contains(manifest, "\"source_readiness_decision\":\"blocked\"");
+    assert_contains(manifest, "\"missing_pre_implementation_requirement_count\":10");
+    assert_contains(manifest, "\"production_blocker_count\":10");
+    assert_contains(manifest, "\"real_resolver_implementation_allowed\":false");
     assert_contains(manifest, "\"source_archive_verification_state\":\"credential-resolver-fake-shell-archive-verification-ready\"");
     assert_contains(manifest, "\"archive_file_count\":9");
     assert_contains(manifest, "\"required_snippet_count\":24");
@@ -614,7 +627,8 @@ int main() {
     assert_contains(result.response, "\"java_auto_start_allowed\":false");
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
-    assert_contains(result.response, "\"node_consumption\":\"Node v267 may verify the mini-kv v117 credential resolver fake-shell archive non-participation receipt");
+    assert_contains(result.response, "\"node_consumption\":\"Node v269 may verify the mini-kv v118 credential resolver production-readiness blocked-decision non-participation receipt");
+    assert_contains(result.response, "Node v267 may verify the mini-kv v117 credential resolver fake-shell archive non-participation receipt");
     assert_contains(result.response, "Node v265 may verify the mini-kv v116 test-only resolver shell non-participation receipt");
     assert_contains(result.response, "Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
     assert_contains(result.response, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
@@ -624,6 +638,8 @@ int main() {
     assert_contains(result.response, "\"sandbox_endpoint_handle_non_participation_receipt\"");
     assert_contains(result.response, "\"test_only_resolver_shell_non_participation_receipt\"");
     assert_contains(result.response, "\"credential_resolver_fake_shell_archive_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

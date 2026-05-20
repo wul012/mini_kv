@@ -282,3 +282,7 @@ WAL / Snapshot / restart recovery：中等成熟，已有证据样本
 ## v117 latest addition
 
 - `173-version-117-credential-resolver-fake-shell-archive-non-participation-receipt.md`: explains v117 `SMOKEJSON.credential_resolver_fake_shell_archive_non_participation_receipt`, `fixtures/release/credential-resolver-fake-shell-archive-non-participation-receipt.json`, Node v266 fake-shell archive verification consumption for Node v267 verification, v264/v265 archive file and snippet counts, no archive runtime read/no fake-shell rerun/no-start/no-write/no-credential/no-resolver/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.
+
+## v118 latest addition
+
+- `174-version-118-credential-resolver-production-readiness-blocked-decision-non-participation-receipt.md`: explains v118 `SMOKEJSON.credential_resolver_production_readiness_blocked_decision_non_participation_receipt`, `fixtures/release/credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json`, Node v268 blocked production-readiness decision consumption for Node v269 verification, blocked readiness decision, missing pre-implementation requirement count 10, production blocker count 10, no-start/no-write/no-credential/no-resolver/no-secret-provider/no-schema/no-restore boundaries, tests, real TCP smoke, and archive evidence.
