@@ -9,6 +9,7 @@ This sibling folder is for new mini-kv walkthroughs starting with v122.
 - `180-version-124-command-smoke-formatters-split.md` - mini-kv v124 format-only split that moves `SMOKEJSON` formatter logic into `command_smoke_formatters.cpp`.
 - `181-version-125-credential-resolver-test-only-shell-receipt-split.md` - mini-kv v125 maintenance split that moves the v116 test-only resolver shell receipt into its own compilation unit and adds a private credential resolver receipt helper.
 - `182-version-126-credential-resolver-implementation-plan-non-participation-receipt.md` - mini-kv v126 Node v283 implementation plan draft non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/126` archive.
+- `183-version-127-credential-resolver-disabled-fake-harness-non-participation-receipt.md` - mini-kv v127 Node v288 disabled fake harness contract non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/127` archive.
 
 ## Rules
 
