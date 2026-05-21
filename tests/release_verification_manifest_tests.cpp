@@ -97,6 +97,7 @@ int main() {
     assert_contains(manifest, "\"minikv_credential_resolver_impl_readiness_receipt_tests\"");
     assert_contains(manifest, "\"minikv_cred_res_exec_denied_retention_check_tests\"");
     assert_contains(manifest, "\"minikv_disabled_runtime_shell_receipt_tests\"");
+    assert_contains(manifest, "\"minikv_disabled_runtime_shell_candidate_gate_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -194,6 +195,8 @@ int main() {
             "credential-resolver-disabled-fake-harness-execution-denied-receipt-verification-retention-check.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-disabled-runtime-shell-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-disabled-runtime-shell-candidate-gate-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -316,6 +319,17 @@ int main() {
     assert_contains(manifest, "\"source_node_v295_reference\":");
     assert_contains(manifest, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
     assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:80181b2752099581\"");
+    assert_contains(manifest, "\"credential_resolver_disabled_runtime_shell_candidate_gate_non_participation_receipt\"");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_disabled_runtime_shell_candidate_gate_non_participation_receipt for Node v298");
+    assert_contains(
+        manifest,
+        "SMOKEJSON v131 candidate gate receipt keeps Node v297 gateDigest=651383bcd175bdaff2691c026135a1cebbcf30de91be7709cbc7843866684e22 and blocked decision");
+    assert_contains(manifest, "\"runtime_shell_candidate_gate_non_participation_receipt_only\":true");
+    assert_contains(manifest, "\"source_node_v297_reference\":");
+    assert_contains(manifest, "\"gate_digest\":\"651383bcd175bdaff2691c026135a1cebbcf30de91be7709cbc7843866684e22\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:0557867ad4f6ed7e\"");
     assert_contains(manifest, "\"command_contracts_header\":\"include/minikv/command_contracts.hpp\"");
     assert_contains(manifest, "\"command_contracts_source\":\"src/command_contracts.cpp\"");
     assert_contains(manifest, "\"command_response_formatters_header\":\"include/minikv/command_response_formatters.hpp\"");
@@ -738,7 +752,10 @@ int main() {
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v296 may verify the mini-kv v130 credential resolver disabled runtime shell non-participation receipt");
+                    "\"node_consumption\":\"Node v298 may verify the mini-kv v131 credential resolver disabled runtime shell candidate gate non-participation receipt");
+    assert_contains(
+        result.response,
+        "Node v296 may verify the mini-kv v130 credential resolver disabled runtime shell non-participation receipt");
     assert_contains(result.response,
                     "Node v293 may verify the mini-kv v129 credential resolver disabled fake harness execution-denied receipt verification/retention check");
     assert_contains(result.response,
@@ -785,9 +802,17 @@ int main() {
         result.response,
         "\"credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check\"");
     assert_contains(result.response, "\"credential_resolver_disabled_runtime_shell_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_disabled_runtime_shell_candidate_gate_non_participation_receipt\"");
     assert_contains(result.response, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
     assert_contains(result.response, "\"current_release_version\":\"v130\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"d/130/\"");
+    assert_contains(result.response, "\"current_release_version\":\"v131\"");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"d/131/\"");
+    assert_contains(result.response, "\"gate_digest\":\"651383bcd175bdaff2691c026135a1cebbcf30de91be7709cbc7843866684e22\"");
+    assert_contains(result.response, "\"runtime_shell_candidate_gate_non_participation_receipt_only\":true");
+    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:0557867ad4f6ed7e\"");
+    assert_contains(result.response, "\"credential_resolver_disabled_runtime_shell_candidate_gate_non_participation_receipt\"");
     assert_contains(result.response, "\"runtime_shell_implemented\":false");
     assert_contains(result.response, "\"runtime_shell_invocation_allowed\":false");
     assert_contains(result.response, "\"write_commands_executed\":false");
