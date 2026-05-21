@@ -701,7 +701,9 @@ int main() {
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v289 may verify the mini-kv v127 credential resolver disabled fake harness non-participation receipt");
+                    "\"node_consumption\":\"Node v291 may verify the mini-kv v128 credential resolver disabled fake harness execution-denied non-participation receipt");
+    assert_contains(result.response,
+                    "Node v289 may verify the mini-kv v127 credential resolver disabled fake harness non-participation receipt");
     assert_contains(result.response,
                     "Node v284 may verify the mini-kv v126 credential resolver implementation plan non-participation receipt");
     assert_contains(result.response,
@@ -735,6 +737,9 @@ int main() {
                     "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\"");
     assert_contains(result.response, "\"credential_resolver_implementation_plan_non_participation_receipt\"");
     assert_contains(result.response, "\"credential_resolver_disabled_fake_harness_non_participation_receipt\"");
+    assert_contains(
+        result.response,
+        "\"credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");

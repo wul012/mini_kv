@@ -312,9 +312,8 @@ int main() {
     assert_contract_details(result.response);
     assert_checks_and_summary(result.response);
     assert_non_participation_flags(result.response);
-    assert_contains(
-        result.response,
-        "\"node_consumption\":\"Node v289 may verify the mini-kv v127 credential resolver disabled fake harness non-participation receipt");
+    assert_contains(result.response,
+                    "Node v289 may verify the mini-kv v127 credential resolver disabled fake harness non-participation receipt");
     assert_contains(result.response, "Node v284 may verify the mini-kv v126 credential resolver implementation plan non-participation receipt");
     assert_not_contains(result.response, "credential_value\":\"");
     assert_not_contains(result.response, "raw_endpoint_url\":\"");
