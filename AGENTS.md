@@ -57,6 +57,17 @@ Refactoring rhythm:
 - Prefer structured fixture parsing and reusable test helpers over ever-growing string-fragment assertions when the risk justifies it.
 - Move shared fixture loaders, report helpers, validators, renderers, and message collectors into common utilities when duplication is clear.
 
+## Version Closure Discipline
+
+Use these rules for mini-kv versions that include implementation, tests, fixtures, docs, screenshots, or release evidence:
+
+- Generate final archive screenshots only after code, tests, fixtures, docs, and small formatting fixes are stable. Do not treat early screenshots as final evidence if later code changes require another build or test run.
+- For rolling diagnostic fields such as `node_consumption`, tests for older versions should assert that historical meaning is still present, not that the old sentence remains the first sentence. New versions may separately assert the newest sentence is first when that ordering matters.
+- After any C++ or test source change, rebuild with CMake before running CTest. Do not trust an old `.exe`, old test executable, or stale build output after a source patch.
+- Preferred closure order: read the active Node plan, implement, run targeted tests, run full CTest, run real CLI/TCP smoke when relevant, update README/walkthrough/archive docs, rerun final verification for the archived screenshots, clean temporary files/processes, confirm a clean working tree, then commit/tag/push.
+- Commit, supplemental tag, push, and remote verification are part of completing a mini-kv version unless the user explicitly asks not to commit.
+- Run the cleanup gate before the final handoff: delete `cmake-build-v<version>`, scratch logs, render intermediates, and `d/<version>/_logs`; keep final `d/<version>/图片/`, `d/<version>/解释/说明.md`, fixtures, walkthroughs, docs, and source changes.
+
 ## C++ Ownership Rule
 
 本线程/本项目中，Codex 的默认职责是推进 C++ 侧，也就是 `D:\C\mini-kv`。
