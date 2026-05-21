@@ -99,6 +99,7 @@ int main() {
     assert_contains(manifest, "\"minikv_disabled_runtime_shell_receipt_tests\"");
     assert_contains(manifest, "\"minikv_disabled_runtime_shell_candidate_gate_receipt_tests\"");
     assert_contains(manifest, "\"minikv_runtime_shell_decision_record_receipt_tests\"");
+    assert_contains(manifest, "\"minikv_runtime_shell_post_decision_plan_intake_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -328,12 +329,21 @@ int main() {
     assert_contains(
         manifest,
         "SMOKEJSON exposes credential_resolver_runtime_shell_decision_record_non_participation_receipt for Node v300");
+    assert_contains(manifest, "\"credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt\"");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt for Node v302");
     assert_contains(
         manifest,
         "\"path\":\"fixtures/release/credential-resolver-runtime-shell-decision-record-non-participation-receipt.json\"");
+    assert_contains(
+        manifest,
+        "\"path\":\"fixtures/release/credential-resolver-runtime-shell-post-decision-plan-intake-non-participation-receipt.json\"");
     assert_contains(manifest, "\"decision_digest\":\"4f6f73fa2806a9ba74174d7bbab17b43459bd1d790237276d95a3937c646e9c0\"");
     assert_contains(manifest, "\"runtime_shell_decision_record_non_participation_receipt_only\":true");
     assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:7c144f01161c2f81\"");
+    assert_contains(manifest, "\"runtime_shell_post_decision_plan_intake_non_participation_receipt_only\":true");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:d2739fd08da1653e\"");
     assert_contains(
         manifest,
         "SMOKEJSON v131 candidate gate receipt keeps Node v297 gateDigest=651383bcd175bdaff2691c026135a1cebbcf30de91be7709cbc7843866684e22 and blocked decision");
@@ -763,7 +773,9 @@ int main() {
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");
+                    "\"node_consumption\":\"Node v302 may verify the mini-kv v133 credential resolver runtime shell post-decision plan intake non-participation receipt");
+    assert_contains(result.response,
+                    "Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");
     assert_contains(
         result.response,
         "Node v298 may verify the mini-kv v131 credential resolver disabled runtime shell candidate gate non-participation receipt");

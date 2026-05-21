@@ -131,4 +131,9 @@ std::string credential_resolver_runtime_shell_decision_record_non_participation_
 std::string format_credential_resolver_runtime_shell_decision_record_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts

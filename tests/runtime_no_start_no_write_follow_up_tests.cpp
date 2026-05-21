@@ -122,7 +122,7 @@ int main() {
     assert_contains(follow, "\"no LOAD/COMPACT/RESTORE/SETNXEX execution\"");
 
     const auto smoke = read_fixture_text(smoke_path);
-    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v18\"");
+    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v19\"");
     assert_contains(smoke, "fixtures/release/runtime-no-start-no-write-follow-up.json");
     assert_contains(smoke, "\"runtime_no_start_no_write_follow_up\":");
     assert_contains(smoke, "\"source_envelope\":\"Node v236 manual sandbox connection dry-run request envelope\"");

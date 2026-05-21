@@ -48,7 +48,7 @@ int main() {
     assert(smoke.size() > 64 * 1024);
     assert(smoke.size() < minikv::client_max_response_line_bytes);
 
-    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v18\"");
+    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v19\"");
     assert_contains(smoke, "\"project\":\"mini-kv\"");
     assert_contains(smoke, "\"project_version\":\"0.102.0\"");
     assert_contains(smoke, "\"release_version\":\"v102\"");
@@ -199,6 +199,9 @@ int main() {
     assert_contains(smoke, "\"credential_resolver_runtime_shell_decision_record_non_participation_receipt\"");
     assert_contains(smoke,
                     "SMOKEJSON exposes credential_resolver_runtime_shell_decision_record_non_participation_receipt for Node v300");
+    assert_contains(smoke, "\"credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt\"");
+    assert_contains(smoke,
+                    "SMOKEJSON exposes credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt for Node v302");
     assert_contains(smoke,
                     "SMOKEJSON v132 decision record receipt keeps Node v299 decisionDigest=4f6f73fa2806a9ba74174d7bbab17b43459bd1d790237276d95a3937c646e9c0 and runtimeShellDecision=blocked");
     assert_contains(smoke,
@@ -668,7 +671,9 @@ int main() {
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");
+                    "\"node_consumption\":\"Node v302 may verify the mini-kv v133 credential resolver runtime shell post-decision plan intake non-participation receipt");
+    assert_contains(result.response,
+                    "Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");
     assert_contains(
         result.response,
         "Node v298 may verify the mini-kv v131 credential resolver disabled runtime shell candidate gate non-participation receipt");
@@ -728,6 +733,8 @@ int main() {
                     "\"credential_resolver_disabled_runtime_shell_candidate_gate_non_participation_receipt\"");
     assert_contains(result.response,
                     "\"credential_resolver_runtime_shell_decision_record_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt\"");
     assert_contains(result.response, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
     assert_contains(result.response, "\"current_release_version\":\"v130\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"d/130/\"");
@@ -735,12 +742,16 @@ int main() {
     assert_contains(result.response, "\"current_artifact_path_hint\":\"d/131/\"");
     assert_contains(result.response, "\"current_release_version\":\"v132\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"d/132/\"");
+    assert_contains(result.response, "\"current_release_version\":\"v133\"");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"d/133/\"");
     assert_contains(result.response, "\"gate_digest\":\"651383bcd175bdaff2691c026135a1cebbcf30de91be7709cbc7843866684e22\"");
     assert_contains(result.response, "\"runtime_shell_candidate_gate_non_participation_receipt_only\":true");
     assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:0557867ad4f6ed7e\"");
     assert_contains(result.response, "\"decision_digest\":\"4f6f73fa2806a9ba74174d7bbab17b43459bd1d790237276d95a3937c646e9c0\"");
     assert_contains(result.response, "\"runtime_shell_decision_record_non_participation_receipt_only\":true");
     assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:7c144f01161c2f81\"");
+    assert_contains(result.response, "\"runtime_shell_post_decision_plan_intake_non_participation_receipt_only\":true");
+    assert_contains(result.response, "\"receipt_digest\":\"fnv1a64:d2739fd08da1653e\"");
     assert_contains(result.response, "\"runtime_shell_implemented\":false");
     assert_contains(result.response, "\"runtime_shell_invocation_allowed\":false");
     assert_contains(

@@ -229,7 +229,9 @@ int main() {
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
     assert_response_contains(result,
-                             "\"node_consumption\":\"Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");
+                             "\"node_consumption\":\"Node v302 may verify the mini-kv v133 credential resolver runtime shell post-decision plan intake non-participation receipt");
+    assert_response_contains(result,
+                             "Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");
     assert_response_contains(
         result,
         "Node v298 may verify the mini-kv v131 credential resolver disabled runtime shell candidate gate non-participation receipt");
@@ -296,6 +298,8 @@ int main() {
                              "\"credential_resolver_disabled_runtime_shell_candidate_gate_non_participation_receipt\"");
     assert_response_contains(result,
                              "\"credential_resolver_runtime_shell_decision_record_non_participation_receipt\"");
+    assert_response_contains(result,
+                             "\"credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt\"");
     assert_response_contains(result, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
     assert_response_contains(result, "\"current_release_version\":\"v130\"");
     assert_response_contains(result, "\"current_artifact_path_hint\":\"d/130/\"");
@@ -303,6 +307,8 @@ int main() {
     assert_response_contains(result, "\"current_artifact_path_hint\":\"d/131/\"");
     assert_response_contains(result, "\"current_release_version\":\"v132\"");
     assert_response_contains(result, "\"current_artifact_path_hint\":\"d/132/\"");
+    assert_response_contains(result, "\"current_release_version\":\"v133\"");
+    assert_response_contains(result, "\"current_artifact_path_hint\":\"d/133/\"");
     assert_response_contains(result,
                              "\"gate_digest\":\"651383bcd175bdaff2691c026135a1cebbcf30de91be7709cbc7843866684e22\"");
     assert_response_contains(result, "\"runtime_shell_candidate_gate_non_participation_receipt_only\":true");
@@ -310,6 +316,8 @@ int main() {
     assert_response_contains(result, "\"decision_digest\":\"4f6f73fa2806a9ba74174d7bbab17b43459bd1d790237276d95a3937c646e9c0\"");
     assert_response_contains(result, "\"runtime_shell_decision_record_non_participation_receipt_only\":true");
     assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:7c144f01161c2f81\"");
+    assert_response_contains(result, "\"runtime_shell_post_decision_plan_intake_non_participation_receipt_only\":true");
+    assert_response_contains(result, "\"receipt_digest\":\"fnv1a64:d2739fd08da1653e\"");
     assert_response_contains(result, "\"runtime_shell_implemented\":false");
     assert_response_contains(result, "\"runtime_shell_invocation_allowed\":false");
     assert_response_contains(

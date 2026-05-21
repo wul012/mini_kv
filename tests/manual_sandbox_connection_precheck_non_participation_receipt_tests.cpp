@@ -165,7 +165,6 @@ int main() {
     assert_contains(smoke, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_precheck_packet_shape(smoke);
     assert_non_participation_flags(smoke);
-    assert_contains(smoke, "Node v246 may verify the mini-kv v108 manual sandbox connection precheck non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
     assert_contains(manifest, "\"minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests\"");

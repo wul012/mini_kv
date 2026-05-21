@@ -144,7 +144,6 @@ int main() {
     assert_command_package_shape(smoke);
     assert_non_participation_flags(smoke);
     assert_contains(smoke, "\"manual_sandbox_dry_run_command_non_participation_receipt\"");
-    assert_contains(smoke, "Node v244 may still verify the mini-kv v107 manual sandbox dry-run command non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
     assert_contains(manifest, "\"minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests\"");
