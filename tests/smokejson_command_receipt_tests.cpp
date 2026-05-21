@@ -229,7 +229,9 @@ int main() {
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
     assert_response_contains(result,
-                             "\"node_consumption\":\"Node v293 may verify the mini-kv v129 credential resolver disabled fake harness execution-denied receipt verification/retention check");
+                             "\"node_consumption\":\"Node v296 may verify the mini-kv v130 credential resolver disabled runtime shell non-participation receipt");
+    assert_response_contains(result,
+                             "Node v293 may verify the mini-kv v129 credential resolver disabled fake harness execution-denied receipt verification/retention check");
     assert_response_contains(result,
                              "Node v291 may verify the mini-kv v128 credential resolver disabled fake harness execution-denied non-participation receipt");
     assert_response_contains(result,
@@ -283,6 +285,12 @@ int main() {
     assert_response_contains(
         result,
         "\"credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check\"");
+    assert_response_contains(result, "\"credential_resolver_disabled_runtime_shell_non_participation_receipt\"");
+    assert_response_contains(result, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
+    assert_response_contains(result, "\"current_release_version\":\"v130\"");
+    assert_response_contains(result, "\"current_artifact_path_hint\":\"d/130/\"");
+    assert_response_contains(result, "\"runtime_shell_implemented\":false");
+    assert_response_contains(result, "\"runtime_shell_invocation_allowed\":false");
     assert_response_contains(
         result,
         "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review.v1\"");

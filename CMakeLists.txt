@@ -30,6 +30,7 @@ add_library(minikv
     src/runtime_credential_resolver_disabled_fake_harness_receipts.cpp
     src/runtime_credential_resolver_execution_denied_receipts.cpp
     src/runtime_credential_resolver_execution_denied_retention_receipts.cpp
+    src/runtime_credential_resolver_disabled_runtime_shell_receipts.cpp
     src/runtime_credential_resolver_implementation_readiness_receipts.cpp
     src/runtime_credential_resolver_implementation_plan_receipts.cpp
     src/runtime_credential_resolver_decision_receipts.cpp
@@ -739,3 +740,16 @@ target_compile_definitions(minikv_cred_res_exec_denied_retention_check_tests
 )
 
 add_test(NAME cred_res_exec_denied_retention_check_tests COMMAND minikv_cred_res_exec_denied_retention_check_tests)
+
+add_executable(minikv_disabled_runtime_shell_receipt_tests
+    tests/credential_resolver_disabled_runtime_shell_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_disabled_runtime_shell_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_disabled_runtime_shell_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME disabled_runtime_shell_receipt_tests COMMAND minikv_disabled_runtime_shell_receipt_tests)
