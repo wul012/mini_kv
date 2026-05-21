@@ -229,7 +229,9 @@ int main() {
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
     assert_response_contains(result,
-                             "\"node_consumption\":\"Node v291 may verify the mini-kv v128 credential resolver disabled fake harness execution-denied non-participation receipt");
+                             "\"node_consumption\":\"Node v293 may verify the mini-kv v129 credential resolver disabled fake harness execution-denied receipt verification/retention check");
+    assert_response_contains(result,
+                             "Node v291 may verify the mini-kv v128 credential resolver disabled fake harness execution-denied non-participation receipt");
     assert_response_contains(result,
                              "Node v289 may verify the mini-kv v127 credential resolver disabled fake harness non-participation receipt");
     assert_response_contains(result,
@@ -278,6 +280,9 @@ int main() {
     assert_response_contains(
         result,
         "\"credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt\"");
+    assert_response_contains(
+        result,
+        "\"credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check\"");
     assert_response_contains(
         result,
         "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review.v1\"");

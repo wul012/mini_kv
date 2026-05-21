@@ -111,4 +111,9 @@ std::string credential_resolver_disabled_fake_harness_execution_denied_non_parti
 std::string format_credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts

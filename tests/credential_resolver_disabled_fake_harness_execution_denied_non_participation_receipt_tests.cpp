@@ -218,7 +218,10 @@ int main() {
     assert_summary_and_flags(result.response);
     assert_contains(
         result.response,
-        "\"node_consumption\":\"Node v291 may verify the mini-kv v128 credential resolver disabled fake harness execution-denied non-participation receipt");
+        "Node v291 may verify the mini-kv v128 credential resolver disabled fake harness execution-denied non-participation receipt");
+    assert_contains(
+        result.response,
+        "Node v293 may verify the mini-kv v129 credential resolver disabled fake harness execution-denied receipt verification/retention check");
     assert_contains(result.response, "Node v290 disabled fake harness execution-denied route preflight");
     assert_contains(result.response, "Node v289 may verify the mini-kv v127 credential resolver disabled fake harness non-participation receipt");
     assert_not_contains(result.response, "credential_value\":\"");

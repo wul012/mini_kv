@@ -11,6 +11,7 @@ This sibling folder is for new mini-kv walkthroughs starting with v122.
 - `182-version-126-credential-resolver-implementation-plan-non-participation-receipt.md` - mini-kv v126 Node v283 implementation plan draft non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/126` archive.
 - `183-version-127-credential-resolver-disabled-fake-harness-non-participation-receipt.md` - mini-kv v127 Node v288 disabled fake harness contract non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/127` archive.
 - `184-version-128-credential-resolver-disabled-fake-harness-execution-denied-non-participation-receipt.md` - mini-kv v128 Node v290 execution-denied route preflight non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/128` archive.
+- `185-version-129-credential-resolver-disabled-fake-harness-execution-denied-receipt-verification-retention-check.md` - mini-kv v129 Node v292 blocked readiness and v128 retention check receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/129` archive.
 
 ## Rules
 

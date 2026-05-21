@@ -95,6 +95,7 @@ int main() {
         manifest,
         "\"minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests\"");
     assert_contains(manifest, "\"minikv_credential_resolver_impl_readiness_receipt_tests\"");
+    assert_contains(manifest, "\"minikv_cred_res_exec_denied_retention_check_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -188,6 +189,8 @@ int main() {
             "credential-resolver-approval-required-boundary-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-disabled-fake-harness-execution-denied-receipt-verification-retention-check.json",
     };
 
     for (const auto& path : required_paths) {
@@ -285,6 +288,20 @@ int main() {
     assert_contains(manifest, "\"credential_resolver_invoked\":false");
     assert_contains(manifest, "\"secret_provider_instantiated\":false");
     assert_contains(manifest, "\"credential_value_stored\":false");
+    assert_contains(
+        manifest,
+        "\"credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check\"");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check for Node v293");
+    assert_contains(
+        manifest,
+        "SMOKEJSON v129 retention check keeps source Node v292 readinessDecision=blocked");
+    assert_contains(manifest, "\"receipt_verification_retention_check_only\":true");
+    assert_contains(manifest, "\"retention_check_only\":true");
+    assert_contains(manifest, "\"source_node_v292_reference\":");
+    assert_contains(manifest, "\"readiness_decision\":\"blocked\"");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:9d433e000a555c11\"");
     assert_contains(manifest, "\"command_contracts_header\":\"include/minikv/command_contracts.hpp\"");
     assert_contains(manifest, "\"command_contracts_source\":\"src/command_contracts.cpp\"");
     assert_contains(manifest, "\"command_response_formatters_header\":\"include/minikv/command_response_formatters.hpp\"");
@@ -305,6 +322,9 @@ int main() {
     assert_contains(manifest, "\"fixtures/release/restore-approval-boundary.json\"");
     assert_contains(manifest, "\"fixtures/release/restore-boundary-smoke-manifest.json\"");
     assert_contains(manifest, "\"fixtures/release/runtime-smoke-evidence.json\"");
+    assert_contains(
+        manifest,
+        "\"fixtures/release/credential-resolver-disabled-fake-harness-execution-denied-receipt-verification-retention-check.json\"");
     assert_contains(manifest, "\"manifest only\"");
     assert_contains(manifest, "\"bundle manifest only\"");
     assert_contains(manifest, "\"restore compatibility handoff sample only\"");
@@ -701,7 +721,9 @@ int main() {
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v291 may verify the mini-kv v128 credential resolver disabled fake harness execution-denied non-participation receipt");
+                    "\"node_consumption\":\"Node v293 may verify the mini-kv v129 credential resolver disabled fake harness execution-denied receipt verification/retention check");
+    assert_contains(result.response,
+                    "Node v291 may verify the mini-kv v128 credential resolver disabled fake harness execution-denied non-participation receipt");
     assert_contains(result.response,
                     "Node v289 may verify the mini-kv v127 credential resolver disabled fake harness non-participation receipt");
     assert_contains(result.response,
@@ -740,6 +762,9 @@ int main() {
     assert_contains(
         result.response,
         "\"credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt\"");
+    assert_contains(
+        result.response,
+        "\"credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check\"");
     assert_contains(result.response, "\"write_commands_executed\":false");
 
     result = processor.execute("STORAGEJSON");
