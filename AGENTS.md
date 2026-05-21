@@ -54,6 +54,7 @@ Do not claim real four-project joint testing unless there is evidence such as No
 
 Refactoring rhythm:
 - After 3-4 feature versions, prefer 1 version of contract-preserving refactor, deduplication, or test hardening.
+- 写代码时不要形成难于维护的巨型代码文件；当文件接近大文件风险阈值时，必须做必要拆分，或先写清楚拆分计划再继续新增功能。
 - Prefer structured fixture parsing and reusable test helpers over ever-growing string-fragment assertions when the risk justifies it.
 - Move shared fixture loaders, report helpers, validators, renderers, and message collectors into common utilities when duplication is clear.
 
