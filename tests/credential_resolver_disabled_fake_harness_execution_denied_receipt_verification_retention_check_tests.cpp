@@ -255,7 +255,10 @@ int main() {
     assert_summary_and_flags(result.response);
     assert_contains(
         result.response,
-        "\"node_consumption\":\"Node v298 may verify the mini-kv v131 credential resolver disabled runtime shell candidate gate non-participation receipt");
+        "\"node_consumption\":\"Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");
+    assert_contains(
+        result.response,
+        "Node v298 may verify the mini-kv v131 credential resolver disabled runtime shell candidate gate non-participation receipt");
     assert_contains(
         result.response,
         "Node v296 may verify the mini-kv v130 credential resolver disabled runtime shell non-participation receipt");
