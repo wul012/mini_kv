@@ -791,7 +791,7 @@ int main() {
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v309 may verify the mini-kv v136 credential resolver human approval artifact review non-participation receipt");
+                    "\"node_consumption\":\"Node v311 may verify the mini-kv v137 credential resolver human approval artifact review post-echo decision gate non-participation receipt");
     assert_contains(result.response,
                     "Node v305 may verify the mini-kv v134 credential resolver runtime shell chain stop/prerequisite non-participation receipt");
     assert_contains(result.response,
