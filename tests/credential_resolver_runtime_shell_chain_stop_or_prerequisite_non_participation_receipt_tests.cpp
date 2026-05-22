@@ -1,4 +1,4 @@
-#include "minikv/command.hpp"
+﻿#include "minikv/command.hpp"
 #include "minikv/runtime_evidence_receipts.hpp"
 #include "minikv/store.hpp"
 #include "minikv/version.hpp"
@@ -264,7 +264,7 @@ int main() {
     assert_summary_and_flags(result.response);
     assert_contains(
         result.response,
-        "\"node_consumption\":\"Node v307 may verify the mini-kv v135 credential resolver approval prerequisite artifact intake non-participation receipt");
+        "\"node_consumption\":\"Node v309 may verify the mini-kv v136 credential resolver human approval artifact review non-participation receipt");
     assert_contains(
         result.response,
         "Node v305 may verify the mini-kv v134 credential resolver runtime shell chain stop/prerequisite non-participation receipt");

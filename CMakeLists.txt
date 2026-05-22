@@ -36,6 +36,7 @@ add_library(minikv
     src/runtime_credential_resolver_runtime_shell_post_decision_plan_receipts.cpp
     src/runtime_credential_resolver_runtime_shell_stop_prerequisite_receipts.cpp
     src/runtime_credential_resolver_approval_prerequisite_artifact_receipts.cpp
+    src/runtime_credential_resolver_human_approval_artifact_receipts.cpp
     src/runtime_credential_resolver_implementation_readiness_receipts.cpp
     src/runtime_credential_resolver_implementation_plan_receipts.cpp
     src/runtime_credential_resolver_decision_receipts.cpp
@@ -823,3 +824,16 @@ target_compile_definitions(minikv_approval_prerequisite_artifact_intake_receipt_
 )
 
 add_test(NAME approval_prerequisite_artifact_intake_receipt_tests COMMAND minikv_approval_prerequisite_artifact_intake_receipt_tests)
+
+add_executable(minikv_human_approval_artifact_review_receipt_tests
+    tests/credential_resolver_human_approval_artifact_review_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_human_approval_artifact_review_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_human_approval_artifact_review_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME human_approval_artifact_review_receipt_tests COMMAND minikv_human_approval_artifact_review_receipt_tests)
