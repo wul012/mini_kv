@@ -141,4 +141,9 @@ std::string credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_par
 std::string format_credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string credential_resolver_approval_prerequisite_artifact_intake_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_credential_resolver_approval_prerequisite_artifact_intake_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts

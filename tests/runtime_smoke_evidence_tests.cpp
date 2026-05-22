@@ -206,6 +206,16 @@ int main() {
     assert_contains(
         smoke,
         "SMOKEJSON exposes credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt for Node v305");
+    assert_contains(smoke, "\"credential_resolver_approval_prerequisite_artifact_intake_non_participation_receipt\"");
+    assert_contains(
+        smoke,
+        "SMOKEJSON exposes credential_resolver_approval_prerequisite_artifact_intake_non_participation_receipt for Node v307");
+    assert_contains(
+        smoke,
+        "SMOKEJSON v135 artifact intake receipt keeps Node v306 artifact_digest=72f3e90606e40a978611fa4b8596c76c3ebc468124c4ead7bb9c4833130ee9c2 and plan_state=approval-prerequisite-artifact-intake-plan-ready");
+    assert_contains(
+        smoke,
+        "SMOKEJSON v135 artifact intake receipt keeps required_field_count=12, prohibited_field_count=8, rejection_reason_count=9, no_go_boundary_count=12, check_count=18, and passed_check_count=18");
     assert_contains(
         smoke,
         "SMOKEJSON v134 stop/prerequisite receipt keeps Node v304 decision_digest=9212d0b804fdc1eda9098ac70d2441681730a98ff736776859811df9e288a654 and runtime_shell_chain_decision=require-explicit-approval-prerequisites-before-runtime-shell");
@@ -681,7 +691,9 @@ int main() {
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v305 may verify the mini-kv v134 credential resolver runtime shell chain stop/prerequisite non-participation receipt");
+                    "\"node_consumption\":\"Node v307 may verify the mini-kv v135 credential resolver approval prerequisite artifact intake non-participation receipt");
+    assert_contains(result.response,
+                    "Node v305 may verify the mini-kv v134 credential resolver runtime shell chain stop/prerequisite non-participation receipt");
     assert_contains(result.response,
                     "Node v302 may verify the mini-kv v133 credential resolver runtime shell post-decision plan intake non-participation receipt");
     assert_contains(result.response,
@@ -749,6 +761,8 @@ int main() {
                     "\"credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt\"");
     assert_contains(result.response,
                     "\"credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_approval_prerequisite_artifact_intake_non_participation_receipt\"");
     assert_contains(result.response, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
     assert_contains(result.response, "\"current_release_version\":\"v130\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"d/130/\"");

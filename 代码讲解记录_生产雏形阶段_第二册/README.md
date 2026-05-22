@@ -17,6 +17,7 @@ This sibling folder is for new mini-kv walkthroughs starting with v122.
 - `188-version-132-credential-resolver-runtime-shell-decision-record-non-participation-receipt.md` - mini-kv v132 Node v299 runtime shell blocked decision record non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/132` archive.
 - `189-version-133-credential-resolver-runtime-shell-post-decision-plan-intake-non-participation-receipt.md` - mini-kv v133 Node v301 post-decision continuation plan intake non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/133` archive.
 - `190-version-134-credential-resolver-runtime-shell-chain-stop-prerequisite-non-participation-receipt.md` - mini-kv v134 Node v304 runtime shell chain stop/prerequisite decision non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/134` archive.
+- `191-version-135-credential-resolver-approval-prerequisite-artifact-intake-non-participation-receipt.md` - mini-kv v135 Node v306 approval prerequisite artifact intake plan non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI/TCP smoke, and `d/135` archive.
 
 ## Rules
 
