@@ -226,7 +226,10 @@ int main() {
     assert_summary_and_flags(result.response);
     assert_contains(
         result.response,
-        "\"node_consumption\":\"Node v302 may verify the mini-kv v133 credential resolver runtime shell post-decision plan intake non-participation receipt");
+        "\"node_consumption\":\"Node v305 may verify the mini-kv v134 credential resolver runtime shell chain stop/prerequisite non-participation receipt");
+    assert_contains(
+        result.response,
+        "Node v302 may verify the mini-kv v133 credential resolver runtime shell post-decision plan intake non-participation receipt");
     assert_contains(
         result.response,
         "Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");

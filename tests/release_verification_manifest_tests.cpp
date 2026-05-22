@@ -100,6 +100,7 @@ int main() {
     assert_contains(manifest, "\"minikv_disabled_runtime_shell_candidate_gate_receipt_tests\"");
     assert_contains(manifest, "\"minikv_runtime_shell_decision_record_receipt_tests\"");
     assert_contains(manifest, "\"minikv_runtime_shell_post_decision_plan_intake_receipt_tests\"");
+    assert_contains(manifest, "\"minikv_runtime_shell_chain_stop_prerequisite_receipt_tests\"");
 
     assert_contains(manifest, "\"SMOKEJSON\"");
     assert_contains(manifest, "\"INFOJSON\"");
@@ -333,17 +334,29 @@ int main() {
     assert_contains(
         manifest,
         "SMOKEJSON exposes credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt for Node v302");
+    assert_contains(manifest, "\"credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt\"");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt for Node v305");
     assert_contains(
         manifest,
         "\"path\":\"fixtures/release/credential-resolver-runtime-shell-decision-record-non-participation-receipt.json\"");
     assert_contains(
         manifest,
         "\"path\":\"fixtures/release/credential-resolver-runtime-shell-post-decision-plan-intake-non-participation-receipt.json\"");
+    assert_contains(
+        manifest,
+        "\"path\":\"fixtures/release/credential-resolver-runtime-shell-chain-stop-or-prerequisite-non-participation-receipt.json\"");
     assert_contains(manifest, "\"decision_digest\":\"4f6f73fa2806a9ba74174d7bbab17b43459bd1d790237276d95a3937c646e9c0\"");
     assert_contains(manifest, "\"runtime_shell_decision_record_non_participation_receipt_only\":true");
     assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:7c144f01161c2f81\"");
     assert_contains(manifest, "\"runtime_shell_post_decision_plan_intake_non_participation_receipt_only\":true");
     assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:d2739fd08da1653e\"");
+    assert_contains(manifest, "\"runtime_shell_chain_stop_or_prerequisite_non_participation_receipt_only\":true");
+    assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:7178c69528e0c208\"");
+    assert_contains(
+        manifest,
+        "\"decision_digest\":\"9212d0b804fdc1eda9098ac70d2441681730a98ff736776859811df9e288a654\"");
     assert_contains(
         manifest,
         "SMOKEJSON v131 candidate gate receipt keeps Node v297 gateDigest=651383bcd175bdaff2691c026135a1cebbcf30de91be7709cbc7843866684e22 and blocked decision");
@@ -773,7 +786,9 @@ int main() {
     assert_contains(result.response, "\"mini_kv_auto_start_allowed\":false");
     assert_contains(result.response, "\"schema_rehearsal_execution_allowed\":false");
     assert_contains(result.response,
-                    "\"node_consumption\":\"Node v302 may verify the mini-kv v133 credential resolver runtime shell post-decision plan intake non-participation receipt");
+                    "\"node_consumption\":\"Node v305 may verify the mini-kv v134 credential resolver runtime shell chain stop/prerequisite non-participation receipt");
+    assert_contains(result.response,
+                    "Node v302 may verify the mini-kv v133 credential resolver runtime shell post-decision plan intake non-participation receipt");
     assert_contains(result.response,
                     "Node v300 may verify the mini-kv v132 credential resolver runtime shell decision record non-participation receipt");
     assert_contains(
@@ -832,6 +847,8 @@ int main() {
                     "\"credential_resolver_disabled_runtime_shell_candidate_gate_non_participation_receipt\"");
     assert_contains(result.response,
                     "\"credential_resolver_runtime_shell_decision_record_non_participation_receipt\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt\"");
     assert_contains(result.response, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
     assert_contains(result.response, "\"current_release_version\":\"v130\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"d/130/\"");

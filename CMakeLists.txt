@@ -34,6 +34,7 @@ add_library(minikv
     src/runtime_credential_resolver_disabled_runtime_shell_candidate_gate_receipts.cpp
     src/runtime_credential_resolver_runtime_shell_decision_record_receipts.cpp
     src/runtime_credential_resolver_runtime_shell_post_decision_plan_receipts.cpp
+    src/runtime_credential_resolver_runtime_shell_stop_prerequisite_receipts.cpp
     src/runtime_credential_resolver_implementation_readiness_receipts.cpp
     src/runtime_credential_resolver_implementation_plan_receipts.cpp
     src/runtime_credential_resolver_decision_receipts.cpp
@@ -795,3 +796,16 @@ target_compile_definitions(minikv_runtime_shell_post_decision_plan_intake_receip
 )
 
 add_test(NAME runtime_shell_post_decision_plan_intake_receipt_tests COMMAND minikv_runtime_shell_post_decision_plan_intake_receipt_tests)
+
+add_executable(minikv_runtime_shell_chain_stop_prerequisite_receipt_tests
+    tests/credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_runtime_shell_chain_stop_prerequisite_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_runtime_shell_chain_stop_prerequisite_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME runtime_shell_chain_stop_prerequisite_receipt_tests COMMAND minikv_runtime_shell_chain_stop_prerequisite_receipt_tests)

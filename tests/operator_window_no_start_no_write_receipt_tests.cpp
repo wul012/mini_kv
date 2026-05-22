@@ -126,7 +126,7 @@ int main() {
     assert_contains(receipt, "\"no LOAD/COMPACT/RESTORE/SETNXEX execution\"");
 
     const auto smoke = read_fixture_text(smoke_path);
-    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v19\"");
+    assert_contains(smoke, "\"runtime_smoke_evidence_version\":\"mini-kv-runtime-smoke-evidence.v20\"");
     assert_contains(smoke, "fixtures/release/operator-window-no-start-no-write-receipt.json");
     assert_contains(smoke, "\"operator_window_no_start_no_write_receipt\":");
     assert_contains(smoke, "\"source_checklist\":\"Node v238 manual sandbox connection operator window checklist\"");
