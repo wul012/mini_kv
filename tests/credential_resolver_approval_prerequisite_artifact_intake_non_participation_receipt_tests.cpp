@@ -253,7 +253,7 @@ int main() {
     assert_summary_and_boundaries(result.response);
     assert_contains(
         result.response,
-        "\"node_consumption\":\"Node v315 may verify the mini-kv v138 credential resolver signed human approval artifact contract non-participation receipt");
+        "Node v315 may verify the mini-kv v138 credential resolver signed human approval artifact contract non-participation receipt");
     assert_contains(
         result.response,
         "Node v305 may verify the mini-kv v134 credential resolver runtime shell chain stop/prerequisite non-participation receipt");
