@@ -229,7 +229,7 @@ int main() {
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
     assert_response_contains(result,
-                             "\"node_consumption\":\"Node v311 may verify the mini-kv v137 credential resolver human approval artifact review post-echo decision gate non-participation receipt");
+                             "\"node_consumption\":\"Node v315 may verify the mini-kv v138 credential resolver signed human approval artifact contract non-participation receipt");
     assert_response_contains(
         result,
         "Node v305 may verify the mini-kv v134 credential resolver runtime shell chain stop/prerequisite non-participation receipt");
