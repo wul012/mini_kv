@@ -151,6 +151,9 @@ int main() {
     assert_contains(manifest, "\"runtime_write_observed\":false");
     assert_contains(manifest, "\"ci_artifact_upload_executed\":false");
     assert_contains(manifest, "\"production_window_opened\":false");
+    assert_contains(
+        manifest,
+        "SMOKEJSON exposes credential_resolver_no_network_safety_fixture_contract_non_participation_receipt for Node v324");
 
     const std::vector<std::filesystem::path> required_paths = {
         manifest_path,
@@ -200,6 +203,8 @@ int main() {
             "credential-resolver-disabled-runtime-shell-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-disabled-runtime-shell-candidate-gate-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-no-network-safety-fixture-contract-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -253,6 +258,21 @@ int main() {
     assert_contains(manifest, "\"ready_for_java_v116_mini_kv_v122_echo\":true");
     assert_contains(manifest, "\"current_artifact_path_hint\":\"d/122/\"");
     assert_contains(manifest, "\"receipt_digest\":\"fnv1a64:b6e1efa8878b64d6\"");
+    assert_contains(manifest, "\"credential_resolver_no_network_safety_fixture_contract_non_participation_receipt\"");
+    assert_contains(manifest, "\"minikv_no_network_safety_fixture_contract_receipt_tests\"");
+    assert_contains(
+        manifest,
+        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-no-network-safety-fixture-contract-intake.v1\"");
+    assert_contains(manifest, "\"contract_state\":\"no-network-safety-fixture-contract-intake-ready\"");
+    assert_contains(
+        manifest,
+        "\"contract_digest\":\"73dcd413298048da6283f81bd0c3b759b9c1c2d360eb1382983d7db7349b2b88\"");
+    assert_contains(manifest, "\"current_release_version\":\"v141\"");
+    assert_contains(manifest, "\"current_artifact_path_hint\":\"d/141/\"");
+    assert_contains(manifest, "\"no_network_safety_fixture_contract_non_participation_receipt_only\":true");
+    assert_contains(manifest, "\"network_safety_fixture_executed\":false");
+    assert_contains(manifest, "\"http_request_sent\":false");
+    assert_contains(manifest, "\"tcp_connection_attempted\":false");
     assert_contains(
         manifest,
         "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-disabled-candidate-upstream-echo-verification.v1\"");

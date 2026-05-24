@@ -514,6 +514,8 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-no-network-safety-fixture-contract-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" / "restore-boundary-smoke-manifest.json",
         std::filesystem::path{"fixtures"} / "readonly" / "infojson-empty-inline.json",
         std::filesystem::path{"fixtures"} / "readonly" / "runtime-read-field-guide.json",
@@ -690,6 +692,16 @@ int main() {
     assert_contains(result.response, "\"write_commands_executed\":false");
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
+    assert_contains(result.response,
+                    "Node v324 may verify the mini-kv v141 credential resolver no-network safety fixture contract non-participation receipt");
+    assert_contains(result.response,
+                    "\"credential_resolver_no_network_safety_fixture_contract_non_participation_receipt\"");
+    assert_contains(result.response, "\"current_release_version\":\"v141\"");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"d/141/\"");
+    assert_contains(result.response, "\"no_network_safety_fixture_contract_non_participation_receipt_only\":true");
+    assert_contains(result.response, "\"network_safety_fixture_executed\":false");
+    assert_contains(result.response, "\"http_request_sent\":false");
+    assert_contains(result.response, "\"tcp_connection_attempted\":false");
     assert_contains(result.response,
                     "Node v315 may verify the mini-kv v138 credential resolver signed human approval artifact contract non-participation receipt");
     assert_contains(result.response,
