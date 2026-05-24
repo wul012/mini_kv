@@ -228,6 +228,12 @@ int main() {
     assert_response_contains(result, "\"id\":\"unexpected-write-signal\",\"source\":\"runtime_smoke_diagnostics\"");
     assert_response_contains(result, "\"safe_to_auto_start\":false");
     assert_response_contains(result, "\"write_risk\":true");
+    assert_response_contains(
+        result,
+        "Node v321 may verify the mini-kv v140 credential resolver endpoint-handle allowlist approval contract non-participation receipt");
+    assert_response_contains(
+        result,
+        "Node v318 may verify the mini-kv v139 credential resolver credential-handle approval contract non-participation receipt");
     assert_response_contains(result,
                              "Node v315 may verify the mini-kv v138 credential resolver signed human approval artifact contract non-participation receipt");
     assert_response_contains(
@@ -307,6 +313,9 @@ int main() {
                              "\"credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt\"");
     assert_response_contains(result,
                              "\"credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt\"");
+    assert_response_contains(
+        result,
+        "\"credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt\"");
     assert_response_contains(result, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
     assert_response_contains(result, "\"current_release_version\":\"v130\"");
     assert_response_contains(result, "\"current_artifact_path_hint\":\"d/130/\"");

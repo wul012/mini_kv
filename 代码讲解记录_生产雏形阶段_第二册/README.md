@@ -22,6 +22,7 @@ This sibling folder is for new mini-kv walkthroughs starting with v122.
 - `193-version-137-credential-resolver-human-approval-post-echo-decision-gate-non-participation-receipt.md` - mini-kv v137 Node v310 human approval artifact review post-echo decision gate non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI/TCP smoke, and `d/137` archive.
 - `194-version-138-credential-resolver-signed-human-approval-artifact-contract-non-participation-receipt.md` - mini-kv v138 Node v314 signed human approval artifact contract non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI/TCP smoke, and `d/138` archive.
 - `195-version-139-credential-resolver-credential-handle-approval-contract-non-participation-receipt.md` - mini-kv v139 Node v317 credential-handle approval contract non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI/TCP smoke, and `d/139` archive.
+- `196-version-140-credential-resolver-endpoint-handle-allowlist-approval-contract-non-participation-receipt.md` - mini-kv v140 Node v320 endpoint-handle allowlist approval contract non-participation receipt, fixture, SMOKEJSON/manifest exposure, tests, CLI smoke, and `d/140` archive.
 
 ## Rules
 

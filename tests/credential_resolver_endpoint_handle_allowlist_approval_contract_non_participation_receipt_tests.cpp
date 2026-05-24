@@ -1,4 +1,4 @@
-#include "minikv/command.hpp"
+﻿#include "minikv/command.hpp"
 #include "minikv/runtime_evidence_receipts.hpp"
 #include "minikv/store.hpp"
 #include "minikv/version.hpp"
@@ -46,27 +46,27 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
     assert(std::filesystem::exists(std::filesystem::path{MINIKV_SOURCE_DIR} / relative_path));
 }
 
-void assert_source_node_v317_shape(const std::string& text) {
-    assert_contains(text, "\"source_node_v317_reference\":");
-    assert_contains(text, "\"source_version\":\"Node v317\"");
+void assert_source_node_v320_shape(const std::string& text) {
+    assert_contains(text, "\"source_node_v320_reference\":");
+    assert_contains(text, "\"source_version\":\"Node v320\"");
     assert_contains(
         text,
-        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-credential-handle-approval-contract-intake.v1\"");
-    assert_contains(text, "\"contract_state\":\"credential-handle-approval-contract-intake-ready\"");
+        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-endpoint-handle-allowlist-approval-contract-intake.v1\"");
+    assert_contains(text, "\"contract_state\":\"endpoint-handle-allowlist-approval-contract-intake-ready\"");
     assert_contains(
         text,
-        "\"governance_chain_decision\":\"continue-only-for-credential-handle-approval-contract-intake\"");
-    assert_contains(text, "\"target_prerequisite_id\":\"credential-handle-approval\"");
-    assert_contains(text, "\"next_java_version\":\"Java v146\"");
-    assert_contains(text, "\"next_mini_kv_version\":\"mini-kv v139\"");
-    assert_contains(text, "\"next_node_verification_version\":\"Node v318\"");
-    assert_contains(text, "\"ready_for_parallel_java_v146_mini_kv_v139_echo\":true");
-    assert_contains(text, "\"ready_for_node_v318_before_upstream_echo\":false");
-    assert_contains(text, "\"contract_digest\":\"298ffb48a00aab4f4630b42fc7b48805185d50a5465938768bd78943e05ae817\"");
-    assert_contains(text, "\"contract_name\":\"managed-audit-credential-handle-approval\"");
-    assert_contains(text, "\"contract_version\":\"credential-handle-approval.v1\"");
-    assert_contains(text, "\"contract_mode\":\"credential-handle-approval-contract-intake-only\"");
-    assert_contains(text, "\"source_span\":\"Node v316 closure review + Node v313 catalog\"");
+        "\"governance_chain_decision\":\"continue-only-for-endpoint-handle-allowlist-approval-contract-intake\"");
+    assert_contains(text, "\"target_prerequisite_id\":\"endpoint-handle-allowlist-approval\"");
+    assert_contains(text, "\"next_java_version\":\"Java v147\"");
+    assert_contains(text, "\"next_mini_kv_version\":\"mini-kv v140\"");
+    assert_contains(text, "\"next_node_verification_version\":\"Node v321\"");
+    assert_contains(text, "\"ready_for_parallel_java_v147_mini_kv_v140_echo\":true");
+    assert_contains(text, "\"ready_for_node_v321_before_upstream_echo\":false");
+    assert_contains(text, "\"contract_digest\":\"4657f89caa6866bad87db284dc98efd8d09a6538d8d735535e6a7e6d4d6c33e5\"");
+    assert_contains(text, "\"contract_name\":\"managed-audit-endpoint-handle-allowlist-approval\"");
+    assert_contains(text, "\"contract_version\":\"endpoint-handle-allowlist-approval.v1\"");
+    assert_contains(text, "\"contract_mode\":\"endpoint-handle-allowlist-approval-contract-intake-only\"");
+    assert_contains(text, "\"source_span\":\"Node v319 closure review + Node v313 catalog\"");
     assert_contains(text, "\"required_field_count\":10");
     assert_contains(text, "\"prohibited_field_count\":8");
     assert_contains(text, "\"rejection_reason_count\":5");
@@ -75,7 +75,7 @@ void assert_source_node_v317_shape(const std::string& text) {
 }
 
 void assert_contract_fields(const std::string& text) {
-    assert_contains(text, "\"credential_handle\"");
+    assert_contains(text, "\"endpoint_handle\"");
     assert_contains(text, "\"approval_correlation_id\"");
     assert_contains(text, "\"operator_identity_handle\"");
     assert_contains(text, "\"reviewer_identity_handle\"");
@@ -93,7 +93,7 @@ void assert_contract_fields(const std::string& text) {
     assert_contains(text, "\"external_request_payload\"");
     assert_contains(text, "\"approval_ledger_mutation\"");
     assert_contains(text, "\"schema_migration_sql\"");
-    assert_contains(text, "\"CREDENTIAL_HANDLE_MISSING\"");
+    assert_contains(text, "\"ENDPOINT_HANDLE_MISSING\"");
     assert_contains(text, "\"CREDENTIAL_VALUE_PRESENT\"");
     assert_contains(text, "\"RAW_ENDPOINT_URL_PRESENT\"");
     assert_contains(text, "\"PROVIDER_CLIENT_CONFIG_PRESENT\"");
@@ -106,18 +106,18 @@ void assert_contract_fields(const std::string& text) {
     assert_contains(text, "\"runtime_shell_invocation\"");
 }
 
-void assert_source_node_v316_shape(const std::string& text) {
-    assert_contains(text, "\"source_node_v316_reference\":");
-    assert_contains(text, "\"source_version\":\"Node v316\"");
+void assert_source_node_v319_shape(const std::string& text) {
+    assert_contains(text, "\"source_node_v319_reference\":");
+    assert_contains(text, "\"source_version\":\"Node v319\"");
     assert_contains(
         text,
-        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-signed-human-approval-artifact-prerequisite-closure-review.v1\"");
-    assert_contains(text, "\"review_state\":\"signed-human-approval-artifact-prerequisite-closure-review-ready\"");
-    assert_contains(text, "\"review_digest\":\"63de25a3ff87d5d9ea8243d0195f3f646bc3bb08ab2aae76533f9a871674444d\"");
-    assert_contains(text, "\"completed_prerequisite_count\":2");
-    assert_contains(text, "\"remaining_prerequisite_count\":4");
+        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-credential-handle-approval-prerequisite-closure-review.v1\"");
+    assert_contains(text, "\"review_state\":\"credential-handle-approval-prerequisite-closure-review-ready\"");
+    assert_contains(text, "\"review_digest\":\"59888d94ccd996aeb2f126c25291a8f5ba6f37d6d93cdf190fc656c0121bc7e5\"");
+    assert_contains(text, "\"completed_prerequisite_count\":3");
+    assert_contains(text, "\"remaining_prerequisite_count\":3");
     assert_contains(text, "\"original_prerequisite_count\":6");
-    assert_contains(text, "\"next_concrete_prerequisite_id\":\"credential-handle-approval\"");
+    assert_contains(text, "\"next_concrete_prerequisite_id\":\"endpoint-handle-allowlist-approval\"");
     assert_contains(text, "\"chain_continuation_allowed\":true");
     assert_contains(text, "\"runtime_shell_still_blocked\":true");
     assert_contains(text, "\"java-mini-kv-decision-echo\"");
@@ -126,44 +126,47 @@ void assert_source_node_v316_shape(const std::string& text) {
     assert_contains(text, "\"no-network-safety-fixture\"");
     assert_contains(text, "\"abort-rollback-semantics\"");
     assert_contains(text, "\"source_check_count\":17");
-    assert_contains(text, "\"source_node_v315_check_count\":23");
+    assert_contains(text, "\"source_node_v318_check_count\":23");
 }
 
 void assert_transition_summary_and_boundaries(const std::string& text) {
-    assert_contains(text, "\"prerequisite_id\":\"credential-handle-approval\"");
-    assert_contains(text, "\"before_v317\":\"still-missing\"");
-    assert_contains(text, "\"after_v317\":\"contract-intake-defined\"");
+    assert_contains(text, "\"prerequisite_id\":\"endpoint-handle-allowlist-approval\"");
+    assert_contains(text, "\"before_v320\":\"still-missing\"");
+    assert_contains(text, "\"after_v320\":\"contract-intake-defined\"");
     assert_contains(text, "\"closure_requires_upstream_echo\":true");
     assert_contains(text, "\"preserves_signed_human_approval_artifact_closure\":true");
+    assert_contains(text, "\"preserves_credential_handle_approval_closure\":true");
     assert_contains(text, "\"closes_endpoint_handle_allowlist_approval\":false");
     assert_contains(text, "\"closes_no_network_safety_fixture\":false");
     assert_contains(text, "\"closes_abort_rollback_semantics\":false");
     assert_contains(text, "\"check_count\":20");
     assert_contains(text, "\"passed_check_count\":20");
-    assert_contains(text, "\"source_node_v316_check_count\":17");
-    assert_contains(text, "\"source_node_v316_passed_check_count\":17");
-    assert_contains(text, "\"source_remaining_prerequisite_count\":4");
+    assert_contains(text, "\"source_node_v319_check_count\":17");
+    assert_contains(text, "\"source_node_v319_passed_check_count\":17");
+    assert_contains(text, "\"source_remaining_prerequisite_count\":3");
     assert_contains(text, "\"production_blocker_count\":0");
     assert_contains(text, "\"warning_count\":2");
     assert_contains(text, "\"recommendation_count\":2");
-    assert_contains(text, "\"CREDENTIAL_HANDLE_CONTRACT_DOES_NOT_CLOSE_ALL_PREREQUISITES\"");
-    assert_contains(text, "\"CREDENTIAL_HANDLE_APPROVAL_IS_NOT_CREDENTIAL_RESOLUTION\"");
-    assert_contains(text, "\"RUN_JAVA_V146_AND_MINI_KV_V139_AFTER_V317_ARCHIVE\"");
-    assert_contains(text, "\"KEEP_CREDENTIAL_HANDLE_APPROVAL_NON_SECRET\"");
-    assert_contains(text, "\"next_required_evidence_versions\":[\"Java v146\",\"mini-kv v139\"]");
+    assert_contains(text, "\"ENDPOINT_HANDLE_ALLOWLIST_CONTRACT_DOES_NOT_CLOSE_ALL_PREREQUISITES\"");
+    assert_contains(text, "\"ENDPOINT_HANDLE_ALLOWLIST_APPROVAL_IS_NOT_CONNECTION_PERMISSION\"");
+    assert_contains(text, "\"RUN_JAVA_V147_AND_MINI_KV_V140_AFTER_V320_ARCHIVE\"");
+    assert_contains(text, "\"KEEP_ENDPOINT_HANDLE_ALLOWLIST_APPROVAL_NON_SECRET\"");
+    assert_contains(text, "\"next_required_evidence_versions\":[\"Java v147\",\"mini-kv v140\"]");
     assert_contains(text, "\"read_only\":true");
     assert_contains(text, "\"execution_allowed\":false");
-    assert_contains(text, "\"credential_handle_approval_contract_non_participation_receipt_only\":true");
-    assert_contains(text, "\"credential_handle_stored\":false");
-    assert_contains(text, "\"credential_handle_validated\":false");
-    assert_contains(text, "\"credential_handle_resolved\":false");
-    assert_contains(text, "\"credential_handle_authoritative\":false");
-    assert_contains(text, "\"credential_approval_status_authoritative\":false");
+    assert_contains(text, "\"endpoint_handle_allowlist_approval_contract_non_participation_receipt_only\":true");
+    assert_contains(text, "\"endpoint_handle_stored\":false");
+    assert_contains(text, "\"endpoint_handle_validated\":false");
+    assert_contains(text, "\"endpoint_handle_resolved\":false");
+    assert_contains(text, "\"endpoint_handle_authoritative\":false");
+    assert_contains(text, "\"endpoint_allowlist_authority\":false");
+    assert_contains(text, "\"endpoint_allowlist_approval_status_authoritative\":false");
     assert_contains(text, "\"runtime_shell_implemented\":false");
     assert_contains(text, "\"runtime_shell_invocation_allowed\":false");
     assert_contains(text, "\"credential_value_accepted\":false");
     assert_contains(text, "\"credential_value_read\":false");
     assert_contains(text, "\"raw_endpoint_url_accepted\":false");
+    assert_contains(text, "\"raw_endpoint_url_stored\":false");
     assert_contains(text, "\"external_request_sent\":false");
     assert_contains(text, "\"provider_client_instantiation_allowed\":false");
     assert_contains(text, "\"connects_managed_audit\":false");
@@ -182,13 +185,13 @@ void assert_transition_summary_and_boundaries(const std::string& text) {
 int main() {
     const auto receipt_path =
         std::filesystem::path{"fixtures"} / "release" /
-        "credential-resolver-credential-handle-approval-contract-non-participation-receipt.json";
+        "credential-resolver-endpoint-handle-allowlist-approval-contract-non-participation-receipt.json";
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto manifest_path = std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json";
     const std::vector<std::string> read_commands = {"INFOJSON", "STORAGEJSON", "HEALTH", "STATSJSON"};
     const auto expected_digest =
         minikv::runtime_evidence_receipts::
-            credential_resolver_credential_handle_approval_contract_non_participation_receipt_digest(
+            credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt_digest(
                 read_commands);
 
     assert_path_exists(receipt_path);
@@ -198,43 +201,43 @@ int main() {
     const auto receipt = read_fixture_text(receipt_path);
     assert_contains(
         receipt,
-        "\"receipt_version\":\"mini-kv-credential-resolver-credential-handle-approval-contract-non-participation-receipt.v1\"");
-    assert_contains(receipt, "\"release_version\":\"v139\"");
+        "\"receipt_version\":\"mini-kv-credential-resolver-endpoint-handle-allowlist-approval-contract-non-participation-receipt.v1\"");
+    assert_contains(receipt, "\"release_version\":\"v140\"");
     assert_contains(
         receipt,
-        "\"path\":\"fixtures/release/credential-resolver-credential-handle-approval-contract-non-participation-receipt.json\"");
-    assert_contains(receipt, "\"credential_resolver_credential_handle_approval_contract_non_participation_receipt\":");
-    assert_contains(receipt, "\"current_release_version\":\"v139\"");
-    assert_contains(receipt, "\"current_artifact_path_hint\":\"d/139/\"");
+        "\"path\":\"fixtures/release/credential-resolver-endpoint-handle-allowlist-approval-contract-non-participation-receipt.json\"");
+    assert_contains(receipt, "\"credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt\":");
+    assert_contains(receipt, "\"current_release_version\":\"v140\"");
+    assert_contains(receipt, "\"current_artifact_path_hint\":\"d/140/\"");
     assert_contains(receipt, "\"receipt_digest\":\"" + expected_digest + "\"");
-    assert_source_node_v317_shape(receipt);
+    assert_source_node_v320_shape(receipt);
     assert_contract_fields(receipt);
-    assert_source_node_v316_shape(receipt);
+    assert_source_node_v319_shape(receipt);
     assert_transition_summary_and_boundaries(receipt);
     assert_not_contains(receipt, "credential_value\":\"");
     assert_not_contains(receipt, "raw_endpoint_url\":\"");
 
     const auto smoke = read_fixture_text(smoke_path);
-    assert_contains(smoke, "\"credential_resolver_credential_handle_approval_contract_non_participation_receipt\":");
+    assert_contains(smoke, "\"credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt\":");
     assert_contains(smoke, "\"receipt_digest\":\"" + expected_digest + "\"");
-    assert_source_node_v317_shape(smoke);
+    assert_source_node_v320_shape(smoke);
     assert_contract_fields(smoke);
-    assert_source_node_v316_shape(smoke);
+    assert_source_node_v319_shape(smoke);
     assert_transition_summary_and_boundaries(smoke);
 
     const auto manifest = read_fixture_text(manifest_path);
-    assert_contains(manifest, "\"minikv_credential_handle_approval_contract_receipt_tests\"");
+    assert_contains(manifest, "\"minikv_endpoint_handle_allowlist_approval_contract_receipt_tests\"");
     assert_contains(
         manifest,
-        "\"path\":\"fixtures/release/credential-resolver-credential-handle-approval-contract-non-participation-receipt.json\"");
-    assert_contains(manifest, "\"credential_resolver_credential_handle_approval_contract_non_participation_receipt\":");
+        "\"path\":\"fixtures/release/credential-resolver-endpoint-handle-allowlist-approval-contract-non-participation-receipt.json\"");
+    assert_contains(manifest, "\"credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_contains(
         manifest,
-        "SMOKEJSON exposes credential_resolver_credential_handle_approval_contract_non_participation_receipt for Node v318");
-    assert_source_node_v317_shape(manifest);
+        "SMOKEJSON exposes credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt for Node v321");
+    assert_source_node_v320_shape(manifest);
     assert_contract_fields(manifest);
-    assert_source_node_v316_shape(manifest);
+    assert_source_node_v319_shape(manifest);
     assert_transition_summary_and_boundaries(manifest);
 
     minikv::Store store;
@@ -244,20 +247,20 @@ int main() {
 
     auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(result.response, "\"credential_resolver_credential_handle_approval_contract_non_participation_receipt\":");
-    assert_contains(result.response, "\"current_release_version\":\"v139\"");
-    assert_contains(result.response, "\"current_artifact_path_hint\":\"d/139/\"");
+    assert_contains(result.response, "\"credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt\":");
+    assert_contains(result.response, "\"current_release_version\":\"v140\"");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"d/140/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
-    assert_source_node_v317_shape(result.response);
+    assert_source_node_v320_shape(result.response);
     assert_contract_fields(result.response);
-    assert_source_node_v316_shape(result.response);
+    assert_source_node_v319_shape(result.response);
     assert_transition_summary_and_boundaries(result.response);
     assert_contains(
         result.response,
-        "Node v318 may verify the mini-kv v139 credential resolver credential-handle approval contract non-participation receipt");
+        "\"node_consumption\":\"Node v321 may verify the mini-kv v140 credential resolver endpoint-handle allowlist approval contract non-participation receipt");
     assert_contains(
         result.response,
-        "Node v315 may verify the mini-kv v138 credential resolver signed human approval artifact contract non-participation receipt");
+        "Node v318 may verify the mini-kv v139 credential resolver credential-handle approval contract non-participation receipt");
     assert_not_contains(result.response, "credential_value\":\"");
     assert_not_contains(result.response, "raw_endpoint_url\":\"");
 
