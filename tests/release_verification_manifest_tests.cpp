@@ -153,6 +153,9 @@ int main() {
     assert_contains(manifest, "\"production_window_opened\":false");
     assert_contains(
         manifest,
+        "SMOKEJSON exposes credential_resolver_abort_rollback_semantics_contract_non_participation_receipt for Node v327");
+    assert_contains(
+        manifest,
         "SMOKEJSON exposes credential_resolver_no_network_safety_fixture_contract_non_participation_receipt for Node v324");
 
     const std::vector<std::filesystem::path> required_paths = {
@@ -205,6 +208,8 @@ int main() {
             "credential-resolver-disabled-runtime-shell-candidate-gate-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-no-network-safety-fixture-contract-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-abort-rollback-semantics-contract-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -273,6 +278,24 @@ int main() {
     assert_contains(manifest, "\"network_safety_fixture_executed\":false");
     assert_contains(manifest, "\"http_request_sent\":false");
     assert_contains(manifest, "\"tcp_connection_attempted\":false");
+    assert_contains(manifest, "\"credential_resolver_abort_rollback_semantics_contract_non_participation_receipt\"");
+    assert_contains(manifest, "\"minikv_abort_rollback_semantics_contract_receipt_tests\"");
+    assert_contains(
+        manifest,
+        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-abort-rollback-semantics-contract-intake.v1\"");
+    assert_contains(manifest, "\"contract_state\":\"abort-rollback-semantics-contract-intake-ready\"");
+    assert_contains(
+        manifest,
+        "\"contract_digest\":\"fe05bcfd65aabf56ef170bf458837053a11edf0ae44ad203a88d4ecd284299f9\"");
+    assert_contains(manifest, "\"current_release_version\":\"v142\"");
+    assert_contains(manifest, "\"current_artifact_path_hint\":\"d/142/\"");
+    assert_contains(manifest, "\"abort_rollback_semantics_contract_non_participation_receipt_only\":true");
+    assert_contains(manifest, "\"abort_rollback_semantics_executed\":false");
+    assert_contains(manifest, "\"rollback_execution_allowed\":false");
+    assert_contains(manifest, "\"deployment_action_allowed\":false");
+    assert_contains(manifest, "\"java_sql_execution_allowed\":false");
+    assert_contains(manifest, "\"mini_kv_write_command_allowed\":false");
+    assert_contains(manifest, "\"runtime_shell_command_rendered\":false");
     assert_contains(
         manifest,
         "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-disabled-candidate-upstream-echo-verification.v1\"");

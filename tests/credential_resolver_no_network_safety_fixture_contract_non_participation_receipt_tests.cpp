@@ -261,7 +261,7 @@ int main() {
     assert_transition_summary_and_boundaries(result.response);
     assert_contains(
         result.response,
-        "\"node_consumption\":\"Node v324 may verify the mini-kv v141 credential resolver no-network safety fixture contract non-participation receipt");
+        "Node v324 may verify the mini-kv v141 credential resolver no-network safety fixture contract non-participation receipt");
     assert_contains(
         result.response,
         "Node v321 may verify the mini-kv v140 credential resolver endpoint-handle allowlist approval contract non-participation receipt");

@@ -692,6 +692,24 @@ int main() {
     assert_contains(result.response, "\"write_commands_executed\":false");
     assert_contains(result.response, "\"admin_commands_executed\":false");
     assert_contains(result.response, "\"runtime_write_observed\":false");
+    assert_contains(
+        result.response,
+        "Node v327 may verify the mini-kv v142 credential resolver abort/rollback semantics contract non-participation receipt");
+    assert_contains(
+        result.response,
+        "\"credential_resolver_abort_rollback_semantics_contract_non_participation_receipt\"");
+    assert_contains(
+        result.response,
+        "\"contract_digest\":\"fe05bcfd65aabf56ef170bf458837053a11edf0ae44ad203a88d4ecd284299f9\"");
+    assert_contains(result.response, "\"current_release_version\":\"v142\"");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"d/142/\"");
+    assert_contains(result.response, "\"abort_rollback_semantics_contract_non_participation_receipt_only\":true");
+    assert_contains(result.response, "\"abort_rollback_semantics_executed\":false");
+    assert_contains(result.response, "\"rollback_execution_allowed\":false");
+    assert_contains(result.response, "\"deployment_action_allowed\":false");
+    assert_contains(result.response, "\"java_sql_execution_allowed\":false");
+    assert_contains(result.response, "\"mini_kv_write_command_allowed\":false");
+    assert_contains(result.response, "\"runtime_shell_command_rendered\":false");
     assert_contains(result.response,
                     "Node v324 may verify the mini-kv v141 credential resolver no-network safety fixture contract non-participation receipt");
     assert_contains(result.response,

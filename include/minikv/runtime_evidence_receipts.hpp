@@ -176,4 +176,9 @@ std::string credential_resolver_no_network_safety_fixture_contract_non_participa
 std::string format_credential_resolver_no_network_safety_fixture_contract_non_participation_receipt_json(
     const std::vector<std::string>& read_commands);
 
+std::string credential_resolver_abort_rollback_semantics_contract_non_participation_receipt_digest(
+    const std::vector<std::string>& read_commands);
+std::string format_credential_resolver_abort_rollback_semantics_contract_non_participation_receipt_json(
+    const std::vector<std::string>& read_commands);
+
 } // namespace minikv::runtime_evidence_receipts

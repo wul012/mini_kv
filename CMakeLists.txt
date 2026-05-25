@@ -42,6 +42,7 @@ add_library(minikv
     src/runtime_credential_resolver_credential_handle_approval_receipts.cpp
     src/runtime_credential_resolver_endpoint_handle_allowlist_approval_receipts.cpp
     src/runtime_credential_resolver_no_network_safety_fixture_receipts.cpp
+    src/runtime_credential_resolver_abort_rollback_semantics_receipts.cpp
     src/runtime_credential_resolver_implementation_readiness_receipts.cpp
     src/runtime_credential_resolver_implementation_plan_receipts.cpp
     src/runtime_credential_resolver_decision_receipts.cpp
@@ -907,3 +908,16 @@ target_compile_definitions(minikv_no_network_safety_fixture_contract_receipt_tes
 )
 
 add_test(NAME no_network_safety_fixture_contract_receipt_tests COMMAND minikv_no_network_safety_fixture_contract_receipt_tests)
+
+add_executable(minikv_abort_rollback_semantics_contract_receipt_tests
+    tests/credential_resolver_abort_rollback_semantics_contract_non_participation_receipt_tests.cpp
+)
+
+target_link_libraries(minikv_abort_rollback_semantics_contract_receipt_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_abort_rollback_semantics_contract_receipt_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME abort_rollback_semantics_contract_receipt_tests COMMAND minikv_abort_rollback_semantics_contract_receipt_tests)

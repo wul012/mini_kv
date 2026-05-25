@@ -230,6 +230,9 @@ int main() {
     assert_response_contains(result, "\"write_risk\":true");
     assert_response_contains(
         result,
+        "Node v327 may verify the mini-kv v142 credential resolver abort/rollback semantics contract non-participation receipt");
+    assert_response_contains(
+        result,
         "Node v324 may verify the mini-kv v141 credential resolver no-network safety fixture contract non-participation receipt");
     assert_response_contains(
         result,
@@ -322,6 +325,21 @@ int main() {
     assert_response_contains(
         result,
         "\"credential_resolver_no_network_safety_fixture_contract_non_participation_receipt\"");
+    assert_response_contains(
+        result,
+        "\"credential_resolver_abort_rollback_semantics_contract_non_participation_receipt\"");
+    assert_response_contains(
+        result,
+        "\"contract_digest\":\"fe05bcfd65aabf56ef170bf458837053a11edf0ae44ad203a88d4ecd284299f9\"");
+    assert_response_contains(result, "\"current_release_version\":\"v142\"");
+    assert_response_contains(result, "\"current_artifact_path_hint\":\"d/142/\"");
+    assert_response_contains(result, "\"abort_rollback_semantics_contract_non_participation_receipt_only\":true");
+    assert_response_contains(result, "\"abort_rollback_semantics_executed\":false");
+    assert_response_contains(result, "\"rollback_execution_allowed\":false");
+    assert_response_contains(result, "\"deployment_action_allowed\":false");
+    assert_response_contains(result, "\"java_sql_execution_allowed\":false");
+    assert_response_contains(result, "\"mini_kv_write_command_allowed\":false");
+    assert_response_contains(result, "\"runtime_shell_command_rendered\":false");
     assert_response_contains(result, "\"review_digest\":\"3bbe96497638d826ab644c7503ab5309c0cc4c4fccdd39a0e82a9b6123ca36c9\"");
     assert_response_contains(result, "\"current_release_version\":\"v130\"");
     assert_response_contains(result, "\"current_artifact_path_hint\":\"d/130/\"");
