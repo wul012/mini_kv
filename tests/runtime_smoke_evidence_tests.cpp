@@ -694,6 +694,24 @@ int main() {
     assert_contains(result.response, "\"runtime_write_observed\":false");
     assert_contains(
         result.response,
+        "Node v330 may verify the mini-kv v143 credential resolver implementation candidate gate input-hardening non-participation receipt");
+    assert_contains(
+        result.response,
+        "\"credential_resolver_implementation_candidate_gate_input_hardening_non_participation_receipt\"");
+    assert_contains(
+        result.response,
+        "\"candidate_gate_decision\":\"require-input-export-hardening-before-disabled-runtime-design\"");
+    assert_contains(
+        result.response,
+        "\"decision_digest\":\"e92109116e9d106ffdaa5691aa2eaa626fb595f8a9f4020dbf903fbce7874e87\"");
+    assert_contains(result.response, "\"current_release_version\":\"v143\"");
+    assert_contains(result.response, "\"current_artifact_path_hint\":\"d/143/\"");
+    assert_contains(result.response, "\"stable_current_receipt_export_required\":true");
+    assert_contains(result.response, "\"stable_current_receipt_export_ready\":true");
+    assert_contains(result.response, "\"runtime_shell_design_draft_allowed\":false");
+    assert_contains(result.response, "\"ready_for_node_v330_before_java_v151\":false");
+    assert_contains(
+        result.response,
         "Node v327 may verify the mini-kv v142 credential resolver abort/rollback semantics contract non-participation receipt");
     assert_contains(
         result.response,

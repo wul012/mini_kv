@@ -262,7 +262,10 @@ int main() {
     assert_transition_summary_and_boundaries(result.response);
     assert_contains(
         result.response,
-        "\"node_consumption\":\"Node v327 may verify the mini-kv v142 credential resolver abort/rollback semantics contract non-participation receipt");
+        "\"node_consumption\":\"Node v330 may verify the mini-kv v143 credential resolver implementation candidate gate input-hardening non-participation receipt");
+    assert_contains(
+        result.response,
+        "Node v327 may verify the mini-kv v142 credential resolver abort/rollback semantics contract non-participation receipt");
     assert_contains(
         result.response,
         "Node v324 may verify the mini-kv v141 credential resolver no-network safety fixture contract non-participation receipt");

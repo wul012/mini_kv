@@ -153,6 +153,9 @@ int main() {
     assert_contains(manifest, "\"production_window_opened\":false");
     assert_contains(
         manifest,
+        "SMOKEJSON exposes credential_resolver_implementation_candidate_gate_input_hardening_non_participation_receipt for Node v330");
+    assert_contains(
+        manifest,
         "SMOKEJSON exposes credential_resolver_abort_rollback_semantics_contract_non_participation_receipt for Node v327");
     assert_contains(
         manifest,
@@ -210,6 +213,8 @@ int main() {
             "credential-resolver-no-network-safety-fixture-contract-non-participation-receipt.json",
         std::filesystem::path{"fixtures"} / "release" /
             "credential-resolver-abort-rollback-semantics-contract-non-participation-receipt.json",
+        std::filesystem::path{"fixtures"} / "release" /
+            "credential-resolver-implementation-candidate-gate-input-hardening-non-participation-receipt.json",
     };
 
     for (const auto& path : required_paths) {
@@ -296,6 +301,28 @@ int main() {
     assert_contains(manifest, "\"java_sql_execution_allowed\":false");
     assert_contains(manifest, "\"mini_kv_write_command_allowed\":false");
     assert_contains(manifest, "\"runtime_shell_command_rendered\":false");
+    assert_contains(manifest,
+                    "\"credential_resolver_implementation_candidate_gate_input_hardening_non_participation_receipt\"");
+    assert_contains(manifest, "\"minikv_input_hardening_candidate_gate_receipt_tests\"");
+    assert_contains(
+        manifest,
+        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-implementation-candidate-gate-input-hardening-decision.v1\"");
+    assert_contains(manifest, "\"candidate_gate_state\":\"implementation-candidate-gate-input-hardening-decision-ready\"");
+    assert_contains(manifest,
+                    "\"candidate_gate_decision\":\"require-input-export-hardening-before-disabled-runtime-design\"");
+    assert_contains(
+        manifest,
+        "\"decision_digest\":\"e92109116e9d106ffdaa5691aa2eaa626fb595f8a9f4020dbf903fbce7874e87\"");
+    assert_contains(manifest, "\"source_version\":\"Node v328\"");
+    assert_contains(manifest, "\"closure_digest\":\"15d924b9d529f4d60dd43010b82689f5173d4f2583f8ae31f070f877141a6d14\"");
+    assert_contains(manifest, "\"current_release_version\":\"v143\"");
+    assert_contains(manifest, "\"current_artifact_path_hint\":\"d/143/\"");
+    assert_contains(manifest, "\"stable_current_receipt_export_required\":true");
+    assert_contains(manifest, "\"stable_current_receipt_export_ready\":true");
+    assert_contains(manifest, "\"ready_for_node_v330_before_java_v151\":false");
+    assert_contains(manifest, "\"runtime_shell_design_draft_allowed\":false");
+    assert_contains(manifest, "\"load_restore_compact_executed\":false");
+    assert_contains(manifest, "\"setnxex_execution_allowed\":false");
     assert_contains(
         manifest,
         "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-disabled-candidate-upstream-echo-verification.v1\"");
