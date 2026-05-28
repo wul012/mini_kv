@@ -55,6 +55,7 @@ add_library(minikv
     src/runtime_sandbox_receipts.cpp
     src/recovery_evidence.cpp
     src/resp.cpp
+    src/shard_readiness.cpp
     src/snapshot.cpp
     src/store.cpp
     src/tcp_server.cpp
@@ -142,6 +143,19 @@ target_compile_definitions(minikv_command_tests
 )
 
 add_test(NAME command_tests COMMAND minikv_command_tests)
+
+add_executable(minikv_shard_readiness_tests
+    tests/shard_readiness_tests.cpp
+)
+
+target_link_libraries(minikv_shard_readiness_tests PRIVATE minikv)
+
+target_compile_definitions(minikv_shard_readiness_tests
+    PRIVATE
+        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+)
+
+add_test(NAME shard_readiness_tests COMMAND minikv_shard_readiness_tests)
 
 add_executable(minikv_smokejson_command_receipt_tests
     tests/smokejson_command_receipt_tests.cpp

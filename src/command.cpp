@@ -2,6 +2,7 @@
 
 #include "minikv/command_contracts.hpp"
 #include "minikv/command_response_formatters.hpp"
+#include "minikv/shard_readiness.hpp"
 #include "minikv/string_utils.hpp"
 #include "minikv/snapshot.hpp"
 #include "minikv/wal.hpp"
@@ -58,7 +59,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 29> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 30> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -81,6 +82,7 @@ constexpr std::array<CommandDispatchEntry, 29> command_dispatch_table = {{
     {"HEALTH", CommandDispatchVerb::RuntimeEvidence},
     {"INFO", CommandDispatchVerb::RuntimeEvidence},
     {"INFOJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -432,6 +434,14 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         return {command_response_formatters::format_info_json(store_.size(), wal_, options_.runtime_info)};
+    }
+
+    if (command == "SHARDJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDJSON");
+        }
+
+        return {shard_readiness::format_json()};
     }
 
     if (command == "COMMANDS") {
@@ -787,6 +797,7 @@ std::string CommandProcessor::help_text() {
            "  HEALTH\n"
            "  INFO\n"
            "  INFOJSON\n"
+           "  SHARDJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

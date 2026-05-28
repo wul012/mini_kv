@@ -291,7 +291,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=29") != std::string::npos);
+    assert(result.response.find("command_count=30") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -299,6 +299,7 @@ int main() {
     assert(result.response.find("KEYSJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("COMPACT(category=admin,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("COMMANDSJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find("SHARDJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -317,6 +318,8 @@ int main() {
     assert(result.response.find("\"name\":\"KEYSJSON\",\"category\":\"read\",\"mutates_store\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"LOAD\",\"category\":\"admin\",\"mutates_store\":true") != std::string::npos);
     assert(result.response.find("\"name\":\"COMMANDSJSON\",\"category\":\"meta\"") != std::string::npos);
+    assert(result.response.find("\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
+                                "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -324,6 +327,18 @@ int main() {
     assert(result.response.find("\"name\":\"STORAGEJSON\",\"category\":\"read\",\"mutates_store\":false,"
                                 "\"touches_wal\":true") != std::string::npos);
     assert(result.response.find("\"description\":\"Read command catalog as JSON\"") != std::string::npos);
+
+    result = processor.execute("SHARDJSON");
+    assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
+    assert_response_contains(result, "\"project\":\"mini-kv\"");
+    assert_response_contains(result, "\"readOnly\":true");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"shardEnabled\":false");
+    assert_response_contains(result, "\"shardCount\":1");
+    assert_response_contains(result, "\"slotCount\":16");
+    assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
+    assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
+    assert_response_contains(result, "\"status\":\"prototype-ready-read-only\"");
 
     result = processor.execute("EXPLAINJSON");
     assert(result.response == "ERR usage: EXPLAINJSON command");
@@ -771,6 +786,7 @@ int main() {
     assert(result.response.find("HEALTH") != std::string::npos);
     assert(result.response.find("INFO") != std::string::npos);
     assert(result.response.find("INFOJSON") != std::string::npos);
+    assert(result.response.find("SHARDJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
