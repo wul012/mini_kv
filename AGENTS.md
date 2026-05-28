@@ -118,7 +118,12 @@ d/<version>/图片/
 d/<version>/解释/说明.md
 ```
 
-Keep historical `a/`, `b/`, and `c/` archive roots exactly where they are. Do not move, rename, or rebalance old archive evidence just because a directory has grown large. If `d/` later becomes too large, add the next sibling archive root here first, then use that new root for future versions.
+Keep historical `a/`, `b/`, `c/`, and any later archive roots exactly where they are. Do not move, rename, or rebalance old archive evidence just because a directory has grown large. If the active archive root becomes crowded, or the user says screenshots/archive can start a new folder, add the next sibling archive root here first, then use that new root for future versions. After `d/`, the next screenshot archive root is:
+
+```text
+e/<version>/图片/
+e/<version>/解释/说明.md
+```
 
 每次执行关键命令后，需要把重要执行结果归档。
 
@@ -136,7 +141,7 @@ d/<version>/解释/说明.md
 - 生成命令归档截图时，优先尝试可用的 MCP 截图能力（例如 Ruflo/Playwright MCP 的 `browser_take_screenshot`）：可以把最终命令输出或日志放入可截图页面后由 MCP 生成 PNG。MCP 成功时优先使用 MCP 产物；仅在 MCP 不可用、输出无法可靠呈现或截图失败时，才退回文本渲染 PNG，并在说明文档中记录退回原因。
 - 截图文件名使用数字前缀，例如 `01-cmake-configure.png`。
 - 在 `d/<version>/解释/` 中创建说明文档，解释每张截图对应的命令、结果和意义。
-- 历史归档目录 `a/`、`b/`、`c/` 保留既有版本记录，不主动搬迁；v122 起新增运行截图和解释写入与 `a/`、`b/`、`c/` 同级的 `d/`。
+- 历史归档目录 `a/`、`b/`、`c/`、`d/` 保留既有版本记录，不主动搬迁；后续可在同级新目录（例如 `e/`）继续写入截图和解释，并在当前规则中先记录新的活动归档根。
 - 如果启动了服务端或其他后台进程，验证结束后必须停止，并在说明文档中记录。
 - 最终回复中简要说明新增的归档文件、保留文件和清理结果。
 
@@ -152,7 +157,11 @@ Starting with the next mini-kv version, write new code walkthrough documents to 
 代码讲解记录_生产雏形阶段_第二册/
 ```
 
-Each walkthrough folder keeps its own `README.md` index. The old folder may point to the newer sibling, but old walkthrough files should not be moved unless the user explicitly asks for a historical cleanup pass.
+Each walkthrough folder keeps its own `README.md` index. The old folder may point to the newer sibling, but old walkthrough files should not be moved unless the user explicitly asks for a historical cleanup pass. If the active walkthrough folder becomes crowded, or the user says code explanations can start a new folder, create the next sibling volume and continue there. After `代码讲解记录_生产雏形阶段_第二册/`, the next walkthrough folder is:
+
+```text
+代码讲解记录_生产雏形阶段_第三册/
+```
 
 每个版本都要补充代码讲解，但篇数按实际内容量决定：
 
@@ -174,7 +183,7 @@ Each walkthrough folder keeps its own `README.md` index. The old folder may poin
 
 - 讲解版式、编号延续、索引方式保持不变；以后新增索引优先写入当前阶段文件夹的 `README.md`，并指向该文件夹内的实际文件。
 - 如果同一版本有多篇讲解，全部放在当前阶段同级文件夹中，并通过文件名区分主题。
-- 如果某个讲解/文档归档目录内容已经过多，后续文档可以在同级新目录继续写入，旧目录保留不搬迁；优先通过同级目录名和 README/索引串联内容，不要把所有文档硬塞进一个文件夹。
+- 如果某个讲解/文档归档目录内容已经过多，或用户明确说可以另起文件夹，后续文档可以在同级新目录继续写入，旧目录保留不搬迁；优先通过同级目录名和 README/索引串联内容，不要把所有文档硬塞进一个文件夹。
 
 ## Code Explanation Format Rule
 
@@ -238,3 +247,5 @@ c/<version>/解释/说明.md
 ```
 
 Note: The `c/<version>/...` block above is historical through v121. For v122 and later, use the `d/<version>/...` archive root defined in Command Result Archive.
+
+When `d/` or `代码讲解记录_生产雏形阶段_第二册/` becomes crowded, future versions may rotate to the sibling roots defined above (`e/<version>/...` and `代码讲解记录_生产雏形阶段_第三册/`) without moving old evidence.
