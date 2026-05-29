@@ -13,7 +13,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v146";
+constexpr std::string_view release_version = "v147";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -67,7 +67,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v378+ may consume v146 after Node v377 archive verification\","
+           "\"nodeConsumer\":\"Node v380+ may consume v147 after Node v379 archive verification\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -81,30 +81,62 @@ std::string format_command_catalog_json() {
 std::string format_fixture_parity_json() {
     return "{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\","
            "\"historicalFixturePaths\":" +
-           json_string_array({"fixtures/release/shard-readiness-v144.json", "fixtures/release/shard-readiness-v145.json"}) +
+           json_string_array({
+               "fixtures/release/shard-readiness-v144.json",
+               "fixtures/release/shard-readiness-v145.json",
+               "fixtures/release/shard-readiness-v146.json",
+           }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
 
 std::string format_archive_compatibility_json() {
     return "{\"preservesNodeArchivedEvidence\":true,"
            "\"archivedNodeVersions\":" +
-           json_string_array({"Node v370", "Node v371", "Node v372", "Node v373", "Node v374", "Node v375", "Node v376"}) +
+           json_string_array({
+               "Node v370",
+               "Node v371",
+               "Node v372",
+               "Node v373",
+               "Node v374",
+               "Node v375",
+               "Node v376",
+               "Node v377",
+               "Node v378",
+           }) +
            ",\"changesArchivedNodeEvidence\":false,"
-           "\"futureNodeConsumer\":\"Node v378 or later after v377 archive verification\"}";
+           "\"futureNodeConsumer\":\"Node v380 or later after v379 archive verification\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v145\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v145.json\","
+    return "{\"previousConsumedReleaseVersion\":\"v146\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v146.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v378\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
-           "\"nodeV376ConsumptionPreserved\":true,"
-           "\"nodeV377ReadsUnfinishedUpstream\":false}";
+           "\"nodeV378ConsumptionPreserved\":true,"
+           "\"nodeV379ReadsUnfinishedUpstream\":false}";
+}
+
+std::string format_active_prototype_plan_json() {
+    return "{\"planMode\":\"prerequisite-only\","
+           "\"activeShardPrototypeAllowed\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"shardDirectoryCreationAllowed\":false,"
+           "\"multiProcessStartAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"requiredBeforeActivation\":" + json_string_array({
+               "separate active shard prototype plan",
+               "explicit service startup and cleanup responsibility",
+               "read-only Java echo",
+               "Node consumer gate after frozen mini-kv evidence",
+               "fail-closed smoke target",
+           }) +
+           "}";
 }
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v146",
+        "mini-kv-shard-readiness-v147",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -116,8 +148,9 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v145-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v376-preserved"},
+            {"historicalFallback=v146-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v378-preserved"},
+            {"activePrototypePlan=prerequisite-only-no-activation"},
         });
 }
 
@@ -140,7 +173,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"historical-fallback-hardened-read-only\"" +
+           ",\"status\":\"active-prototype-prerequisite-read-only\"" +
            ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
            ",\"boundaries\":" + format_boundaries_json() +
@@ -149,6 +182,7 @@ std::string format_json() {
            ",\"fixtureParity\":" + format_fixture_parity_json() +
            ",\"archiveCompatibility\":" + format_archive_compatibility_json() +
            ",\"historicalFallback\":" + format_historical_fallback_json() +
+           ",\"activePrototypePlan\":" + format_active_prototype_plan_json() +
            ",\"readOnlyBoundaryFields\":" + json_string_array({
                "readOnly",
                "executionAllowed",
@@ -158,6 +192,9 @@ std::string format_json() {
                "boundaries.archivedNodeEvidenceMutated",
                "archiveCompatibility.changesArchivedNodeEvidence",
                "historicalFallback.rollingCurrentUsedForHistoricalBaseline",
+               "activePrototypePlan.activeShardPrototypeAllowed",
+               "activePrototypePlan.routerActivationAllowed",
+               "activePrototypePlan.shardDirectoryCreationAllowed",
            }) +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
            ",\"notes\":" + json_string_array({
@@ -165,8 +202,9 @@ std::string format_json() {
                "single logical shard only",
                "slot table is evidence, not active storage routing",
                "does not create shard directories or start extra processes",
-               "freezes v145 evidence for historical fallback",
-               "does not mutate Node v370-v376 archived evidence",
+               "freezes v146 evidence for historical fallback",
+               "active shard prototype remains plan-prerequisite only",
+               "does not mutate Node v370-v378 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";
