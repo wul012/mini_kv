@@ -4,6 +4,8 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+Version 146 freezes the Node-consumed v145 shard readiness evidence as `fixtures/release/shard-readiness-v145.json` and rolls the current `SHARDJSON` output forward with explicit historical fallback semantics. The new current evidence states that historical baselines must use frozen v144/v145 files rather than rolling `shard-readiness.json`, preserves Node v370-v376 archived evidence, and remains read-only with no active router, no shard directories, no extra processes, no writes, no LOAD/COMPACT/RESTORE/SETNXEX execution, and no order/audit authority.
+
 Version 145 hardens the read-only shard readiness surface without changing the Node v370-v373 archived evidence chain: `SHARDJSON` now self-describes its command catalog posture, fixture parity, archived Node evidence compatibility, and boundary field list while preserving the v144 fixture as `fixtures/release/shard-readiness-v144.json`. It remains evidence only: no shard directories, no active router, no extra processes, no writes, no LOAD/COMPACT/RESTORE/SETNXEX execution, and no order/audit authority.
 
 Version 144 adds a read-only shard readiness prototype for Node v370: the new `SHARDJSON` command and `fixtures/release/shard-readiness.json` publish the frozen `shard-readiness.v1` fields (`project`, `version`, `readOnly`, `executionAllowed`, `shardEnabled`, `shardCount`, `slotCount`, `routingMode`, `evidencePath`, `status`). This is evidence only: it exposes a single logical shard map, a 16-slot preview table, and sample key routing without creating shard directories, starting extra processes, writing storage, executing LOAD/COMPACT/RESTORE/SETNXEX, or becoming order/audit authoritative.

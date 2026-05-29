@@ -13,7 +13,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v145";
+constexpr std::string_view release_version = "v146";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -67,7 +67,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v375+ may consume v145 after Node v374 regular gate\","
+           "\"nodeConsumer\":\"Node v378+ may consume v146 after Node v377 archive verification\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -80,20 +80,31 @@ std::string format_command_catalog_json() {
 
 std::string format_fixture_parity_json() {
     return "{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\","
-           "\"historicalFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
-           "\"runtimeMatchesCurrentFixture\":true,\"historicalFixturePreserved\":true}";
+           "\"historicalFixturePaths\":" +
+           json_string_array({"fixtures/release/shard-readiness-v144.json", "fixtures/release/shard-readiness-v145.json"}) +
+           ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
 
 std::string format_archive_compatibility_json() {
     return "{\"preservesNodeArchivedEvidence\":true,"
-           "\"archivedNodeVersions\":" + json_string_array({"Node v370", "Node v371", "Node v372", "Node v373"}) +
+           "\"archivedNodeVersions\":" +
+           json_string_array({"Node v370", "Node v371", "Node v372", "Node v373", "Node v374", "Node v375", "Node v376"}) +
            ",\"changesArchivedNodeEvidence\":false,"
-           "\"futureNodeConsumer\":\"Node v375 or later after v374 regular gate archive verification\"}";
+           "\"futureNodeConsumer\":\"Node v378 or later after v377 archive verification\"}";
+}
+
+std::string format_historical_fallback_json() {
+    return "{\"previousConsumedReleaseVersion\":\"v145\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v145.json\","
+           "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
+           "\"rollingCurrentUsedForHistoricalBaseline\":false,"
+           "\"nodeV376ConsumptionPreserved\":true,"
+           "\"nodeV377ReadsUnfinishedUpstream\":false}";
 }
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v145",
+        "mini-kv-shard-readiness-v146",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -105,7 +116,8 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"archivedNodeEvidence=v370-v373-preserved"},
+            {"historicalFallback=v145-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v376-preserved"},
         });
 }
 
@@ -128,7 +140,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"hardened-read-only\"" +
+           ",\"status\":\"historical-fallback-hardened-read-only\"" +
            ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
            ",\"boundaries\":" + format_boundaries_json() +
@@ -136,6 +148,7 @@ std::string format_json() {
            ",\"commandCatalog\":" + format_command_catalog_json() +
            ",\"fixtureParity\":" + format_fixture_parity_json() +
            ",\"archiveCompatibility\":" + format_archive_compatibility_json() +
+           ",\"historicalFallback\":" + format_historical_fallback_json() +
            ",\"readOnlyBoundaryFields\":" + json_string_array({
                "readOnly",
                "executionAllowed",
@@ -143,6 +156,8 @@ std::string format_json() {
                "boundaries.adminCommandsAllowed",
                "boundaries.loadRestoreCompactAllowed",
                "boundaries.archivedNodeEvidenceMutated",
+               "archiveCompatibility.changesArchivedNodeEvidence",
+               "historicalFallback.rollingCurrentUsedForHistoricalBaseline",
            }) +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
            ",\"notes\":" + json_string_array({
@@ -150,7 +165,8 @@ std::string format_json() {
                "single logical shard only",
                "slot table is evidence, not active storage routing",
                "does not create shard directories or start extra processes",
-               "does not mutate Node v370-v373 archived evidence",
+               "freezes v145 evidence for historical fallback",
+               "does not mutate Node v370-v376 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";
