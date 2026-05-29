@@ -8,6 +8,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `201-version-145-shard-readiness-hardening.md` - mini-kv v145 `SHARDJSON` hardening with command catalog posture, fixture parity, archived Node evidence compatibility, read-only boundary fields, tests, TCP smoke, and `e/145` archive.
 - `202-version-146-shard-readiness-historical-fallback.md` - mini-kv v146 freezes the Node-consumed v145 shard readiness evidence, rolls current `SHARDJSON` to v146, adds historical fallback semantics, tests, TCP smoke, and `e/146` archive.
 - `203-version-147-shard-readiness-active-prototype-plan.md` - mini-kv v147 freezes Node-consumed v146 shard readiness evidence, rolls current `SHARDJSON` to v147, adds prerequisite-only `activePrototypePlan`, tests, TCP smoke, and `e/147` archive.
+- `204-version-148-shard-readiness-active-plan-freeze.md` - mini-kv v148 freezes v147 `activePrototypePlan` evidence, rolls current `SHARDJSON` to v148, adds `activePrototypePlanFreeze`, tests, TCP smoke, and `e/148` archive.
 
 ## Rules
 

@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v147\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v148\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -339,16 +339,20 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"active-prototype-prerequisite-read-only\"");
+    assert_response_contains(result, "\"status\":\"active-prototype-plan-frozen-read-only\"");
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v146\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v147\"");
     assert_response_contains(result, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_response_contains(result, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_response_contains(result, "\"activeShardPrototypeAllowed\":false");
     assert_response_contains(result, "\"routerActivationAllowed\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v147\"");
+    assert_response_contains(result, "\"frozenRouterActivationAllowed\":false");
+    assert_response_contains(result, "\"frozenWriteRoutingAllowed\":false");
 
     result = processor.execute("EXPLAINJSON");
     assert(result.response == "ERR usage: EXPLAINJSON command");

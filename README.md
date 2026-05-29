@@ -4,6 +4,8 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+Version 148 freezes the v147 `activePrototypePlan` shard readiness evidence as `fixtures/release/shard-readiness-v147.json` and rolls the current `SHARDJSON` output forward with explicit frozen-plan parity. The new `activePrototypePlanFreeze` section proves the frozen baseline still has no active shard prototype, no router activation, no shard directory creation, no multi-process start, no write routing, no writes, no LOAD/COMPACT/RESTORE/SETNXEX execution, and no order/audit authority.
+
 Version 147 freezes the Node-consumed v146 shard readiness evidence as `fixtures/release/shard-readiness-v146.json` and turns the current `SHARDJSON` output into an active-shard-prototype prerequisite record. The new `activePrototypePlan` section is explicit that active shard prototype work is not enabled here: no router activation, no shard directory creation, no multi-process start, no write routing, no writes, no LOAD/COMPACT/RESTORE/SETNXEX execution, and no order/audit authority.
 
 Version 146 freezes the Node-consumed v145 shard readiness evidence as `fixtures/release/shard-readiness-v145.json` and rolls the current `SHARDJSON` output forward with explicit historical fallback semantics. The new current evidence states that historical baselines must use frozen v144/v145 files rather than rolling `shard-readiness.json`, preserves Node v370-v376 archived evidence, and remains read-only with no active router, no shard directories, no extra processes, no writes, no LOAD/COMPACT/RESTORE/SETNXEX execution, and no order/audit authority.
