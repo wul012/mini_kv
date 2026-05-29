@@ -38,7 +38,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"releaseVersion\":\"v144\"");
+    assert_contains(json, "\"releaseVersion\":\"v145\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -46,7 +46,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"prototype-ready-read-only\"");
+    assert_contains(json, "\"status\":\"hardened-read-only\"");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -60,10 +60,26 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"setnxexExecutionAllowed\":false");
     assert_contains(json, "\"multiProcessStarted\":false");
     assert_contains(json, "\"storageDirectoriesCreated\":false");
+    assert_contains(json, "\"activeRouterInstalled\":false");
+    assert_contains(json, "\"archivedNodeEvidenceMutated\":false");
     assert_contains(json, "\"writeCommandsExecuted\":false");
     assert_contains(json, "\"adminCommandsExecuted\":false");
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
-    assert_contains(json, "\"nodeConsumer\":\"Node v370 shard readiness contract consumer gate\"");
+    assert_contains(json, "\"nodeConsumer\":\"Node v375+ may consume v145 after Node v374 regular gate\"");
+    assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
+    assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
+    assert_contains(json, "\"mutatesStore\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"extraArgsAllowed\":false");
+    assert_contains(json, "\"sideEffects\":[\"metadata_read\"]");
+    assert_contains(json, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
+    assert_contains(json, "\"historicalFixturePath\":\"fixtures/release/shard-readiness-v144.json\"");
+    assert_contains(json, "\"runtimeMatchesCurrentFixture\":true");
+    assert_contains(json, "\"historicalFixturePreserved\":true");
+    assert_contains(json, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
+    assert_contains(json, "\"archivedNodeVersions\":[\"Node v370\",\"Node v371\",\"Node v372\",\"Node v373\"]");
+    assert_contains(json, "\"changesArchivedNodeEvidence\":false");
+    assert_contains(json, "\"readOnlyBoundaryFields\":[\"readOnly\",\"executionAllowed\"");
     assert_contains(json, "\"evidenceDigest\":\"fnv1a64:");
 }
 
@@ -71,11 +87,18 @@ void assert_shard_readiness_contract(const std::string& json) {
 
 int main() {
     const auto fixture_path = std::filesystem::path{"fixtures"} / "release" / "shard-readiness.json";
+    const auto historical_fixture_path =
+        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v144.json";
     const auto fixture = read_fixture_text(fixture_path);
+    const auto historical_fixture = read_fixture_text(historical_fixture_path);
 
     assert(fixture == minikv::shard_readiness::format_json());
     assert(minikv::shard_readiness::fixture_path() == "fixtures/release/shard-readiness.json");
     assert_shard_readiness_contract(fixture);
+    assert(fixture != historical_fixture);
+    assert_contains(historical_fixture, "\"releaseVersion\":\"v144\"");
+    assert_contains(historical_fixture, "\"status\":\"prototype-ready-read-only\"");
+    assert_contains(historical_fixture, "\"evidenceDigest\":\"fnv1a64:22d3c4815a440804\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
@@ -107,4 +130,8 @@ int main() {
     assert_contains(result.response, "\"write_command\":false");
     assert_contains(result.response, "\"execution_allowed\":false");
     assert_contains(result.response, "\"warnings\":[\"not a write command\"]");
+
+    result = processor.execute("CHECKJSON SHARDJSON extra");
+    assert_contains(result.response, "\"allowed_by_parser\":false");
+    assert_contains(result.response, "\"usage: SHARDJSON\"");
 }

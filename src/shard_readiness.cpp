@@ -13,7 +13,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v144";
+constexpr std::string_view release_version = "v145";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -51,9 +51,49 @@ std::string format_route_samples_json() {
     return response;
 }
 
+std::string format_shard_map_json() {
+    return "[{\"shardId\":\"shard-0\",\"slotStart\":0,\"slotEnd\":15,"
+           "\"storagePath\":\"not-created\",\"readOnly\":true,\"writesAllowed\":false}]";
+}
+
+std::string format_boundaries_json() {
+    return "{\"orderAuthoritative\":false,\"auditAuthoritative\":false,"
+           "\"writeCommandsAllowed\":false,\"adminCommandsAllowed\":false,"
+           "\"loadRestoreCompactAllowed\":false,\"setnxexExecutionAllowed\":false,"
+           "\"multiProcessStarted\":false,\"storageDirectoriesCreated\":false,"
+           "\"activeRouterInstalled\":false,\"archivedNodeEvidenceMutated\":false}";
+}
+
+std::string format_diagnostics_json() {
+    return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
+           "\"loadRestoreCompactExecuted\":false,"
+           "\"nodeConsumer\":\"Node v375+ may consume v145 after Node v374 regular gate\","
+           "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
+           "\"nodeArchivedEvidencePreserved\":true}";
+}
+
+std::string format_command_catalog_json() {
+    return "{\"command\":\"SHARDJSON\",\"category\":\"read\",\"mutatesStore\":false,"
+           "\"touchesWal\":false,\"stable\":true,\"extraArgsAllowed\":false,"
+           "\"sideEffects\":[\"metadata_read\"]}";
+}
+
+std::string format_fixture_parity_json() {
+    return "{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\","
+           "\"historicalFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
+           "\"runtimeMatchesCurrentFixture\":true,\"historicalFixturePreserved\":true}";
+}
+
+std::string format_archive_compatibility_json() {
+    return "{\"preservesNodeArchivedEvidence\":true,"
+           "\"archivedNodeVersions\":" + json_string_array({"Node v370", "Node v371", "Node v372", "Node v373"}) +
+           ",\"changesArchivedNodeEvidence\":false,"
+           "\"futureNodeConsumer\":\"Node v375 or later after v374 regular gate archive verification\"}";
+}
+
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v144",
+        "mini-kv-shard-readiness-v145",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -63,6 +103,9 @@ std::string evidence_digest() {
             {"slotCount=16"},
             {"routingMode=single-shard-readiness-prototype"},
             {fixture_path()},
+            {"commandCatalog=read-no-mutate-no-wal"},
+            {"fixtureParity=runtime-matches-current-fixture"},
+            {"archivedNodeEvidence=v370-v373-preserved"},
         });
 }
 
@@ -85,23 +128,29 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"prototype-ready-read-only\"" +
-           ",\"shardMap\":[{\"shardId\":\"shard-0\",\"slotStart\":0,\"slotEnd\":15,"
-           "\"storagePath\":\"not-created\",\"readOnly\":true,\"writesAllowed\":false}]" +
+           ",\"status\":\"hardened-read-only\"" +
+           ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
-           ",\"boundaries\":{\"orderAuthoritative\":false,\"auditAuthoritative\":false,"
-           "\"writeCommandsAllowed\":false,\"adminCommandsAllowed\":false,"
-           "\"loadRestoreCompactAllowed\":false,\"setnxexExecutionAllowed\":false,"
-           "\"multiProcessStarted\":false,\"storageDirectoriesCreated\":false}" +
-           ",\"diagnostics\":{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
-           "\"loadRestoreCompactExecuted\":false,\"nodeConsumer\":\"Node v370 shard readiness contract consumer gate\","
-           "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\"}" +
+           ",\"boundaries\":" + format_boundaries_json() +
+           ",\"diagnostics\":" + format_diagnostics_json() +
+           ",\"commandCatalog\":" + format_command_catalog_json() +
+           ",\"fixtureParity\":" + format_fixture_parity_json() +
+           ",\"archiveCompatibility\":" + format_archive_compatibility_json() +
+           ",\"readOnlyBoundaryFields\":" + json_string_array({
+               "readOnly",
+               "executionAllowed",
+               "boundaries.writeCommandsAllowed",
+               "boundaries.adminCommandsAllowed",
+               "boundaries.loadRestoreCompactAllowed",
+               "boundaries.archivedNodeEvidenceMutated",
+           }) +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
            ",\"notes\":" + json_string_array({
-               "read-only shard readiness prototype",
+               "read-only shard readiness hardening",
                "single logical shard only",
                "slot table is evidence, not active storage routing",
                "does not create shard directories or start extra processes",
+               "does not mutate Node v370-v373 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";
