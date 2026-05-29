@@ -11,6 +11,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `204-version-148-shard-readiness-active-plan-freeze.md` - mini-kv v148 freezes v147 `activePrototypePlan` evidence, rolls current `SHARDJSON` to v148, adds `activePrototypePlanFreeze`, tests, TCP smoke, and `e/148` archive.
 - `205-version-149-shard-readiness-consumer-handoff.md` - mini-kv v149 freezes v148 `activePrototypePlanFreeze` evidence, rolls current `SHARDJSON` to v149, adds frozen-evidence-only `consumerHandoff`, tests, TCP smoke, and `e/149` archive.
 - `206-version-150-shard-readiness-live-read-gate-plan.md` - mini-kv v150 freezes v149 `consumerHandoff` evidence, rolls current `SHARDJSON` to v150, adds read-only `liveReadGatePlan` prerequisites, tests, TCP smoke, and `e/150` archive.
+- `207-version-151-shard-readiness-service-lifecycle-template.md` - mini-kv v151 freezes v150 `liveReadGatePlan` evidence, rolls current `SHARDJSON` to v151, adds template-only `operatorServiceLifecycleTemplate`, tests, TCP smoke, and `e/151` archive.
 
 ## Rules
 
