@@ -13,7 +13,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v148";
+constexpr std::string_view release_version = "v149";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -67,7 +67,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v380+ may consume v148 after v147 activePrototypePlan evidence freeze\","
+           "\"nodeConsumer\":\"Node v382+ may consume v149 after v148 frozen evidence handoff\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -86,6 +86,7 @@ std::string format_fixture_parity_json() {
                "fixtures/release/shard-readiness-v145.json",
                "fixtures/release/shard-readiness-v146.json",
                "fixtures/release/shard-readiness-v147.json",
+               "fixtures/release/shard-readiness-v148.json",
            }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -104,19 +105,21 @@ std::string format_archive_compatibility_json() {
                "Node v377",
                "Node v378",
                "Node v379",
+               "Node v380",
+               "Node v381",
            }) +
            ",\"changesArchivedNodeEvidence\":false,"
-           "\"futureNodeConsumer\":\"Node v380 or later after v147 activePrototypePlan evidence freeze\"}";
+           "\"futureNodeConsumer\":\"Node v382 or later after v148 frozen evidence handoff\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v147\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v147.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v380 pending completed evidence intake\","
+    return "{\"previousConsumedReleaseVersion\":\"v148\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v148.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v382 pending completed evidence intake\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
-           "\"nodeV379ArchiveVerificationPreserved\":true,"
-           "\"nodeV380ReadsUnfinishedUpstream\":false}";
+           "\"nodeV381ArchiveVerificationPreserved\":true,"
+           "\"nodeV382ReadsUnfinishedUpstream\":false}";
 }
 
 std::string format_active_prototype_plan_json() {
@@ -137,9 +140,9 @@ std::string format_active_prototype_plan_json() {
 }
 
 std::string format_active_prototype_plan_freeze_json() {
-    return "{\"frozenReleaseVersion\":\"v147\","
-           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v147.json\","
-           "\"frozenStatus\":\"active-prototype-prerequisite-read-only\","
+    return "{\"frozenReleaseVersion\":\"v148\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v148.json\","
+           "\"frozenStatus\":\"active-prototype-plan-frozen-read-only\","
            "\"preservesActivePrototypePlan\":true,"
            "\"frozenActiveShardPrototypeAllowed\":false,"
            "\"frozenRouterActivationAllowed\":false,"
@@ -149,9 +152,30 @@ std::string format_active_prototype_plan_freeze_json() {
            "\"rollingCurrentUsedForFrozenBaseline\":false}";
 }
 
+std::string format_consumer_handoff_json() {
+    return "{\"handoffMode\":\"frozen-evidence-only\","
+           "\"frozenReleaseVersion\":\"v148\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v148.json\","
+           "\"readyForNodeConsumption\":true,"
+           "\"liveReadGateRequiredBeforeRuntimeProbe\":true,"
+           "\"startsServices\":false,"
+           "\"activeShardPrototypeEnabled\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"executionAllowed\":false,"
+           "\"requiredConsumerChecks\":" + json_string_array({
+               "read frozen fixture instead of rolling current",
+               "verify releaseVersion and status",
+               "verify readOnly true and executionAllowed false",
+               "verify no router and no write routing",
+               "fail closed on missing frozen evidence",
+           }) +
+           "}";
+}
+
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v148",
+        "mini-kv-shard-readiness-v149",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -163,10 +187,11 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v147-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v379-preserved"},
+            {"historicalFallback=v148-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v381-preserved"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
-            {"activePrototypePlanFreeze=v147-frozen-no-router-no-write"},
+            {"activePrototypePlanFreeze=v148-frozen-no-router-no-write"},
+            {"consumerHandoff=frozen-evidence-only-no-live-read"},
         });
 }
 
@@ -189,7 +214,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"active-prototype-plan-frozen-read-only\"" +
+           ",\"status\":\"frozen-evidence-handoff-read-only\"" +
            ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
            ",\"boundaries\":" + format_boundaries_json() +
@@ -200,6 +225,7 @@ std::string format_json() {
            ",\"historicalFallback\":" + format_historical_fallback_json() +
            ",\"activePrototypePlan\":" + format_active_prototype_plan_json() +
            ",\"activePrototypePlanFreeze\":" + format_active_prototype_plan_freeze_json() +
+           ",\"consumerHandoff\":" + format_consumer_handoff_json() +
            ",\"readOnlyBoundaryFields\":" + json_string_array({
                "readOnly",
                "executionAllowed",
@@ -216,6 +242,10 @@ std::string format_json() {
                "activePrototypePlanFreeze.rollingCurrentUsedForFrozenBaseline",
                "activePrototypePlanFreeze.frozenRouterActivationAllowed",
                "activePrototypePlanFreeze.frozenWriteRoutingAllowed",
+               "consumerHandoff.startsServices",
+               "consumerHandoff.routerActivationAllowed",
+               "consumerHandoff.writeRoutingAllowed",
+               "consumerHandoff.executionAllowed",
            }) +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
            ",\"notes\":" + json_string_array({
@@ -223,9 +253,9 @@ std::string format_json() {
                "single logical shard only",
                "slot table is evidence, not active storage routing",
                "does not create shard directories or start extra processes",
-               "freezes v147 activePrototypePlan evidence for historical fallback",
+               "freezes v148 activePrototypePlanFreeze evidence for handoff",
                "active shard prototype remains plan-prerequisite only",
-               "does not mutate Node v370-v379 archived evidence",
+               "does not mutate Node v370-v381 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";
