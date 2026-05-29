@@ -4,6 +4,8 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+Version 150 freezes the v149 `consumerHandoff` evidence as `fixtures/release/shard-readiness-v149.json` and rolls the current `SHARDJSON` output forward with a `liveReadGatePlan` prerequisite section. The new plan fields document the service owner, port list, smoke target, fail-closed behavior, and cleanup requirements a later live-read gate would need, while still proving mini-kv does not start services, run a runtime probe, enable active shard routing, write storage, execute LOAD/COMPACT/RESTORE/SETNXEX, or become order/audit authoritative.
+
 Version 149 freezes the v148 `activePrototypePlanFreeze` evidence as `fixtures/release/shard-readiness-v148.json` and rolls the current `SHARDJSON` output forward with a `consumerHandoff` section for downstream Node/Java consumers. The handoff is frozen-evidence-only: consumers must read the versioned fixture, verify read-only/no-router/no-write/no-execution fields, and fail closed on missing frozen evidence; mini-kv still does not start services, enable active shard prototype routing, write storage, execute LOAD/COMPACT/RESTORE/SETNXEX, or become order/audit authoritative.
 
 Version 148 freezes the v147 `activePrototypePlan` shard readiness evidence as `fixtures/release/shard-readiness-v147.json` and rolls the current `SHARDJSON` output forward with explicit frozen-plan parity. The new `activePrototypePlanFreeze` section proves the frozen baseline still has no active shard prototype, no router activation, no shard directory creation, no multi-process start, no write routing, no writes, no LOAD/COMPACT/RESTORE/SETNXEX execution, and no order/audit authority.

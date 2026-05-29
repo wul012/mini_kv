@@ -38,7 +38,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"releaseVersion\":\"v149\"");
+    assert_contains(json, "\"releaseVersion\":\"v150\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -46,7 +46,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"frozen-evidence-handoff-read-only\"");
+    assert_contains(json, "\"status\":\"live-read-gate-prerequisite-read-only\"");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -65,7 +65,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"writeCommandsExecuted\":false");
     assert_contains(json, "\"adminCommandsExecuted\":false");
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
-    assert_contains(json, "\"nodeConsumer\":\"Node v382+ may consume v149 after v148 frozen evidence handoff\"");
+    assert_contains(json, "\"nodeConsumer\":\"Node v384+ may consume v150 after v149 live-read gate prerequisite evidence\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -77,20 +77,21 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"fixtures/release/shard-readiness-v145.json\","
                           "\"fixtures/release/shard-readiness-v146.json\","
                           "\"fixtures/release/shard-readiness-v147.json\","
-                          "\"fixtures/release/shard-readiness-v148.json\"]");
+                          "\"fixtures/release/shard-readiness-v148.json\","
+                          "\"fixtures/release/shard-readiness-v149.json\"]");
     assert_contains(json, "\"runtimeMatchesCurrentFixture\":true");
     assert_contains(json, "\"historicalFixturesPreserved\":true");
     assert_contains(json, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
     assert_contains(json, "\"archivedNodeVersions\":[\"Node v370\",\"Node v371\",\"Node v372\",\"Node v373\","
                           "\"Node v374\",\"Node v375\",\"Node v376\",\"Node v377\",\"Node v378\",\"Node v379\","
-                          "\"Node v380\",\"Node v381\"]");
+                          "\"Node v380\",\"Node v381\",\"Node v382\",\"Node v383\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v148\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v148.json\"");
-    assert_contains(json, "\"previousConsumptionNodeVersion\":\"Node v382 pending completed evidence intake\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v149\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v149.json\"");
+    assert_contains(json, "\"previousConsumptionNodeVersion\":\"Node v384 pending live-read gate plan or frozen evidence intake\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
-    assert_contains(json, "\"nodeV381ArchiveVerificationPreserved\":true");
-    assert_contains(json, "\"nodeV382ReadsUnfinishedUpstream\":false");
+    assert_contains(json, "\"nodeV383ArchiveVerificationPreserved\":true");
+    assert_contains(json, "\"nodeV384ReadsUnfinishedUpstream\":false");
     assert_contains(json, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_contains(json, "\"activeShardPrototypeAllowed\":false");
     assert_contains(json, "\"routerActivationAllowed\":false");
@@ -98,17 +99,17 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"multiProcessStartAllowed\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"requiredBeforeActivation\":[\"separate active shard prototype plan\"");
-    assert_contains(json, "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v148\"");
-    assert_contains(json, "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v148.json\"");
-    assert_contains(json, "\"frozenStatus\":\"active-prototype-plan-frozen-read-only\"");
+    assert_contains(json, "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v149\"");
+    assert_contains(json, "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v149.json\"");
+    assert_contains(json, "\"frozenStatus\":\"frozen-evidence-handoff-read-only\"");
     assert_contains(json, "\"preservesActivePrototypePlan\":true");
     assert_contains(json, "\"frozenActiveShardPrototypeAllowed\":false");
     assert_contains(json, "\"frozenRouterActivationAllowed\":false");
     assert_contains(json, "\"frozenWriteRoutingAllowed\":false");
     assert_contains(json, "\"rollingCurrentUsedForFrozenBaseline\":false");
     assert_contains(json, "\"consumerHandoff\":{\"handoffMode\":\"frozen-evidence-only\"");
-    assert_contains(json, "\"frozenReleaseVersion\":\"v148\"");
-    assert_contains(json, "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v148.json\"");
+    assert_contains(json, "\"frozenReleaseVersion\":\"v149\"");
+    assert_contains(json, "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v149.json\"");
     assert_contains(json, "\"readyForNodeConsumption\":true");
     assert_contains(json, "\"liveReadGateRequiredBeforeRuntimeProbe\":true");
     assert_contains(json, "\"startsServices\":false");
@@ -117,6 +118,19 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"requiredConsumerChecks\":[\"read frozen fixture instead of rolling current\"");
+    assert_contains(json, "\"liveReadGatePlan\":{\"planMode\":\"service-lifecycle-prerequisite-only\"");
+    assert_contains(json, "\"liveReadGateAllowed\":false");
+    assert_contains(json, "\"runtimeProbeAllowed\":false");
+    assert_contains(json, "\"startsServices\":false");
+    assert_contains(json, "\"requiresServiceOwner\":true");
+    assert_contains(json, "\"requiresPortList\":true");
+    assert_contains(json, "\"requiresSmokeTarget\":true");
+    assert_contains(json, "\"requiresFailClosedBehavior\":true");
+    assert_contains(json, "\"requiresCleanup\":true");
+    assert_contains(json, "\"routerActivationAllowed\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"requiredBeforeLiveRead\":[\"explicit live-read gate plan\"");
     assert_contains(json, "\"readOnlyBoundaryFields\":[\"readOnly\",\"executionAllowed\"");
     assert_contains(json, "\"evidenceDigest\":\"fnv1a64:");
 }
@@ -135,12 +149,15 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v147.json";
     const auto consumed_v148_fixture_path =
         std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v148.json";
+    const auto consumed_v149_fixture_path =
+        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v149.json";
     const auto fixture = read_fixture_text(fixture_path);
     const auto historical_fixture = read_fixture_text(historical_fixture_path);
     const auto consumed_v145_fixture = read_fixture_text(consumed_v145_fixture_path);
     const auto consumed_v146_fixture = read_fixture_text(consumed_v146_fixture_path);
     const auto consumed_v147_fixture = read_fixture_text(consumed_v147_fixture_path);
     const auto consumed_v148_fixture = read_fixture_text(consumed_v148_fixture_path);
+    const auto consumed_v149_fixture = read_fixture_text(consumed_v149_fixture_path);
 
     assert(fixture == minikv::shard_readiness::format_json());
     assert(minikv::shard_readiness::fixture_path() == "fixtures/release/shard-readiness.json");
@@ -150,6 +167,7 @@ int main() {
     assert(fixture != consumed_v146_fixture);
     assert(fixture != consumed_v147_fixture);
     assert(fixture != consumed_v148_fixture);
+    assert(fixture != consumed_v149_fixture);
     assert_contains(historical_fixture, "\"releaseVersion\":\"v144\"");
     assert_contains(historical_fixture, "\"status\":\"prototype-ready-read-only\"");
     assert_contains(historical_fixture, "\"evidenceDigest\":\"fnv1a64:22d3c4815a440804\"");
@@ -174,6 +192,13 @@ int main() {
     assert_contains(consumed_v148_fixture, "\"frozenRouterActivationAllowed\":false");
     assert_contains(consumed_v148_fixture, "\"frozenWriteRoutingAllowed\":false");
     assert_contains(consumed_v148_fixture, "\"evidenceDigest\":\"fnv1a64:8270eeebbf1a7f29\"");
+    assert_contains(consumed_v149_fixture, "\"releaseVersion\":\"v149\"");
+    assert_contains(consumed_v149_fixture, "\"status\":\"frozen-evidence-handoff-read-only\"");
+    assert_contains(consumed_v149_fixture, "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v148\"");
+    assert_contains(consumed_v149_fixture, "\"consumerHandoff\":{\"handoffMode\":\"frozen-evidence-only\"");
+    assert_contains(consumed_v149_fixture, "\"startsServices\":false");
+    assert_contains(consumed_v149_fixture, "\"executionAllowed\":false");
+    assert_contains(consumed_v149_fixture, "\"evidenceDigest\":\"fnv1a64:521fe6dee47f7f2c\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
