@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v154\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v155\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -339,12 +339,12 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"mini-kv-runtime-execution-artifact-candidate-no-runtime-read-only\"");
+    assert_response_contains(result, "\"status\":\"runtime-execution-approval-gate-input-precheck-blocked-read-only\"");
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v153\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v154\"");
     assert_response_contains(result, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_response_contains(result, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_response_contains(result, "\"activeShardPrototypeAllowed\":false");
@@ -391,7 +391,7 @@ int main() {
     assert_response_contains(result, "\"startsMiniKvService\":false");
     assert_response_contains(result, "\"failClosedOnMissingArtifacts\":true");
     assert_response_contains(result,
-                             "\"runtimeExecutionArtifactIntakePreflightFreeze\":{\"frozenReleaseVersion\":\"v153\"");
+                             "\"runtimeExecutionArtifactIntakePreflightFreeze\":{\"frozenReleaseVersion\":\"v154\"");
     assert_response_contains(result, "\"frozenRuntimeExecutionPacketExecutable\":false");
     assert_response_contains(result,
                              "\"miniKvRuntimeExecutionArtifactCandidate\":{\"candidateMode\":"
@@ -406,6 +406,24 @@ int main() {
     assert_response_contains(result, "\"serviceOwnerCandidateDeclared\":true");
     assert_response_contains(result, "\"cleanupProofPresent\":false");
     assert_response_contains(result, "\"requiresCrossProjectPacket\":true");
+    assert_response_contains(result,
+                             "\"miniKvRuntimeExecutionArtifactCandidateFreeze\":{\"frozenReleaseVersion\":\"v154\"");
+    assert_response_contains(result, "\"preservesCandidateOnlyContribution\":true");
+    assert_response_contains(result, "\"frozenAcceptedRuntimeExecutionArtifactCount\":0");
+    assert_response_contains(result, "\"frozenRuntimeExecutionPacketExecutable\":false");
+    assert_response_contains(result,
+                             "\"runtimeExecutionApprovalGateInputPrecheck\":{\"precheckMode\":"
+                             "\"blocked-missing-approval-gate-inputs\"");
+    assert_response_contains(result, "\"approvalGateInputCount\":0");
+    assert_response_contains(result, "\"missingApprovalGateInputCount\":3");
+    assert_response_contains(result, "\"nodeApprovedRuntimeWindowPresent\":false");
+    assert_response_contains(result, "\"correlatedOperatorApprovalRecordPresent\":false");
+    assert_response_contains(result, "\"completeCrossProjectRuntimeExecutionPacketPresent\":false");
+    assert_response_contains(result, "\"approvalGateInputsComplete\":false");
+    assert_response_contains(result, "\"runtimeGateApprovalPresent\":false");
+    assert_response_contains(result, "\"concreteLoopbackPortsAssigned\":false");
+    assert_response_contains(result, "\"startsJavaService\":false");
+    assert_response_contains(result, "\"failClosedOnMissingApprovalInputs\":true");
 
     result = processor.execute("EXPLAINJSON");
     assert(result.response == "ERR usage: EXPLAINJSON command");
