@@ -14,6 +14,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `207-version-151-shard-readiness-service-lifecycle-template.md` - mini-kv v151 freezes v150 `liveReadGatePlan` evidence, rolls current `SHARDJSON` to v151, adds template-only `operatorServiceLifecycleTemplate`, tests, TCP smoke, and `e/151` archive.
 - `208-version-152-shard-readiness-declared-lifecycle-evidence.md` - mini-kv v152 freezes v151 `operatorServiceLifecycleTemplate` evidence, rolls current `SHARDJSON` to v152, adds declared operator lifecycle evidence without runtime approval, tests, TCP smoke, and `e/152` archive.
 - `209-version-153-shard-readiness-runtime-execution-artifact-preflight.md` - mini-kv v153 freezes v152 declared lifecycle evidence, rolls current `SHARDJSON` to v153, adds blocked 0-of-6 runtime execution artifact intake preflight, tests, TCP smoke, and `e/153` archive.
+- `210-version-154-shard-readiness-mini-kv-runtime-execution-candidate.md` - mini-kv v154 freezes v153 blocked preflight evidence, rolls current `SHARDJSON` to v154, adds mini-kv-side runtime execution artifact candidates without approval or runtime start, tests, TCP smoke, and `e/154` archive.
 
 ## Rules
 

@@ -13,7 +13,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v153";
+constexpr std::string_view release_version = "v154";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -67,7 +67,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v396+ may consume v153 only as blocked runtime execution artifact preflight\","
+           "\"nodeConsumer\":\"Node v397+ may consume v154 only as mini-kv runtime execution artifact candidate\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -86,11 +86,12 @@ std::string format_fixture_parity_json() {
                "fixtures/release/shard-readiness-v145.json",
                "fixtures/release/shard-readiness-v146.json",
                "fixtures/release/shard-readiness-v147.json",
-               "fixtures/release/shard-readiness-v148.json",
+                "fixtures/release/shard-readiness-v148.json",
                 "fixtures/release/shard-readiness-v149.json",
                 "fixtures/release/shard-readiness-v150.json",
                 "fixtures/release/shard-readiness-v151.json",
                 "fixtures/release/shard-readiness-v152.json",
+                "fixtures/release/shard-readiness-v153.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -113,7 +114,7 @@ std::string format_archive_compatibility_json() {
                "Node v381",
                "Node v382",
                "Node v383",
-               "Node v384",
+                "Node v384",
                 "Node v385",
                 "Node v386",
                 "Node v387",
@@ -125,19 +126,20 @@ std::string format_archive_compatibility_json() {
                 "Node v393",
                 "Node v394",
                 "Node v395",
+                "Node v396",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-            "\"futureNodeConsumer\":\"Node v396 or later after complete runtime execution artifacts\"}";
+            "\"futureNodeConsumer\":\"Node v397 or later after complete runtime execution packet\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v152\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v396 pending complete runtime execution artifacts\","
+    return "{\"previousConsumedReleaseVersion\":\"v153\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v397 pending complete runtime execution packet\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
-           "\"nodeV395ArchiveVerificationPreserved\":true,"
-           "\"nodeV396WaitsForRuntimeExecutionArtifacts\":true}";
+           "\"nodeV396ProgressIntakePreserved\":true,"
+           "\"nodeV397WaitsForCompleteRuntimePacket\":true}";
 }
 
 std::string format_active_prototype_plan_json() {
@@ -158,9 +160,9 @@ std::string format_active_prototype_plan_json() {
 }
 
 std::string format_active_prototype_plan_freeze_json() {
-    return "{\"frozenReleaseVersion\":\"v152\","
-           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
-           "\"frozenStatus\":\"declared-operator-lifecycle-no-runtime-read-only\","
+    return "{\"frozenReleaseVersion\":\"v153\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
+           "\"frozenStatus\":\"runtime-execution-artifact-intake-preflight-blocked-read-only\","
            "\"preservesActivePrototypePlan\":true,"
            "\"frozenActiveShardPrototypeAllowed\":false,"
            "\"frozenRouterActivationAllowed\":false,"
@@ -172,8 +174,8 @@ std::string format_active_prototype_plan_freeze_json() {
 
 std::string format_consumer_handoff_json() {
     return "{\"handoffMode\":\"frozen-evidence-only\","
-           "\"frozenReleaseVersion\":\"v152\","
-           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
+           "\"frozenReleaseVersion\":\"v153\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
            "\"readyForNodeConsumption\":true,"
            "\"liveReadGateRequiredBeforeRuntimeProbe\":true,"
            "\"startsServices\":false,"
@@ -216,9 +218,9 @@ std::string format_live_read_gate_plan_json() {
 }
 
 std::string format_live_read_gate_plan_freeze_json() {
-    return "{\"frozenReleaseVersion\":\"v152\","
-           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
-           "\"frozenStatus\":\"declared-operator-lifecycle-no-runtime-read-only\","
+    return "{\"frozenReleaseVersion\":\"v153\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
+           "\"frozenStatus\":\"runtime-execution-artifact-intake-preflight-blocked-read-only\","
            "\"preservesLiveReadGatePlan\":true,"
            "\"frozenLiveReadGateAllowed\":false,"
            "\"frozenRuntimeProbeAllowed\":false,"
@@ -231,8 +233,8 @@ std::string format_live_read_gate_plan_freeze_json() {
 
 std::string format_operator_service_lifecycle_template_json() {
     return "{\"evidenceMode\":\"template-only-no-runtime\","
-           "\"sourceFrozenReleaseVersion\":\"v152\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
+           "\"sourceFrozenReleaseVersion\":\"v153\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
            "\"operatorOwnedServiceLifecycleRequired\":true,"
            "\"serviceOwnerDeclared\":false,"
            "\"startupCommandDeclared\":false,"
@@ -258,9 +260,9 @@ std::string format_operator_service_lifecycle_template_json() {
 }
 
 std::string format_operator_service_lifecycle_template_freeze_json() {
-    return "{\"frozenReleaseVersion\":\"v152\","
-           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
-           "\"frozenStatus\":\"declared-operator-lifecycle-no-runtime-read-only\","
+    return "{\"frozenReleaseVersion\":\"v153\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
+           "\"frozenStatus\":\"runtime-execution-artifact-intake-preflight-blocked-read-only\","
            "\"preservesOperatorLifecycleTemplate\":true,"
            "\"frozenServiceOwnerDeclared\":false,"
            "\"frozenStartupCommandDeclared\":false,"
@@ -274,8 +276,8 @@ std::string format_operator_service_lifecycle_template_freeze_json() {
 
 std::string format_operator_service_lifecycle_evidence_json() {
     return "{\"evidenceMode\":\"declared-lifecycle-no-runtime\","
-           "\"sourceFrozenReleaseVersion\":\"v152\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
+           "\"sourceFrozenReleaseVersion\":\"v153\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
            "\"operatorOwnedServiceLifecycleDeclared\":true,"
            "\"serviceOwnerDeclared\":true,"
            "\"serviceOwnerHandle\":\"mini-kv-local-operator\","
@@ -310,9 +312,9 @@ std::string format_operator_service_lifecycle_evidence_json() {
 }
 
 std::string format_operator_service_lifecycle_evidence_freeze_json() {
-    return "{\"frozenReleaseVersion\":\"v152\","
-           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
-           "\"frozenStatus\":\"declared-operator-lifecycle-no-runtime-read-only\","
+    return "{\"frozenReleaseVersion\":\"v153\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
+           "\"frozenStatus\":\"runtime-execution-artifact-intake-preflight-blocked-read-only\","
            "\"preservesDeclaredLifecycleEvidence\":true,"
            "\"frozenOperatorOwnedServiceLifecycleDeclared\":true,"
            "\"frozenServiceOwnerDeclared\":true,"
@@ -333,8 +335,8 @@ std::string format_operator_service_lifecycle_evidence_freeze_json() {
 
 std::string format_runtime_execution_artifact_intake_preflight_json() {
     return "{\"preflightMode\":\"blocked-missing-runtime-execution-artifacts\","
-           "\"sourceFrozenReleaseVersion\":\"v152\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v152.json\","
+           "\"sourceFrozenReleaseVersion\":\"v153\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
            "\"readyForRuntimeExecutionPacket\":false,"
            "\"readyForRuntimeLiveReadGate\":false,"
            "\"runtimeExecutionArtifactsComplete\":false,"
@@ -362,9 +364,80 @@ std::string format_runtime_execution_artifact_intake_preflight_json() {
            "\"failClosedOnMissingArtifacts\":true}";
 }
 
+std::string format_runtime_execution_artifact_intake_preflight_freeze_json() {
+    return "{\"frozenReleaseVersion\":\"v153\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
+           "\"frozenStatus\":\"runtime-execution-artifact-intake-preflight-blocked-read-only\","
+           "\"preservesBlockedPreflight\":true,"
+           "\"frozenPresentRuntimeExecutionArtifactCount\":0,"
+           "\"frozenMissingRuntimeExecutionArtifactCount\":6,"
+           "\"frozenReadyForRuntimeExecutionPacket\":false,"
+           "\"frozenReadyForRuntimeLiveReadGate\":false,"
+           "\"frozenRuntimeExecutionArtifactsComplete\":false,"
+           "\"frozenRuntimeExecutionPacketPresent\":false,"
+           "\"frozenRuntimeExecutionPacketExecutable\":false,"
+           "\"frozenExecutionAttempted\":false,"
+           "\"frozenStartsMiniKvService\":false,"
+           "\"frozenRuntimeProbeAllowed\":false,"
+           "\"frozenLiveReadAllowed\":false,"
+           "\"frozenRouterActivationAllowed\":false,"
+           "\"frozenWriteRoutingAllowed\":false,"
+           "\"frozenExecutionAllowed\":false,"
+           "\"rollingCurrentUsedForFrozenBaseline\":false}";
+}
+
+std::string format_mini_kv_runtime_execution_artifact_candidate_json() {
+    return "{\"candidateMode\":\"mini-kv-side-candidate-no-runtime\","
+           "\"sourceFrozenReleaseVersion\":\"v153\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v153.json\","
+           "\"candidateArtifactCount\":4,"
+           "\"candidateArtifactRows\":" + json_string_array({
+               "mini-kv loopback port candidate",
+               "mini-kv GET-only smoke command candidate",
+               "mini-kv service owner candidate",
+               "mini-kv process cleanup rules candidate",
+           }) +
+           ",\"acceptedRuntimeExecutionArtifactCount\":0,"
+           "\"missingAcceptedRuntimeExecutionArtifactCount\":6,"
+           "\"acceptedRuntimeExecutionArtifactsComplete\":false,"
+           "\"operatorApprovalRecordPresent\":false,"
+           "\"nodeRuntimeWindowApproved\":false,"
+           "\"crossProjectRuntimeExecutionPacketPresent\":false,"
+           "\"javaPortBindingPresent\":false,"
+           "\"miniKvLoopbackPortCandidateDeclared\":true,"
+           "\"miniKvLoopbackHost\":\"127.0.0.1\","
+           "\"miniKvLoopbackPortCandidate\":6424,"
+           "\"miniKvLoopbackPortOperatorApproved\":false,"
+           "\"startupCommandCandidate\":\"minikv_server.exe 6424 127.0.0.1\","
+           "\"getOnlySmokeCommandCandidate\":\"minikv_client.exe 127.0.0.1 6424 < GET-only SHARDJSON command stream\","
+           "\"getOnlySmokeCommandOperatorApproved\":false,"
+           "\"serviceOwnerCandidateDeclared\":true,"
+           "\"serviceOwnerHandle\":\"mini-kv-local-operator\","
+           "\"serviceOwnerOperatorConfirmed\":false,"
+           "\"processCleanupRulesCandidateDeclared\":true,"
+           "\"processCleanupRules\":" + json_string_array({
+               "record owned minikv_server pid before smoke",
+               "stop only the minikv_server process started by the approved packet",
+               "verify the mini-kv candidate port has no LISTENING socket after cleanup",
+           }) +
+           ",\"cleanupProofPresent\":false,"
+           "\"runtimeExecutionPacketExecutable\":false,"
+           "\"startsMiniKvService\":false,"
+           "\"startsServices\":false,"
+           "\"runtimeProbeAllowed\":false,"
+           "\"liveReadAllowed\":false,"
+           "\"activeShardPrototypeEnabled\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"executionAllowed\":false,"
+           "\"requiresNodeRuntimeWindow\":true,"
+           "\"requiresOperatorApproval\":true,"
+           "\"requiresCrossProjectPacket\":true}";
+}
+
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v153",
+        "mini-kv-shard-readiness-v154",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -376,18 +449,20 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v152-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v395-preserved"},
+            {"historicalFallback=v153-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v396-preserved"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
-            {"activePrototypePlanFreeze=v152-frozen-no-router-no-write"},
+            {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
             {"consumerHandoff=frozen-evidence-only-no-live-read"},
             {"liveReadGatePlan=prerequisite-only-no-start-no-execution"},
-            {"liveReadGatePlanFreeze=v152-frozen-no-runtime-probe"},
+            {"liveReadGatePlanFreeze=v153-frozen-no-runtime-probe"},
             {"operatorServiceLifecycleTemplate=template-only-no-runtime"},
-            {"operatorServiceLifecycleTemplateFreeze=v152-frozen-template-only"},
+            {"operatorServiceLifecycleTemplateFreeze=v153-frozen-template-only"},
             {"operatorServiceLifecycleEvidence=declared-no-runtime-gate"},
-            {"operatorServiceLifecycleEvidenceFreeze=v152-frozen-declared-no-runtime"},
+            {"operatorServiceLifecycleEvidenceFreeze=v153-frozen-declared-no-runtime"},
             {"runtimeExecutionArtifactIntakePreflight=blocked-0-of-6-no-execution"},
+            {"runtimeExecutionArtifactIntakePreflightFreeze=v153-frozen-blocked-0-of-6"},
+            {"miniKvRuntimeExecutionArtifactCandidate=candidate-no-runtime-no-approval"},
         });
 }
 
@@ -410,7 +485,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"runtime-execution-artifact-intake-preflight-blocked-read-only\"" +
+           ",\"status\":\"mini-kv-runtime-execution-artifact-candidate-no-runtime-read-only\"" +
            ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
            ",\"boundaries\":" + format_boundaries_json() +
@@ -430,6 +505,10 @@ std::string format_json() {
            ",\"operatorServiceLifecycleEvidenceFreeze\":" + format_operator_service_lifecycle_evidence_freeze_json() +
            ",\"runtimeExecutionArtifactIntakePreflight\":" +
            format_runtime_execution_artifact_intake_preflight_json() +
+           ",\"runtimeExecutionArtifactIntakePreflightFreeze\":" +
+           format_runtime_execution_artifact_intake_preflight_freeze_json() +
+           ",\"miniKvRuntimeExecutionArtifactCandidate\":" +
+           format_mini_kv_runtime_execution_artifact_candidate_json() +
            ",\"readOnlyBoundaryFields\":" + json_string_array({
                "readOnly",
                "executionAllowed",
@@ -473,7 +552,7 @@ std::string format_json() {
                "operatorServiceLifecycleTemplateFreeze.frozenExecutionAllowed",
                "operatorServiceLifecycleEvidence.runtimeGateApproved",
                "operatorServiceLifecycleEvidence.startsServices",
-               "operatorServiceLifecycleEvidence.runtimeProbeAllowed",
+                "operatorServiceLifecycleEvidence.runtimeProbeAllowed",
                 "operatorServiceLifecycleEvidence.liveReadAllowed",
                 "operatorServiceLifecycleEvidence.routerActivationAllowed",
                 "operatorServiceLifecycleEvidence.writeRoutingAllowed",
@@ -499,20 +578,48 @@ std::string format_json() {
                 "runtimeExecutionArtifactIntakePreflight.routerActivationAllowed",
                 "runtimeExecutionArtifactIntakePreflight.writeRoutingAllowed",
                 "runtimeExecutionArtifactIntakePreflight.executionAllowed",
+                "runtimeExecutionArtifactIntakePreflightFreeze.rollingCurrentUsedForFrozenBaseline",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenRuntimeExecutionArtifactsComplete",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenRuntimeExecutionPacketExecutable",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenExecutionAttempted",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenStartsMiniKvService",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenRuntimeProbeAllowed",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenLiveReadAllowed",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenRouterActivationAllowed",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenWriteRoutingAllowed",
+                "runtimeExecutionArtifactIntakePreflightFreeze.frozenExecutionAllowed",
+                "miniKvRuntimeExecutionArtifactCandidate.acceptedRuntimeExecutionArtifactsComplete",
+                "miniKvRuntimeExecutionArtifactCandidate.operatorApprovalRecordPresent",
+                "miniKvRuntimeExecutionArtifactCandidate.nodeRuntimeWindowApproved",
+                "miniKvRuntimeExecutionArtifactCandidate.crossProjectRuntimeExecutionPacketPresent",
+                "miniKvRuntimeExecutionArtifactCandidate.javaPortBindingPresent",
+                "miniKvRuntimeExecutionArtifactCandidate.miniKvLoopbackPortOperatorApproved",
+                "miniKvRuntimeExecutionArtifactCandidate.getOnlySmokeCommandOperatorApproved",
+                "miniKvRuntimeExecutionArtifactCandidate.serviceOwnerOperatorConfirmed",
+                "miniKvRuntimeExecutionArtifactCandidate.cleanupProofPresent",
+                "miniKvRuntimeExecutionArtifactCandidate.runtimeExecutionPacketExecutable",
+                "miniKvRuntimeExecutionArtifactCandidate.startsMiniKvService",
+                "miniKvRuntimeExecutionArtifactCandidate.startsServices",
+                "miniKvRuntimeExecutionArtifactCandidate.runtimeProbeAllowed",
+                "miniKvRuntimeExecutionArtifactCandidate.liveReadAllowed",
+                "miniKvRuntimeExecutionArtifactCandidate.routerActivationAllowed",
+                "miniKvRuntimeExecutionArtifactCandidate.writeRoutingAllowed",
+                "miniKvRuntimeExecutionArtifactCandidate.executionAllowed",
             }) +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
            ",\"notes\":" + json_string_array({
                "read-only shard readiness hardening",
                "single logical shard only",
                "slot table is evidence, not active storage routing",
-               "does not create shard directories or start extra processes",
-                "freezes v152 declared operator lifecycle evidence",
+                "does not create shard directories or start extra processes",
+                "freezes v153 blocked runtime execution artifact preflight",
                 "declares operator lifecycle evidence without runtime gate approval",
+                "adds mini-kv runtime execution artifact candidate without approval",
                 "runtime execution artifact intake preflight remains blocked at 0 of 6 artifacts",
                 "live-read gate remains prerequisite-only and does not start services",
                "operator service lifecycle evidence still has no runtime probe",
                "active shard prototype remains plan-prerequisite only",
-                "does not mutate Node v370-v395 archived evidence",
+                "does not mutate Node v370-v396 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";
