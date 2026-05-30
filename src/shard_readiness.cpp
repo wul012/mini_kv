@@ -13,7 +13,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v155";
+constexpr std::string_view release_version = "v156";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -67,7 +67,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v400+ may consume v155 only as approval gate input precheck evidence\","
+           "\"nodeConsumer\":\"Node v401+ may consume v156 only as final mini-kv approval gate input evidence\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -93,6 +93,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v152.json",
                 "fixtures/release/shard-readiness-v153.json",
                 "fixtures/release/shard-readiness-v154.json",
+                "fixtures/release/shard-readiness-v155.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -131,22 +132,24 @@ std::string format_archive_compatibility_json() {
                 "Node v397",
                 "Node v398",
                 "Node v399",
+                "Node v400",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-            "\"futureNodeConsumer\":\"Node v400 or later only after all approval gate inputs exist together\"}";
+            "\"futureNodeConsumer\":\"Node v401 or later only after final mini-kv input, Node window, correlated approval, and cross-project packet exist together\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v154\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v154.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v397 consumed as candidate-only contribution; Node v398-v399 kept approval gate blocked\","
+    return "{\"previousConsumedReleaseVersion\":\"v155\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v155.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v400 consumed v155 as precheck-only approval input contract evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
            "\"nodeV397ContributionReviewPreserved\":true,"
            "\"nodeV398ApprovalGateReviewPreserved\":true,"
            "\"nodeV399ArchiveVerificationPreserved\":true,"
-           "\"nodeV400WaitsForApprovalGateInputs\":true}";
+           "\"nodeV400InputContractPreserved\":true,"
+           "\"nodeV401WaitsForCompleteApprovalInputs\":true}";
 }
 
 std::string format_active_prototype_plan_json() {
@@ -471,12 +474,13 @@ std::string format_mini_kv_runtime_execution_artifact_candidate_freeze_json() {
 
 std::string format_runtime_execution_approval_gate_input_precheck_json() {
     return "{\"precheckMode\":\"blocked-missing-approval-gate-inputs\","
-           "\"sourceFrozenReleaseVersion\":\"v154\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v154.json\","
+           "\"sourceFrozenReleaseVersion\":\"v155\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v155.json\","
            "\"sourceNodeReviewVersions\":" + json_string_array({
                "Node v397 contribution review",
                "Node v398 approval gate review",
                "Node v399 approval gate archive verification",
+               "Node v400 approval input intake contract",
            }) +
            ",\"approvalGateInputCount\":0,"
            "\"missingApprovalGateInputCount\":3,"
@@ -511,9 +515,86 @@ std::string format_runtime_execution_approval_gate_input_precheck_json() {
            "\"failClosedOnMissingApprovalInputs\":true}";
 }
 
+std::string format_runtime_execution_approval_gate_input_precheck_freeze_json() {
+    return "{\"frozenReleaseVersion\":\"v155\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v155.json\","
+           "\"frozenStatus\":\"runtime-execution-approval-gate-input-precheck-blocked-read-only\","
+           "\"preservesApprovalGateInputPrecheck\":true,"
+           "\"frozenApprovalGateInputCount\":0,"
+           "\"frozenMissingApprovalGateInputCount\":3,"
+           "\"frozenNodeApprovedRuntimeWindowPresent\":false,"
+           "\"frozenCorrelatedOperatorApprovalRecordPresent\":false,"
+           "\"frozenCompleteCrossProjectRuntimeExecutionPacketPresent\":false,"
+           "\"frozenApprovalGateInputsComplete\":false,"
+           "\"frozenRuntimeGateApprovalPresent\":false,"
+           "\"frozenRuntimeExecutionPacketExecutable\":false,"
+           "\"frozenConcreteLoopbackPortsAssigned\":false,"
+           "\"frozenExecutionAttempted\":false,"
+           "\"frozenStartsJavaService\":false,"
+           "\"frozenStartsMiniKvService\":false,"
+           "\"frozenRuntimeProbeAllowed\":false,"
+           "\"frozenLiveReadAllowed\":false,"
+           "\"frozenRouterActivationAllowed\":false,"
+           "\"frozenWriteRoutingAllowed\":false,"
+           "\"frozenExecutionAllowed\":false,"
+           "\"rollingCurrentUsedForFrozenBaseline\":false}";
+}
+
+std::string format_mini_kv_final_approval_gate_input_json() {
+    return "{\"inputMode\":\"mini-kv-final-approval-gate-input-no-runtime\","
+           "\"sourceFrozenReleaseVersion\":\"v155\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v155.json\","
+           "\"sourceNodeContractVersion\":\"Node v400 approval input intake contract\","
+           "\"finalMiniKvApprovalGateInputPresent\":true,"
+           "\"miniKvApprovalGateInputComplete\":true,"
+           "\"miniKvApprovalGateInputItemCount\":4,"
+           "\"miniKvApprovalGateInputItems\":" + json_string_array({
+               "concrete mini-kv loopback port assignment",
+               "GET-only SHARDJSON smoke command",
+               "mini-kv service owner confirmation",
+               "stop-only-owned-process cleanup rules",
+           }) +
+           ",\"miniKvLoopbackHost\":\"127.0.0.1\","
+           "\"miniKvLoopbackPort\":6424,"
+           "\"startupCommand\":\"minikv_server.exe 6424 127.0.0.1\","
+           "\"getOnlySmokeCommand\":\"minikv_client.exe 127.0.0.1 6424 < GET-only SHARDJSON command stream\","
+           "\"serviceOwnerConfirmed\":true,"
+           "\"serviceOwnerHandle\":\"mini-kv-local-operator\","
+           "\"processCleanupRulesComplete\":true,"
+           "\"stopOnlyOwnedProcessCleanupRequired\":true,"
+           "\"processCleanupRules\":" + json_string_array({
+               "record owned minikv_server pid before approved smoke",
+               "stop only the minikv_server process started by the complete approved packet",
+               "verify the mini-kv port has no LISTENING socket after cleanup",
+           }) +
+           ",\"cleanupProofPresent\":false,"
+           "\"cleanupProofRequiresApprovedRuntimeStart\":true,"
+           "\"nodeApprovedRuntimeWindowPresent\":false,"
+           "\"correlatedOperatorApprovalRecordPresent\":false,"
+           "\"completeCrossProjectRuntimeExecutionPacketPresent\":false,"
+           "\"runtimeGateApprovalPresent\":false,"
+           "\"readyForRuntimeExecutionPacket\":false,"
+           "\"readyForRuntimeLiveReadGate\":false,"
+           "\"runtimeExecutionPacketExecutable\":false,"
+           "\"concreteLoopbackPortsAssignedByCrossProjectPacket\":false,"
+           "\"executionAttempted\":false,"
+           "\"startsJavaService\":false,"
+           "\"startsMiniKvService\":false,"
+           "\"startsServices\":false,"
+           "\"runtimeProbeAllowed\":false,"
+           "\"liveReadAllowed\":false,"
+           "\"activeShardPrototypeEnabled\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"executionAllowed\":false,"
+           "\"requiresNodeRuntimeWindow\":true,"
+           "\"requiresCorrelatedOperatorApproval\":true,"
+           "\"requiresCompleteCrossProjectPacket\":true}";
+}
+
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v155",
+        "mini-kv-shard-readiness-v156",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -525,8 +606,8 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v154-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v399-preserved"},
+            {"historicalFallback=v155-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v400-preserved"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
             {"consumerHandoff=frozen-evidence-only-no-live-read"},
@@ -541,6 +622,8 @@ std::string evidence_digest() {
             {"miniKvRuntimeExecutionArtifactCandidate=candidate-no-runtime-no-approval"},
             {"miniKvRuntimeExecutionArtifactCandidateFreeze=v154-frozen-candidate-only"},
             {"runtimeExecutionApprovalGateInputPrecheck=blocked-0-of-3-no-execution"},
+            {"runtimeExecutionApprovalGateInputPrecheckFreeze=v155-frozen-0-of-3"},
+            {"miniKvFinalApprovalGateInput=complete-mini-kv-input-global-runtime-blocked"},
         });
 }
 
@@ -563,7 +646,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"runtime-execution-approval-gate-input-precheck-blocked-read-only\"" +
+           ",\"status\":\"mini-kv-final-approval-gate-input-no-runtime-read-only\"" +
            ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
            ",\"boundaries\":" + format_boundaries_json() +
@@ -591,6 +674,10 @@ std::string format_json() {
            format_mini_kv_runtime_execution_artifact_candidate_freeze_json() +
            ",\"runtimeExecutionApprovalGateInputPrecheck\":" +
            format_runtime_execution_approval_gate_input_precheck_json() +
+           ",\"runtimeExecutionApprovalGateInputPrecheckFreeze\":" +
+           format_runtime_execution_approval_gate_input_precheck_freeze_json() +
+           ",\"miniKvFinalApprovalGateInput\":" +
+           format_mini_kv_final_approval_gate_input_json() +
            ",\"readOnlyBoundaryFields\":" + json_string_array({
                "readOnly",
                "executionAllowed",
@@ -716,6 +803,37 @@ std::string format_json() {
                 "runtimeExecutionApprovalGateInputPrecheck.routerActivationAllowed",
                 "runtimeExecutionApprovalGateInputPrecheck.writeRoutingAllowed",
                 "runtimeExecutionApprovalGateInputPrecheck.executionAllowed",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.rollingCurrentUsedForFrozenBaseline",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenApprovalGateInputsComplete",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenRuntimeGateApprovalPresent",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenRuntimeExecutionPacketExecutable",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenConcreteLoopbackPortsAssigned",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenExecutionAttempted",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenStartsJavaService",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenStartsMiniKvService",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenRuntimeProbeAllowed",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenLiveReadAllowed",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenRouterActivationAllowed",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenWriteRoutingAllowed",
+                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenExecutionAllowed",
+                "miniKvFinalApprovalGateInput.cleanupProofPresent",
+                "miniKvFinalApprovalGateInput.nodeApprovedRuntimeWindowPresent",
+                "miniKvFinalApprovalGateInput.correlatedOperatorApprovalRecordPresent",
+                "miniKvFinalApprovalGateInput.completeCrossProjectRuntimeExecutionPacketPresent",
+                "miniKvFinalApprovalGateInput.runtimeGateApprovalPresent",
+                "miniKvFinalApprovalGateInput.readyForRuntimeExecutionPacket",
+                "miniKvFinalApprovalGateInput.readyForRuntimeLiveReadGate",
+                "miniKvFinalApprovalGateInput.runtimeExecutionPacketExecutable",
+                "miniKvFinalApprovalGateInput.concreteLoopbackPortsAssignedByCrossProjectPacket",
+                "miniKvFinalApprovalGateInput.executionAttempted",
+                "miniKvFinalApprovalGateInput.startsJavaService",
+                "miniKvFinalApprovalGateInput.startsMiniKvService",
+                "miniKvFinalApprovalGateInput.startsServices",
+                "miniKvFinalApprovalGateInput.runtimeProbeAllowed",
+                "miniKvFinalApprovalGateInput.liveReadAllowed",
+                "miniKvFinalApprovalGateInput.routerActivationAllowed",
+                "miniKvFinalApprovalGateInput.writeRoutingAllowed",
+                "miniKvFinalApprovalGateInput.executionAllowed",
             }) +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
            ",\"notes\":" + json_string_array({
@@ -723,15 +841,16 @@ std::string format_json() {
                "single logical shard only",
                "slot table is evidence, not active storage routing",
                 "does not create shard directories or start extra processes",
-                "freezes v154 mini-kv runtime execution artifact candidate",
+                "freezes v155 approval gate input precheck",
                 "declares operator lifecycle evidence without runtime gate approval",
                 "adds mini-kv runtime execution artifact candidate without approval",
                 "adds runtime execution approval gate input precheck with zero of three inputs",
+                "adds final mini-kv approval gate input while global runtime remains blocked",
                 "runtime execution artifact intake preflight remains blocked at 0 of 6 artifacts",
                 "live-read gate remains prerequisite-only and does not start services",
                 "operator service lifecycle evidence still has no runtime probe",
                 "active shard prototype remains plan-prerequisite only",
-                 "does not mutate Node v370-v399 archived evidence",
+                 "does not mutate Node v370-v400 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";

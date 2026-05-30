@@ -38,7 +38,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"releaseVersion\":\"v155\"");
+    assert_contains(json, "\"releaseVersion\":\"v156\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -46,7 +46,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"runtime-execution-approval-gate-input-precheck-blocked-read-only\"");
+    assert_contains(json, "\"status\":\"mini-kv-final-approval-gate-input-no-runtime-read-only\"");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -66,7 +66,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"adminCommandsExecuted\":false");
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
     assert_contains(json,
-                    "\"nodeConsumer\":\"Node v400+ may consume v155 only as approval gate input precheck evidence\"");
+                    "\"nodeConsumer\":\"Node v401+ may consume v156 only as final mini-kv approval gate input evidence\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -84,7 +84,8 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"fixtures/release/shard-readiness-v151.json\","
                           "\"fixtures/release/shard-readiness-v152.json\","
                           "\"fixtures/release/shard-readiness-v153.json\","
-                          "\"fixtures/release/shard-readiness-v154.json\"]");
+                          "\"fixtures/release/shard-readiness-v154.json\","
+                          "\"fixtures/release/shard-readiness-v155.json\"]");
     assert_contains(json, "\"runtimeMatchesCurrentFixture\":true");
     assert_contains(json, "\"historicalFixturesPreserved\":true");
     assert_contains(json, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
@@ -93,19 +94,20 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"Node v380\",\"Node v381\",\"Node v382\",\"Node v383\",\"Node v384\",\"Node v385\","
                           "\"Node v386\",\"Node v387\",\"Node v388\",\"Node v389\",\"Node v390\",\"Node v391\","
                           "\"Node v392\",\"Node v393\",\"Node v394\",\"Node v395\",\"Node v396\","
-                          "\"Node v397\",\"Node v398\",\"Node v399\"]");
+                          "\"Node v397\",\"Node v398\",\"Node v399\",\"Node v400\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v154\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v154.json\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v155\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v155.json\"");
     assert_contains(
         json,
-        "\"previousConsumptionNodeVersion\":\"Node v397 consumed as candidate-only contribution; Node v398-v399 kept approval gate blocked\"");
+        "\"previousConsumptionNodeVersion\":\"Node v400 consumed v155 as precheck-only approval input contract evidence\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_contains(json, "\"nodeV396ProgressIntakePreserved\":true");
     assert_contains(json, "\"nodeV397ContributionReviewPreserved\":true");
     assert_contains(json, "\"nodeV398ApprovalGateReviewPreserved\":true");
     assert_contains(json, "\"nodeV399ArchiveVerificationPreserved\":true");
-    assert_contains(json, "\"nodeV400WaitsForApprovalGateInputs\":true");
+    assert_contains(json, "\"nodeV400InputContractPreserved\":true");
+    assert_contains(json, "\"nodeV401WaitsForCompleteApprovalInputs\":true");
     assert_contains(json, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_contains(json, "\"activeShardPrototypeAllowed\":false");
     assert_contains(json, "\"routerActivationAllowed\":false");
@@ -280,8 +282,11 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json,
                     "\"runtimeExecutionApprovalGateInputPrecheck\":{\"precheckMode\":"
                     "\"blocked-missing-approval-gate-inputs\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v155\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v155.json\"");
     assert_contains(json, "\"sourceNodeReviewVersions\":[\"Node v397 contribution review\","
-                          "\"Node v398 approval gate review\",\"Node v399 approval gate archive verification\"]");
+                          "\"Node v398 approval gate review\",\"Node v399 approval gate archive verification\","
+                          "\"Node v400 approval input intake contract\"]");
     assert_contains(json, "\"approvalGateInputCount\":0");
     assert_contains(json, "\"missingApprovalGateInputCount\":3");
     assert_contains(json, "\"requiredApprovalGateInputs\":[\"Node-approved runtime window\","
@@ -295,6 +300,39 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"concreteLoopbackPortsAssigned\":false");
     assert_contains(json, "\"startsJavaService\":false");
     assert_contains(json, "\"failClosedOnMissingApprovalInputs\":true");
+    assert_contains(json,
+                    "\"runtimeExecutionApprovalGateInputPrecheckFreeze\":{\"frozenReleaseVersion\":\"v155\"");
+    assert_contains(json, "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v155.json\"");
+    assert_contains(json, "\"frozenStatus\":\"runtime-execution-approval-gate-input-precheck-blocked-read-only\"");
+    assert_contains(json, "\"preservesApprovalGateInputPrecheck\":true");
+    assert_contains(json, "\"frozenApprovalGateInputCount\":0");
+    assert_contains(json, "\"frozenMissingApprovalGateInputCount\":3");
+    assert_contains(json, "\"frozenRuntimeExecutionPacketExecutable\":false");
+    assert_contains(json, "\"frozenStartsJavaService\":false");
+    assert_contains(json, "\"frozenStartsMiniKvService\":false");
+    assert_contains(json, "\"frozenExecutionAllowed\":false");
+    assert_contains(json,
+                    "\"miniKvFinalApprovalGateInput\":{\"inputMode\":\"mini-kv-final-approval-gate-input-no-runtime\"");
+    assert_contains(json, "\"sourceNodeContractVersion\":\"Node v400 approval input intake contract\"");
+    assert_contains(json, "\"finalMiniKvApprovalGateInputPresent\":true");
+    assert_contains(json, "\"miniKvApprovalGateInputComplete\":true");
+    assert_contains(json, "\"miniKvApprovalGateInputItemCount\":4");
+    assert_contains(json, "\"miniKvApprovalGateInputItems\":[\"concrete mini-kv loopback port assignment\","
+                          "\"GET-only SHARDJSON smoke command\",\"mini-kv service owner confirmation\","
+                          "\"stop-only-owned-process cleanup rules\"]");
+    assert_contains(json, "\"miniKvLoopbackHost\":\"127.0.0.1\"");
+    assert_contains(json, "\"miniKvLoopbackPort\":6424");
+    assert_contains(json, "\"startupCommand\":\"minikv_server.exe 6424 127.0.0.1\"");
+    assert_contains(json,
+                    "\"getOnlySmokeCommand\":\"minikv_client.exe 127.0.0.1 6424 < GET-only SHARDJSON command stream\"");
+    assert_contains(json, "\"serviceOwnerConfirmed\":true");
+    assert_contains(json, "\"processCleanupRulesComplete\":true");
+    assert_contains(json, "\"stopOnlyOwnedProcessCleanupRequired\":true");
+    assert_contains(json, "\"cleanupProofPresent\":false");
+    assert_contains(json, "\"cleanupProofRequiresApprovedRuntimeStart\":true");
+    assert_contains(json, "\"requiresNodeRuntimeWindow\":true");
+    assert_contains(json, "\"requiresCorrelatedOperatorApproval\":true");
+    assert_contains(json, "\"requiresCompleteCrossProjectPacket\":true");
     assert_contains(json, "\"readOnlyBoundaryFields\":[\"readOnly\",\"executionAllowed\"");
     assert_contains(json, "\"evidenceDigest\":\"fnv1a64:");
 }
@@ -325,6 +363,8 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v153.json";
     const auto consumed_v154_fixture_path =
         std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v154.json";
+    const auto consumed_v155_fixture_path =
+        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v155.json";
     const auto fixture = read_fixture_text(fixture_path);
     const auto historical_fixture = read_fixture_text(historical_fixture_path);
     const auto consumed_v145_fixture = read_fixture_text(consumed_v145_fixture_path);
@@ -337,6 +377,7 @@ int main() {
     const auto consumed_v152_fixture = read_fixture_text(consumed_v152_fixture_path);
     const auto consumed_v153_fixture = read_fixture_text(consumed_v153_fixture_path);
     const auto consumed_v154_fixture = read_fixture_text(consumed_v154_fixture_path);
+    const auto consumed_v155_fixture = read_fixture_text(consumed_v155_fixture_path);
 
     assert(fixture == minikv::shard_readiness::format_json());
     assert(minikv::shard_readiness::fixture_path() == "fixtures/release/shard-readiness.json");
@@ -352,6 +393,7 @@ int main() {
     assert(fixture != consumed_v152_fixture);
     assert(fixture != consumed_v153_fixture);
     assert(fixture != consumed_v154_fixture);
+    assert(fixture != consumed_v155_fixture);
     assert_contains(historical_fixture, "\"releaseVersion\":\"v144\"");
     assert_contains(historical_fixture, "\"status\":\"prototype-ready-read-only\"");
     assert_contains(historical_fixture, "\"evidenceDigest\":\"fnv1a64:22d3c4815a440804\"");
@@ -433,6 +475,21 @@ int main() {
     assert_contains(consumed_v154_fixture, "\"startsMiniKvService\":false");
     assert_contains(consumed_v154_fixture, "\"executionAllowed\":false");
     assert_contains(consumed_v154_fixture, "\"evidenceDigest\":\"fnv1a64:edbe9c546c0d780a\"");
+    assert_contains(consumed_v155_fixture, "\"releaseVersion\":\"v155\"");
+    assert_contains(consumed_v155_fixture,
+                    "\"status\":\"runtime-execution-approval-gate-input-precheck-blocked-read-only\"");
+    assert_contains(consumed_v155_fixture,
+                    "\"runtimeExecutionApprovalGateInputPrecheck\":{\"precheckMode\":"
+                    "\"blocked-missing-approval-gate-inputs\"");
+    assert_contains(consumed_v155_fixture, "\"approvalGateInputCount\":0");
+    assert_contains(consumed_v155_fixture, "\"missingApprovalGateInputCount\":3");
+    assert_contains(consumed_v155_fixture, "\"nodeApprovedRuntimeWindowPresent\":false");
+    assert_contains(consumed_v155_fixture, "\"correlatedOperatorApprovalRecordPresent\":false");
+    assert_contains(consumed_v155_fixture, "\"completeCrossProjectRuntimeExecutionPacketPresent\":false");
+    assert_contains(consumed_v155_fixture, "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(consumed_v155_fixture, "\"startsMiniKvService\":false");
+    assert_contains(consumed_v155_fixture, "\"executionAllowed\":false");
+    assert_contains(consumed_v155_fixture, "\"evidenceDigest\":\"fnv1a64:edb1c4d8534461ab\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
