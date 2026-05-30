@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v152\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v153\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -339,18 +339,18 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"declared-operator-lifecycle-no-runtime-read-only\"");
+    assert_response_contains(result, "\"status\":\"runtime-execution-artifact-intake-preflight-blocked-read-only\"");
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v151\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v152\"");
     assert_response_contains(result, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_response_contains(result, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_response_contains(result, "\"activeShardPrototypeAllowed\":false");
     assert_response_contains(result, "\"routerActivationAllowed\":false");
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
-    assert_response_contains(result, "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v151\"");
+    assert_response_contains(result, "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v152\"");
     assert_response_contains(result, "\"frozenRouterActivationAllowed\":false");
     assert_response_contains(result, "\"frozenWriteRoutingAllowed\":false");
     assert_response_contains(result, "\"consumerHandoff\":{\"handoffMode\":\"frozen-evidence-only\"");
@@ -360,14 +360,14 @@ int main() {
     assert_response_contains(result, "\"liveReadGateAllowed\":false");
     assert_response_contains(result, "\"runtimeProbeAllowed\":false");
     assert_response_contains(result, "\"requiresCleanup\":true");
-    assert_response_contains(result, "\"liveReadGatePlanFreeze\":{\"frozenReleaseVersion\":\"v151\"");
+    assert_response_contains(result, "\"liveReadGatePlanFreeze\":{\"frozenReleaseVersion\":\"v152\"");
     assert_response_contains(result, "\"frozenRuntimeProbeAllowed\":false");
     assert_response_contains(result, "\"frozenExecutionAllowed\":false");
     assert_response_contains(result, "\"operatorServiceLifecycleTemplate\":{\"evidenceMode\":\"template-only-no-runtime\"");
     assert_response_contains(result, "\"operatorOwnedServiceLifecycleRequired\":true");
     assert_response_contains(result, "\"serviceOwnerDeclared\":false");
     assert_response_contains(result, "\"getOnlySmokeTargetDeclared\":false");
-    assert_response_contains(result, "\"operatorServiceLifecycleTemplateFreeze\":{\"frozenReleaseVersion\":\"v151\"");
+    assert_response_contains(result, "\"operatorServiceLifecycleTemplateFreeze\":{\"frozenReleaseVersion\":\"v152\"");
     assert_response_contains(result, "\"frozenServiceOwnerDeclared\":false");
     assert_response_contains(result, "\"operatorServiceLifecycleEvidence\":{\"evidenceMode\":\"declared-lifecycle-no-runtime\"");
     assert_response_contains(result, "\"operatorOwnedServiceLifecycleDeclared\":true");
@@ -377,6 +377,19 @@ int main() {
     assert_response_contains(result, "\"getOnlySmokeTargetDeclared\":true");
     assert_response_contains(result, "\"runtimeGateApproved\":false");
     assert_response_contains(result, "\"requiresSeparateRuntimeGate\":true");
+    assert_response_contains(result, "\"operatorServiceLifecycleEvidenceFreeze\":{\"frozenReleaseVersion\":\"v152\"");
+    assert_response_contains(result, "\"frozenRuntimeGateApproved\":false");
+    assert_response_contains(result,
+                             "\"runtimeExecutionArtifactIntakePreflight\":{\"preflightMode\":"
+                             "\"blocked-missing-runtime-execution-artifacts\"");
+    assert_response_contains(result, "\"readyForRuntimeExecutionPacket\":false");
+    assert_response_contains(result, "\"runtimeExecutionArtifactsComplete\":false");
+    assert_response_contains(result, "\"presentRuntimeExecutionArtifactCount\":0");
+    assert_response_contains(result, "\"missingRuntimeExecutionArtifactCount\":6");
+    assert_response_contains(result, "\"runtimeExecutionPacketExecutable\":false");
+    assert_response_contains(result, "\"executionAttempted\":false");
+    assert_response_contains(result, "\"startsMiniKvService\":false");
+    assert_response_contains(result, "\"failClosedOnMissingArtifacts\":true");
 
     result = processor.execute("EXPLAINJSON");
     assert(result.response == "ERR usage: EXPLAINJSON command");
