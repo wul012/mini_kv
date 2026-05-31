@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v156\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v157\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -339,12 +339,12 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"mini-kv-final-approval-gate-input-no-runtime-read-only\"");
+    assert_response_contains(result, "\"status\":\"runtime-execution-approval-input-template-validator-echo-read-only\"");
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v155\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v156\"");
     assert_response_contains(result, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_response_contains(result, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_response_contains(result, "\"activeShardPrototypeAllowed\":false");
@@ -448,6 +448,27 @@ int main() {
     assert_response_contains(result, "\"requiresNodeRuntimeWindow\":true");
     assert_response_contains(result, "\"requiresCorrelatedOperatorApproval\":true");
     assert_response_contains(result, "\"requiresCompleteCrossProjectPacket\":true");
+    assert_response_contains(result, "\"miniKvFinalApprovalGateInputFreeze\":{\"frozenReleaseVersion\":\"v156\"");
+    assert_response_contains(result, "\"preservesMiniKvFinalApprovalGateInput\":true");
+    assert_response_contains(result, "\"frozenRuntimeExecutionPacketExecutable\":false");
+    assert_response_contains(result, "\"frozenRouterActivationAllowed\":false");
+    assert_response_contains(result,
+                             "\"runtimeExecutionApprovalInputTemplateValidatorEcho\":{\"echoMode\":"
+                             "\"template-validator-echo-no-canonical-inputs\"");
+    assert_response_contains(result,
+                             "\"sourceNodeValidatorVersion\":\"Node v402 runtime execution approval input template validator\"");
+    assert_response_contains(result, "\"templateArchiveRoot\":\"e/402/input-templates\"");
+    assert_response_contains(result, "\"canonicalInputRoot\":\"e/398/input\"");
+    assert_response_contains(result, "\"templateOnlyInputCount\":3");
+    assert_response_contains(result, "\"canonicalRuntimeInputPresent\":false");
+    assert_response_contains(result, "\"templateCopiedToCanonicalInput\":false");
+    assert_response_contains(result, "\"nodeApprovedRuntimeWindowCanonicalPresent\":false");
+    assert_response_contains(result, "\"correlatedOperatorApprovalRecordCanonicalPresent\":false");
+    assert_response_contains(result, "\"completeCrossProjectRuntimeExecutionPacketCanonicalPresent\":false");
+    assert_response_contains(result, "\"templatesAuthorizeRuntime\":false");
+    assert_response_contains(result, "\"writesCanonicalApprovalInputFiles\":false");
+    assert_response_contains(result, "\"changesNodeInputTemplateFiles\":false");
+    assert_response_contains(result, "\"failClosedOnTemplateOnlyInputs\":true");
 
     result = processor.execute("EXPLAINJSON");
     assert(result.response == "ERR usage: EXPLAINJSON command");
