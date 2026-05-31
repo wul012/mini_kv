@@ -24,6 +24,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `217-version-161-shard-readiness-boundary-catalog-index.md` - mini-kv v161 freezes v160 boundary catalog split evidence, adds a shared-vector boundary catalog index/count, tests, TCP smoke, and `e/161` archive.
 - `218-version-162-shard-readiness-slot-table-preview.md` - mini-kv v162 freezes v161 boundary catalog index evidence, adds a read-only 16-slot table preview, splits slot/shard preview formatting, tests, TCP smoke, and `e/162` archive.
 - `219-version-163-shard-readiness-slot-table-preview-audit.md` - mini-kv v163 freezes v162 slot preview evidence, adds a read-only slot table consistency audit, tests, TCP smoke, and `e/163` archive.
+- `220-version-164-shard-readiness-slot-preview-audit-maintenance.md` - mini-kv v164 freezes v163 slot preview audit evidence, splits the audit formatter, adds read-only maintenance evidence, tests, TCP smoke, and `e/164` archive.
 
 ## Rules
 

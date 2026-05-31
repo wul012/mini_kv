@@ -79,6 +79,24 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "slotTablePreviewAudit.runtimeProbeAllowed",
         "slotTablePreviewAudit.liveReadAllowed",
         "slotTablePreviewAudit.executionAllowed",
+        "slotTablePreviewAuditMaintenance.publicShardJsonContractChanged",
+        "slotTablePreviewAuditMaintenance.fixturePathChanged",
+        "slotTablePreviewAuditMaintenance.shardJsonCommandChanged",
+        "slotTablePreviewAuditMaintenance.nodeAddsEvidenceGate",
+        "slotTablePreviewAuditMaintenance.runtimeGateApprovalPresent",
+        "slotTablePreviewAuditMaintenance.runtimeExecutionPacketExecutable",
+        "slotTablePreviewAuditMaintenance.startsJavaService",
+        "slotTablePreviewAuditMaintenance.startsMiniKvService",
+        "slotTablePreviewAuditMaintenance.startsServices",
+        "slotTablePreviewAuditMaintenance.runtimeProbeAllowed",
+        "slotTablePreviewAuditMaintenance.liveReadAllowed",
+        "slotTablePreviewAuditMaintenance.activeRouterInstalled",
+        "slotTablePreviewAuditMaintenance.routerActivationAllowed",
+        "slotTablePreviewAuditMaintenance.writeRoutingAllowed",
+        "slotTablePreviewAuditMaintenance.writeCommandsAllowed",
+        "slotTablePreviewAuditMaintenance.adminCommandsAllowed",
+        "slotTablePreviewAuditMaintenance.loadRestoreCompactAllowed",
+        "slotTablePreviewAuditMaintenance.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -376,6 +394,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "top-level-read-only",
         "slot-table-preview",
         "slot-table-preview-audit",
+        "slot-table-preview-audit-maintenance",
         "core-boundaries",
         "historical-fallback",
         "active-prototype-plan",
@@ -399,16 +418,17 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v4\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v426-post-credential-resolver-runtime-shell-decision-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v162\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v162.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v5\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v430-post-credential-resolver-signed-human-approval-artifact-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v163\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v163.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
            "\"catalogGroups\":" + json_string_array(groups) +
            ",\"slotTablePreviewCataloged\":true"
            ",\"slotTablePreviewAuditCataloged\":true"
+           ",\"slotTablePreviewAuditMaintenanceCataloged\":true"
            ",\"readOnlyBoundaryFieldsStillPublished\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
