@@ -97,6 +97,26 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "slotTablePreviewAuditMaintenance.adminCommandsAllowed",
         "slotTablePreviewAuditMaintenance.loadRestoreCompactAllowed",
         "slotTablePreviewAuditMaintenance.executionAllowed",
+        "shardReadinessReleaseCatalog.publicShardJsonContractChanged",
+        "shardReadinessReleaseCatalog.fixturePathChanged",
+        "shardReadinessReleaseCatalog.shardJsonCommandChanged",
+        "shardReadinessReleaseCatalog.nodeAddsEvidenceGate",
+        "shardReadinessReleaseCatalog.versionedFixtureCatalogOnly",
+        "shardReadinessReleaseCatalog.rollingCurrentUsedForFrozenCatalog",
+        "shardReadinessReleaseCatalog.runtimeGateApprovalPresent",
+        "shardReadinessReleaseCatalog.runtimeExecutionPacketExecutable",
+        "shardReadinessReleaseCatalog.startsJavaService",
+        "shardReadinessReleaseCatalog.startsMiniKvService",
+        "shardReadinessReleaseCatalog.startsServices",
+        "shardReadinessReleaseCatalog.runtimeProbeAllowed",
+        "shardReadinessReleaseCatalog.liveReadAllowed",
+        "shardReadinessReleaseCatalog.activeRouterInstalled",
+        "shardReadinessReleaseCatalog.routerActivationAllowed",
+        "shardReadinessReleaseCatalog.writeRoutingAllowed",
+        "shardReadinessReleaseCatalog.writeCommandsAllowed",
+        "shardReadinessReleaseCatalog.adminCommandsAllowed",
+        "shardReadinessReleaseCatalog.loadRestoreCompactAllowed",
+        "shardReadinessReleaseCatalog.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -395,6 +415,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "slot-table-preview",
         "slot-table-preview-audit",
         "slot-table-preview-audit-maintenance",
+        "shard-readiness-release-catalog",
         "core-boundaries",
         "historical-fallback",
         "active-prototype-plan",
@@ -418,10 +439,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v5\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v430-post-credential-resolver-signed-human-approval-artifact-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v163\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v163.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v6\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v431-post-credential-resolver-credential-handle-approval-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v164\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v164.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -429,6 +450,7 @@ std::string format_catalog_index_json() {
            ",\"slotTablePreviewCataloged\":true"
            ",\"slotTablePreviewAuditCataloged\":true"
            ",\"slotTablePreviewAuditMaintenanceCataloged\":true"
+           ",\"shardReadinessReleaseCatalogCataloged\":true"
            ",\"readOnlyBoundaryFieldsStillPublished\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
