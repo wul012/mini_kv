@@ -59,6 +59,7 @@ add_library(minikv
     src/shard_readiness_approval_inputs.cpp
     src/shard_readiness_boundary_fields.cpp
     src/shard_readiness_node_compatibility.cpp
+    src/shard_readiness_slot_preview.cpp
     src/snapshot.cpp
     src/store.cpp
     src/tcp_server.cpp

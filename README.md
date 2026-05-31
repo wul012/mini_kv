@@ -4,6 +4,8 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+Version 162 freezes the v161 boundary catalog index as `fixtures/release/shard-readiness-v161.json`, adds a `slotTablePreview` section, and splits the slot/shard preview formatter into `shard_readiness_slot_preview`. The preview materializes all 16 slots as evidence-only assignments to `shard-0` so Node/Java can read a versioned shard map shape without getting an active router, write routing, service startup, runtime probe, LOAD/RESTORE/COMPACT, or execution permission.
+
 Version 161 freezes the v160 boundary catalog split as `fixtures/release/shard-readiness-v160.json` and adds a structured `boundaryCatalogIndex` section. The index is generated from the same shared field vector that renders `readOnlyBoundaryFields`, so consumers can verify the field count, catalog groups, and no-runtime flags without trusting a separately maintained list. It still keeps `SHARDJSON` read-only, fixture path stable, Java/mini-kv service start, runtime probe, live read, router activation, write routing, write/admin commands, LOAD/RESTORE/COMPACT, and execution disabled.
 
 Version 160 freezes the v159 route-group split compatibility evidence as `fixtures/release/shard-readiness-v159.json` and performs a contract-preserving split of the `readOnlyBoundaryFields` catalog into `shard_readiness_boundary_fields`. The new `boundaryCatalogMaintenance` section proves this is only a formatter/catalog maintenance change: `SHARDJSON` command shape, current fixture path, Node route compatibility, Java/mini-kv service start, runtime probe, live read, router activation, write routing, write commands, admin commands, LOAD/RESTORE/COMPACT, and execution all remain disabled.

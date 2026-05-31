@@ -50,6 +50,19 @@ const std::vector<std::string>& read_only_boundary_field_names() {
     static const std::vector<std::string> fields = {
         "readOnly",
         "executionAllowed",
+        "slotTablePreview.slotTablePreviewOnly",
+        "slotTablePreview.readOnlyShardMapPreview",
+        "slotTablePreview.activeRouterInstalled",
+        "slotTablePreview.routerActivationAllowed",
+        "slotTablePreview.writeRoutingAllowed",
+        "slotTablePreview.writeCommandsAllowed",
+        "slotTablePreview.adminCommandsAllowed",
+        "slotTablePreview.loadRestoreCompactAllowed",
+        "slotTablePreview.storageDirectoriesCreated",
+        "slotTablePreview.startsServices",
+        "slotTablePreview.runtimeProbeAllowed",
+        "slotTablePreview.liveReadAllowed",
+        "slotTablePreview.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -345,6 +358,7 @@ const std::vector<std::string>& read_only_boundary_field_names() {
 const std::vector<std::string>& boundary_catalog_groups() {
     static const std::vector<std::string> groups = {
         "top-level-read-only",
+        "slot-table-preview",
         "core-boundaries",
         "historical-fallback",
         "active-prototype-plan",
@@ -368,14 +382,15 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v2\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v420-post-credential-resolver-pre-implementation-readiness-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v160\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v160.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v3\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v161\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v161.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
            "\"catalogGroups\":" + json_string_array(groups) +
+           ",\"slotTablePreviewCataloged\":true"
            ",\"readOnlyBoundaryFieldsStillPublished\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
