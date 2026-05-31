@@ -117,6 +117,30 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "shardReadinessReleaseCatalog.adminCommandsAllowed",
         "shardReadinessReleaseCatalog.loadRestoreCompactAllowed",
         "shardReadinessReleaseCatalog.executionAllowed",
+        "shardReadinessReleaseCatalogAudit.contiguousReleaseRange",
+        "shardReadinessReleaseCatalogAudit.duplicateReleasesDetected",
+        "shardReadinessReleaseCatalogAudit.missingCatalogEntriesDetected",
+        "shardReadinessReleaseCatalogAudit.allCatalogedDigestsPresent",
+        "shardReadinessReleaseCatalogAudit.allCatalogedFixturesVersioned",
+        "shardReadinessReleaseCatalogAudit.allCatalogedEntriesReadOnly",
+        "shardReadinessReleaseCatalogAudit.fieldCountsMonotonic",
+        "shardReadinessReleaseCatalogAudit.groupCountsMonotonic",
+        "shardReadinessReleaseCatalogAudit.latestDigestMatchesFrozenSource",
+        "shardReadinessReleaseCatalogAudit.catalogOnlyAudit",
+        "shardReadinessReleaseCatalogAudit.runtimeGateApprovalPresent",
+        "shardReadinessReleaseCatalogAudit.runtimeExecutionPacketExecutable",
+        "shardReadinessReleaseCatalogAudit.startsJavaService",
+        "shardReadinessReleaseCatalogAudit.startsMiniKvService",
+        "shardReadinessReleaseCatalogAudit.startsServices",
+        "shardReadinessReleaseCatalogAudit.runtimeProbeAllowed",
+        "shardReadinessReleaseCatalogAudit.liveReadAllowed",
+        "shardReadinessReleaseCatalogAudit.activeRouterInstalled",
+        "shardReadinessReleaseCatalogAudit.routerActivationAllowed",
+        "shardReadinessReleaseCatalogAudit.writeRoutingAllowed",
+        "shardReadinessReleaseCatalogAudit.writeCommandsAllowed",
+        "shardReadinessReleaseCatalogAudit.adminCommandsAllowed",
+        "shardReadinessReleaseCatalogAudit.loadRestoreCompactAllowed",
+        "shardReadinessReleaseCatalogAudit.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -416,6 +440,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "slot-table-preview-audit",
         "slot-table-preview-audit-maintenance",
         "shard-readiness-release-catalog",
+        "shard-readiness-release-catalog-audit",
         "core-boundaries",
         "historical-fallback",
         "active-prototype-plan",
@@ -439,10 +464,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v6\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v431-post-credential-resolver-credential-handle-approval-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v164\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v164.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v7\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v432-post-credential-resolver-endpoint-handle-allowlist-approval-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v165\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v165.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -451,6 +476,7 @@ std::string format_catalog_index_json() {
            ",\"slotTablePreviewAuditCataloged\":true"
            ",\"slotTablePreviewAuditMaintenanceCataloged\":true"
            ",\"shardReadinessReleaseCatalogCataloged\":true"
+           ",\"shardReadinessReleaseCatalogAuditCataloged\":true"
            ",\"readOnlyBoundaryFieldsStillPublished\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"

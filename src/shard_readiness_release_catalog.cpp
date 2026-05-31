@@ -131,4 +131,41 @@ std::string format_release_catalog_json() {
            ",\"readOnly\":true}";
 }
 
+std::string format_release_catalog_audit_json() {
+    return "{\"auditMode\":\"shard-readiness-release-catalog-consistency-read-only\","
+           "\"sourceNodePlan\":\"docs/plans3/v432-post-credential-resolver-endpoint-handle-allowlist-approval-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v165\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v165.json\","
+           "\"auditedCatalogSection\":\"shardReadinessReleaseCatalog\","
+           "\"expectedReleaseCount\":4,"
+           "\"observedReleaseCount\":4,"
+           "\"releaseRangeStart\":\"v161\","
+           "\"releaseRangeEnd\":\"v164\","
+           "\"contiguousReleaseRange\":true,"
+           "\"duplicateReleasesDetected\":false,"
+           "\"missingCatalogEntriesDetected\":false,"
+           "\"allCatalogedDigestsPresent\":true,"
+           "\"allCatalogedFixturesVersioned\":true,"
+           "\"allCatalogedEntriesReadOnly\":true,"
+           "\"fieldCountsMonotonic\":true,"
+           "\"groupCountsMonotonic\":true,"
+           "\"latestDigestMatchesFrozenSource\":true,"
+           "\"catalogOnlyAudit\":true,"
+           "\"runtimeGateApprovalPresent\":false,"
+           "\"runtimeExecutionPacketExecutable\":false,"
+           "\"startsJavaService\":false,"
+           "\"startsMiniKvService\":false,"
+           "\"startsServices\":false,"
+           "\"runtimeProbeAllowed\":false,"
+           "\"liveReadAllowed\":false,"
+           "\"activeRouterInstalled\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"writeCommandsAllowed\":false,"
+           "\"adminCommandsAllowed\":false,"
+           "\"loadRestoreCompactAllowed\":false,"
+           "\"executionAllowed\":false,"
+           "\"readOnly\":true}";
+}
+
 } // namespace minikv::shard_readiness::release_catalog

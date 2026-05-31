@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v165\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v166\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -339,7 +339,7 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"shard-readiness-release-catalog-read-only\"");
+    assert_response_contains(result, "\"status\":\"shard-readiness-release-catalog-audit-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -419,11 +419,37 @@ int main() {
     assert_response_contains(result, "\"activeRouterInstalled\":false");
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"shardReadinessReleaseCatalogAudit\":{\"auditMode\":"
+                                     "\"shard-readiness-release-catalog-consistency-read-only\"");
+    assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
+                                     "v432-post-credential-resolver-endpoint-handle-allowlist-approval-route-group-split-roadmap.md\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v165\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v165.json\"");
+    assert_response_contains(result, "\"auditedCatalogSection\":\"shardReadinessReleaseCatalog\"");
+    assert_response_contains(result, "\"expectedReleaseCount\":4");
+    assert_response_contains(result, "\"observedReleaseCount\":4");
+    assert_response_contains(result, "\"releaseRangeStart\":\"v161\"");
+    assert_response_contains(result, "\"releaseRangeEnd\":\"v164\"");
+    assert_response_contains(result, "\"contiguousReleaseRange\":true");
+    assert_response_contains(result, "\"duplicateReleasesDetected\":false");
+    assert_response_contains(result, "\"missingCatalogEntriesDetected\":false");
+    assert_response_contains(result, "\"allCatalogedDigestsPresent\":true");
+    assert_response_contains(result, "\"allCatalogedFixturesVersioned\":true");
+    assert_response_contains(result, "\"allCatalogedEntriesReadOnly\":true");
+    assert_response_contains(result, "\"fieldCountsMonotonic\":true");
+    assert_response_contains(result, "\"groupCountsMonotonic\":true");
+    assert_response_contains(result, "\"latestDigestMatchesFrozenSource\":true");
+    assert_response_contains(result, "\"catalogOnlyAudit\":true");
+    assert_response_contains(result, "\"runtimeExecutionPacketExecutable\":false");
+    assert_response_contains(result, "\"startsMiniKvService\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v164\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v165\"");
     assert_response_contains(result, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_response_contains(result, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_response_contains(result, "\"activeShardPrototypeAllowed\":false");
@@ -616,23 +642,24 @@ int main() {
     assert_response_contains(result, "\"boundaryCatalogMaintenance.routerActivationAllowed\"");
     assert_response_contains(result, "\"boundaryCatalogMaintenance.writeRoutingAllowed\"");
     assert_response_contains(result, "\"boundaryCatalogMaintenance.executionAllowed\"");
-    assert_response_contains(result, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v6\"");
+    assert_response_contains(result, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v7\"");
     assert_response_contains(result, "\"sourceNodePlan\":"
                                      "\"docs/plans3/"
-                                     "v431-post-credential-resolver-credential-handle-approval-route-group-split-roadmap.md\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v164\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v164.json\"");
-    assert_response_contains(result, "\"fieldCount\":357");
-    assert_response_contains(result, "\"groupCount\":19");
+                                     "v432-post-credential-resolver-endpoint-handle-allowlist-approval-route-group-split-roadmap.md\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v165\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v165.json\"");
+    assert_response_contains(result, "\"fieldCount\":381");
+    assert_response_contains(result, "\"groupCount\":20");
     assert_response_contains(result, "\"fieldListGeneratedFromSharedVector\":true");
     assert_response_contains(result, "\"catalogGroups\":[\"top-level-read-only\",\"slot-table-preview\","
                                      "\"slot-table-preview-audit\",\"slot-table-preview-audit-maintenance\","
-                                     "\"shard-readiness-release-catalog\","
+                                     "\"shard-readiness-release-catalog\",\"shard-readiness-release-catalog-audit\","
                                      "\"core-boundaries\"");
     assert_response_contains(result, "\"slotTablePreviewCataloged\":true");
     assert_response_contains(result, "\"slotTablePreviewAuditCataloged\":true");
     assert_response_contains(result, "\"slotTablePreviewAuditMaintenanceCataloged\":true");
     assert_response_contains(result, "\"shardReadinessReleaseCatalogCataloged\":true");
+    assert_response_contains(result, "\"shardReadinessReleaseCatalogAuditCataloged\":true");
     assert_response_contains(result, "\"boundaryCatalogMaintenancePreserved\":true");
     assert_response_contains(result, "\"slotTablePreview.routerActivationAllowed\"");
     assert_response_contains(result, "\"slotTablePreview.writeRoutingAllowed\"");
@@ -651,6 +678,12 @@ int main() {
     assert_response_contains(result, "\"shardReadinessReleaseCatalog.routerActivationAllowed\"");
     assert_response_contains(result, "\"shardReadinessReleaseCatalog.writeRoutingAllowed\"");
     assert_response_contains(result, "\"shardReadinessReleaseCatalog.executionAllowed\"");
+    assert_response_contains(result, "\"shardReadinessReleaseCatalogAudit.contiguousReleaseRange\"");
+    assert_response_contains(result, "\"shardReadinessReleaseCatalogAudit.duplicateReleasesDetected\"");
+    assert_response_contains(result, "\"shardReadinessReleaseCatalogAudit.latestDigestMatchesFrozenSource\"");
+    assert_response_contains(result, "\"shardReadinessReleaseCatalogAudit.routerActivationAllowed\"");
+    assert_response_contains(result, "\"shardReadinessReleaseCatalogAudit.writeRoutingAllowed\"");
+    assert_response_contains(result, "\"shardReadinessReleaseCatalogAudit.executionAllowed\"");
     assert_response_contains(result, "\"boundaryCatalogIndex.publicShardJsonContractChanged\"");
     assert_response_contains(result, "\"boundaryCatalogIndex.routerActivationAllowed\"");
     assert_response_contains(result, "\"boundaryCatalogIndex.writeRoutingAllowed\"");

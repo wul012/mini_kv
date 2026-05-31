@@ -26,6 +26,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `219-version-163-shard-readiness-slot-table-preview-audit.md` - mini-kv v163 freezes v162 slot preview evidence, adds a read-only slot table consistency audit, tests, TCP smoke, and `e/163` archive.
 - `220-version-164-shard-readiness-slot-preview-audit-maintenance.md` - mini-kv v164 freezes v163 slot preview audit evidence, splits the audit formatter, adds read-only maintenance evidence, tests, TCP smoke, and `e/164` archive.
 - `221-version-165-shard-readiness-release-catalog.md` - mini-kv v165 freezes v164 audit-maintenance evidence, adds a versioned shard-readiness release catalog, tests, TCP smoke, and `e/165` archive.
+- `222-version-166-shard-readiness-release-catalog-audit.md` - mini-kv v166 freezes v165 release catalog evidence, adds a read-only release catalog consistency audit, tests, TCP smoke, and `e/166` archive.
 
 ## Rules
 
