@@ -4,6 +4,8 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+Version 163 freezes the v162 slot table preview as `fixtures/release/shard-readiness-v162.json` and adds a `slotTablePreviewAudit` section. The audit proves the evidence-only slot table is internally consistent: 16 observed slots, range 0-15, no duplicates, no unassigned slots, one preview shard, all assignments read-only, and still no active router, write routing, service startup, runtime probe, LOAD/RESTORE/COMPACT, or execution permission.
+
 Version 162 freezes the v161 boundary catalog index as `fixtures/release/shard-readiness-v161.json`, adds a `slotTablePreview` section, and splits the slot/shard preview formatter into `shard_readiness_slot_preview`. The preview materializes all 16 slots as evidence-only assignments to `shard-0` so Node/Java can read a versioned shard map shape without getting an active router, write routing, service startup, runtime probe, LOAD/RESTORE/COMPACT, or execution permission.
 
 Version 161 freezes the v160 boundary catalog split as `fixtures/release/shard-readiness-v160.json` and adds a structured `boundaryCatalogIndex` section. The index is generated from the same shared field vector that renders `readOnlyBoundaryFields`, so consumers can verify the field count, catalog groups, and no-runtime flags without trusting a separately maintained list. It still keeps `SHARDJSON` read-only, fixture path stable, Java/mini-kv service start, runtime probe, live read, router activation, write routing, write/admin commands, LOAD/RESTORE/COMPACT, and execution disabled.

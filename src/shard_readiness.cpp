@@ -15,7 +15,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v162";
+constexpr std::string_view release_version = "v163";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -36,7 +36,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v425+ may consume v162 as read-only shard map and slot table preview evidence only\","
+           "\"nodeConsumer\":\"Node v426+ may consume v163 as read-only slot table preview audit evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -69,6 +69,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v159.json",
                 "fixtures/release/shard-readiness-v160.json",
                 "fixtures/release/shard-readiness-v161.json",
+                "fixtures/release/shard-readiness-v162.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -119,15 +120,16 @@ std::string format_archive_compatibility_json() {
                 "Node v423",
                 "Node v424",
                 "Node v425",
+                "Node v426",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-             "\"futureNodeConsumer\":\"Node v425 or later may consume this read-only slot preview through split route groups without changing mini-kv runtime boundaries\"}";
+             "\"futureNodeConsumer\":\"Node v426 or later may consume this read-only slot preview audit through split route groups without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v161\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v161.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v425 disabled runtime shell readiness route split may consume v161 boundary catalog index evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v162\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v162.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v426 runtime shell decision route split may consume v162 slot table preview evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -146,7 +148,8 @@ std::string format_historical_fallback_json() {
            "\"nodeV422ImplementationPlanRouteSplitPreserved\":true,"
            "\"nodeV423FakeHarnessContractRouteSplitPreserved\":true,"
            "\"nodeV424FakeHarnessExecutionReadinessRouteSplitPreserved\":true,"
-           "\"nodeV425DisabledRuntimeShellReadinessRouteSplitPreserved\":true}";
+           "\"nodeV425DisabledRuntimeShellReadinessRouteSplitPreserved\":true,"
+           "\"nodeV426RuntimeShellDecisionRouteSplitPreserved\":true}";
 }
 
 std::string format_active_prototype_plan_json() {
@@ -591,7 +594,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v162",
+        "mini-kv-shard-readiness-v163",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -603,8 +606,8 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v161-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v425-preserved"},
+            {"historicalFallback=v162-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v426-preserved"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
             {"consumerHandoff=frozen-evidence-only-no-live-read"},
@@ -629,6 +632,7 @@ std::string evidence_digest() {
             {"boundaryCatalogMaintenance=v160-contract-preserving-split-no-execution"},
             {"boundaryCatalogIndex=v161-shared-vector-count-no-execution"},
             {"slotTablePreview=v162-read-only-no-router-no-write-no-execution"},
+            {"slotTablePreviewAudit=v163-contiguous-no-duplicates-no-router-no-execution"},
         });
 }
 
@@ -651,10 +655,11 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"slot-table-preview-read-only\"" +
+           ",\"status\":\"slot-table-preview-audit-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
+           ",\"slotTablePreviewAudit\":" + slot_preview::format_slot_table_preview_audit_json() +
            ",\"boundaries\":" + format_boundaries_json() +
            ",\"diagnostics\":" + format_diagnostics_json() +
            ",\"commandCatalog\":" + format_command_catalog_json() +
@@ -719,11 +724,12 @@ std::string format_json() {
                  "splits read-only boundary field catalog without changing SHARDJSON command or fixture path",
                  "adds shared-vector boundary catalog index and count without changing runtime permissions",
                  "adds read-only slot table preview without installing an active router",
+                 "adds read-only slot table preview consistency audit without activating routing",
                 "runtime execution artifact intake preflight remains blocked at 0 of 6 artifacts",
                 "live-read gate remains prerequisite-only and does not start services",
                 "operator service lifecycle evidence still has no runtime probe",
                 "active shard prototype remains plan-prerequisite only",
-                  "does not mutate Node v370-v425 archived evidence",
+                  "does not mutate Node v370-v426 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";
