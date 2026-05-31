@@ -2,6 +2,7 @@
 
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/shard_readiness_approval_inputs.hpp"
+#include "minikv/shard_readiness_boundary_fields.hpp"
 #include "minikv/shard_readiness_node_compatibility.hpp"
 #include "minikv/version.hpp"
 
@@ -15,7 +16,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v159";
+constexpr std::string_view release_version = "v160";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -69,7 +70,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v419+ may consume v159 as route-group split compatibility evidence only\","
+           "\"nodeConsumer\":\"Node v419+ may consume v160 as boundary catalog split compatibility evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -99,6 +100,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v156.json",
                 "fixtures/release/shard-readiness-v157.json",
                 "fixtures/release/shard-readiness-v158.json",
+                "fixtures/release/shard-readiness-v159.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -144,13 +146,13 @@ std::string format_archive_compatibility_json() {
                 "Node v418",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-             "\"futureNodeConsumer\":\"Node v419 or later may route this evidence through split route groups without changing mini-kv runtime boundaries\"}";
+             "\"futureNodeConsumer\":\"Node v419 or later may consume this boundary catalog split through split route groups without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v158\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v158.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v418 route split is compatible with v158 canonical input precheck evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v159\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v159.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v418 route split consumed v159 route compatibility evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -162,7 +164,8 @@ std::string format_historical_fallback_json() {
            "\"nodeV402TemplateValidatorPreserved\":true,"
            "\"nodeV403TemplateCompatibilityIntakePreserved\":true,"
            "\"nodeV404RequiresRealCanonicalInputs\":true,"
-           "\"nodeV418RouteGroupSplitCompatibilityPreserved\":true}";
+           "\"nodeV418RouteGroupSplitCompatibilityPreserved\":true,"
+           "\"nodeV419BoundaryCatalogMaintenanceReady\":true}";
 }
 
 std::string format_active_prototype_plan_json() {
@@ -607,7 +610,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v159",
+        "mini-kv-shard-readiness-v160",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -619,7 +622,7 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v158-frozen-no-rolling-current"},
+            {"historicalFallback=v159-frozen-no-rolling-current"},
             {"archivedNodeEvidence=v370-v418-preserved"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
@@ -642,6 +645,7 @@ std::string evidence_digest() {
             {"runtimeExecutionApprovalInputTemplateValidatorEchoFreeze=v157-frozen-template-only"},
             {"runtimeExecutionCanonicalApprovalInputPrecheck=blocked-0-of-3-no-execution"},
             {"nodeRouteGroupSplitCompatibility=v418-route-refactor-contract-stable"},
+            {"boundaryCatalogMaintenance=v160-contract-preserving-split-no-execution"},
         });
 }
 
@@ -664,7 +668,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"node-route-group-split-compatibility-read-only\"" +
+           ",\"status\":\"boundary-field-catalog-split-read-only\"" +
            ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
            ",\"boundaries\":" + format_boundaries_json() +
@@ -706,262 +710,10 @@ std::string format_json() {
            approval_inputs::format_canonical_approval_input_precheck_json() +
            ",\"nodeRouteGroupSplitCompatibility\":" +
            node_compatibility::format_route_group_split_compatibility_json() +
-           ",\"readOnlyBoundaryFields\":" + json_string_array({
-               "readOnly",
-               "executionAllowed",
-               "boundaries.writeCommandsAllowed",
-               "boundaries.adminCommandsAllowed",
-               "boundaries.loadRestoreCompactAllowed",
-               "boundaries.archivedNodeEvidenceMutated",
-               "archiveCompatibility.changesArchivedNodeEvidence",
-               "historicalFallback.rollingCurrentUsedForHistoricalBaseline",
-               "activePrototypePlan.activeShardPrototypeAllowed",
-               "activePrototypePlan.routerActivationAllowed",
-               "activePrototypePlan.shardDirectoryCreationAllowed",
-               "activePrototypePlan.writeRoutingAllowed",
-               "activePrototypePlanFreeze.rollingCurrentUsedForFrozenBaseline",
-               "activePrototypePlanFreeze.frozenRouterActivationAllowed",
-               "activePrototypePlanFreeze.frozenWriteRoutingAllowed",
-               "consumerHandoff.startsServices",
-               "consumerHandoff.routerActivationAllowed",
-               "consumerHandoff.writeRoutingAllowed",
-               "consumerHandoff.executionAllowed",
-               "liveReadGatePlan.liveReadGateAllowed",
-               "liveReadGatePlan.runtimeProbeAllowed",
-               "liveReadGatePlan.startsServices",
-               "liveReadGatePlan.routerActivationAllowed",
-               "liveReadGatePlan.writeRoutingAllowed",
-               "liveReadGatePlan.executionAllowed",
-               "liveReadGatePlanFreeze.rollingCurrentUsedForFrozenBaseline",
-               "liveReadGatePlanFreeze.frozenRuntimeProbeAllowed",
-               "liveReadGatePlanFreeze.frozenStartsServices",
-               "liveReadGatePlanFreeze.frozenExecutionAllowed",
-               "operatorServiceLifecycleTemplate.serviceOwnerDeclared",
-               "operatorServiceLifecycleTemplate.startupCommandDeclared",
-               "operatorServiceLifecycleTemplate.portListDeclared",
-               "operatorServiceLifecycleTemplate.getOnlySmokeTargetDeclared",
-               "operatorServiceLifecycleTemplate.startsServices",
-               "operatorServiceLifecycleTemplate.runtimeProbeAllowed",
-               "operatorServiceLifecycleTemplate.liveReadAllowed",
-               "operatorServiceLifecycleTemplate.executionAllowed",
-               "operatorServiceLifecycleTemplateFreeze.rollingCurrentUsedForFrozenBaseline",
-               "operatorServiceLifecycleTemplateFreeze.frozenRuntimeProbeAllowed",
-               "operatorServiceLifecycleTemplateFreeze.frozenExecutionAllowed",
-               "operatorServiceLifecycleEvidence.runtimeGateApproved",
-               "operatorServiceLifecycleEvidence.startsServices",
-                "operatorServiceLifecycleEvidence.runtimeProbeAllowed",
-                "operatorServiceLifecycleEvidence.liveReadAllowed",
-                "operatorServiceLifecycleEvidence.routerActivationAllowed",
-                "operatorServiceLifecycleEvidence.writeRoutingAllowed",
-                "operatorServiceLifecycleEvidence.executionAllowed",
-                "operatorServiceLifecycleEvidenceFreeze.rollingCurrentUsedForFrozenBaseline",
-                "operatorServiceLifecycleEvidenceFreeze.frozenRuntimeGateApproved",
-                "operatorServiceLifecycleEvidenceFreeze.frozenStartsServices",
-                "operatorServiceLifecycleEvidenceFreeze.frozenRuntimeProbeAllowed",
-                "operatorServiceLifecycleEvidenceFreeze.frozenLiveReadAllowed",
-                "operatorServiceLifecycleEvidenceFreeze.frozenRouterActivationAllowed",
-                "operatorServiceLifecycleEvidenceFreeze.frozenWriteRoutingAllowed",
-                "operatorServiceLifecycleEvidenceFreeze.frozenExecutionAllowed",
-                "runtimeExecutionArtifactIntakePreflight.readyForRuntimeExecutionPacket",
-                "runtimeExecutionArtifactIntakePreflight.readyForRuntimeLiveReadGate",
-                "runtimeExecutionArtifactIntakePreflight.runtimeExecutionArtifactsComplete",
-                "runtimeExecutionArtifactIntakePreflight.runtimeExecutionPacketPresent",
-                "runtimeExecutionArtifactIntakePreflight.runtimeExecutionPacketExecutable",
-                "runtimeExecutionArtifactIntakePreflight.executionAttempted",
-                "runtimeExecutionArtifactIntakePreflight.startsMiniKvService",
-                "runtimeExecutionArtifactIntakePreflight.startsServices",
-                "runtimeExecutionArtifactIntakePreflight.runtimeProbeAllowed",
-                "runtimeExecutionArtifactIntakePreflight.liveReadAllowed",
-                "runtimeExecutionArtifactIntakePreflight.routerActivationAllowed",
-                "runtimeExecutionArtifactIntakePreflight.writeRoutingAllowed",
-                "runtimeExecutionArtifactIntakePreflight.executionAllowed",
-                "runtimeExecutionArtifactIntakePreflightFreeze.rollingCurrentUsedForFrozenBaseline",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenRuntimeExecutionArtifactsComplete",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenRuntimeExecutionPacketExecutable",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenExecutionAttempted",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenStartsMiniKvService",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenRuntimeProbeAllowed",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenLiveReadAllowed",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenRouterActivationAllowed",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenWriteRoutingAllowed",
-                "runtimeExecutionArtifactIntakePreflightFreeze.frozenExecutionAllowed",
-                "miniKvRuntimeExecutionArtifactCandidate.acceptedRuntimeExecutionArtifactsComplete",
-                "miniKvRuntimeExecutionArtifactCandidate.operatorApprovalRecordPresent",
-                "miniKvRuntimeExecutionArtifactCandidate.nodeRuntimeWindowApproved",
-                "miniKvRuntimeExecutionArtifactCandidate.crossProjectRuntimeExecutionPacketPresent",
-                "miniKvRuntimeExecutionArtifactCandidate.javaPortBindingPresent",
-                "miniKvRuntimeExecutionArtifactCandidate.miniKvLoopbackPortOperatorApproved",
-                "miniKvRuntimeExecutionArtifactCandidate.getOnlySmokeCommandOperatorApproved",
-                "miniKvRuntimeExecutionArtifactCandidate.serviceOwnerOperatorConfirmed",
-                "miniKvRuntimeExecutionArtifactCandidate.cleanupProofPresent",
-                "miniKvRuntimeExecutionArtifactCandidate.runtimeExecutionPacketExecutable",
-                "miniKvRuntimeExecutionArtifactCandidate.startsMiniKvService",
-                "miniKvRuntimeExecutionArtifactCandidate.startsServices",
-                "miniKvRuntimeExecutionArtifactCandidate.runtimeProbeAllowed",
-                "miniKvRuntimeExecutionArtifactCandidate.liveReadAllowed",
-                "miniKvRuntimeExecutionArtifactCandidate.routerActivationAllowed",
-                "miniKvRuntimeExecutionArtifactCandidate.writeRoutingAllowed",
-                "miniKvRuntimeExecutionArtifactCandidate.executionAllowed",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.rollingCurrentUsedForFrozenBaseline",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.frozenAcceptedRuntimeExecutionArtifactsComplete",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.frozenRuntimeExecutionPacketExecutable",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.frozenStartsMiniKvService",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.frozenRuntimeProbeAllowed",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.frozenLiveReadAllowed",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.frozenRouterActivationAllowed",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.frozenWriteRoutingAllowed",
-                "miniKvRuntimeExecutionArtifactCandidateFreeze.frozenExecutionAllowed",
-                "runtimeExecutionApprovalGateInputPrecheck.nodeApprovedRuntimeWindowPresent",
-                "runtimeExecutionApprovalGateInputPrecheck.correlatedOperatorApprovalRecordPresent",
-                "runtimeExecutionApprovalGateInputPrecheck.completeCrossProjectRuntimeExecutionPacketPresent",
-                "runtimeExecutionApprovalGateInputPrecheck.approvalGateInputsComplete",
-                "runtimeExecutionApprovalGateInputPrecheck.runtimeGateApprovalPresent",
-                "runtimeExecutionApprovalGateInputPrecheck.readyForRuntimeExecutionPacket",
-                "runtimeExecutionApprovalGateInputPrecheck.readyForRuntimeLiveReadGate",
-                "runtimeExecutionApprovalGateInputPrecheck.runtimeExecutionArtifactsComplete",
-                "runtimeExecutionApprovalGateInputPrecheck.runtimeExecutionPacketPresent",
-                "runtimeExecutionApprovalGateInputPrecheck.runtimeExecutionPacketExecutable",
-                "runtimeExecutionApprovalGateInputPrecheck.concreteLoopbackPortsAssigned",
-                "runtimeExecutionApprovalGateInputPrecheck.executionAttempted",
-                "runtimeExecutionApprovalGateInputPrecheck.startsJavaService",
-                "runtimeExecutionApprovalGateInputPrecheck.startsMiniKvService",
-                "runtimeExecutionApprovalGateInputPrecheck.startsServices",
-                "runtimeExecutionApprovalGateInputPrecheck.runtimeProbeAllowed",
-                "runtimeExecutionApprovalGateInputPrecheck.liveReadAllowed",
-                "runtimeExecutionApprovalGateInputPrecheck.routerActivationAllowed",
-                "runtimeExecutionApprovalGateInputPrecheck.writeRoutingAllowed",
-                "runtimeExecutionApprovalGateInputPrecheck.executionAllowed",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.rollingCurrentUsedForFrozenBaseline",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenApprovalGateInputsComplete",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenRuntimeGateApprovalPresent",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenRuntimeExecutionPacketExecutable",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenConcreteLoopbackPortsAssigned",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenExecutionAttempted",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenStartsJavaService",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenStartsMiniKvService",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenRuntimeProbeAllowed",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenLiveReadAllowed",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenRouterActivationAllowed",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenWriteRoutingAllowed",
-                "runtimeExecutionApprovalGateInputPrecheckFreeze.frozenExecutionAllowed",
-                "miniKvFinalApprovalGateInput.cleanupProofPresent",
-                "miniKvFinalApprovalGateInput.nodeApprovedRuntimeWindowPresent",
-                "miniKvFinalApprovalGateInput.correlatedOperatorApprovalRecordPresent",
-                "miniKvFinalApprovalGateInput.completeCrossProjectRuntimeExecutionPacketPresent",
-                "miniKvFinalApprovalGateInput.runtimeGateApprovalPresent",
-                "miniKvFinalApprovalGateInput.readyForRuntimeExecutionPacket",
-                "miniKvFinalApprovalGateInput.readyForRuntimeLiveReadGate",
-                "miniKvFinalApprovalGateInput.runtimeExecutionPacketExecutable",
-                "miniKvFinalApprovalGateInput.concreteLoopbackPortsAssignedByCrossProjectPacket",
-                "miniKvFinalApprovalGateInput.executionAttempted",
-                "miniKvFinalApprovalGateInput.startsJavaService",
-                "miniKvFinalApprovalGateInput.startsMiniKvService",
-                "miniKvFinalApprovalGateInput.startsServices",
-                "miniKvFinalApprovalGateInput.runtimeProbeAllowed",
-                "miniKvFinalApprovalGateInput.liveReadAllowed",
-                "miniKvFinalApprovalGateInput.routerActivationAllowed",
-                "miniKvFinalApprovalGateInput.writeRoutingAllowed",
-                "miniKvFinalApprovalGateInput.executionAllowed",
-                "miniKvFinalApprovalGateInputFreeze.rollingCurrentUsedForFrozenBaseline",
-                "miniKvFinalApprovalGateInputFreeze.frozenCleanupProofPresent",
-                "miniKvFinalApprovalGateInputFreeze.frozenRuntimeGateApprovalPresent",
-                "miniKvFinalApprovalGateInputFreeze.frozenReadyForRuntimeExecutionPacket",
-                "miniKvFinalApprovalGateInputFreeze.frozenReadyForRuntimeLiveReadGate",
-                "miniKvFinalApprovalGateInputFreeze.frozenRuntimeExecutionPacketExecutable",
-                "miniKvFinalApprovalGateInputFreeze.frozenStartsJavaService",
-                "miniKvFinalApprovalGateInputFreeze.frozenStartsMiniKvService",
-                "miniKvFinalApprovalGateInputFreeze.frozenRuntimeProbeAllowed",
-                "miniKvFinalApprovalGateInputFreeze.frozenLiveReadAllowed",
-                "miniKvFinalApprovalGateInputFreeze.frozenRouterActivationAllowed",
-                "miniKvFinalApprovalGateInputFreeze.frozenWriteRoutingAllowed",
-                "miniKvFinalApprovalGateInputFreeze.frozenExecutionAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.canonicalRuntimeInputPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.templateCopiedToCanonicalInput",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.nodeApprovedRuntimeWindowCanonicalPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.correlatedOperatorApprovalRecordCanonicalPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.completeCrossProjectRuntimeExecutionPacketCanonicalPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.sharedApprovalCorrelationIdPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.templatesAuthorizeRuntime",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.templateDigestAcceptedAsApproval",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.writesCanonicalApprovalInputFiles",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.changesNodeInputTemplateFiles",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.runtimeExecutionPacketPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.runtimeExecutionPacketExecutable",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.runtimeGateApprovalPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.readyForRuntimeExecutionPacket",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.readyForRuntimeLiveReadGate",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.concreteLoopbackPortsAssigned",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.executionAttempted",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.startsJavaService",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.startsMiniKvService",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.runtimeProbeAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.liveReadAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.routerActivationAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.writeRoutingAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEcho.executionAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.rollingCurrentUsedForFrozenBaseline",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenCanonicalRuntimeInputPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenTemplateCopiedToCanonicalInput",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenSharedApprovalCorrelationIdPresent",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenTemplatesAuthorizeRuntime",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenTemplateDigestAcceptedAsApproval",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenWritesCanonicalApprovalInputFiles",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenChangesNodeInputTemplateFiles",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenRuntimeExecutionPacketExecutable",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenStartsJavaService",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenStartsMiniKvService",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenRuntimeProbeAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenLiveReadAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenRouterActivationAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenWriteRoutingAllowed",
-                "runtimeExecutionApprovalInputTemplateValidatorEchoFreeze.frozenExecutionAllowed",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.nodeApprovedRuntimeWindowCanonicalPresent",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.correlatedOperatorApprovalRecordCanonicalPresent",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.completeCrossProjectRuntimeExecutionPacketCanonicalPresent",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.canonicalApprovalInputsComplete",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.sharedApprovalCorrelationIdPresent",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.sharedApprovalCorrelationIdValidated",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.templatesAcceptedAsCanonicalInputs",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.templateCompatibilityEvidenceAcceptedAsApproval",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.runtimeGateApprovalPresent",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.runtimeExecutionPacketPresent",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.runtimeExecutionPacketExecutable",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.readyForRuntimeExecutionPacket",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.readyForRuntimeLiveReadGate",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.concreteLoopbackPortsAssigned",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.executionAttempted",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.startsJavaService",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.startsMiniKvService",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.runtimeProbeAllowed",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.liveReadAllowed",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.routerActivationAllowed",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.writeRoutingAllowed",
-                "runtimeExecutionCanonicalApprovalInputPrecheck.executionAllowed",
-                "nodeRouteGroupSplitCompatibility.nodeApiPathChanged",
-                "nodeRouteGroupSplitCompatibility.nodeResponseShapeChanged",
-                "nodeRouteGroupSplitCompatibility.nodeAddsEvidenceGate",
-                "nodeRouteGroupSplitCompatibility.nodeStartsJavaService",
-                "nodeRouteGroupSplitCompatibility.nodeStartsMiniKvService",
-                "nodeRouteGroupSplitCompatibility.miniKvContractChangedForNodeRouteSplit",
-                "nodeRouteGroupSplitCompatibility.miniKvFixturePathChanged",
-                "nodeRouteGroupSplitCompatibility.miniKvShardJsonCommandChanged",
-                "nodeRouteGroupSplitCompatibility.miniKvRequiresNodeRouteTableChange",
-                "nodeRouteGroupSplitCompatibility.runtimeGateApprovalPresent",
-                "nodeRouteGroupSplitCompatibility.runtimeExecutionPacketPresent",
-                "nodeRouteGroupSplitCompatibility.runtimeExecutionPacketExecutable",
-                "nodeRouteGroupSplitCompatibility.readyForRuntimeExecutionPacket",
-                "nodeRouteGroupSplitCompatibility.readyForRuntimeLiveReadGate",
-                "nodeRouteGroupSplitCompatibility.canonicalApprovalInputsComplete",
-                "nodeRouteGroupSplitCompatibility.templatesAcceptedAsCanonicalInputs",
-                "nodeRouteGroupSplitCompatibility.executionAttempted",
-                "nodeRouteGroupSplitCompatibility.startsJavaService",
-                "nodeRouteGroupSplitCompatibility.startsMiniKvService",
-                "nodeRouteGroupSplitCompatibility.runtimeProbeAllowed",
-                "nodeRouteGroupSplitCompatibility.liveReadAllowed",
-                "nodeRouteGroupSplitCompatibility.routerActivationAllowed",
-                "nodeRouteGroupSplitCompatibility.writeRoutingAllowed",
-                "nodeRouteGroupSplitCompatibility.executionAllowed",
-            }) +
+           ",\"boundaryCatalogMaintenance\":" +
+           boundary_fields::format_catalog_maintenance_json() +
+           ",\"readOnlyBoundaryFields\":" +
+           boundary_fields::format_read_only_boundary_fields_json() +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
            ",\"notes\":" + json_string_array({
                "read-only shard readiness hardening",
@@ -978,6 +730,7 @@ std::string format_json() {
                  "freezes v157 template validator echo",
                  "adds canonical approval input precheck with zero of three inputs",
                  "adds Node v418 route-group split compatibility evidence",
+                 "splits read-only boundary field catalog without changing SHARDJSON command or fixture path",
                 "runtime execution artifact intake preflight remains blocked at 0 of 6 artifacts",
                 "live-read gate remains prerequisite-only and does not start services",
                 "operator service lifecycle evidence still has no runtime probe",
