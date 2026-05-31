@@ -56,6 +56,7 @@ add_library(minikv
     src/recovery_evidence.cpp
     src/resp.cpp
     src/shard_readiness.cpp
+    src/shard_readiness_approval_inputs.cpp
     src/snapshot.cpp
     src/store.cpp
     src/tcp_server.cpp
