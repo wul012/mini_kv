@@ -2,6 +2,7 @@
 
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/shard_readiness_approval_inputs.hpp"
+#include "minikv/shard_readiness_node_compatibility.hpp"
 #include "minikv/version.hpp"
 
 #include <array>
@@ -14,7 +15,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v158";
+constexpr std::string_view release_version = "v159";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -68,7 +69,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v404+ may consume v158 only as canonical approval input precheck evidence\","
+           "\"nodeConsumer\":\"Node v419+ may consume v159 as route-group split compatibility evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -97,6 +98,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v155.json",
                 "fixtures/release/shard-readiness-v156.json",
                 "fixtures/release/shard-readiness-v157.json",
+                "fixtures/release/shard-readiness-v158.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -139,15 +141,16 @@ std::string format_archive_compatibility_json() {
                 "Node v401",
                 "Node v402",
                 "Node v403",
+                "Node v418",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-             "\"futureNodeConsumer\":\"Node v404 or later only after real canonical approval inputs exist with one shared correlation id\"}";
+             "\"futureNodeConsumer\":\"Node v419 or later may route this evidence through split route groups without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v157\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v157.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v403 consumed v157 as template compatibility intake evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v158\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v158.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v418 route split is compatible with v158 canonical input precheck evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -158,7 +161,8 @@ std::string format_historical_fallback_json() {
            "\"nodeV401CompletionIntakePreserved\":true,"
            "\"nodeV402TemplateValidatorPreserved\":true,"
            "\"nodeV403TemplateCompatibilityIntakePreserved\":true,"
-           "\"nodeV404RequiresRealCanonicalInputs\":true}";
+           "\"nodeV404RequiresRealCanonicalInputs\":true,"
+           "\"nodeV418RouteGroupSplitCompatibilityPreserved\":true}";
 }
 
 std::string format_active_prototype_plan_json() {
@@ -603,7 +607,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v158",
+        "mini-kv-shard-readiness-v159",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -615,8 +619,8 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v157-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v403-preserved"},
+            {"historicalFallback=v158-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v418-preserved"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
             {"consumerHandoff=frozen-evidence-only-no-live-read"},
@@ -637,6 +641,7 @@ std::string evidence_digest() {
             {"runtimeExecutionApprovalInputTemplateValidatorEcho=v402-template-only-no-canonical-inputs"},
             {"runtimeExecutionApprovalInputTemplateValidatorEchoFreeze=v157-frozen-template-only"},
             {"runtimeExecutionCanonicalApprovalInputPrecheck=blocked-0-of-3-no-execution"},
+            {"nodeRouteGroupSplitCompatibility=v418-route-refactor-contract-stable"},
         });
 }
 
@@ -659,7 +664,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"runtime-execution-canonical-approval-input-precheck-read-only\"" +
+           ",\"status\":\"node-route-group-split-compatibility-read-only\"" +
            ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
            ",\"boundaries\":" + format_boundaries_json() +
@@ -699,6 +704,8 @@ std::string format_json() {
            approval_inputs::format_template_validator_echo_freeze_json() +
            ",\"runtimeExecutionCanonicalApprovalInputPrecheck\":" +
            approval_inputs::format_canonical_approval_input_precheck_json() +
+           ",\"nodeRouteGroupSplitCompatibility\":" +
+           node_compatibility::format_route_group_split_compatibility_json() +
            ",\"readOnlyBoundaryFields\":" + json_string_array({
                "readOnly",
                "executionAllowed",
@@ -930,6 +937,30 @@ std::string format_json() {
                 "runtimeExecutionCanonicalApprovalInputPrecheck.routerActivationAllowed",
                 "runtimeExecutionCanonicalApprovalInputPrecheck.writeRoutingAllowed",
                 "runtimeExecutionCanonicalApprovalInputPrecheck.executionAllowed",
+                "nodeRouteGroupSplitCompatibility.nodeApiPathChanged",
+                "nodeRouteGroupSplitCompatibility.nodeResponseShapeChanged",
+                "nodeRouteGroupSplitCompatibility.nodeAddsEvidenceGate",
+                "nodeRouteGroupSplitCompatibility.nodeStartsJavaService",
+                "nodeRouteGroupSplitCompatibility.nodeStartsMiniKvService",
+                "nodeRouteGroupSplitCompatibility.miniKvContractChangedForNodeRouteSplit",
+                "nodeRouteGroupSplitCompatibility.miniKvFixturePathChanged",
+                "nodeRouteGroupSplitCompatibility.miniKvShardJsonCommandChanged",
+                "nodeRouteGroupSplitCompatibility.miniKvRequiresNodeRouteTableChange",
+                "nodeRouteGroupSplitCompatibility.runtimeGateApprovalPresent",
+                "nodeRouteGroupSplitCompatibility.runtimeExecutionPacketPresent",
+                "nodeRouteGroupSplitCompatibility.runtimeExecutionPacketExecutable",
+                "nodeRouteGroupSplitCompatibility.readyForRuntimeExecutionPacket",
+                "nodeRouteGroupSplitCompatibility.readyForRuntimeLiveReadGate",
+                "nodeRouteGroupSplitCompatibility.canonicalApprovalInputsComplete",
+                "nodeRouteGroupSplitCompatibility.templatesAcceptedAsCanonicalInputs",
+                "nodeRouteGroupSplitCompatibility.executionAttempted",
+                "nodeRouteGroupSplitCompatibility.startsJavaService",
+                "nodeRouteGroupSplitCompatibility.startsMiniKvService",
+                "nodeRouteGroupSplitCompatibility.runtimeProbeAllowed",
+                "nodeRouteGroupSplitCompatibility.liveReadAllowed",
+                "nodeRouteGroupSplitCompatibility.routerActivationAllowed",
+                "nodeRouteGroupSplitCompatibility.writeRoutingAllowed",
+                "nodeRouteGroupSplitCompatibility.executionAllowed",
             }) +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
            ",\"notes\":" + json_string_array({
@@ -946,11 +977,12 @@ std::string format_json() {
                  "echoes Node v402 templates as non-canonical approval inputs",
                  "freezes v157 template validator echo",
                  "adds canonical approval input precheck with zero of three inputs",
+                 "adds Node v418 route-group split compatibility evidence",
                 "runtime execution artifact intake preflight remains blocked at 0 of 6 artifacts",
                 "live-read gate remains prerequisite-only and does not start services",
                 "operator service lifecycle evidence still has no runtime probe",
                 "active shard prototype remains plan-prerequisite only",
-                  "does not mutate Node v370-v403 archived evidence",
+                  "does not mutate Node v370-v418 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";

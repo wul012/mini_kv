@@ -19,6 +19,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `212-version-156-shard-readiness-final-mini-kv-approval-input.md` - mini-kv v156 freezes v155 precheck-only evidence, rolls current `SHARDJSON` to v156, adds final mini-kv approval gate input while global runtime remains blocked, tests, TCP smoke, and `e/156` archive.
 - `213-version-157-shard-readiness-approval-input-template-echo.md` - mini-kv v157 freezes v156 final input evidence, rolls current `SHARDJSON` to v157, adds Node v402 approval-input template validator echo, tests, TCP smoke, and `e/157` archive.
 - `214-version-158-shard-readiness-canonical-approval-input-precheck.md` - mini-kv v158 freezes v157 template echo evidence, splits approval-input formatters, rolls current `SHARDJSON` to v158, adds canonical approval input precheck, tests, TCP smoke, and `e/158` archive.
+- `215-version-159-shard-readiness-node-route-group-split-compatibility.md` - mini-kv v159 freezes v158 canonical input precheck evidence, adds Node v418 route-group split compatibility evidence, tests, TCP smoke, and `e/159` archive.
 
 ## Rules
 

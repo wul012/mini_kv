@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v158\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v159\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -339,12 +339,12 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"runtime-execution-canonical-approval-input-precheck-read-only\"");
+    assert_response_contains(result, "\"status\":\"node-route-group-split-compatibility-read-only\"");
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v157\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v158\"");
     assert_response_contains(result, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_response_contains(result, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_response_contains(result, "\"activeShardPrototypeAllowed\":false");
@@ -495,6 +495,20 @@ int main() {
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"requiresRealCanonicalInputs\":true");
     assert_response_contains(result, "\"failClosedOnMissingCanonicalInputs\":true");
+    assert_response_contains(result, "\"nodeRouteGroupSplitCompatibility\":{\"compatibilityMode\":"
+                             "\"node-route-group-split-contract-stable\"");
+    assert_response_contains(result,
+                             "\"sourceNodeVersion\":\"Node v418 sandbox endpoint credential resolver route group split\"");
+    assert_response_contains(result, "\"nodeChangeType\":\"route-registration-refactor-only\"");
+    assert_response_contains(result, "\"nodeApiPathChanged\":false");
+    assert_response_contains(result, "\"nodeResponseShapeChanged\":false");
+    assert_response_contains(result, "\"nodeAddsEvidenceGate\":false");
+    assert_response_contains(result, "\"nodeStartsMiniKvService\":false");
+    assert_response_contains(result, "\"miniKvContractChangedForNodeRouteSplit\":false");
+    assert_response_contains(result, "\"miniKvFixturePathChanged\":false");
+    assert_response_contains(result, "\"miniKvShardJsonCommandChanged\":false");
+    assert_response_contains(result, "\"miniKvRequiresNodeRouteTableChange\":false");
+    assert_response_contains(result, "\"archiveCompatibilityPreserved\":true");
 
     result = processor.execute("EXPLAINJSON");
     assert(result.response == "ERR usage: EXPLAINJSON command");
