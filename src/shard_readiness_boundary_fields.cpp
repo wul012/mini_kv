@@ -44,8 +44,10 @@ std::string format_catalog_maintenance_json() {
            "\"readOnly\":true}";
 }
 
-std::string format_read_only_boundary_fields_json() {
-    return json_string_array({
+namespace {
+
+const std::vector<std::string>& read_only_boundary_field_names() {
+    static const std::vector<std::string> fields = {
         "readOnly",
         "executionAllowed",
         "boundaries.writeCommandsAllowed",
@@ -318,7 +320,88 @@ std::string format_read_only_boundary_fields_json() {
         "boundaryCatalogMaintenance.adminCommandsAllowed",
         "boundaryCatalogMaintenance.loadRestoreCompactAllowed",
         "boundaryCatalogMaintenance.executionAllowed",
-    });
+        "boundaryCatalogIndex.publicShardJsonContractChanged",
+        "boundaryCatalogIndex.fixturePathChanged",
+        "boundaryCatalogIndex.shardJsonCommandChanged",
+        "boundaryCatalogIndex.nodeAddsEvidenceGate",
+        "boundaryCatalogIndex.runtimeGateApprovalPresent",
+        "boundaryCatalogIndex.runtimeExecutionPacketExecutable",
+        "boundaryCatalogIndex.startsJavaService",
+        "boundaryCatalogIndex.startsMiniKvService",
+        "boundaryCatalogIndex.startsServices",
+        "boundaryCatalogIndex.runtimeProbeAllowed",
+        "boundaryCatalogIndex.liveReadAllowed",
+        "boundaryCatalogIndex.activeShardPrototypeEnabled",
+        "boundaryCatalogIndex.routerActivationAllowed",
+        "boundaryCatalogIndex.writeRoutingAllowed",
+        "boundaryCatalogIndex.writeCommandsAllowed",
+        "boundaryCatalogIndex.adminCommandsAllowed",
+        "boundaryCatalogIndex.loadRestoreCompactAllowed",
+        "boundaryCatalogIndex.executionAllowed",
+    };
+    return fields;
+}
+
+const std::vector<std::string>& boundary_catalog_groups() {
+    static const std::vector<std::string> groups = {
+        "top-level-read-only",
+        "core-boundaries",
+        "historical-fallback",
+        "active-prototype-plan",
+        "consumer-handoff",
+        "live-read-gate",
+        "operator-service-lifecycle",
+        "runtime-execution-artifacts",
+        "approval-gate-inputs",
+        "final-mini-kv-approval-input",
+        "template-validator-echo",
+        "canonical-approval-input-precheck",
+        "node-route-group-split-compatibility",
+        "boundary-catalog-maintenance",
+        "boundary-catalog-index",
+    };
+    return groups;
+}
+
+} // namespace
+
+std::string format_catalog_index_json() {
+    const auto& fields = read_only_boundary_field_names();
+    const auto& groups = boundary_catalog_groups();
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v2\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v420-post-credential-resolver-pre-implementation-readiness-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v160\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v160.json\","
+           "\"fieldCount\":" + std::to_string(fields.size()) +
+           ",\"groupCount\":" + std::to_string(groups.size()) +
+           ",\"fieldListGeneratedFromSharedVector\":true,"
+           "\"catalogGroups\":" + json_string_array(groups) +
+           ",\"readOnlyBoundaryFieldsStillPublished\":true,"
+           "\"boundaryCatalogMaintenancePreserved\":true,"
+           "\"publicShardJsonContractChanged\":false,"
+           "\"fixturePathChanged\":false,"
+           "\"shardJsonCommandChanged\":false,"
+           "\"nodeAddsEvidenceGate\":false,"
+           "\"runtimeGateApprovalPresent\":false,"
+           "\"runtimeExecutionPacketPresent\":false,"
+           "\"runtimeExecutionPacketExecutable\":false,"
+           "\"startsJavaService\":false,"
+           "\"startsMiniKvService\":false,"
+           "\"startsServices\":false,"
+           "\"runtimeProbeAllowed\":false,"
+           "\"liveReadAllowed\":false,"
+           "\"activeShardPrototypeEnabled\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"writeCommandsAllowed\":false,"
+           "\"adminCommandsAllowed\":false,"
+           "\"loadRestoreCompactAllowed\":false,"
+           "\"executionAllowed\":false,"
+           "\"readOnly\":true}";
+}
+
+std::string format_read_only_boundary_fields_json() {
+    return json_string_array(read_only_boundary_field_names());
 }
 
 } // namespace minikv::shard_readiness::boundary_fields

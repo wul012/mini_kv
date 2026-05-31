@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v160\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v161\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -339,12 +339,12 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"boundary-field-catalog-split-read-only\"");
+    assert_response_contains(result, "\"status\":\"boundary-field-catalog-index-read-only\"");
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v159\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v160\"");
     assert_response_contains(result, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_response_contains(result, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
     assert_response_contains(result, "\"activeShardPrototypeAllowed\":false");
@@ -537,6 +537,20 @@ int main() {
     assert_response_contains(result, "\"boundaryCatalogMaintenance.routerActivationAllowed\"");
     assert_response_contains(result, "\"boundaryCatalogMaintenance.writeRoutingAllowed\"");
     assert_response_contains(result, "\"boundaryCatalogMaintenance.executionAllowed\"");
+    assert_response_contains(result, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v2\"");
+    assert_response_contains(result, "\"sourceNodePlan\":"
+                                     "\"docs/plans3/v420-post-credential-resolver-pre-implementation-readiness-route-group-split-roadmap.md\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v160\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v160.json\"");
+    assert_response_contains(result, "\"fieldCount\":290");
+    assert_response_contains(result, "\"groupCount\":15");
+    assert_response_contains(result, "\"fieldListGeneratedFromSharedVector\":true");
+    assert_response_contains(result, "\"catalogGroups\":[\"top-level-read-only\",\"core-boundaries\"");
+    assert_response_contains(result, "\"boundaryCatalogMaintenancePreserved\":true");
+    assert_response_contains(result, "\"boundaryCatalogIndex.publicShardJsonContractChanged\"");
+    assert_response_contains(result, "\"boundaryCatalogIndex.routerActivationAllowed\"");
+    assert_response_contains(result, "\"boundaryCatalogIndex.writeRoutingAllowed\"");
+    assert_response_contains(result, "\"boundaryCatalogIndex.executionAllowed\"");
 
     result = processor.execute("EXPLAINJSON");
     assert(result.response == "ERR usage: EXPLAINJSON command");

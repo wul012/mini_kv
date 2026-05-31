@@ -16,7 +16,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v160";
+constexpr std::string_view release_version = "v161";
 constexpr int slot_count = 16;
 
 struct RouteSample {
@@ -70,7 +70,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v419+ may consume v160 as boundary catalog split compatibility evidence only\","
+           "\"nodeConsumer\":\"Node v421+ may consume v161 as boundary catalog index compatibility evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -101,6 +101,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v157.json",
                 "fixtures/release/shard-readiness-v158.json",
                 "fixtures/release/shard-readiness-v159.json",
+                "fixtures/release/shard-readiness-v160.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -144,15 +145,17 @@ std::string format_archive_compatibility_json() {
                 "Node v402",
                 "Node v403",
                 "Node v418",
+                "Node v419",
+                "Node v420",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-             "\"futureNodeConsumer\":\"Node v419 or later may consume this boundary catalog split through split route groups without changing mini-kv runtime boundaries\"}";
+             "\"futureNodeConsumer\":\"Node v421 or later may consume this boundary catalog index through split route groups without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v159\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v159.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v418 route split consumed v159 route compatibility evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v160\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v160.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v420 pre-implementation readiness route split may consume v160 boundary catalog split evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -165,7 +168,8 @@ std::string format_historical_fallback_json() {
            "\"nodeV403TemplateCompatibilityIntakePreserved\":true,"
            "\"nodeV404RequiresRealCanonicalInputs\":true,"
            "\"nodeV418RouteGroupSplitCompatibilityPreserved\":true,"
-           "\"nodeV419BoundaryCatalogMaintenanceReady\":true}";
+           "\"nodeV419BoundaryCatalogMaintenanceReady\":true,"
+           "\"nodeV420PreImplementationReadinessRouteSplitPreserved\":true}";
 }
 
 std::string format_active_prototype_plan_json() {
@@ -610,7 +614,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v160",
+        "mini-kv-shard-readiness-v161",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -622,8 +626,8 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v159-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v418-preserved"},
+            {"historicalFallback=v160-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v420-preserved"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
             {"consumerHandoff=frozen-evidence-only-no-live-read"},
@@ -646,6 +650,7 @@ std::string evidence_digest() {
             {"runtimeExecutionCanonicalApprovalInputPrecheck=blocked-0-of-3-no-execution"},
             {"nodeRouteGroupSplitCompatibility=v418-route-refactor-contract-stable"},
             {"boundaryCatalogMaintenance=v160-contract-preserving-split-no-execution"},
+            {"boundaryCatalogIndex=v161-shared-vector-count-no-execution"},
         });
 }
 
@@ -668,7 +673,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_count) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"boundary-field-catalog-split-read-only\"" +
+           ",\"status\":\"boundary-field-catalog-index-read-only\"" +
            ",\"shardMap\":" + format_shard_map_json() +
            ",\"keyRoutingSamples\":" + format_route_samples_json() +
            ",\"boundaries\":" + format_boundaries_json() +
@@ -712,6 +717,8 @@ std::string format_json() {
            node_compatibility::format_route_group_split_compatibility_json() +
            ",\"boundaryCatalogMaintenance\":" +
            boundary_fields::format_catalog_maintenance_json() +
+           ",\"boundaryCatalogIndex\":" +
+           boundary_fields::format_catalog_index_json() +
            ",\"readOnlyBoundaryFields\":" +
            boundary_fields::format_read_only_boundary_fields_json() +
            ",\"evidenceDigest\":" + json_string(evidence_digest()) +
@@ -731,11 +738,12 @@ std::string format_json() {
                  "adds canonical approval input precheck with zero of three inputs",
                  "adds Node v418 route-group split compatibility evidence",
                  "splits read-only boundary field catalog without changing SHARDJSON command or fixture path",
+                 "adds shared-vector boundary catalog index and count without changing runtime permissions",
                 "runtime execution artifact intake preflight remains blocked at 0 of 6 artifacts",
                 "live-read gate remains prerequisite-only and does not start services",
                 "operator service lifecycle evidence still has no runtime probe",
                 "active shard prototype remains plan-prerequisite only",
-                  "does not mutate Node v370-v418 archived evidence",
+                  "does not mutate Node v370-v420 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";
