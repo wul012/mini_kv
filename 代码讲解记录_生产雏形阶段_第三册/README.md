@@ -52,6 +52,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `245-version-189-node-route-catalog-evidence-chain.md` - mini-kv v189 splits route catalog evidence chain cataloging into its own module, catalogs v185-v188 fixtures, tests, TCP smoke, and `e/189` archive.
 - `246-version-190-node-route-catalog-evidence-chain-audit.md` - mini-kv v190 aligns with Node v472 cleanup closeout, audits the v185-v188 evidence chain, tests, TCP smoke, and `e/190` archive.
 - `247-version-191-node-route-catalog-cleanup-closeout-handoff.md` - mini-kv v191 freezes v190 and adds a read-only cleanup closeout handoff manifest for downstream consumers, tests, TCP smoke, and `e/191` archive.
+- `248-version-192-node-route-catalog-cleanup-closeout-handoff-audit.md` - mini-kv v192 freezes v191 and audits the cleanup closeout handoff manifest, tests, TCP smoke, and `e/192` archive.
 
 ## Rules
 

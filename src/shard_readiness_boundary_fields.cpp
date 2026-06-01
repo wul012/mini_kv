@@ -348,6 +348,34 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogCleanupCloseoutHandoff.adminCommandsAllowed",
         "nodeRouteCatalogCleanupCloseoutHandoff.loadRestoreCompactAllowed",
         "nodeRouteCatalogCleanupCloseoutHandoff.executionAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.expectedIncludedSectionCount",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.observedIncludedSectionCount",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.handoffIncludedSectionsComplete",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.handoffReadyForDownstreamConsumption",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.versionedFixtureRequired",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.rollingCurrentRejected",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.readOnlyFixtureRequired",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.consumerGuidanceCountMatches",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.preservesRouteCatalogEvidenceChainAudit",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.preservesNodeCleanupCloseoutValidation",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.nodeConsumesFreshMiniKvEvidence",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.miniKvRuntimeContractChanged",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.auditOnly",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.nodeAddsEvidenceGate",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.runtimeGateApprovalPresent",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.startsJavaService",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.startsMiniKvService",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.startsServices",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.runtimeProbeAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.liveReadAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.activeShardPrototypeEnabled",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.routerActivationAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.writeRoutingAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.writeCommandsAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.adminCommandsAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.loadRestoreCompactAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAudit.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -679,6 +707,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-evidence-chain",
         "node-route-catalog-evidence-chain-audit",
         "node-route-catalog-cleanup-closeout-handoff",
+        "node-route-catalog-cleanup-closeout-handoff-audit",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -690,10 +719,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v19\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v20\","} +
            "\"sourceNodePlan\":\"docs/plans3/v472-post-route-catalog-cleanup-closeout-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v190\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v190.json\","
+           "\"sourceFrozenReleaseVersion\":\"v191\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v191.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -713,6 +742,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogEvidenceChainCataloged\":true,"
            "\"nodeRouteCatalogEvidenceChainAuditCataloged\":true,"
            "\"nodeRouteCatalogCleanupCloseoutHandoffCataloged\":true,"
+           "\"nodeRouteCatalogCleanupCloseoutHandoffAuditCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
