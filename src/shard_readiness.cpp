@@ -20,7 +20,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v190";
+constexpr std::string_view release_version = "v191";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -486,7 +486,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v190",
+        "mini-kv-shard-readiness-v191",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -498,7 +498,7 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v189-frozen-no-rolling-current"},
+            {"historicalFallback=v190-frozen-no-rolling-current"},
             {"archivedNodeEvidence=v370-v472-preserved"},
             {"shardReadinessHistoryMaintenance=v180-formatter-split-no-execution"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
@@ -523,20 +523,21 @@ std::string evidence_digest() {
             {"runtimeExecutionCanonicalApprovalInputPrecheck=blocked-0-of-3-no-execution"},
             {"nodeRouteGroupSplitCompatibility=v418-route-refactor-contract-stable"},
             {"boundaryCatalogMaintenance=v160-contract-preserving-split-no-execution"},
-            {"boundaryCatalogIndex=v190-v18-route-catalog-evidence-chain-audit-no-execution"},
+            {"boundaryCatalogIndex=v191-v19-route-catalog-cleanup-closeout-handoff-no-execution"},
             {"slotTablePreview=v162-read-only-no-router-no-write-no-execution"},
             {"slotTablePreviewAudit=v163-contiguous-no-duplicates-no-router-no-execution"},
             {"slotTablePreviewAuditMaintenance=v164-formatter-split-contract-preserving"},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
-            {"nodeRouteSplitCompatibilityWindow=v190-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
-            {"nodeRouteSplitCompatibilityWindowAudit=v190-window-span-count-parse-audit-no-execution"},
+            {"nodeRouteSplitCompatibilityWindow=v191-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
+            {"nodeRouteSplitCompatibilityWindowAudit=v191-window-span-count-parse-audit-no-execution"},
             {"nodeRouteCatalogCloseoutSnapshot=v185-node-v464-validation-snapshot-no-execution"},
             {"nodeRouteCatalogAnchorRemovalAudit=v186-node-v467-anchor-removal-no-execution"},
             {"nodeRouteCatalogExpectedIntegritySnapshotAudit=v187-node-v471-integrity-snapshot-no-execution"},
             {"nodeRouteCatalogExpectedIntegritySnapshotFreeze=v188-v187-frozen-no-rolling-current"},
             {"nodeRouteCatalogEvidenceChain=v189-v185-v188-versioned-catalog-no-execution"},
             {"nodeRouteCatalogEvidenceChainAudit=v190-node-v472-closeout-validation-no-execution"},
+            {"nodeRouteCatalogCleanupCloseoutHandoff=v191-v190-handoff-no-execution"},
         });
 }
 
@@ -559,7 +560,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"node-route-catalog-evidence-chain-audit-read-only\"" +
+           ",\"status\":\"node-route-catalog-cleanup-closeout-handoff-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -627,6 +628,8 @@ std::string format_json() {
            route_catalog_evidence_chain::format_route_catalog_evidence_chain_json() +
            ",\"nodeRouteCatalogEvidenceChainAudit\":" +
            route_catalog_evidence_chain::format_route_catalog_evidence_chain_audit_json() +
+           ",\"nodeRouteCatalogCleanupCloseoutHandoff\":" +
+           route_catalog_evidence_chain::format_route_catalog_cleanup_closeout_handoff_json() +
            ",\"boundaryCatalogMaintenance\":" +
            boundary_fields::format_catalog_maintenance_json() +
            ",\"boundaryCatalogIndex\":" +
@@ -663,6 +666,7 @@ std::string format_json() {
                   "freezes v187 expected integrity snapshot audit evidence without using rolling current as the baseline",
                   "catalogs v185-v188 route catalog evidence chain from versioned fixtures without runtime permissions",
                   "audits Node v472 route catalog cleanup closeout validation without adding routes or runtime gates",
+                  "hands off the v190 cleanup closeout audit through a versioned read-only fixture",
                  "computes Node route split window contiguity and duplicate checks from the version vector without runtime permissions",
                  "computes Node route split window numeric span and count matching without runtime permissions",
                  "splits shard readiness history formatters without changing command or runtime boundaries",

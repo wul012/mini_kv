@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v472+ may consume v190 as route catalog evidence chain audit only\","
+           "\"nodeConsumer\":\"Node v472+ may consume v191 as route catalog cleanup closeout handoff only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -72,6 +72,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v187.json",
                 "fixtures/release/shard-readiness-v188.json",
                 "fixtures/release/shard-readiness-v189.json",
+                "fixtures/release/shard-readiness-v190.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -171,13 +172,13 @@ std::string format_archive_compatibility_json() {
                 "Node v472",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-            "\"futureNodeConsumer\":\"Node v472 or later may consume this route catalog evidence chain audit without changing mini-kv runtime boundaries\"}";
+            "\"futureNodeConsumer\":\"Node v472 or later may consume this route catalog cleanup closeout handoff without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v189\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v189.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v472 route catalog cleanup closeout may consume v189 evidence chain\","
+    return "{\"previousConsumedReleaseVersion\":\"v190\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v190.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v472 route catalog cleanup closeout may consume v190 evidence chain audit\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"

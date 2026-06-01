@@ -324,6 +324,30 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogEvidenceChainAudit.adminCommandsAllowed",
         "nodeRouteCatalogEvidenceChainAudit.loadRestoreCompactAllowed",
         "nodeRouteCatalogEvidenceChainAudit.executionAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoff.readyForDownstreamConsumption",
+        "nodeRouteCatalogCleanupCloseoutHandoff.requiresVersionedFixture",
+        "nodeRouteCatalogCleanupCloseoutHandoff.rollingCurrentAllowedAsHistoricalBaseline",
+        "nodeRouteCatalogCleanupCloseoutHandoff.readOnlyFixtureRequired",
+        "nodeRouteCatalogCleanupCloseoutHandoff.preservesRouteCatalogEvidenceChainAudit",
+        "nodeRouteCatalogCleanupCloseoutHandoff.preservesNodeCleanupCloseoutValidation",
+        "nodeRouteCatalogCleanupCloseoutHandoff.nodeConsumesFreshMiniKvEvidence",
+        "nodeRouteCatalogCleanupCloseoutHandoff.miniKvRuntimeContractChanged",
+        "nodeRouteCatalogCleanupCloseoutHandoff.handoffOnly",
+        "nodeRouteCatalogCleanupCloseoutHandoff.nodeAddsEvidenceGate",
+        "nodeRouteCatalogCleanupCloseoutHandoff.runtimeGateApprovalPresent",
+        "nodeRouteCatalogCleanupCloseoutHandoff.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogCleanupCloseoutHandoff.startsJavaService",
+        "nodeRouteCatalogCleanupCloseoutHandoff.startsMiniKvService",
+        "nodeRouteCatalogCleanupCloseoutHandoff.startsServices",
+        "nodeRouteCatalogCleanupCloseoutHandoff.runtimeProbeAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoff.liveReadAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoff.activeShardPrototypeEnabled",
+        "nodeRouteCatalogCleanupCloseoutHandoff.routerActivationAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoff.writeRoutingAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoff.writeCommandsAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoff.adminCommandsAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoff.loadRestoreCompactAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoff.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -654,6 +678,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-expected-integrity-snapshot-freeze",
         "node-route-catalog-evidence-chain",
         "node-route-catalog-evidence-chain-audit",
+        "node-route-catalog-cleanup-closeout-handoff",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -665,10 +690,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v18\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v19\","} +
            "\"sourceNodePlan\":\"docs/plans3/v472-post-route-catalog-cleanup-closeout-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v189\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v189.json\","
+           "\"sourceFrozenReleaseVersion\":\"v190\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v190.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -687,6 +712,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogExpectedIntegritySnapshotFreezeCataloged\":true,"
            "\"nodeRouteCatalogEvidenceChainCataloged\":true,"
            "\"nodeRouteCatalogEvidenceChainAuditCataloged\":true,"
+           "\"nodeRouteCatalogCleanupCloseoutHandoffCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"

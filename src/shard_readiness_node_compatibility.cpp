@@ -21,12 +21,12 @@ constexpr std::string_view route_split_window_mode =
     "node-v433-v472-route-catalog-cleanup-closeout-window-read-only";
 constexpr std::string_view route_split_window_source_node_plan =
     "docs/plans3/v472-post-route-catalog-cleanup-closeout-roadmap.md";
-constexpr std::string_view route_split_window_source_frozen_release_version = "v189";
+constexpr std::string_view route_split_window_source_frozen_release_version = "v190";
 constexpr std::string_view route_split_window_source_frozen_fixture_path =
-    "fixtures/release/shard-readiness-v189.json";
+    "fixtures/release/shard-readiness-v190.json";
 constexpr std::string_view route_split_window_start_node_version = "Node v433";
 constexpr std::string_view route_split_window_end_node_version = "Node v472";
-constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:a595f2d9cdcbac8d";
+constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:b24193bae62876e6";
 
 std::string json_bool(bool value) {
     return runtime_evidence::json_bool(value);
