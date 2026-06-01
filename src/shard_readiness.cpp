@@ -18,7 +18,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v181";
+constexpr std::string_view release_version = "v182";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -484,7 +484,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v181",
+        "mini-kv-shard-readiness-v182",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -496,8 +496,8 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v180-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v460-preserved"},
+            {"historicalFallback=v181-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v462-preserved"},
             {"shardReadinessHistoryMaintenance=v180-formatter-split-no-execution"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
@@ -521,14 +521,14 @@ std::string evidence_digest() {
             {"runtimeExecutionCanonicalApprovalInputPrecheck=blocked-0-of-3-no-execution"},
             {"nodeRouteGroupSplitCompatibility=v418-route-refactor-contract-stable"},
             {"boundaryCatalogMaintenance=v160-contract-preserving-split-no-execution"},
-            {"boundaryCatalogIndex=v181-v11-route-catalog-integrity-window-no-execution"},
+            {"boundaryCatalogIndex=v182-v11-route-catalog-test-migration-window-no-execution"},
             {"slotTablePreview=v162-read-only-no-router-no-write-no-execution"},
             {"slotTablePreviewAudit=v163-contiguous-no-duplicates-no-router-no-execution"},
             {"slotTablePreviewAuditMaintenance=v164-formatter-split-contract-preserving"},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
-            {"nodeRouteSplitCompatibilityWindow=v181-node-v433-v460-catalog-integrity-no-execution"},
-            {"nodeRouteSplitCompatibilityWindowAudit=v181-window-span-count-parse-audit-no-execution"},
+            {"nodeRouteSplitCompatibilityWindow=v182-node-v433-v462-test-migration-no-execution"},
+            {"nodeRouteSplitCompatibilityWindowAudit=v182-window-span-count-parse-audit-no-execution"},
         });
 }
 
@@ -551,7 +551,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"node-route-catalog-integrity-window-read-only\"" +
+           ",\"status\":\"node-route-catalog-test-migration-window-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -636,7 +636,7 @@ std::string format_json() {
                  "splits slot preview audit formatter without changing command or runtime boundaries",
                  "adds versioned shard readiness release catalog without runtime permissions",
                  "adds release catalog consistency audit without runtime permissions",
-                 "keeps Node route split compatibility window through v460 without runtime permissions",
+                 "keeps Node route split compatibility window through v462 without runtime permissions",
                  "computes Node route split window contiguity and duplicate checks from the version vector without runtime permissions",
                  "computes Node route split window numeric span and count matching without runtime permissions",
                  "splits shard readiness history formatters without changing command or runtime boundaries",
