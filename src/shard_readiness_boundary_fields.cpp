@@ -223,6 +223,36 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogAnchorRemovalAudit.adminCommandsAllowed",
         "nodeRouteCatalogAnchorRemovalAudit.loadRestoreCompactAllowed",
         "nodeRouteCatalogAnchorRemovalAudit.executionAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.anchorFieldsRemovedByNodeV468",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.summaryBuilderIntroducedByNodeV469",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.expectedSummaryCentralizedByNodeV470",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.expectedIntegritySnapshotFactoryMovedByNodeV471",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.routeQualityDefaultSnapshotReusesExpectedSummary",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.routeQualityServiceConsumesCatalogIntegrityFactory",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.serviceLocalIntegrityFallbackRemoved",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.catalogEvaluatorParityTested",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.duplicateDomainCountLiteralsRemoved",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.miniKvComputesNodeRouteSummary",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.miniKvOwnsNodeRouteQualitySnapshot",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.miniKvOwnsNodeCatalogIntegritySnapshot",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.nodeConsumesFreshMiniKvEvidence",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.miniKvRuntimeContractChanged",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.auditOnly",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.nodeAddsEvidenceGate",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.runtimeGateApprovalPresent",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.startsJavaService",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.startsMiniKvService",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.startsServices",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.runtimeProbeAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.liveReadAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.activeShardPrototypeEnabled",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.routerActivationAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.writeRoutingAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.writeCommandsAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.adminCommandsAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.loadRestoreCompactAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotAudit.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -549,6 +579,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-split-compatibility-window-audit",
         "node-route-catalog-closeout-snapshot",
         "node-route-catalog-anchor-removal-audit",
+        "node-route-catalog-expected-integrity-snapshot-audit",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -560,10 +591,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v13\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v467-post-route-catalog-anchor-removal-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v185\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v185.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v15\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v471-post-route-catalog-expected-integrity-snapshot-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v186\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v186.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -578,6 +609,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteSplitCompatibilityWindowAuditCataloged\":true,"
            "\"nodeRouteCatalogCloseoutSnapshotCataloged\":true,"
            "\"nodeRouteCatalogAnchorRemovalAuditCataloged\":true,"
+           "\"nodeRouteCatalogExpectedIntegritySnapshotAuditCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
