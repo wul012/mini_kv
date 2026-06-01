@@ -9,14 +9,14 @@
 namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
-constexpr std::string_view continuity_stage = "post-closeout-continuity-ledger-intake";
-constexpr int stage_sequence = 1;
-constexpr std::string_view stage_release_version = "v201";
+constexpr std::string_view continuity_stage = "post-closeout-source-freeze-audit";
+constexpr int stage_sequence = 2;
+constexpr std::string_view stage_release_version = "v202";
 constexpr std::string_view stage_scope =
-    "freeze v200 closeout audit and start the post-closeout continuity ledger";
-constexpr std::string_view source_frozen_release_version = "v200";
-constexpr std::string_view source_frozen_fixture_path = "fixtures/release/shard-readiness-v200.json";
-constexpr std::string_view source_frozen_digest = "fnv1a64:d1e889711b5d8574";
+    "audit the frozen v201 continuity source before downstream packaging";
+constexpr std::string_view source_frozen_release_version = "v201";
+constexpr std::string_view source_frozen_fixture_path = "fixtures/release/shard-readiness-v201.json";
+constexpr std::string_view source_frozen_digest = "fnv1a64:9a3abb5ab3aaeb1c";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
