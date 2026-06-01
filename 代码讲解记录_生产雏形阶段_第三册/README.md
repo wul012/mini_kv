@@ -83,6 +83,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `268-version-212-node-route-catalog-cleanup-post-closeout-continuity-release-catalog-retention-audit.md` - mini-kv v212 freezes v211 and audits the retained post-closeout continuity release catalog aligned with Node v490, with detailed source/fallback/range/boundary explanation, tests, TCP smoke, and `e/212` archive.
 
+- `269-version-213-node-route-catalog-cleanup-post-closeout-continuity-downstream-consumption-handshake.md` - mini-kv v213 freezes v212 and declares the post-closeout downstream consumption handshake, with detailed source/fallback/range/boundary explanation, tests, TCP smoke, and `e/213` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
