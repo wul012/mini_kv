@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v471+ may consume v187 as route catalog expected integrity snapshot audit evidence only\","
+           "\"nodeConsumer\":\"Node v471+ may consume v188 as frozen route catalog expected integrity snapshot evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -66,10 +66,11 @@ std::string format_fixture_parity_json() {
                "fixtures/release/shard-readiness-v181.json",
                "fixtures/release/shard-readiness-v182.json",
                "fixtures/release/shard-readiness-v183.json",
-               "fixtures/release/shard-readiness-v184.json",
-               "fixtures/release/shard-readiness-v185.json",
-               "fixtures/release/shard-readiness-v186.json",
-           }) +
+                "fixtures/release/shard-readiness-v184.json",
+                "fixtures/release/shard-readiness-v185.json",
+                "fixtures/release/shard-readiness-v186.json",
+                "fixtures/release/shard-readiness-v187.json",
+            }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
 
@@ -167,13 +168,13 @@ std::string format_archive_compatibility_json() {
                 "Node v471",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-            "\"futureNodeConsumer\":\"Node v471 or later may consume this route catalog expected integrity snapshot audit without changing mini-kv runtime boundaries\"}";
+            "\"futureNodeConsumer\":\"Node v471 or later may consume this frozen route catalog expected integrity snapshot evidence without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v186\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v186.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v471 route catalog expected integrity snapshot may consume v186 anchor removal audit evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v187\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v187.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v471 route catalog expected integrity snapshot may consume v187 frozen audit evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"

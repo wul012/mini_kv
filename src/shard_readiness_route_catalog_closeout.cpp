@@ -124,4 +124,41 @@ std::string format_expected_integrity_snapshot_audit_json() {
            "\"readOnly\":true}";
 }
 
+std::string format_expected_integrity_snapshot_freeze_json() {
+    return "{\"freezeMode\":\"node-route-catalog-expected-integrity-snapshot-freeze-read-only\","
+           "\"sourceNodePlan\":\"docs/plans3/v471-post-route-catalog-expected-integrity-snapshot-roadmap.md\","
+           "\"frozenReleaseVersion\":\"v187\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v187.json\","
+           "\"frozenEvidenceDigest\":\"fnv1a64:f4459b7beacceedd\","
+           "\"frozenStatus\":\"node-route-catalog-expected-integrity-snapshot-audit-read-only\","
+           "\"frozenWindowEndNodeVersion\":\"Node v471\","
+           "\"frozenSplitRouteGroupCount\":39,"
+           "\"frozenBoundaryCatalogVersion\":\"read-only-boundary-fields.v15\","
+           "\"frozenBoundaryFieldCount\":502,"
+           "\"rollingCurrentUsedForFrozenBaseline\":false,"
+           "\"preservesExpectedIntegritySnapshotAudit\":true,"
+           "\"preservesNodeV471CatalogOwnershipCleanup\":true,"
+           "\"preservesRouteCatalogWindow\":true,"
+           "\"preservesBoundaryCatalog\":true,"
+           "\"miniKvOwnsNodeCatalogIntegritySnapshot\":false,"
+           "\"nodeConsumesFreshMiniKvEvidence\":false,"
+           "\"miniKvRuntimeContractChanged\":false,"
+           "\"nodeAddsEvidenceGate\":false,"
+           "\"runtimeGateApprovalPresent\":false,"
+           "\"runtimeExecutionPacketExecutable\":false,"
+           "\"startsJavaService\":false,"
+           "\"startsMiniKvService\":false,"
+           "\"startsServices\":false,"
+           "\"runtimeProbeAllowed\":false,"
+           "\"liveReadAllowed\":false,"
+           "\"activeShardPrototypeEnabled\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"writeCommandsAllowed\":false,"
+           "\"adminCommandsAllowed\":false,"
+           "\"loadRestoreCompactAllowed\":false,"
+           "\"executionAllowed\":false,"
+           "\"readOnly\":true}";
+}
+
 } // namespace minikv::shard_readiness::route_catalog_closeout

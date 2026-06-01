@@ -253,6 +253,29 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogExpectedIntegritySnapshotAudit.adminCommandsAllowed",
         "nodeRouteCatalogExpectedIntegritySnapshotAudit.loadRestoreCompactAllowed",
         "nodeRouteCatalogExpectedIntegritySnapshotAudit.executionAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.rollingCurrentUsedForFrozenBaseline",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.preservesExpectedIntegritySnapshotAudit",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.preservesNodeV471CatalogOwnershipCleanup",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.preservesRouteCatalogWindow",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.preservesBoundaryCatalog",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.miniKvOwnsNodeCatalogIntegritySnapshot",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.nodeConsumesFreshMiniKvEvidence",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.miniKvRuntimeContractChanged",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.nodeAddsEvidenceGate",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.runtimeGateApprovalPresent",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.startsJavaService",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.startsMiniKvService",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.startsServices",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.runtimeProbeAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.liveReadAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.activeShardPrototypeEnabled",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.routerActivationAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.writeRoutingAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.writeCommandsAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.adminCommandsAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.loadRestoreCompactAllowed",
+        "nodeRouteCatalogExpectedIntegritySnapshotFreeze.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -580,6 +603,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-closeout-snapshot",
         "node-route-catalog-anchor-removal-audit",
         "node-route-catalog-expected-integrity-snapshot-audit",
+        "node-route-catalog-expected-integrity-snapshot-freeze",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -591,10 +615,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v15\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v16\","} +
            "\"sourceNodePlan\":\"docs/plans3/v471-post-route-catalog-expected-integrity-snapshot-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v186\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v186.json\","
+           "\"sourceFrozenReleaseVersion\":\"v187\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v187.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -610,6 +634,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogCloseoutSnapshotCataloged\":true,"
            "\"nodeRouteCatalogAnchorRemovalAuditCataloged\":true,"
            "\"nodeRouteCatalogExpectedIntegritySnapshotAuditCataloged\":true,"
+           "\"nodeRouteCatalogExpectedIntegritySnapshotFreezeCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
