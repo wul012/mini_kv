@@ -276,6 +276,28 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogExpectedIntegritySnapshotFreeze.adminCommandsAllowed",
         "nodeRouteCatalogExpectedIntegritySnapshotFreeze.loadRestoreCompactAllowed",
         "nodeRouteCatalogExpectedIntegritySnapshotFreeze.executionAllowed",
+        "nodeRouteCatalogEvidenceChain.versionedFixtureCatalogOnly",
+        "nodeRouteCatalogEvidenceChain.rollingCurrentUsedForFrozenCatalog",
+        "nodeRouteCatalogEvidenceChain.allCatalogedEntriesReadOnly",
+        "nodeRouteCatalogEvidenceChain.allCatalogedFixturesVersioned",
+        "nodeRouteCatalogEvidenceChain.allCatalogedDigestsPresent",
+        "nodeRouteCatalogEvidenceChain.nodeConsumesFreshMiniKvEvidence",
+        "nodeRouteCatalogEvidenceChain.miniKvRuntimeContractChanged",
+        "nodeRouteCatalogEvidenceChain.nodeAddsEvidenceGate",
+        "nodeRouteCatalogEvidenceChain.runtimeGateApprovalPresent",
+        "nodeRouteCatalogEvidenceChain.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogEvidenceChain.startsJavaService",
+        "nodeRouteCatalogEvidenceChain.startsMiniKvService",
+        "nodeRouteCatalogEvidenceChain.startsServices",
+        "nodeRouteCatalogEvidenceChain.runtimeProbeAllowed",
+        "nodeRouteCatalogEvidenceChain.liveReadAllowed",
+        "nodeRouteCatalogEvidenceChain.activeShardPrototypeEnabled",
+        "nodeRouteCatalogEvidenceChain.routerActivationAllowed",
+        "nodeRouteCatalogEvidenceChain.writeRoutingAllowed",
+        "nodeRouteCatalogEvidenceChain.writeCommandsAllowed",
+        "nodeRouteCatalogEvidenceChain.adminCommandsAllowed",
+        "nodeRouteCatalogEvidenceChain.loadRestoreCompactAllowed",
+        "nodeRouteCatalogEvidenceChain.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -604,6 +626,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-anchor-removal-audit",
         "node-route-catalog-expected-integrity-snapshot-audit",
         "node-route-catalog-expected-integrity-snapshot-freeze",
+        "node-route-catalog-evidence-chain",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -615,10 +638,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v16\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v17\","} +
            "\"sourceNodePlan\":\"docs/plans3/v471-post-route-catalog-expected-integrity-snapshot-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v187\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v187.json\","
+           "\"sourceFrozenReleaseVersion\":\"v188\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v188.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -635,6 +658,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogAnchorRemovalAuditCataloged\":true,"
            "\"nodeRouteCatalogExpectedIntegritySnapshotAuditCataloged\":true,"
            "\"nodeRouteCatalogExpectedIntegritySnapshotFreezeCataloged\":true,"
+           "\"nodeRouteCatalogEvidenceChainCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
