@@ -43,6 +43,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `236-version-180-shard-readiness-history-formatter-split.md` - mini-kv v180 freezes v179 numeric span audit evidence, splits shard-readiness history/fixture/archive formatters, adds history maintenance evidence, tests, TCP smoke, and `e/180` archive.
 - `237-version-181-node-route-catalog-integrity-window.md` - mini-kv v181 freezes v180 history formatter maintenance evidence, extends the read-only Node route/catalog window through v460, tests, TCP smoke, and `e/181` archive.
 - `238-version-182-node-route-catalog-test-migration-window.md` - mini-kv v182 freezes v181 route catalog integrity evidence, extends the read-only Node route/catalog window through v462, tests, TCP smoke, and `e/182` archive.
+- `239-version-183-node-route-quality-catalog-integrity-window.md` - mini-kv v183 freezes v182 route catalog test migration evidence, extends the read-only Node route/catalog window through v463, tests, TCP smoke, and `e/183` archive.
 
 ## Rules
 

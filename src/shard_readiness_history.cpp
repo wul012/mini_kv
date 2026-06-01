@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v462+ may consume v182 as route catalog test migration window evidence only\","
+           "\"nodeConsumer\":\"Node v463+ may consume v183 as route quality catalog integrity window evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -64,6 +64,7 @@ std::string format_fixture_parity_json() {
                "fixtures/release/shard-readiness-v179.json",
                "fixtures/release/shard-readiness-v180.json",
                "fixtures/release/shard-readiness-v181.json",
+               "fixtures/release/shard-readiness-v182.json",
            }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -151,15 +152,16 @@ std::string format_archive_compatibility_json() {
                "Node v460",
                "Node v461",
                "Node v462",
+               "Node v463",
            }) +
            ",\"changesArchivedNodeEvidence\":false,"
-           "\"futureNodeConsumer\":\"Node v462 or later may consume this audit route catalog test migration window without changing mini-kv runtime boundaries\"}";
+           "\"futureNodeConsumer\":\"Node v463 or later may consume this route quality catalog integrity window without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v181\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v181.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v462 audit route catalog test migration may consume v181 route catalog integrity window evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v182\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v182.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v463 route quality catalog integrity may consume v182 route catalog test migration window evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -215,7 +217,8 @@ std::string format_historical_fallback_json() {
            "\"nodeV459AuditRouteGroupCatalogPreserved\":true,"
            "\"nodeV460AuditRouteCatalogIntegrityPreserved\":true,"
            "\"nodeV461AuditRouteCatalogTestSupportPreserved\":true,"
-           "\"nodeV462AuditRouteCatalogTestMigrationPreserved\":true}";
+           "\"nodeV462AuditRouteCatalogTestMigrationPreserved\":true,"
+           "\"nodeV463AuditRouteQualityCatalogIntegrityPreserved\":true}";
 }
 
 std::string format_history_formatter_maintenance_json() {
