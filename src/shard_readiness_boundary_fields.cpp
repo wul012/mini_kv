@@ -141,6 +141,26 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "shardReadinessReleaseCatalogAudit.adminCommandsAllowed",
         "shardReadinessReleaseCatalogAudit.loadRestoreCompactAllowed",
         "shardReadinessReleaseCatalogAudit.executionAllowed",
+        "nodeRouteSplitCompatibilityWindow.nodeApiPathChanged",
+        "nodeRouteSplitCompatibilityWindow.nodeResponseShapeChanged",
+        "nodeRouteSplitCompatibilityWindow.nodeAddsEvidenceGate",
+        "nodeRouteSplitCompatibilityWindow.nodeStartsJavaService",
+        "nodeRouteSplitCompatibilityWindow.nodeStartsMiniKvService",
+        "nodeRouteSplitCompatibilityWindow.miniKvContractChangedForNodeRouteSplit",
+        "nodeRouteSplitCompatibilityWindow.miniKvFixturePathChanged",
+        "nodeRouteSplitCompatibilityWindow.miniKvShardJsonCommandChanged",
+        "nodeRouteSplitCompatibilityWindow.miniKvRequiresNodeRouteTableChange",
+        "nodeRouteSplitCompatibilityWindow.runtimeGateApprovalPresent",
+        "nodeRouteSplitCompatibilityWindow.runtimeExecutionPacketExecutable",
+        "nodeRouteSplitCompatibilityWindow.startsJavaService",
+        "nodeRouteSplitCompatibilityWindow.startsMiniKvService",
+        "nodeRouteSplitCompatibilityWindow.startsServices",
+        "nodeRouteSplitCompatibilityWindow.runtimeProbeAllowed",
+        "nodeRouteSplitCompatibilityWindow.liveReadAllowed",
+        "nodeRouteSplitCompatibilityWindow.activeShardPrototypeEnabled",
+        "nodeRouteSplitCompatibilityWindow.routerActivationAllowed",
+        "nodeRouteSplitCompatibilityWindow.writeRoutingAllowed",
+        "nodeRouteSplitCompatibilityWindow.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -453,6 +473,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "template-validator-echo",
         "canonical-approval-input-precheck",
         "node-route-group-split-compatibility",
+        "node-route-split-compatibility-window",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -464,10 +485,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v7\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v432-post-credential-resolver-endpoint-handle-allowlist-approval-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v165\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v165.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v8\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v440-post-credential-resolver-disabled-runtime-shell-design-draft-body-pre-draft-decision-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v166\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v166.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -478,6 +499,7 @@ std::string format_catalog_index_json() {
            ",\"shardReadinessReleaseCatalogCataloged\":true"
            ",\"shardReadinessReleaseCatalogAuditCataloged\":true"
            ",\"readOnlyBoundaryFieldsStillPublished\":true,"
+           "\"nodeRouteSplitCompatibilityWindowCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
            "\"fixturePathChanged\":false,"
