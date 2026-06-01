@@ -75,6 +75,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `264-version-208-node-route-catalog-cleanup-post-closeout-archive-verification-route-audit.md` - mini-kv v208 freezes v207 and audits the post-closeout archive verification route evidence aligned with Node v490, tests, TCP smoke, and `e/208` archive.
 
+- `265-version-209-node-route-catalog-cleanup-post-closeout-continuity-release-catalog.md` - mini-kv v209 freezes v208 and catalogs the post-closeout continuity releases aligned with Node v490, tests, TCP smoke, and `e/209` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
