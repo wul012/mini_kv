@@ -236,4 +236,46 @@ std::string format_route_catalog_cleanup_closeout_handoff_audit_json() {
            "\"readOnly\":true}";
 }
 
+std::string format_route_catalog_cleanup_closeout_handoff_audit_freeze_json() {
+    return "{\"freezeMode\":\"node-route-catalog-cleanup-closeout-handoff-audit-freeze-read-only\","
+           "\"sourceNodePlan\":\"docs/plans3/v472-post-route-catalog-cleanup-closeout-roadmap.md\","
+           "\"frozenReleaseVersion\":\"v192\","
+           "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v192.json\","
+           "\"frozenEvidenceDigest\":\"fnv1a64:89bf4177b09f1ec0\","
+           "\"frozenStatus\":\"node-route-catalog-cleanup-closeout-handoff-audit-read-only\","
+           "\"frozenHandoffAuditMode\":\"node-route-catalog-cleanup-closeout-handoff-audit-read-only\","
+           "\"frozenHandoffSourceReleaseVersion\":\"v191\","
+           "\"frozenHandoffSourceDigest\":\"fnv1a64:e6a06c9207144d9d\","
+           "\"frozenBoundaryCatalogVersion\":\"read-only-boundary-fields.v20\","
+           "\"frozenBoundaryFieldCount\":625,"
+           "\"frozenBoundaryGroupCount\":31,"
+           "\"rollingCurrentUsedForFrozenBaseline\":false,"
+           "\"preservesHandoffAudit\":true,"
+           "\"preservesHandoffManifest\":true,"
+           "\"preservesRouteCatalogEvidenceChainAudit\":true,"
+           "\"preservesNodeCleanupCloseoutValidation\":true,"
+           "\"preservesBoundaryCatalog\":true,"
+           "\"frozenReadyForDownstreamConsumption\":true,"
+           "\"frozenRollingCurrentRejected\":true,"
+           "\"nodeConsumesFreshMiniKvEvidence\":false,"
+           "\"miniKvRuntimeContractChanged\":false,"
+           "\"freezeOnly\":true,"
+           "\"nodeAddsEvidenceGate\":false,"
+           "\"runtimeGateApprovalPresent\":false,"
+           "\"runtimeExecutionPacketExecutable\":false,"
+           "\"startsJavaService\":false,"
+           "\"startsMiniKvService\":false,"
+           "\"startsServices\":false,"
+           "\"runtimeProbeAllowed\":false,"
+           "\"liveReadAllowed\":false,"
+           "\"activeShardPrototypeEnabled\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"writeCommandsAllowed\":false,"
+           "\"adminCommandsAllowed\":false,"
+           "\"loadRestoreCompactAllowed\":false,"
+           "\"executionAllowed\":false,"
+           "\"readOnly\":true}";
+}
+
 } // namespace minikv::shard_readiness::route_catalog_evidence_chain

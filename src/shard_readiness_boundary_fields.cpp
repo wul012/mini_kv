@@ -376,6 +376,29 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogCleanupCloseoutHandoffAudit.adminCommandsAllowed",
         "nodeRouteCatalogCleanupCloseoutHandoffAudit.loadRestoreCompactAllowed",
         "nodeRouteCatalogCleanupCloseoutHandoffAudit.executionAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.rollingCurrentUsedForFrozenBaseline",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.preservesHandoffAudit",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.preservesHandoffManifest",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.preservesRouteCatalogEvidenceChainAudit",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.preservesNodeCleanupCloseoutValidation",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.preservesBoundaryCatalog",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.frozenReadyForDownstreamConsumption",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.frozenRollingCurrentRejected",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.nodeConsumesFreshMiniKvEvidence",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.miniKvRuntimeContractChanged",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.freezeOnly",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.nodeAddsEvidenceGate",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.runtimeGateApprovalPresent",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.startsJavaService",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.startsMiniKvService",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.startsServices",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.runtimeProbeAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.liveReadAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.activeShardPrototypeEnabled",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.routerActivationAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.writeRoutingAllowed",
+        "nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -708,6 +731,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-evidence-chain-audit",
         "node-route-catalog-cleanup-closeout-handoff",
         "node-route-catalog-cleanup-closeout-handoff-audit",
+        "node-route-catalog-cleanup-closeout-handoff-audit-freeze",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -719,10 +743,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v20\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v21\","} +
            "\"sourceNodePlan\":\"docs/plans3/v472-post-route-catalog-cleanup-closeout-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v191\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v191.json\","
+           "\"sourceFrozenReleaseVersion\":\"v192\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v192.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -743,6 +767,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogEvidenceChainAuditCataloged\":true,"
            "\"nodeRouteCatalogCleanupCloseoutHandoffCataloged\":true,"
            "\"nodeRouteCatalogCleanupCloseoutHandoffAuditCataloged\":true,"
+           "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreezeCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
