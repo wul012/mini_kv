@@ -551,6 +551,27 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogCleanupEvidenceBatchCloseoutAudit.routerActivationAllowed",
         "nodeRouteCatalogCleanupEvidenceBatchCloseoutAudit.writeRoutingAllowed",
         "nodeRouteCatalogCleanupEvidenceBatchCloseoutAudit.executionAllowed",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.sourceFrozenReleaseVersion",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.sourceFrozenFixturePath",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.sourceFrozenDigest",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.continuityStage",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.stageSequence",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.stageReleaseVersion",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.trackedPostCloseoutRangeStart",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.trackedPostCloseoutRangeEnd",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.trackedPostCloseoutReleaseCount",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.nodePlanStillLatestForMiniKv",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.sourceFixtureVersioned",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.rollingCurrentRejected",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.preservesBatchCloseout",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.preservesBatchCloseoutAudit",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.preservesNodeV480Validation",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.preservesArchiveVerifierChecks",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.postCloseoutStageOnly",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.readyForNextNodeBatch",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.routerActivationAllowed",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.writeRoutingAllowed",
+        "nodeRouteCatalogCleanupPostCloseoutContinuity.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -891,6 +912,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-cleanup-latest-evidence-package-audit",
         "node-route-catalog-cleanup-evidence-batch-closeout",
         "node-route-catalog-cleanup-evidence-batch-closeout-audit",
+        "node-route-catalog-cleanup-post-closeout-continuity",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -902,10 +924,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v28\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v29\","} +
            "\"sourceNodePlan\":\"docs/plans3/v480-post-java-mini-kv-route-catalog-cleanup-evidence-batch-closeout-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v199\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v199.json\","
+           "\"sourceFrozenReleaseVersion\":\"v200\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v200.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -934,6 +956,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogCleanupLatestEvidencePackageAuditCataloged\":true,"
            "\"nodeRouteCatalogCleanupEvidenceBatchCloseoutCataloged\":true,"
            "\"nodeRouteCatalogCleanupEvidenceBatchCloseoutAuditCataloged\":true,"
+           "\"nodeRouteCatalogCleanupPostCloseoutContinuityCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
