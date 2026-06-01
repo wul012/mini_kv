@@ -54,7 +54,7 @@ std::string format_post_closeout_continuity_json() {
            "\"stageAssertions\":" +
            json_string_array({
                std::string{descriptor.source_baseline_assertion},
-               "stage descriptor split preserves the JSON contract",
+               "stage descriptor lifecycle preserves the JSON contract",
                "post-closeout continuity is metadata only",
                "no router, write routing, or execution authority is opened",
            }) +

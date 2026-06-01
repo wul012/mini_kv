@@ -87,6 +87,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `270-version-214-node-route-catalog-cleanup-post-closeout-continuity-stage-descriptor-split.md` - mini-kv v214 freezes v213 and splits the post-closeout continuity stage descriptor into a small C++ module while preserving the JSON contract, tests, TCP smoke, and `e/214` archive.
 
+- `271-version-215-node-route-catalog-cleanup-post-closeout-continuity-stage-descriptor-freeze.md` - mini-kv v215 freezes v214 and proves the split stage descriptor is now a versioned source baseline, with tests, TCP smoke, and `e/215` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.

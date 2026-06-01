@@ -22,7 +22,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v214";
+constexpr std::string_view release_version = "v215";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -488,7 +488,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v214",
+        "mini-kv-shard-readiness-v215",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -500,7 +500,7 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v213-frozen-no-rolling-current"},
+            {"historicalFallback=v214-frozen-no-rolling-current"},
             {"archivedNodeEvidence=v370-v480-preserved"},
             {"shardReadinessHistoryMaintenance=v180-formatter-split-no-execution"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
@@ -525,14 +525,14 @@ std::string evidence_digest() {
             {"runtimeExecutionCanonicalApprovalInputPrecheck=blocked-0-of-3-no-execution"},
             {"nodeRouteGroupSplitCompatibility=v418-route-refactor-contract-stable"},
             {"boundaryCatalogMaintenance=v160-contract-preserving-split-no-execution"},
-            {"boundaryCatalogIndex=v214-v29-route-catalog-cleanup-post-closeout-continuity-no-execution"},
+            {"boundaryCatalogIndex=v215-v29-route-catalog-cleanup-post-closeout-continuity-no-execution"},
             {"slotTablePreview=v162-read-only-no-router-no-write-no-execution"},
             {"slotTablePreviewAudit=v163-contiguous-no-duplicates-no-router-no-execution"},
             {"slotTablePreviewAuditMaintenance=v164-formatter-split-contract-preserving"},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
-            {"nodeRouteSplitCompatibilityWindow=v214-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
-            {"nodeRouteSplitCompatibilityWindowAudit=v214-window-span-count-parse-audit-no-execution"},
+            {"nodeRouteSplitCompatibilityWindow=v215-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
+            {"nodeRouteSplitCompatibilityWindowAudit=v215-window-span-count-parse-audit-no-execution"},
             {"nodeRouteCatalogCloseoutSnapshot=v185-node-v464-validation-snapshot-no-execution"},
             {"nodeRouteCatalogAnchorRemovalAudit=v186-node-v467-anchor-removal-no-execution"},
             {"nodeRouteCatalogExpectedIntegritySnapshotAudit=v187-node-v471-integrity-snapshot-no-execution"},
@@ -549,7 +549,7 @@ std::string evidence_digest() {
             {"nodeRouteCatalogCleanupLatestEvidencePackageAudit=v198-v197-package-audit-no-execution"},
             {"nodeRouteCatalogCleanupEvidenceBatchCloseout=v199-v194-v198-closeout-no-execution"},
             {"nodeRouteCatalogCleanupEvidenceBatchCloseoutAudit=v200-v199-closeout-audit-no-execution"},
-            {"nodeRouteCatalogCleanupPostCloseoutContinuity=v214-v213-continuity-stage-descriptor-split-no-execution"},
+            {"nodeRouteCatalogCleanupPostCloseoutContinuity=v215-v214-continuity-stage-descriptor-freeze-no-execution"},
         });
 }
 
