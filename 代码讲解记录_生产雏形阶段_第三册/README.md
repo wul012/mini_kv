@@ -30,6 +30,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `223-version-167-shard-readiness-node-route-split-window.md` - mini-kv v167 freezes v166 release catalog audit evidence, adds Node v433-v440 route-split compatibility window evidence, tests, TCP smoke, and `e/167` archive.
 - `224-version-168-shard-readiness-node-route-split-window-v441.md` - mini-kv v168 freezes v167 route-split compatibility evidence, extends the read-only Node route-split window through v441, tests, TCP smoke, and `e/168` archive.
 - `225-version-169-shard-readiness-node-route-split-window-audit.md` - mini-kv v169 freezes v168 route-split window evidence, adds a read-only route-split window consistency audit, tests, TCP smoke, and `e/169` archive.
+- `226-version-170-shard-readiness-node-route-split-window-v442.md` - mini-kv v170 freezes v169 route-split window audit evidence, extends the read-only Node route-split window through v442, tests, TCP smoke, and `e/170` archive.
 
 ## Rules
 

@@ -24,6 +24,7 @@ const std::vector<std::string>& route_split_compatibility_window_versions() {
         "Node v439",
         "Node v440",
         "Node v441",
+        "Node v442",
     };
     return versions;
 }
@@ -69,12 +70,12 @@ std::string format_route_group_split_compatibility_json() {
 
 std::string format_route_split_compatibility_window_json() {
     const auto& covered_versions = route_split_compatibility_window_versions();
-    return "{\"windowMode\":\"node-v433-v441-route-split-window-contract-stable-read-only\","
-           "\"sourceNodePlan\":\"docs/plans3/v441-post-credential-resolver-disabled-runtime-shell-design-draft-body-preparation-plan-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v167\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v167.json\","
+    return "{\"windowMode\":\"node-v433-v442-route-split-window-contract-stable-read-only\","
+           "\"sourceNodePlan\":\"docs/plans3/v442-post-credential-resolver-disabled-runtime-shell-design-draft-body-draft-candidate-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v169\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v169.json\","
            "\"windowStartNodeVersion\":\"Node v433\","
-           "\"windowEndNodeVersion\":\"Node v441\","
+           "\"windowEndNodeVersion\":\"Node v442\","
            "\"splitRouteGroupCount\":" +
            std::to_string(covered_versions.size()) +
            ",\"coveredNodeVersions\":" + json_string_array(covered_versions) +
@@ -105,19 +106,19 @@ std::string format_route_split_compatibility_window_json() {
 std::string format_route_split_compatibility_window_audit_json() {
     const auto& covered_versions = route_split_compatibility_window_versions();
     return "{\"auditMode\":\"node-route-split-compatibility-window-consistency-read-only\","
-           "\"sourceNodePlan\":\"docs/plans3/v441-post-credential-resolver-disabled-runtime-shell-design-draft-body-preparation-plan-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v168\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v168.json\","
+           "\"sourceNodePlan\":\"docs/plans3/v442-post-credential-resolver-disabled-runtime-shell-design-draft-body-draft-candidate-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v169\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v169.json\","
            "\"auditedWindowSection\":\"nodeRouteSplitCompatibilityWindow\","
-           "\"expectedWindowVersionCount\":9,"
+           "\"expectedWindowVersionCount\":10,"
            "\"observedWindowVersionCount\":" +
            std::to_string(covered_versions.size()) +
            ",\"windowRangeStart\":\"Node v433\""
-           ",\"windowRangeEnd\":\"Node v441\""
+           ",\"windowRangeEnd\":\"Node v442\""
            ",\"contiguousNodeVersionWindow\":true"
            ",\"duplicateWindowVersionsDetected\":false"
            ",\"allWindowVersionsRouteRegistrationOnly\":true"
-           ",\"sourceFrozenWindowDigest\":\"fnv1a64:d0d0ef2b2a0f5a0a\""
+           ",\"sourceFrozenWindowDigest\":\"fnv1a64:eaa587d1a50d8200\""
            ",\"latestWindowMatchesFrozenSource\":true"
            ",\"windowAuditOnly\":true"
            ",\"runtimeGateApprovalPresent\":false"
