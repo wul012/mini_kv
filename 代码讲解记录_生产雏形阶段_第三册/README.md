@@ -85,6 +85,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `269-version-213-node-route-catalog-cleanup-post-closeout-continuity-downstream-consumption-handshake.md` - mini-kv v213 freezes v212 and declares the post-closeout downstream consumption handshake, with detailed source/fallback/range/boundary explanation, tests, TCP smoke, and `e/213` archive.
 
+- `270-version-214-node-route-catalog-cleanup-post-closeout-continuity-stage-descriptor-split.md` - mini-kv v214 freezes v213 and splits the post-closeout continuity stage descriptor into a small C++ module while preserving the JSON contract, tests, TCP smoke, and `e/214` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.

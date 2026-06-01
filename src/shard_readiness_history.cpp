@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v491+ may consume v213 as route catalog cleanup post-closeout continuity evidence only\","
+           "\"nodeConsumer\":\"Node v491+ may consume v214 as route catalog cleanup post-closeout continuity evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -95,6 +95,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v210.json",
                 "fixtures/release/shard-readiness-v211.json",
                 "fixtures/release/shard-readiness-v212.json",
+                "fixtures/release/shard-readiness-v213.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -206,9 +207,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v212\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v212.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v491+ may consume v212 post closeout continuity release catalog retention audit\","
+    return "{\"previousConsumedReleaseVersion\":\"v213\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v213.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v491+ may consume v213 post closeout continuity downstream consumption handshake\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"

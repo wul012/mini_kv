@@ -63,6 +63,7 @@ add_library(minikv
     src/shard_readiness_route_catalog_cleanup_catalog.cpp
     src/shard_readiness_route_catalog_evidence_chain.cpp
     src/shard_readiness_route_catalog_post_closeout.cpp
+    src/shard_readiness_route_catalog_post_closeout_stage.cpp
     src/shard_readiness_release_catalog.cpp
     src/shard_readiness_route_catalog_closeout.cpp
     src/shard_readiness_slot_preview.cpp
