@@ -199,6 +199,30 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogCloseoutSnapshot.adminCommandsAllowed",
         "nodeRouteCatalogCloseoutSnapshot.loadRestoreCompactAllowed",
         "nodeRouteCatalogCloseoutSnapshot.executionAllowed",
+        "nodeRouteCatalogAnchorRemovalAudit.sourceAnchorCompatibilityRemoved",
+        "nodeRouteCatalogAnchorRemovalAudit.centralRouteTablePureFlatMapConsumer",
+        "nodeRouteCatalogAnchorRemovalAudit.routeGroupTestsUseTypedCatalogIdentity",
+        "nodeRouteCatalogAnchorRemovalAudit.routeOrderAlignmentRequired",
+        "nodeRouteCatalogAnchorRemovalAudit.flatMapAlignmentRequired",
+        "nodeRouteCatalogAnchorRemovalAudit.nodeConsumesFreshMiniKvEvidence",
+        "nodeRouteCatalogAnchorRemovalAudit.miniKvRouteAnchorDependencyIntroduced",
+        "nodeRouteCatalogAnchorRemovalAudit.miniKvRuntimeContractChanged",
+        "nodeRouteCatalogAnchorRemovalAudit.auditOnly",
+        "nodeRouteCatalogAnchorRemovalAudit.nodeAddsEvidenceGate",
+        "nodeRouteCatalogAnchorRemovalAudit.runtimeGateApprovalPresent",
+        "nodeRouteCatalogAnchorRemovalAudit.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogAnchorRemovalAudit.startsJavaService",
+        "nodeRouteCatalogAnchorRemovalAudit.startsMiniKvService",
+        "nodeRouteCatalogAnchorRemovalAudit.startsServices",
+        "nodeRouteCatalogAnchorRemovalAudit.runtimeProbeAllowed",
+        "nodeRouteCatalogAnchorRemovalAudit.liveReadAllowed",
+        "nodeRouteCatalogAnchorRemovalAudit.activeShardPrototypeEnabled",
+        "nodeRouteCatalogAnchorRemovalAudit.routerActivationAllowed",
+        "nodeRouteCatalogAnchorRemovalAudit.writeRoutingAllowed",
+        "nodeRouteCatalogAnchorRemovalAudit.writeCommandsAllowed",
+        "nodeRouteCatalogAnchorRemovalAudit.adminCommandsAllowed",
+        "nodeRouteCatalogAnchorRemovalAudit.loadRestoreCompactAllowed",
+        "nodeRouteCatalogAnchorRemovalAudit.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -524,6 +548,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-split-compatibility-window",
         "node-route-split-compatibility-window-audit",
         "node-route-catalog-closeout-snapshot",
+        "node-route-catalog-anchor-removal-audit",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -535,10 +560,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v12\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v464-post-audit-route-catalog-final-closeout-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v184\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v184.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v13\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v467-post-route-catalog-anchor-removal-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v185\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v185.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -552,6 +577,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteSplitCompatibilityWindowCataloged\":true,"
            "\"nodeRouteSplitCompatibilityWindowAuditCataloged\":true,"
            "\"nodeRouteCatalogCloseoutSnapshotCataloged\":true,"
+           "\"nodeRouteCatalogAnchorRemovalAuditCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"

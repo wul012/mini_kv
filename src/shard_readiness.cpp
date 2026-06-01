@@ -19,7 +19,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v185";
+constexpr std::string_view release_version = "v186";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -485,7 +485,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v185",
+        "mini-kv-shard-readiness-v186",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -497,8 +497,8 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v184-frozen-no-rolling-current"},
-            {"archivedNodeEvidence=v370-v464-preserved"},
+            {"historicalFallback=v185-frozen-no-rolling-current"},
+            {"archivedNodeEvidence=v370-v467-preserved"},
             {"shardReadinessHistoryMaintenance=v180-formatter-split-no-execution"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
@@ -522,15 +522,16 @@ std::string evidence_digest() {
             {"runtimeExecutionCanonicalApprovalInputPrecheck=blocked-0-of-3-no-execution"},
             {"nodeRouteGroupSplitCompatibility=v418-route-refactor-contract-stable"},
             {"boundaryCatalogMaintenance=v160-contract-preserving-split-no-execution"},
-            {"boundaryCatalogIndex=v185-v12-route-catalog-closeout-snapshot-no-execution"},
+            {"boundaryCatalogIndex=v186-v13-route-catalog-anchor-removal-no-execution"},
             {"slotTablePreview=v162-read-only-no-router-no-write-no-execution"},
             {"slotTablePreviewAudit=v163-contiguous-no-duplicates-no-router-no-execution"},
             {"slotTablePreviewAuditMaintenance=v164-formatter-split-contract-preserving"},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
-            {"nodeRouteSplitCompatibilityWindow=v184-node-v433-v464-route-catalog-final-closeout-no-execution"},
-            {"nodeRouteSplitCompatibilityWindowAudit=v184-window-span-count-parse-audit-no-execution"},
+            {"nodeRouteSplitCompatibilityWindow=v186-node-v433-v467-route-catalog-anchor-removal-no-execution"},
+            {"nodeRouteSplitCompatibilityWindowAudit=v186-window-span-count-parse-audit-no-execution"},
             {"nodeRouteCatalogCloseoutSnapshot=v185-node-v464-validation-snapshot-no-execution"},
+            {"nodeRouteCatalogAnchorRemovalAudit=v186-node-v467-anchor-removal-no-execution"},
         });
 }
 
@@ -553,7 +554,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"node-route-catalog-closeout-snapshot-read-only\"" +
+           ",\"status\":\"node-route-catalog-anchor-removal-audit-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -611,6 +612,8 @@ std::string format_json() {
            node_compatibility::format_route_split_compatibility_window_audit_json() +
            ",\"nodeRouteCatalogCloseoutSnapshot\":" +
            route_catalog_closeout::format_closeout_snapshot_json() +
+           ",\"nodeRouteCatalogAnchorRemovalAudit\":" +
+           route_catalog_closeout::format_anchor_removal_audit_json() +
            ",\"boundaryCatalogMaintenance\":" +
            boundary_fields::format_catalog_maintenance_json() +
            ",\"boundaryCatalogIndex\":" +
@@ -642,6 +645,7 @@ std::string format_json() {
                  "adds release catalog consistency audit without runtime permissions",
                  "keeps Node route split compatibility window through v464 without runtime permissions",
                  "snapshots Node v464 route catalog final closeout validation without consuming fresh mini-kv evidence",
+                 "audits Node v467 route catalog anchor removal without adding mini-kv route-anchor dependency",
                  "computes Node route split window contiguity and duplicate checks from the version vector without runtime permissions",
                  "computes Node route split window numeric span and count matching without runtime permissions",
                  "splits shard readiness history formatters without changing command or runtime boundaries",
@@ -649,7 +653,7 @@ std::string format_json() {
                 "live-read gate remains prerequisite-only and does not start services",
                 "operator service lifecycle evidence still has no runtime probe",
                 "active shard prototype remains plan-prerequisite only",
-                  "does not mutate Node v370-v464 archived evidence",
+                  "does not mutate Node v370-v467 archived evidence",
                "not order or audit authoritative",
            }) +
            "}";

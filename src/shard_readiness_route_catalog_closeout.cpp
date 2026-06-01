@@ -40,4 +40,42 @@ std::string format_closeout_snapshot_json() {
            "\"readOnly\":true}";
 }
 
+std::string format_anchor_removal_audit_json() {
+    return "{\"auditMode\":\"node-route-catalog-anchor-removal-audit-read-only\","
+           "\"sourceNodePlan\":\"docs/plans3/v467-post-route-catalog-anchor-removal-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v185\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v185.json\","
+           "\"sourceFrozenDigest\":\"fnv1a64:6a6b4cbdac4bdb46\","
+           "\"auditedNodeVersion\":\"Node v467\","
+           "\"sourceAnchorCompatibilityRemoved\":true,"
+           "\"centralRouteTablePureFlatMapConsumer\":true,"
+           "\"routeGroupTestsUseTypedCatalogIdentity\":true,"
+           "\"routeOrderAlignmentRequired\":true,"
+           "\"flatMapAlignmentRequired\":true,"
+           "\"affectedRouteCatalogTestFileCount\":53,"
+           "\"affectedRouteCatalogTestCount\":59,"
+           "\"nodeTypecheckPassed\":true,"
+           "\"nodeBuildPassed\":true,"
+           "\"nodeConsumesFreshMiniKvEvidence\":false,"
+           "\"miniKvRouteAnchorDependencyIntroduced\":false,"
+           "\"miniKvRuntimeContractChanged\":false,"
+           "\"auditOnly\":true,"
+           "\"nodeAddsEvidenceGate\":false,"
+           "\"runtimeGateApprovalPresent\":false,"
+           "\"runtimeExecutionPacketExecutable\":false,"
+           "\"startsJavaService\":false,"
+           "\"startsMiniKvService\":false,"
+           "\"startsServices\":false,"
+           "\"runtimeProbeAllowed\":false,"
+           "\"liveReadAllowed\":false,"
+           "\"activeShardPrototypeEnabled\":false,"
+           "\"routerActivationAllowed\":false,"
+           "\"writeRoutingAllowed\":false,"
+           "\"writeCommandsAllowed\":false,"
+           "\"adminCommandsAllowed\":false,"
+           "\"loadRestoreCompactAllowed\":false,"
+           "\"executionAllowed\":false,"
+           "\"readOnly\":true}";
+}
+
 } // namespace minikv::shard_readiness::route_catalog_closeout

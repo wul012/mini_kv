@@ -46,6 +46,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `239-version-183-node-route-quality-catalog-integrity-window.md` - mini-kv v183 freezes v182 route catalog test migration evidence, extends the read-only Node route/catalog window through v463, tests, TCP smoke, and `e/183` archive.
 - `240-version-184-node-route-catalog-final-closeout-window.md` - mini-kv v184 freezes v183 route quality catalog integrity evidence, extends the read-only Node route/catalog window through v464, tests, TCP smoke, and `e/184` archive.
 - `241-version-185-node-route-catalog-closeout-snapshot.md` - mini-kv v185 freezes v184 final closeout window evidence, adds the read-only Node v464 closeout validation snapshot, tests, TCP smoke, and `e/185` archive.
+- `242-version-186-node-route-catalog-anchor-removal-audit.md` - mini-kv v186 freezes v185 closeout snapshot evidence, extends the read-only Node route/catalog window through v467, adds anchor-removal audit evidence, tests, TCP smoke, and `e/186` archive.
 
 ## Rules
 
