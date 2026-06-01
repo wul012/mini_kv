@@ -67,6 +67,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `260-version-204-node-route-catalog-cleanup-post-closeout-archive-readiness-audit.md` - mini-kv v204 freezes v203 and audits post-closeout archive readiness aligned with Node v490, tests, TCP smoke, and `e/204` archive.
 
+- `261-version-205-node-route-catalog-cleanup-post-closeout-verification-checklist-handoff.md` - mini-kv v205 freezes v204 and publishes the post-closeout verification checklist handoff aligned with Node v490, tests, TCP smoke, and `e/205` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
