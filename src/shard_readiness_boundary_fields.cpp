@@ -161,6 +161,8 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteSplitCompatibilityWindow.routerActivationAllowed",
         "nodeRouteSplitCompatibilityWindow.writeRoutingAllowed",
         "nodeRouteSplitCompatibilityWindow.executionAllowed",
+        "nodeRouteSplitCompatibilityWindowAudit.windowRangeNumbersParseable",
+        "nodeRouteSplitCompatibilityWindowAudit.windowCountMatchesRange",
         "nodeRouteSplitCompatibilityWindowAudit.contiguousNodeVersionWindow",
         "nodeRouteSplitCompatibilityWindowAudit.duplicateWindowVersionsDetected",
         "nodeRouteSplitCompatibilityWindowAudit.allWindowVersionsRouteRegistrationOnly",
@@ -505,10 +507,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v9\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v10\","} +
            "\"sourceNodePlan\":\"docs/plans3/v458-post-foundational-audit-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v177\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v177.json\","
+           "\"sourceFrozenReleaseVersion\":\"v178\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v178.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"

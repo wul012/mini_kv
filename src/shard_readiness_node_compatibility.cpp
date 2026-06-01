@@ -18,15 +18,15 @@ std::string json_string(std::string_view value) {
 }
 
 constexpr std::string_view route_split_window_mode =
-    "node-v433-v458-route-split-window-computed-audit-read-only";
+    "node-v433-v458-route-split-window-numeric-span-audit-read-only";
 constexpr std::string_view route_split_window_source_node_plan =
     "docs/plans3/v458-post-foundational-audit-route-group-split-roadmap.md";
-constexpr std::string_view route_split_window_source_frozen_release_version = "v177";
+constexpr std::string_view route_split_window_source_frozen_release_version = "v178";
 constexpr std::string_view route_split_window_source_frozen_fixture_path =
-    "fixtures/release/shard-readiness-v177.json";
+    "fixtures/release/shard-readiness-v178.json";
 constexpr std::string_view route_split_window_start_node_version = "Node v433";
 constexpr std::string_view route_split_window_end_node_version = "Node v458";
-constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:e773708a4decc60e";
+constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:dd89f7c3bd63d7c3";
 
 std::string json_bool(bool value) {
     return runtime_evidence::json_bool(value);
@@ -187,6 +187,13 @@ std::string format_route_split_compatibility_window_audit_json() {
     const auto& covered_versions = route_split_compatibility_window_versions();
     const bool contiguous_window = route_split_window_is_contiguous(covered_versions);
     const bool duplicate_versions = route_split_window_has_duplicates(covered_versions);
+    const int window_start_number = parse_node_version_number(route_split_window_start_node_version);
+    const int window_end_number = parse_node_version_number(route_split_window_end_node_version);
+    const bool window_range_numbers_parseable = window_start_number >= 0 && window_end_number >= 0;
+    const int computed_window_version_span =
+        window_range_numbers_parseable ? (window_end_number - window_start_number + 1) : 0;
+    const bool window_count_matches_range =
+        computed_window_version_span == static_cast<int>(covered_versions.size());
     return std::string{"{\"auditMode\":\"node-route-split-compatibility-window-consistency-read-only\","} +
            "\"sourceNodePlan\":" +
            json_string(route_split_window_source_node_plan) +
@@ -202,6 +209,11 @@ std::string format_route_split_compatibility_window_audit_json() {
            ",\"windowRangeStart\":" +
            json_string(route_split_window_start_node_version) +
            ",\"windowRangeEnd\":" + json_string(route_split_window_end_node_version) +
+           ",\"windowRangeStartNumber\":" + std::to_string(window_start_number) +
+           ",\"windowRangeEndNumber\":" + std::to_string(window_end_number) +
+           ",\"computedWindowVersionSpan\":" + std::to_string(computed_window_version_span) +
+           ",\"windowRangeNumbersParseable\":" + json_bool(window_range_numbers_parseable) +
+           ",\"windowCountMatchesRange\":" + json_bool(window_count_matches_range) +
            ",\"contiguousNodeVersionWindow\":" + json_bool(contiguous_window) +
            ",\"duplicateWindowVersionsDetected\":" + json_bool(duplicate_versions) +
            ",\"allWindowVersionsRouteRegistrationOnly\":true"
