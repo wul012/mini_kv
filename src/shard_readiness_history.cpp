@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v458+ may consume v180 as history formatter maintenance evidence only\","
+           "\"nodeConsumer\":\"Node v460+ may consume v181 as route catalog integrity window evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -62,6 +62,7 @@ std::string format_fixture_parity_json() {
                "fixtures/release/shard-readiness-v177.json",
                "fixtures/release/shard-readiness-v178.json",
                "fixtures/release/shard-readiness-v179.json",
+               "fixtures/release/shard-readiness-v180.json",
            }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -145,15 +146,17 @@ std::string format_archive_compatibility_json() {
                "Node v456",
                "Node v457",
                "Node v458",
+               "Node v459",
+               "Node v460",
            }) +
            ",\"changesArchivedNodeEvidence\":false,"
-           "\"futureNodeConsumer\":\"Node v458 or later may consume this foundational audit route split compatibility window without changing mini-kv runtime boundaries\"}";
+           "\"futureNodeConsumer\":\"Node v460 or later may consume this audit route catalog integrity window without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v179\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v179.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v458 foundational audit route split may consume v179 numeric span route split audit evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v180\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v180.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v460 audit route catalog integrity may consume v180 history formatter maintenance evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -205,7 +208,9 @@ std::string format_historical_fallback_json() {
            "\"nodeV455ManualSandboxConnectionPrecheckRouteSplitPreserved\":true,"
            "\"nodeV456ManualSandboxConnectionAdapterClientRouteSplitPreserved\":true,"
            "\"nodeV457ManualSandboxConnectionFakeTransportRouteSplitPreserved\":true,"
-           "\"nodeV458FoundationalAuditRouteSplitPreserved\":true}";
+           "\"nodeV458FoundationalAuditRouteSplitPreserved\":true,"
+           "\"nodeV459AuditRouteGroupCatalogPreserved\":true,"
+           "\"nodeV460AuditRouteCatalogIntegrityPreserved\":true}";
 }
 
 std::string format_history_formatter_maintenance_json() {

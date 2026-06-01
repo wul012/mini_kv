@@ -18,15 +18,15 @@ std::string json_string(std::string_view value) {
 }
 
 constexpr std::string_view route_split_window_mode =
-    "node-v433-v458-route-split-window-numeric-span-audit-read-only";
+    "node-v433-v460-route-catalog-integrity-window-read-only";
 constexpr std::string_view route_split_window_source_node_plan =
-    "docs/plans3/v458-post-foundational-audit-route-group-split-roadmap.md";
-constexpr std::string_view route_split_window_source_frozen_release_version = "v179";
+    "docs/plans3/v460-post-audit-route-catalog-integrity-roadmap.md";
+constexpr std::string_view route_split_window_source_frozen_release_version = "v180";
 constexpr std::string_view route_split_window_source_frozen_fixture_path =
-    "fixtures/release/shard-readiness-v179.json";
+    "fixtures/release/shard-readiness-v180.json";
 constexpr std::string_view route_split_window_start_node_version = "Node v433";
-constexpr std::string_view route_split_window_end_node_version = "Node v458";
-constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:d88350b581f2c458";
+constexpr std::string_view route_split_window_end_node_version = "Node v460";
+constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:3403c490a3e623e0";
 
 std::string json_bool(bool value) {
     return runtime_evidence::json_bool(value);
@@ -104,6 +104,8 @@ const std::vector<std::string>& route_split_compatibility_window_versions() {
         "Node v456",
         "Node v457",
         "Node v458",
+        "Node v459",
+        "Node v460",
     };
     return versions;
 }
@@ -160,6 +162,7 @@ std::string format_route_split_compatibility_window_json() {
            std::to_string(covered_versions.size()) +
            ",\"coveredNodeVersions\":" + json_string_array(covered_versions) +
            ",\"allChangesRouteRegistrationOnly\":true"
+           ",\"allChangesRouteCatalogOnly\":true"
            ",\"nodeApiPathChanged\":false"
            ",\"nodeResponseShapeChanged\":false"
            ",\"nodeAddsEvidenceGate\":false"
