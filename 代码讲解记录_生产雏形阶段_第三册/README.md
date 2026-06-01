@@ -50,6 +50,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `243-version-187-node-route-catalog-expected-integrity-snapshot-audit.md` - mini-kv v187 freezes v186 anchor-removal audit evidence, extends the read-only Node route/catalog window through v471, adds expected integrity snapshot audit evidence, tests, TCP smoke, and `e/187` archive.
 - `244-version-188-node-route-catalog-expected-integrity-snapshot-freeze.md` - mini-kv v188 freezes v187 expected integrity snapshot audit evidence, adds frozen-baseline proof, tests, TCP smoke, and `e/188` archive.
 - `245-version-189-node-route-catalog-evidence-chain.md` - mini-kv v189 splits route catalog evidence chain cataloging into its own module, catalogs v185-v188 fixtures, tests, TCP smoke, and `e/189` archive.
+- `246-version-190-node-route-catalog-evidence-chain-audit.md` - mini-kv v190 aligns with Node v472 cleanup closeout, audits the v185-v188 evidence chain, tests, TCP smoke, and `e/190` archive.
 
 ## Rules
 

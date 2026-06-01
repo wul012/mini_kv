@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v471+ may consume v189 as a versioned route catalog evidence chain only\","
+           "\"nodeConsumer\":\"Node v472+ may consume v190 as route catalog evidence chain audit only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -71,6 +71,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v186.json",
                 "fixtures/release/shard-readiness-v187.json",
                 "fixtures/release/shard-readiness-v188.json",
+                "fixtures/release/shard-readiness-v189.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -167,15 +168,16 @@ std::string format_archive_compatibility_json() {
                 "Node v469",
                 "Node v470",
                 "Node v471",
+                "Node v472",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-            "\"futureNodeConsumer\":\"Node v471 or later may consume this versioned route catalog evidence chain without changing mini-kv runtime boundaries\"}";
+            "\"futureNodeConsumer\":\"Node v472 or later may consume this route catalog evidence chain audit without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v188\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v188.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v471 route catalog evidence chain may consume v188 frozen audit evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v189\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v189.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v472 route catalog cleanup closeout may consume v189 evidence chain\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -241,7 +243,8 @@ std::string format_historical_fallback_json() {
            "\"nodeV468RouteCatalogIntegrityAnchorFieldRemovalPreserved\":true,"
             "\"nodeV469RouteCatalogSummaryBuilderPreserved\":true,"
             "\"nodeV470RouteCatalogExpectedSummaryPreserved\":true,"
-            "\"nodeV471RouteCatalogExpectedIntegritySnapshotPreserved\":true}";
+            "\"nodeV471RouteCatalogExpectedIntegritySnapshotPreserved\":true,"
+            "\"nodeV472RouteCatalogCleanupCloseoutPreserved\":true}";
 }
 
 std::string format_history_formatter_maintenance_json() {

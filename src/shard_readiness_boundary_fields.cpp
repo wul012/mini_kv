@@ -298,6 +298,32 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogEvidenceChain.adminCommandsAllowed",
         "nodeRouteCatalogEvidenceChain.loadRestoreCompactAllowed",
         "nodeRouteCatalogEvidenceChain.executionAllowed",
+        "nodeRouteCatalogEvidenceChainAudit.releaseRangeContiguous",
+        "nodeRouteCatalogEvidenceChainAudit.duplicateReleasesDetected",
+        "nodeRouteCatalogEvidenceChainAudit.allCatalogedDigestsPresent",
+        "nodeRouteCatalogEvidenceChainAudit.allCatalogedEntriesReadOnly",
+        "nodeRouteCatalogEvidenceChainAudit.allCatalogedFixturesVersioned",
+        "nodeRouteCatalogEvidenceChainAudit.latestDigestMatchesFrozenSource",
+        "nodeRouteCatalogEvidenceChainAudit.nodeCleanupCloseoutValidated",
+        "nodeRouteCatalogEvidenceChainAudit.nodeFullVitestShardsPassed",
+        "nodeRouteCatalogEvidenceChainAudit.nodeConsumesFreshMiniKvEvidence",
+        "nodeRouteCatalogEvidenceChainAudit.miniKvRuntimeContractChanged",
+        "nodeRouteCatalogEvidenceChainAudit.auditOnly",
+        "nodeRouteCatalogEvidenceChainAudit.nodeAddsEvidenceGate",
+        "nodeRouteCatalogEvidenceChainAudit.runtimeGateApprovalPresent",
+        "nodeRouteCatalogEvidenceChainAudit.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogEvidenceChainAudit.startsJavaService",
+        "nodeRouteCatalogEvidenceChainAudit.startsMiniKvService",
+        "nodeRouteCatalogEvidenceChainAudit.startsServices",
+        "nodeRouteCatalogEvidenceChainAudit.runtimeProbeAllowed",
+        "nodeRouteCatalogEvidenceChainAudit.liveReadAllowed",
+        "nodeRouteCatalogEvidenceChainAudit.activeShardPrototypeEnabled",
+        "nodeRouteCatalogEvidenceChainAudit.routerActivationAllowed",
+        "nodeRouteCatalogEvidenceChainAudit.writeRoutingAllowed",
+        "nodeRouteCatalogEvidenceChainAudit.writeCommandsAllowed",
+        "nodeRouteCatalogEvidenceChainAudit.adminCommandsAllowed",
+        "nodeRouteCatalogEvidenceChainAudit.loadRestoreCompactAllowed",
+        "nodeRouteCatalogEvidenceChainAudit.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -627,6 +653,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-expected-integrity-snapshot-audit",
         "node-route-catalog-expected-integrity-snapshot-freeze",
         "node-route-catalog-evidence-chain",
+        "node-route-catalog-evidence-chain-audit",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -638,10 +665,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v17\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v471-post-route-catalog-expected-integrity-snapshot-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v188\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v188.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v18\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v472-post-route-catalog-cleanup-closeout-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v189\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v189.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -659,6 +686,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogExpectedIntegritySnapshotAuditCataloged\":true,"
            "\"nodeRouteCatalogExpectedIntegritySnapshotFreezeCataloged\":true,"
            "\"nodeRouteCatalogEvidenceChainCataloged\":true,"
+           "\"nodeRouteCatalogEvidenceChainAuditCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"

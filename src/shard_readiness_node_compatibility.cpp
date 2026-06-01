@@ -18,15 +18,15 @@ std::string json_string(std::string_view value) {
 }
 
 constexpr std::string_view route_split_window_mode =
-    "node-v433-v471-route-catalog-expected-integrity-snapshot-freeze-window-read-only";
+    "node-v433-v472-route-catalog-cleanup-closeout-window-read-only";
 constexpr std::string_view route_split_window_source_node_plan =
-    "docs/plans3/v471-post-route-catalog-expected-integrity-snapshot-roadmap.md";
-constexpr std::string_view route_split_window_source_frozen_release_version = "v188";
+    "docs/plans3/v472-post-route-catalog-cleanup-closeout-roadmap.md";
+constexpr std::string_view route_split_window_source_frozen_release_version = "v189";
 constexpr std::string_view route_split_window_source_frozen_fixture_path =
-    "fixtures/release/shard-readiness-v188.json";
+    "fixtures/release/shard-readiness-v189.json";
 constexpr std::string_view route_split_window_start_node_version = "Node v433";
-constexpr std::string_view route_split_window_end_node_version = "Node v471";
-constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:565e5ce1fdb5f308";
+constexpr std::string_view route_split_window_end_node_version = "Node v472";
+constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:a595f2d9cdcbac8d";
 
 std::string json_bool(bool value) {
     return runtime_evidence::json_bool(value);
@@ -117,6 +117,7 @@ const std::vector<std::string>& route_split_compatibility_window_versions() {
         "Node v469",
         "Node v470",
         "Node v471",
+        "Node v472",
     };
     return versions;
 }
