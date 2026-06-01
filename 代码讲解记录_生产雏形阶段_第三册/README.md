@@ -44,6 +44,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `237-version-181-node-route-catalog-integrity-window.md` - mini-kv v181 freezes v180 history formatter maintenance evidence, extends the read-only Node route/catalog window through v460, tests, TCP smoke, and `e/181` archive.
 - `238-version-182-node-route-catalog-test-migration-window.md` - mini-kv v182 freezes v181 route catalog integrity evidence, extends the read-only Node route/catalog window through v462, tests, TCP smoke, and `e/182` archive.
 - `239-version-183-node-route-quality-catalog-integrity-window.md` - mini-kv v183 freezes v182 route catalog test migration evidence, extends the read-only Node route/catalog window through v463, tests, TCP smoke, and `e/183` archive.
+- `240-version-184-node-route-catalog-final-closeout-window.md` - mini-kv v184 freezes v183 route quality catalog integrity evidence, extends the read-only Node route/catalog window through v464, tests, TCP smoke, and `e/184` archive.
 
 ## Rules
 
