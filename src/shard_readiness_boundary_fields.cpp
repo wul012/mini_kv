@@ -420,6 +420,30 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogCleanupCloseoutReleaseCatalog.routerActivationAllowed",
         "nodeRouteCatalogCleanupCloseoutReleaseCatalog.writeRoutingAllowed",
         "nodeRouteCatalogCleanupCloseoutReleaseCatalog.executionAllowed",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.expectedCatalogedReleaseCount",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.observedCatalogedReleaseCount",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.expectedReleaseRangeSpan",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.observedReleaseRangeSpan",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.catalogIncludesEvidenceChainAudit",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.catalogIncludesHandoff",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.catalogIncludesHandoffAudit",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.catalogIncludesHandoffAuditFreeze",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.releaseVersionsContiguous",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.duplicateReleaseVersionsDetected",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.allCatalogedEntriesReadOnly",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.allCatalogedFixturesVersioned",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.allCatalogedDigestsPresent",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.fieldCountsMonotonic",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.groupCountsMonotonic",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.latestDigestMatchesFrozenSource",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.rollingCurrentRejected",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.catalogOnlyAudit",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.nodeAddsEvidenceGate",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.runtimeExecutionPacketExecutable",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.runtimeProbeAllowed",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.routerActivationAllowed",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.writeRoutingAllowed",
+        "nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -754,6 +778,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-cleanup-closeout-handoff-audit",
         "node-route-catalog-cleanup-closeout-handoff-audit-freeze",
         "node-route-catalog-cleanup-closeout-release-catalog",
+        "node-route-catalog-cleanup-closeout-release-catalog-audit",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -765,10 +790,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v22\","} +
-           "\"sourceNodePlan\":\"docs/plans3/v472-post-route-catalog-cleanup-closeout-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v193\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v193.json\","
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v23\","} +
+           "\"sourceNodePlan\":\"docs/plans3/v474-post-java-mini-kv-route-catalog-cleanup-handoff-evidence-report-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v194\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v194.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -791,6 +816,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogCleanupCloseoutHandoffAuditCataloged\":true,"
            "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreezeCataloged\":true,"
            "\"nodeRouteCatalogCleanupCloseoutReleaseCatalogCataloged\":true,"
+           "\"nodeRouteCatalogCleanupCloseoutReleaseCatalogAuditCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
