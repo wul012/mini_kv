@@ -18,15 +18,63 @@ std::string json_string(std::string_view value) {
 }
 
 constexpr std::string_view route_split_window_mode =
-    "node-v433-v458-route-split-window-contract-stable-read-only";
+    "node-v433-v458-route-split-window-computed-audit-read-only";
 constexpr std::string_view route_split_window_source_node_plan =
     "docs/plans3/v458-post-foundational-audit-route-group-split-roadmap.md";
-constexpr std::string_view route_split_window_source_frozen_release_version = "v176";
+constexpr std::string_view route_split_window_source_frozen_release_version = "v177";
 constexpr std::string_view route_split_window_source_frozen_fixture_path =
-    "fixtures/release/shard-readiness-v176.json";
+    "fixtures/release/shard-readiness-v177.json";
 constexpr std::string_view route_split_window_start_node_version = "Node v433";
 constexpr std::string_view route_split_window_end_node_version = "Node v458";
-constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:528073c4315ef89b";
+constexpr std::string_view route_split_window_source_frozen_digest = "fnv1a64:e773708a4decc60e";
+
+std::string json_bool(bool value) {
+    return runtime_evidence::json_bool(value);
+}
+
+int parse_node_version_number(std::string_view version) {
+    constexpr std::string_view prefix = "Node v";
+    if (version.size() <= prefix.size() || version.substr(0, prefix.size()) != prefix) {
+        return -1;
+    }
+    int number = 0;
+    for (const char ch : version.substr(prefix.size())) {
+        if (ch < '0' || ch > '9') {
+            return -1;
+        }
+        number = (number * 10) + (ch - '0');
+    }
+    return number;
+}
+
+bool route_split_window_is_contiguous(const std::vector<std::string>& versions) {
+    if (versions.empty()) {
+        return false;
+    }
+    int previous = parse_node_version_number(versions.front());
+    if (previous < 0) {
+        return false;
+    }
+    for (std::size_t index = 1; index < versions.size(); ++index) {
+        const int current = parse_node_version_number(versions[index]);
+        if (current != previous + 1) {
+            return false;
+        }
+        previous = current;
+    }
+    return true;
+}
+
+bool route_split_window_has_duplicates(const std::vector<std::string>& versions) {
+    for (std::size_t left = 0; left < versions.size(); ++left) {
+        for (std::size_t right = left + 1; right < versions.size(); ++right) {
+            if (versions[left] == versions[right]) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 const std::vector<std::string>& route_split_compatibility_window_versions() {
     static const std::vector<std::string> versions = {
@@ -137,6 +185,8 @@ std::string format_route_split_compatibility_window_json() {
 
 std::string format_route_split_compatibility_window_audit_json() {
     const auto& covered_versions = route_split_compatibility_window_versions();
+    const bool contiguous_window = route_split_window_is_contiguous(covered_versions);
+    const bool duplicate_versions = route_split_window_has_duplicates(covered_versions);
     return std::string{"{\"auditMode\":\"node-route-split-compatibility-window-consistency-read-only\","} +
            "\"sourceNodePlan\":" +
            json_string(route_split_window_source_node_plan) +
@@ -152,8 +202,8 @@ std::string format_route_split_compatibility_window_audit_json() {
            ",\"windowRangeStart\":" +
            json_string(route_split_window_start_node_version) +
            ",\"windowRangeEnd\":" + json_string(route_split_window_end_node_version) +
-           ",\"contiguousNodeVersionWindow\":true"
-           ",\"duplicateWindowVersionsDetected\":false"
+           ",\"contiguousNodeVersionWindow\":" + json_bool(contiguous_window) +
+           ",\"duplicateWindowVersionsDetected\":" + json_bool(duplicate_versions) +
            ",\"allWindowVersionsRouteRegistrationOnly\":true"
            ",\"sourceFrozenWindowDigest\":" + json_string(route_split_window_source_frozen_digest) +
            ",\"latestWindowMatchesFrozenSource\":true"

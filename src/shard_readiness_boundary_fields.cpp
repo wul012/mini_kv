@@ -507,8 +507,8 @@ std::string format_catalog_index_json() {
     const auto& groups = boundary_catalog_groups();
     return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v9\","} +
            "\"sourceNodePlan\":\"docs/plans3/v458-post-foundational-audit-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v176\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v176.json\","
+           "\"sourceFrozenReleaseVersion\":\"v177\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v177.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
