@@ -33,6 +33,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `226-version-170-shard-readiness-node-route-split-window-v442.md` - mini-kv v170 freezes v169 route-split window audit evidence, extends the read-only Node route-split window through v442, tests, TCP smoke, and `e/170` archive.
 - `227-version-171-shard-readiness-node-route-split-window-v444-refactor.md` - mini-kv v171 freezes v170 route-split window evidence, extends the read-only Node route-split window through v444, centralizes route split metadata, tests, TCP smoke, and `e/171` archive.
 - `228-version-172-shard-readiness-node-route-split-window-v446.md` - mini-kv v172 freezes v171 route-split window evidence, extends the read-only Node route-split window through v446, tests, TCP smoke, and `e/172` archive.
+- `229-version-173-shard-readiness-node-route-split-window-v447.md` - mini-kv v173 freezes v172 route-split window evidence, extends the read-only Node route-split window through v447, tests, TCP smoke, and `e/173` archive.
 
 ## Rules
 
