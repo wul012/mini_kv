@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v193\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v194\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -339,7 +339,7 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"node-route-catalog-cleanup-closeout-handoff-audit-freeze-read-only\"");
+    assert_response_contains(result, "\"status\":\"node-route-catalog-cleanup-closeout-release-catalog-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -449,8 +449,8 @@ int main() {
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v192\"");
-    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v192.json\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v193\"");
+    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v193.json\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                      "\"history-fixture-archive-formatter-split-read-only\"");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v179\"");
@@ -635,8 +635,8 @@ int main() {
                                      "\"node-v433-v472-route-catalog-cleanup-closeout-window-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v472-post-route-catalog-cleanup-closeout-roadmap.md\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v192\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v192.json\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v193\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v193.json\"");
     assert_response_contains(result, "\"windowStartNodeVersion\":\"Node v433\"");
     assert_response_contains(result, "\"windowEndNodeVersion\":\"Node v472\"");
     assert_response_contains(result, "\"splitRouteGroupCount\":40");
@@ -674,8 +674,8 @@ int main() {
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"nodeRouteSplitCompatibilityWindowAudit\":{\"auditMode\":"
                                      "\"node-route-split-compatibility-window-consistency-read-only\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v192\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v192.json\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v193\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v193.json\"");
     assert_response_contains(result, "\"auditedWindowSection\":\"nodeRouteSplitCompatibilityWindow\"");
     assert_response_contains(result, "\"expectedWindowVersionCount\":40");
     assert_response_contains(result, "\"observedWindowVersionCount\":40");
@@ -689,7 +689,7 @@ int main() {
     assert_response_contains(result, "\"contiguousNodeVersionWindow\":true");
     assert_response_contains(result, "\"duplicateWindowVersionsDetected\":false");
     assert_response_contains(result, "\"allWindowVersionsRouteRegistrationOnly\":true");
-    assert_response_contains(result, "\"sourceFrozenWindowDigest\":\"fnv1a64:89bf4177b09f1ec0\"");
+    assert_response_contains(result, "\"sourceFrozenWindowDigest\":\"fnv1a64:0aad0fd5d2732af5\"");
     assert_response_contains(result, "\"latestWindowMatchesFrozenSource\":true");
     assert_response_contains(result, "\"windowAuditOnly\":true");
     assert_response_contains(result, "\"runtimeGateApprovalPresent\":false");
@@ -895,6 +895,39 @@ int main() {
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"readOnly\":true");
+    assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog\":{\"catalogMode\":"
+                                     "\"node-route-catalog-cleanup-closeout-release-catalog-read-only\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v193\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v193.json\"");
+    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:0aad0fd5d2732af5\"");
+    assert_response_contains(result, "\"catalogedReleaseCount\":4");
+    assert_response_contains(result, "\"releaseRangeStart\":\"v190\"");
+    assert_response_contains(result, "\"releaseRangeEnd\":\"v193\"");
+    assert_response_contains(result, "\"latestCatalogedReleaseVersion\":\"v193\"");
+    assert_response_contains(result, "\"latestCatalogedDigest\":\"fnv1a64:0aad0fd5d2732af5\"");
+    assert_response_contains(result, "\"catalogedSections\":[\"nodeRouteCatalogEvidenceChainAudit\","
+                                     "\"nodeRouteCatalogCleanupCloseoutHandoff\","
+                                     "\"nodeRouteCatalogCleanupCloseoutHandoffAudit\","
+                                     "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze\"]");
+    assert_response_contains(result, "\"releaseVersion\":\"v190\",\"status\":\"node-route-catalog-evidence-chain-audit-read-only\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v191\",\"status\":\"node-route-catalog-cleanup-closeout-handoff-read-only\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v192\",\"status\":\"node-route-catalog-cleanup-closeout-handoff-audit-read-only\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v193\",\"status\":\"node-route-catalog-cleanup-closeout-handoff-audit-freeze-read-only\"");
+    assert_response_contains(result, "\"primarySection\":\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze\"");
+    assert_response_contains(result, "\"boundaryCatalogVersion\":\"read-only-boundary-fields.v21\"");
+    assert_response_contains(result, "\"fieldCount\":648");
+    assert_response_contains(result, "\"groupCount\":32");
+    assert_response_contains(result, "\"versionedFixtureCatalogOnly\":true");
+    assert_response_contains(result, "\"rollingCurrentUsedForFrozenCatalog\":false");
+    assert_response_contains(result, "\"allCatalogedEntriesReadOnly\":true");
+    assert_response_contains(result, "\"allCatalogedFixturesVersioned\":true");
+    assert_response_contains(result, "\"allCatalogedDigestsPresent\":true");
+    assert_response_contains(result, "\"runtimeExecutionPacketExecutable\":false");
+    assert_response_contains(result, "\"startsMiniKvService\":false");
+    assert_response_contains(result, "\"routerActivationAllowed\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"nodeRouteCatalogAnchorRemovalAudit\":{\"auditMode\":"
                                      "\"node-route-catalog-anchor-removal-audit-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/v467-post-route-catalog-anchor-removal-roadmap.md\"");
@@ -969,14 +1002,14 @@ int main() {
     assert_response_contains(result, "\"boundaryCatalogMaintenance.routerActivationAllowed\"");
     assert_response_contains(result, "\"boundaryCatalogMaintenance.writeRoutingAllowed\"");
     assert_response_contains(result, "\"boundaryCatalogMaintenance.executionAllowed\"");
-    assert_response_contains(result, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v21\"");
+    assert_response_contains(result, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v22\"");
     assert_response_contains(result, "\"sourceNodePlan\":"
                                      "\"docs/plans3/"
                                      "v472-post-route-catalog-cleanup-closeout-roadmap.md\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v192\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v192.json\"");
-    assert_response_contains(result, "\"fieldCount\":648");
-    assert_response_contains(result, "\"groupCount\":32");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v193\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v193.json\"");
+    assert_response_contains(result, "\"fieldCount\":669");
+    assert_response_contains(result, "\"groupCount\":33");
     assert_response_contains(result, "\"fieldListGeneratedFromSharedVector\":true");
     assert_response_contains(result, "\"catalogGroups\":[\"top-level-read-only\",\"slot-table-preview\","
                                      "\"slot-table-preview-audit\",\"slot-table-preview-audit-maintenance\","
@@ -998,6 +1031,7 @@ int main() {
     assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutHandoffCataloged\":true");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutHandoffAuditCataloged\":true");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreezeCataloged\":true");
+    assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalogCataloged\":true");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenanceCataloged\":true");
     assert_response_contains(result, "\"boundaryCatalogMaintenancePreserved\":true");
     assert_response_contains(result, "\"slotTablePreview.routerActivationAllowed\"");
@@ -1055,6 +1089,12 @@ int main() {
     assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.routerActivationAllowed\"");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.writeRoutingAllowed\"");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze.executionAllowed\"");
+    assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog.catalogedReleaseCount\"");
+    assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog.versionedFixtureCatalogOnly\"");
+    assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog.allCatalogedEntriesReadOnly\"");
+    assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog.routerActivationAllowed\"");
+    assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog.writeRoutingAllowed\"");
+    assert_response_contains(result, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog.executionAllowed\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance.preservesFixtureParity\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance.preservesArchiveCompatibility\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance.preservesHistoricalFallback\"");
