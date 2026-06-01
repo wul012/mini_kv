@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v474+ may consume v195 as route catalog cleanup closeout release catalog audit only\","
+           "\"nodeConsumer\":\"Node v477+ may consume v196 as route catalog cleanup closeout catalog maintenance evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -77,6 +77,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v192.json",
                 "fixtures/release/shard-readiness-v193.json",
                 "fixtures/release/shard-readiness-v194.json",
+                "fixtures/release/shard-readiness-v195.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -176,15 +177,18 @@ std::string format_archive_compatibility_json() {
                 "Node v472",
                 "Node v473",
                 "Node v474",
+                "Node v475",
+                "Node v476",
+                "Node v477",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-            "\"futureNodeConsumer\":\"Node v474 or later may consume this route catalog cleanup closeout release catalog audit without changing mini-kv runtime boundaries\"}";
+            "\"futureNodeConsumer\":\"Node v477 or later may consume this route catalog cleanup closeout catalog maintenance evidence without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v194\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v194.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v474 route catalog cleanup handoff evidence report may consume v194 release catalog\","
+    return "{\"previousConsumedReleaseVersion\":\"v195\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v195.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v477 latest route catalog cleanup report archive may consume v195 release catalog audit\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -253,7 +257,10 @@ std::string format_historical_fallback_json() {
             "\"nodeV471RouteCatalogExpectedIntegritySnapshotPreserved\":true,"
             "\"nodeV472RouteCatalogCleanupCloseoutPreserved\":true,"
             "\"nodeV473JavaMiniKvRouteCatalogCleanupHandoffEvidencePreserved\":true,"
-            "\"nodeV474JavaMiniKvRouteCatalogCleanupHandoffEvidenceReportPreserved\":true}";
+            "\"nodeV474JavaMiniKvRouteCatalogCleanupHandoffEvidenceReportPreserved\":true,"
+            "\"nodeV475JavaMiniKvLatestRouteCatalogCleanupEvidenceIntakePreserved\":true,"
+            "\"nodeV476JavaMiniKvLatestRouteCatalogCleanupEvidenceReportPreserved\":true,"
+            "\"nodeV477JavaMiniKvLatestRouteCatalogCleanupEvidenceReportArchivePreserved\":true}";
 }
 
 std::string format_history_formatter_maintenance_json() {
