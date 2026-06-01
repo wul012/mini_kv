@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v479+ may consume v197 as latest route catalog cleanup evidence package only\","
+           "\"nodeConsumer\":\"Node v479+ may consume v198 as latest route catalog cleanup evidence package audit only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -79,6 +79,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v194.json",
                 "fixtures/release/shard-readiness-v195.json",
                 "fixtures/release/shard-readiness-v196.json",
+                "fixtures/release/shard-readiness-v197.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -185,13 +186,13 @@ std::string format_archive_compatibility_json() {
                 "Node v479",
             }) +
             ",\"changesArchivedNodeEvidence\":false,"
-            "\"futureNodeConsumer\":\"Node v479 or later may consume this latest route catalog cleanup evidence package without changing mini-kv runtime boundaries\"}";
+            "\"futureNodeConsumer\":\"Node v479 or later may consume this latest route catalog cleanup package audit without changing mini-kv runtime boundaries\"}";
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v196\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v196.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v479 archive verification route may consume v196 cleanup catalog maintenance\","
+    return "{\"previousConsumedReleaseVersion\":\"v197\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v197.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v479 archive verification route may consume v197 latest evidence package\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"

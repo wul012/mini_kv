@@ -58,6 +58,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `251-version-195-node-route-catalog-cleanup-closeout-release-catalog-audit.md` - mini-kv v195 freezes v194 and audits the cleanup closeout release catalog for continuity, monotonic counts, read-only entries, tests, TCP smoke, and `e/195` archive.
 - `252-version-196-node-route-catalog-cleanup-catalog-formatter-split.md` - mini-kv v196 freezes v195 and splits cleanup closeout catalog formatters into a dedicated module, tests, TCP smoke, and `e/196` archive.
 - `253-version-197-node-route-catalog-cleanup-latest-evidence-package.md` - mini-kv v197 freezes v196 and packages v194-v196 cleanup catalog evidence for read-only archive verification, tests, TCP smoke, and `e/197` archive.
+- `254-version-198-node-route-catalog-cleanup-latest-evidence-package-audit.md` - mini-kv v198 freezes v197 and audits the latest cleanup evidence package for continuity, digest, fixture, and no-runtime boundaries, tests, TCP smoke, and `e/198` archive.
 
 ## Rules
 

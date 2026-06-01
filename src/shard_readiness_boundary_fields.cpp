@@ -486,6 +486,27 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "nodeRouteCatalogCleanupLatestEvidencePackage.writeRoutingAllowed",
         "nodeRouteCatalogCleanupLatestEvidencePackage.loadRestoreCompactAllowed",
         "nodeRouteCatalogCleanupLatestEvidencePackage.executionAllowed",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.auditedPackageSection",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.sourceFrozenReleaseVersion",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.sourceFrozenFixturePath",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.sourceFrozenDigest",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.expectedPackageReleaseCount",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.observedPackageReleaseCount",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.packageRangeStart",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.packageRangeEnd",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.expectedPackageRangeSpan",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.observedPackageRangeSpan",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.releaseVersionsContiguous",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.duplicatePackageVersionsDetected",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.allPackagedEntriesReadOnly",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.allPackagedFixturesVersioned",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.allPackagedDigestsPresent",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.latestPackagedDigestMatchesPackageSource",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.packageReadyForArchiveVerification",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.rollingCurrentRejected",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.routerActivationAllowed",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.writeRoutingAllowed",
+        "nodeRouteCatalogCleanupLatestEvidencePackageAudit.executionAllowed",
         "boundaries.writeCommandsAllowed",
         "boundaries.adminCommandsAllowed",
         "boundaries.loadRestoreCompactAllowed",
@@ -823,6 +844,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "node-route-catalog-cleanup-closeout-release-catalog-audit",
         "node-route-catalog-cleanup-closeout-catalog-maintenance",
         "node-route-catalog-cleanup-latest-evidence-package",
+        "node-route-catalog-cleanup-latest-evidence-package-audit",
         "boundary-catalog-maintenance",
         "boundary-catalog-index",
     };
@@ -834,10 +856,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v25\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v26\","} +
            "\"sourceNodePlan\":\"docs/plans3/v479-post-java-mini-kv-latest-route-catalog-cleanup-evidence-archive-verification-route-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v196\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v196.json\","
+           "\"sourceFrozenReleaseVersion\":\"v197\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v197.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -863,6 +885,7 @@ std::string format_catalog_index_json() {
            "\"nodeRouteCatalogCleanupCloseoutReleaseCatalogAuditCataloged\":true,"
            "\"nodeRouteCatalogCleanupCloseoutCatalogMaintenanceCataloged\":true,"
            "\"nodeRouteCatalogCleanupLatestEvidencePackageCataloged\":true,"
+           "\"nodeRouteCatalogCleanupLatestEvidencePackageAuditCataloged\":true,"
            "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
