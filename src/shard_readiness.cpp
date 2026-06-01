@@ -17,7 +17,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v168";
+constexpr std::string_view release_version = "v169";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -38,7 +38,7 @@ std::string format_boundaries_json() {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v441+ may consume v168 as route split preparation plan compatibility evidence only\","
+           "\"nodeConsumer\":\"Node v441+ may consume v169 as route split compatibility window audit evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -77,6 +77,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v165.json",
                 "fixtures/release/shard-readiness-v166.json",
                 "fixtures/release/shard-readiness-v167.json",
+                "fixtures/release/shard-readiness-v168.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -149,9 +150,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v167\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v167.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v441 disabled runtime shell design draft body preparation plan route split may consume v167 route split compatibility window evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v168\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v168.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v441 disabled runtime shell design draft body preparation plan route split may consume v168 route split compatibility window evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
@@ -631,7 +632,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v168",
+        "mini-kv-shard-readiness-v169",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -643,7 +644,7 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v167-frozen-no-rolling-current"},
+            {"historicalFallback=v168-frozen-no-rolling-current"},
             {"archivedNodeEvidence=v370-v441-preserved"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
@@ -674,6 +675,7 @@ std::string evidence_digest() {
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v168-node-v433-v441-route-refactor-no-execution"},
+            {"nodeRouteSplitCompatibilityWindowAudit=v169-window-count-and-boundary-audit-no-execution"},
         });
 }
 
@@ -696,7 +698,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"node-route-split-window-preparation-plan-read-only\"" +
+           ",\"status\":\"node-route-split-window-audit-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -748,6 +750,8 @@ std::string format_json() {
            node_compatibility::format_route_group_split_compatibility_json() +
            ",\"nodeRouteSplitCompatibilityWindow\":" +
            node_compatibility::format_route_split_compatibility_window_json() +
+           ",\"nodeRouteSplitCompatibilityWindowAudit\":" +
+           node_compatibility::format_route_split_compatibility_window_audit_json() +
            ",\"boundaryCatalogMaintenance\":" +
            boundary_fields::format_catalog_maintenance_json() +
            ",\"boundaryCatalogIndex\":" +
@@ -778,6 +782,7 @@ std::string format_json() {
                  "adds versioned shard readiness release catalog without runtime permissions",
                  "adds release catalog consistency audit without runtime permissions",
                  "extends Node route split compatibility window through v441 without runtime permissions",
+                 "adds Node route split compatibility window audit without runtime permissions",
                 "runtime execution artifact intake preflight remains blocked at 0 of 6 artifacts",
                 "live-read gate remains prerequisite-only and does not start services",
                 "operator service lifecycle evidence still has no runtime probe",

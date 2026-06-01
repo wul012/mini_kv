@@ -102,4 +102,39 @@ std::string format_route_split_compatibility_window_json() {
            ",\"readOnly\":true}";
 }
 
+std::string format_route_split_compatibility_window_audit_json() {
+    const auto& covered_versions = route_split_compatibility_window_versions();
+    return "{\"auditMode\":\"node-route-split-compatibility-window-consistency-read-only\","
+           "\"sourceNodePlan\":\"docs/plans3/v441-post-credential-resolver-disabled-runtime-shell-design-draft-body-preparation-plan-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v168\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v168.json\","
+           "\"auditedWindowSection\":\"nodeRouteSplitCompatibilityWindow\","
+           "\"expectedWindowVersionCount\":9,"
+           "\"observedWindowVersionCount\":" +
+           std::to_string(covered_versions.size()) +
+           ",\"windowRangeStart\":\"Node v433\""
+           ",\"windowRangeEnd\":\"Node v441\""
+           ",\"contiguousNodeVersionWindow\":true"
+           ",\"duplicateWindowVersionsDetected\":false"
+           ",\"allWindowVersionsRouteRegistrationOnly\":true"
+           ",\"sourceFrozenWindowDigest\":\"fnv1a64:d0d0ef2b2a0f5a0a\""
+           ",\"latestWindowMatchesFrozenSource\":true"
+           ",\"windowAuditOnly\":true"
+           ",\"runtimeGateApprovalPresent\":false"
+           ",\"runtimeExecutionPacketExecutable\":false"
+           ",\"startsJavaService\":false"
+           ",\"startsMiniKvService\":false"
+           ",\"startsServices\":false"
+           ",\"runtimeProbeAllowed\":false"
+           ",\"liveReadAllowed\":false"
+           ",\"activeShardPrototypeEnabled\":false"
+           ",\"routerActivationAllowed\":false"
+           ",\"writeRoutingAllowed\":false"
+           ",\"writeCommandsAllowed\":false"
+           ",\"adminCommandsAllowed\":false"
+           ",\"loadRestoreCompactAllowed\":false"
+           ",\"executionAllowed\":false"
+           ",\"readOnly\":true}";
+}
+
 } // namespace minikv::shard_readiness::node_compatibility
