@@ -13,6 +13,21 @@ std::string json_string_array(const std::vector<std::string>& values) {
     return runtime_evidence::json_string_array(values);
 }
 
+const std::vector<std::string>& route_split_compatibility_window_versions() {
+    static const std::vector<std::string> versions = {
+        "Node v433",
+        "Node v434",
+        "Node v435",
+        "Node v436",
+        "Node v437",
+        "Node v438",
+        "Node v439",
+        "Node v440",
+        "Node v441",
+    };
+    return versions;
+}
+
 } // namespace
 
 std::string format_route_group_split_compatibility_json() {
@@ -53,24 +68,16 @@ std::string format_route_group_split_compatibility_json() {
 }
 
 std::string format_route_split_compatibility_window_json() {
-    return "{\"windowMode\":\"node-v433-v440-route-split-window-contract-stable-read-only\","
-           "\"sourceNodePlan\":\"docs/plans3/v440-post-credential-resolver-disabled-runtime-shell-design-draft-body-pre-draft-decision-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v166\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v166.json\","
+    const auto& covered_versions = route_split_compatibility_window_versions();
+    return "{\"windowMode\":\"node-v433-v441-route-split-window-contract-stable-read-only\","
+           "\"sourceNodePlan\":\"docs/plans3/v441-post-credential-resolver-disabled-runtime-shell-design-draft-body-preparation-plan-route-group-split-roadmap.md\","
+           "\"sourceFrozenReleaseVersion\":\"v167\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v167.json\","
            "\"windowStartNodeVersion\":\"Node v433\","
-           "\"windowEndNodeVersion\":\"Node v440\","
-           "\"splitRouteGroupCount\":8,"
-           "\"coveredNodeVersions\":" +
-           json_string_array({
-               "Node v433",
-               "Node v434",
-               "Node v435",
-               "Node v436",
-               "Node v437",
-               "Node v438",
-               "Node v439",
-               "Node v440",
-           }) +
+           "\"windowEndNodeVersion\":\"Node v441\","
+           "\"splitRouteGroupCount\":" +
+           std::to_string(covered_versions.size()) +
+           ",\"coveredNodeVersions\":" + json_string_array(covered_versions) +
            ",\"allChangesRouteRegistrationOnly\":true"
            ",\"nodeApiPathChanged\":false"
            ",\"nodeResponseShapeChanged\":false"
