@@ -38,7 +38,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"releaseVersion\":\"v202\"");
+    assert_contains(json, "\"releaseVersion\":\"v203\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -207,7 +207,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
     assert_contains(
         json,
-        "\"nodeConsumer\":\"Node v481+ may consume v202 as route catalog cleanup post-closeout continuity evidence only\"");
+        "\"nodeConsumer\":\"Node v491+ may consume v203 as route catalog cleanup post-closeout continuity evidence only\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -271,7 +271,7 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"fixtures/release/shard-readiness-v197.json\","
                           "\"fixtures/release/shard-readiness-v198.json\","
                           "\"fixtures/release/shard-readiness-v199.json\","
-                          "\"fixtures/release/shard-readiness-v200.json\",\"fixtures/release/shard-readiness-v201.json\"]");
+                          "\"fixtures/release/shard-readiness-v200.json\",\"fixtures/release/shard-readiness-v201.json\",\"fixtures/release/shard-readiness-v202.json\"]");
     assert_contains(json, "\"runtimeMatchesCurrentFixture\":true");
     assert_contains(json, "\"historicalFixturesPreserved\":true");
     assert_contains(json, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
@@ -295,11 +295,11 @@ void assert_shard_readiness_contract(const std::string& json) {
                            "\"Node v473\",\"Node v474\",\"Node v475\",\"Node v476\",\"Node v477\","
                            "\"Node v478\",\"Node v479\",\"Node v480\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v201\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v201.json\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v202\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v202.json\"");
     assert_contains(
         json,
-        "\"previousConsumptionNodeVersion\":\"Node v481+ may consume v201 post-closeout continuity ledger\"");
+        "\"previousConsumptionNodeVersion\":\"Node v491+ may consume v202 post-closeout source freeze audit\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_contains(json, "\"nodeV396ProgressIntakePreserved\":true");
     assert_contains(json, "\"nodeV397ContributionReviewPreserved\":true");
@@ -1244,18 +1244,18 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
     assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
                           "v480-post-java-mini-kv-route-catalog-cleanup-evidence-batch-closeout-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v201\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v201.json\"");
-    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:9a3abb5ab3aaeb1c\"");
-    assert_contains(json, "\"continuityStage\":\"post-closeout-source-freeze-audit\"");
-    assert_contains(json, "\"stageSequence\":2");
-    assert_contains(json, "\"stageReleaseVersion\":\"v202\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v202\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v202.json\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:cd0c634b2fc44eff\"");
+    assert_contains(json, "\"continuityStage\":\"post-closeout-archive-readiness-snapshot\"");
+    assert_contains(json, "\"stageSequence\":3");
+    assert_contains(json, "\"stageReleaseVersion\":\"v203\"");
     assert_contains(json, "\"previousCloseoutAuditReleaseVersion\":\"v200\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeStart\":\"v194\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_contains(json, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v202\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":2");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v203\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":3");
     assert_contains(json, "\"nodePlanStillLatestForMiniKv\":true");
     assert_contains(json, "\"sourceFixtureVersioned\":true");
     assert_contains(json, "\"rollingCurrentRejected\":true");

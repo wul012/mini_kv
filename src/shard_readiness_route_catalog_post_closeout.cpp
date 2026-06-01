@@ -9,14 +9,14 @@
 namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
-constexpr std::string_view continuity_stage = "post-closeout-source-freeze-audit";
-constexpr int stage_sequence = 2;
-constexpr std::string_view stage_release_version = "v202";
+constexpr std::string_view continuity_stage = "post-closeout-archive-readiness-snapshot";
+constexpr int stage_sequence = 3;
+constexpr std::string_view stage_release_version = "v203";
 constexpr std::string_view stage_scope =
-    "audit the frozen v201 continuity source before downstream packaging";
-constexpr std::string_view source_frozen_release_version = "v201";
-constexpr std::string_view source_frozen_fixture_path = "fixtures/release/shard-readiness-v201.json";
-constexpr std::string_view source_frozen_digest = "fnv1a64:9a3abb5ab3aaeb1c";
+    "snapshot archive readiness for the Node v490 post-closeout continuity lane";
+constexpr std::string_view source_frozen_release_version = "v202";
+constexpr std::string_view source_frozen_fixture_path = "fixtures/release/shard-readiness-v202.json";
+constexpr std::string_view source_frozen_digest = "fnv1a64:cd0c634b2fc44eff";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -30,7 +30,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 
 std::string format_post_closeout_continuity_json() {
     return "{\"continuityMode\":\"node-route-catalog-cleanup-post-closeout-continuity-read-only\","
-           "\"sourceNodePlan\":\"docs/plans3/v480-post-java-mini-kv-route-catalog-cleanup-evidence-batch-closeout-roadmap.md\","
+           "\"sourceNodePlan\":\"docs/plans3/v490-post-java-mini-kv-route-catalog-cleanup-verification-checklist-evidence-archive-verification-route-roadmap.md\","
            "\"sourceFrozenReleaseVersion\":" +
            json_string(source_frozen_release_version) +
            ",\"sourceFrozenFixturePath\":" + json_string(source_frozen_fixture_path) +
@@ -47,7 +47,7 @@ std::string format_post_closeout_continuity_json() {
            "\"trackedPostCloseoutRangeEnd\":" +
            json_string(stage_release_version) +
            ",\"trackedPostCloseoutReleaseCount\":" + std::to_string(stage_sequence) +
-           ",\"nodeBatchCloseoutVersion\":\"Node v480\","
+           ",\"nodeBatchCloseoutVersion\":\"Node v490\","
            "\"nodePlanStillLatestForMiniKv\":true,"
            "\"sourceFixtureVersioned\":true,"
            "\"rollingCurrentRejected\":true,"
@@ -59,7 +59,7 @@ std::string format_post_closeout_continuity_json() {
            "\"archiveVerifierChecksPassed\":16,"
            "\"stageAssertions\":" +
            json_string_array({
-               "frozen v200 fixture is the only source baseline",
+               "frozen v202 fixture is the source baseline",
                "post-closeout continuity is metadata only",
                "no router, write routing, or execution authority is opened",
            }) +

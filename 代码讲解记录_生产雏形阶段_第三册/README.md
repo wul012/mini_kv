@@ -63,6 +63,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - `256-version-200-node-route-catalog-cleanup-evidence-batch-closeout-audit.md` - mini-kv v200 freezes v199 and audits the cleanup evidence batch closeout for continuity, digest, fixture, validation, archive-verifier, and no-runtime boundaries, tests, TCP smoke, and `e/200` archive.
 - `257-version-201-node-route-catalog-cleanup-post-closeout-continuity.md` - mini-kv v201 freezes v200 and starts the post-closeout continuity ledger in a separate formatter module, tests, TCP smoke, and `e/201` archive.
 - `258-version-202-node-route-catalog-cleanup-post-closeout-source-freeze-audit.md` - mini-kv v202 freezes v201 and audits the post-closeout continuity source freeze, historical fallback, no-runtime boundaries, tests, TCP smoke, and `e/202` archive.
+- `259-version-203-node-route-catalog-cleanup-post-closeout-archive-readiness-snapshot.md` - mini-kv v203 freezes v202 and snapshots post-closeout archive readiness aligned with Node v490, tests, TCP smoke, and `e/203` archive.
 
 ## Rules
 
