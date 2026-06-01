@@ -9,14 +9,14 @@
 namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
-constexpr std::string_view continuity_stage = "post-closeout-verification-checklist-handoff";
-constexpr int stage_sequence = 5;
-constexpr std::string_view stage_release_version = "v205";
+constexpr std::string_view continuity_stage = "post-closeout-verification-checklist-audit";
+constexpr int stage_sequence = 6;
+constexpr std::string_view stage_release_version = "v206";
 constexpr std::string_view stage_scope =
-    "publish verification checklist handoff for the Node v490 post-closeout continuity lane";
-constexpr std::string_view source_frozen_release_version = "v204";
-constexpr std::string_view source_frozen_fixture_path = "fixtures/release/shard-readiness-v204.json";
-constexpr std::string_view source_frozen_digest = "fnv1a64:670b62f7c203b814";
+    "audit verification checklist handoff for the Node v490 post-closeout continuity lane";
+constexpr std::string_view source_frozen_release_version = "v205";
+constexpr std::string_view source_frozen_fixture_path = "fixtures/release/shard-readiness-v205.json";
+constexpr std::string_view source_frozen_digest = "fnv1a64:c00dd62f28564fed";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -59,7 +59,7 @@ std::string format_post_closeout_continuity_json() {
            "\"archiveVerifierChecksPassed\":16,"
            "\"stageAssertions\":" +
            json_string_array({
-               "frozen v204 fixture is the source baseline",
+               "frozen v205 fixture is the source baseline",
                "post-closeout continuity is metadata only",
                "no router, write routing, or execution authority is opened",
            }) +
