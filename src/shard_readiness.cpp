@@ -3,6 +3,7 @@
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/shard_readiness_approval_inputs.hpp"
 #include "minikv/shard_readiness_boundary_fields.hpp"
+#include "minikv/shard_readiness_history.hpp"
 #include "minikv/shard_readiness_node_compatibility.hpp"
 #include "minikv/shard_readiness_release_catalog.hpp"
 #include "minikv/shard_readiness_slot_preview.hpp"
@@ -17,7 +18,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v179";
+constexpr std::string_view release_version = "v180";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -35,203 +36,10 @@ std::string format_boundaries_json() {
            "\"activeRouterInstalled\":false,\"archivedNodeEvidenceMutated\":false}";
 }
 
-std::string format_diagnostics_json() {
-    return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
-           "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v458+ may consume v179 as numeric span route split window audit evidence only\","
-           "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
-           "\"nodeArchivedEvidencePreserved\":true}";
-}
-
 std::string format_command_catalog_json() {
     return "{\"command\":\"SHARDJSON\",\"category\":\"read\",\"mutatesStore\":false,"
            "\"touchesWal\":false,\"stable\":true,\"extraArgsAllowed\":false,"
            "\"sideEffects\":[\"metadata_read\"]}";
-}
-
-std::string format_fixture_parity_json() {
-    return "{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\","
-           "\"historicalFixturePaths\":" +
-           json_string_array({
-               "fixtures/release/shard-readiness-v144.json",
-               "fixtures/release/shard-readiness-v145.json",
-               "fixtures/release/shard-readiness-v146.json",
-               "fixtures/release/shard-readiness-v147.json",
-                "fixtures/release/shard-readiness-v148.json",
-                "fixtures/release/shard-readiness-v149.json",
-                "fixtures/release/shard-readiness-v150.json",
-                "fixtures/release/shard-readiness-v151.json",
-                "fixtures/release/shard-readiness-v152.json",
-                "fixtures/release/shard-readiness-v153.json",
-                "fixtures/release/shard-readiness-v154.json",
-                "fixtures/release/shard-readiness-v155.json",
-                "fixtures/release/shard-readiness-v156.json",
-                "fixtures/release/shard-readiness-v157.json",
-                "fixtures/release/shard-readiness-v158.json",
-                "fixtures/release/shard-readiness-v159.json",
-                "fixtures/release/shard-readiness-v160.json",
-                "fixtures/release/shard-readiness-v161.json",
-                "fixtures/release/shard-readiness-v162.json",
-                "fixtures/release/shard-readiness-v163.json",
-                "fixtures/release/shard-readiness-v164.json",
-                "fixtures/release/shard-readiness-v165.json",
-                "fixtures/release/shard-readiness-v166.json",
-                "fixtures/release/shard-readiness-v167.json",
-                "fixtures/release/shard-readiness-v168.json",
-                "fixtures/release/shard-readiness-v169.json",
-                "fixtures/release/shard-readiness-v170.json",
-                "fixtures/release/shard-readiness-v171.json",
-                "fixtures/release/shard-readiness-v172.json",
-                "fixtures/release/shard-readiness-v173.json",
-                "fixtures/release/shard-readiness-v174.json",
-                "fixtures/release/shard-readiness-v175.json",
-                "fixtures/release/shard-readiness-v176.json",
-                "fixtures/release/shard-readiness-v177.json",
-                "fixtures/release/shard-readiness-v178.json",
-            }) +
-           ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
-}
-
-std::string format_archive_compatibility_json() {
-    return "{\"preservesNodeArchivedEvidence\":true,"
-           "\"archivedNodeVersions\":" +
-           json_string_array({
-               "Node v370",
-               "Node v371",
-               "Node v372",
-               "Node v373",
-               "Node v374",
-               "Node v375",
-               "Node v376",
-               "Node v377",
-               "Node v378",
-               "Node v379",
-               "Node v380",
-               "Node v381",
-               "Node v382",
-               "Node v383",
-                "Node v384",
-                "Node v385",
-                "Node v386",
-                "Node v387",
-                "Node v388",
-                "Node v389",
-                "Node v390",
-                "Node v391",
-                "Node v392",
-                "Node v393",
-                "Node v394",
-                "Node v395",
-                "Node v396",
-                "Node v397",
-                "Node v398",
-                "Node v399",
-                "Node v400",
-                "Node v401",
-                "Node v402",
-                "Node v403",
-                "Node v418",
-                "Node v419",
-                "Node v420",
-                "Node v421",
-                "Node v422",
-                "Node v423",
-                "Node v424",
-                "Node v425",
-                "Node v426",
-                "Node v427",
-                "Node v428",
-                "Node v429",
-                "Node v430",
-                "Node v431",
-                "Node v432",
-                "Node v433",
-                "Node v434",
-                "Node v435",
-                "Node v436",
-                "Node v437",
-                "Node v438",
-                "Node v439",
-                "Node v440",
-                "Node v441",
-                "Node v442",
-                "Node v443",
-                "Node v444",
-                "Node v445",
-                "Node v446",
-                "Node v447",
-                "Node v448",
-                "Node v449",
-                "Node v450",
-                "Node v451",
-                "Node v452",
-                "Node v453",
-                "Node v454",
-                "Node v455",
-                "Node v456",
-                "Node v457",
-                "Node v458",
-            }) +
-            ",\"changesArchivedNodeEvidence\":false,"
-             "\"futureNodeConsumer\":\"Node v458 or later may consume this foundational audit route split compatibility window without changing mini-kv runtime boundaries\"}";
-}
-
-std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v178\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v178.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v458 foundational audit route split may consume v178 computed route split audit evidence\","
-           "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
-           "\"rollingCurrentUsedForHistoricalBaseline\":false,"
-           "\"nodeV396ProgressIntakePreserved\":true,"
-           "\"nodeV397ContributionReviewPreserved\":true,"
-           "\"nodeV398ApprovalGateReviewPreserved\":true,"
-           "\"nodeV399ArchiveVerificationPreserved\":true,"
-           "\"nodeV400InputContractPreserved\":true,"
-           "\"nodeV401CompletionIntakePreserved\":true,"
-           "\"nodeV402TemplateValidatorPreserved\":true,"
-           "\"nodeV403TemplateCompatibilityIntakePreserved\":true,"
-           "\"nodeV404RequiresRealCanonicalInputs\":true,"
-           "\"nodeV418RouteGroupSplitCompatibilityPreserved\":true,"
-           "\"nodeV419BoundaryCatalogMaintenanceReady\":true,"
-           "\"nodeV420PreImplementationReadinessRouteSplitPreserved\":true,"
-           "\"nodeV421ApprovalRequiredReadinessRouteSplitPreserved\":true,"
-           "\"nodeV422ImplementationPlanRouteSplitPreserved\":true,"
-           "\"nodeV423FakeHarnessContractRouteSplitPreserved\":true,"
-           "\"nodeV424FakeHarnessExecutionReadinessRouteSplitPreserved\":true,"
-           "\"nodeV425DisabledRuntimeShellReadinessRouteSplitPreserved\":true,"
-           "\"nodeV426RuntimeShellDecisionRouteSplitPreserved\":true,"
-           "\"nodeV427RuntimeShellPostDecisionRouteSplitPreserved\":true,"
-           "\"nodeV428RuntimeShellPrerequisiteRouteSplitPreserved\":true,"
-           "\"nodeV429HumanApprovalArtifactReviewRouteSplitPreserved\":true,"
-           "\"nodeV430SignedHumanApprovalArtifactRouteSplitPreserved\":true,"
-           "\"nodeV431CredentialHandleApprovalRouteSplitPreserved\":true,"
-           "\"nodeV432EndpointHandleAllowlistApprovalRouteSplitPreserved\":true,"
-           "\"nodeV433NoNetworkSafetyFixtureRouteSplitPreserved\":true,"
-           "\"nodeV434FinalPrerequisiteRouteSplitPreserved\":true,"
-           "\"nodeV435ImplementationCandidateGateRouteSplitPreserved\":true,"
-           "\"nodeV436DesignDraftCandidateRouteSplitPreserved\":true,"
-           "\"nodeV437DesignDraftOutlineRouteSplitPreserved\":true,"
-           "\"nodeV438DesignDraftBodyIntakeRouteSplitPreserved\":true,"
-           "\"nodeV439DesignDraftBodyCandidateRouteSplitPreserved\":true,"
-           "\"nodeV440DesignDraftBodyPreDraftDecisionRouteSplitPreserved\":true,"
-           "\"nodeV441DesignDraftBodyPreparationPlanRouteSplitPreserved\":true,"
-           "\"nodeV442DesignDraftBodyDraftCandidateRouteSplitPreserved\":true,"
-           "\"nodeV443ManagedAuditAdapterRouteSplitPreserved\":true,"
-           "\"nodeV444ManagedAuditPersistenceRouteSplitPreserved\":true,"
-           "\"nodeV445ManagedAuditIdentityApprovalRouteSplitPreserved\":true,"
-           "\"nodeV446ManagedAuditRestoreDrillRouteSplitPreserved\":true,"
-           "\"nodeV447ManagedAuditDryRunAdapterRouteSplitPreserved\":true,"
-           "\"nodeV448ManagedAuditRouteQualityRouteSplitPreserved\":true,"
-           "\"nodeV449ManagedAuditAdapterImplementationRouteSplitPreserved\":true,"
-           "\"nodeV450ManagedAuditLocalAdapterRouteSplitPreserved\":true,"
-           "\"nodeV451ManagedAuditSandboxAdapterRouteSplitPreserved\":true,"
-           "\"nodeV452ManualSandboxConnectionPacketRouteSplitPreserved\":true,"
-           "\"nodeV453ManualSandboxConnectionReadinessRouteSplitPreserved\":true,"
-           "\"nodeV454ManualSandboxConnectionCommandRouteSplitPreserved\":true,"
-           "\"nodeV455ManualSandboxConnectionPrecheckRouteSplitPreserved\":true,"
-           "\"nodeV456ManualSandboxConnectionAdapterClientRouteSplitPreserved\":true,"
-           "\"nodeV457ManualSandboxConnectionFakeTransportRouteSplitPreserved\":true,"
-           "\"nodeV458FoundationalAuditRouteSplitPreserved\":true}";
 }
 
 std::string format_active_prototype_plan_json() {
@@ -676,7 +484,7 @@ std::string format_mini_kv_final_approval_gate_input_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v179",
+        "mini-kv-shard-readiness-v180",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -688,8 +496,9 @@ std::string evidence_digest() {
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
             {"fixtureParity=runtime-matches-current-fixture"},
-            {"historicalFallback=v178-frozen-no-rolling-current"},
+            {"historicalFallback=v179-frozen-no-rolling-current"},
             {"archivedNodeEvidence=v370-v458-preserved"},
+            {"shardReadinessHistoryMaintenance=v180-formatter-split-no-execution"},
             {"activePrototypePlan=prerequisite-only-no-activation"},
             {"activePrototypePlanFreeze=v153-frozen-no-router-no-write"},
             {"consumerHandoff=frozen-evidence-only-no-live-read"},
@@ -712,14 +521,14 @@ std::string evidence_digest() {
             {"runtimeExecutionCanonicalApprovalInputPrecheck=blocked-0-of-3-no-execution"},
             {"nodeRouteGroupSplitCompatibility=v418-route-refactor-contract-stable"},
             {"boundaryCatalogMaintenance=v160-contract-preserving-split-no-execution"},
-            {"boundaryCatalogIndex=v179-v10-numeric-span-fields-no-execution"},
+            {"boundaryCatalogIndex=v180-v11-history-maintenance-fields-no-execution"},
             {"slotTablePreview=v162-read-only-no-router-no-write-no-execution"},
             {"slotTablePreviewAudit=v163-contiguous-no-duplicates-no-router-no-execution"},
             {"slotTablePreviewAuditMaintenance=v164-formatter-split-contract-preserving"},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
-            {"nodeRouteSplitCompatibilityWindow=v179-node-v433-v458-numeric-span-no-execution"},
-            {"nodeRouteSplitCompatibilityWindowAudit=v179-window-span-count-parse-audit-no-execution"},
+            {"nodeRouteSplitCompatibilityWindow=v180-node-v433-v458-history-maintenance-no-execution"},
+            {"nodeRouteSplitCompatibilityWindowAudit=v180-window-span-count-parse-audit-no-execution"},
         });
 }
 
@@ -742,7 +551,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"node-route-split-window-numeric-span-audit-read-only\"" +
+           ",\"status\":\"shard-readiness-history-formatter-maintenance-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -754,11 +563,13 @@ std::string format_json() {
            ",\"shardReadinessReleaseCatalogAudit\":" +
            release_catalog::format_release_catalog_audit_json() +
            ",\"boundaries\":" + format_boundaries_json() +
-           ",\"diagnostics\":" + format_diagnostics_json() +
+           ",\"diagnostics\":" + history::format_diagnostics_json() +
            ",\"commandCatalog\":" + format_command_catalog_json() +
-           ",\"fixtureParity\":" + format_fixture_parity_json() +
-           ",\"archiveCompatibility\":" + format_archive_compatibility_json() +
-           ",\"historicalFallback\":" + format_historical_fallback_json() +
+           ",\"fixtureParity\":" + history::format_fixture_parity_json() +
+           ",\"archiveCompatibility\":" + history::format_archive_compatibility_json() +
+           ",\"historicalFallback\":" + history::format_historical_fallback_json() +
+           ",\"shardReadinessHistoryMaintenance\":" +
+           history::format_history_formatter_maintenance_json() +
            ",\"activePrototypePlan\":" + format_active_prototype_plan_json() +
            ",\"activePrototypePlanFreeze\":" + format_active_prototype_plan_freeze_json() +
            ",\"consumerHandoff\":" + format_consumer_handoff_json() +
@@ -828,6 +639,7 @@ std::string format_json() {
                  "keeps Node route split compatibility window through v458 without runtime permissions",
                  "computes Node route split window contiguity and duplicate checks from the version vector without runtime permissions",
                  "computes Node route split window numeric span and count matching without runtime permissions",
+                 "splits shard readiness history formatters without changing command or runtime boundaries",
                 "runtime execution artifact intake preflight remains blocked at 0 of 6 artifacts",
                 "live-read gate remains prerequisite-only and does not start services",
                 "operator service lifecycle evidence still has no runtime probe",

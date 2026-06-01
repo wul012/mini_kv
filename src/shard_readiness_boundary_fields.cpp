@@ -188,6 +188,15 @@ const std::vector<std::string>& read_only_boundary_field_names() {
         "boundaries.archivedNodeEvidenceMutated",
         "archiveCompatibility.changesArchivedNodeEvidence",
         "historicalFallback.rollingCurrentUsedForHistoricalBaseline",
+        "shardReadinessHistoryMaintenance.preservesFixtureParity",
+        "shardReadinessHistoryMaintenance.preservesArchiveCompatibility",
+        "shardReadinessHistoryMaintenance.preservesHistoricalFallback",
+        "shardReadinessHistoryMaintenance.changesShardJsonCommand",
+        "shardReadinessHistoryMaintenance.changesFixturePath",
+        "shardReadinessHistoryMaintenance.startsServices",
+        "shardReadinessHistoryMaintenance.runtimeProbeAllowed",
+        "shardReadinessHistoryMaintenance.writeRoutingAllowed",
+        "shardReadinessHistoryMaintenance.executionAllowed",
         "activePrototypePlan.activeShardPrototypeAllowed",
         "activePrototypePlan.routerActivationAllowed",
         "activePrototypePlan.shardDirectoryCreationAllowed",
@@ -484,6 +493,7 @@ const std::vector<std::string>& boundary_catalog_groups() {
         "shard-readiness-release-catalog-audit",
         "core-boundaries",
         "historical-fallback",
+        "shard-readiness-history-maintenance",
         "active-prototype-plan",
         "consumer-handoff",
         "live-read-gate",
@@ -507,10 +517,10 @@ const std::vector<std::string>& boundary_catalog_groups() {
 std::string format_catalog_index_json() {
     const auto& fields = read_only_boundary_field_names();
     const auto& groups = boundary_catalog_groups();
-    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v10\","} +
+    return std::string{"{\"catalogVersion\":\"read-only-boundary-fields.v11\","} +
            "\"sourceNodePlan\":\"docs/plans3/v458-post-foundational-audit-route-group-split-roadmap.md\","
-           "\"sourceFrozenReleaseVersion\":\"v178\","
-           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v178.json\","
+           "\"sourceFrozenReleaseVersion\":\"v179\","
+           "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v179.json\","
            "\"fieldCount\":" + std::to_string(fields.size()) +
            ",\"groupCount\":" + std::to_string(groups.size()) +
            ",\"fieldListGeneratedFromSharedVector\":true,"
@@ -523,6 +533,7 @@ std::string format_catalog_index_json() {
            ",\"readOnlyBoundaryFieldsStillPublished\":true,"
            "\"nodeRouteSplitCompatibilityWindowCataloged\":true,"
            "\"nodeRouteSplitCompatibilityWindowAuditCataloged\":true,"
+           "\"shardReadinessHistoryMaintenanceCataloged\":true,"
            "\"boundaryCatalogMaintenancePreserved\":true,"
            "\"publicShardJsonContractChanged\":false,"
            "\"fixturePathChanged\":false,"
