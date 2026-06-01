@@ -61,6 +61,7 @@ add_library(minikv
     src/shard_readiness_history.cpp
     src/shard_readiness_node_compatibility.cpp
     src/shard_readiness_release_catalog.cpp
+    src/shard_readiness_route_catalog_closeout.cpp
     src/shard_readiness_slot_preview.cpp
     src/shard_readiness_slot_preview_audit.cpp
     src/snapshot.cpp

@@ -38,7 +38,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"releaseVersion\":\"v184\"");
+    assert_contains(json, "\"releaseVersion\":\"v185\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -46,7 +46,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"node-route-catalog-final-closeout-window-read-only\"");
+    assert_contains(json, "\"status\":\"node-route-catalog-closeout-snapshot-read-only\"");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -207,7 +207,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
     assert_contains(
         json,
-        "\"nodeConsumer\":\"Node v464+ may consume v184 as route catalog final closeout window evidence only\"");
+        "\"nodeConsumer\":\"Node v464+ may consume v185 as route catalog final closeout snapshot evidence only\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -254,7 +254,8 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"fixtures/release/shard-readiness-v180.json\","
                           "\"fixtures/release/shard-readiness-v181.json\","
                           "\"fixtures/release/shard-readiness-v182.json\","
-                          "\"fixtures/release/shard-readiness-v183.json\"]");
+                          "\"fixtures/release/shard-readiness-v183.json\","
+                          "\"fixtures/release/shard-readiness-v184.json\"]");
     assert_contains(json, "\"runtimeMatchesCurrentFixture\":true");
     assert_contains(json, "\"historicalFixturesPreserved\":true");
     assert_contains(json, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
@@ -274,11 +275,11 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"Node v457\",\"Node v458\",\"Node v459\",\"Node v460\","
                           "\"Node v461\",\"Node v462\",\"Node v463\",\"Node v464\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v183\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v183.json\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v184\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v184.json\"");
     assert_contains(
         json,
-        "\"previousConsumptionNodeVersion\":\"Node v464 route catalog final closeout may consume v183 route quality catalog integrity window evidence\"");
+        "\"previousConsumptionNodeVersion\":\"Node v464 route catalog final closeout may consume v184 route catalog final closeout window evidence\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_contains(json, "\"nodeV396ProgressIntakePreserved\":true");
     assert_contains(json, "\"nodeV397ContributionReviewPreserved\":true");
@@ -297,6 +298,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"nodeV462AuditRouteCatalogTestMigrationPreserved\":true");
     assert_contains(json, "\"nodeV463AuditRouteQualityCatalogIntegrityPreserved\":true");
     assert_contains(json, "\"nodeV464AuditRouteCatalogFinalCloseoutPreserved\":true");
+    assert_contains(json, "\"nodeV464AuditRouteCatalogFinalCloseoutSnapshotPreserved\":true");
     assert_contains(json, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                           "\"history-fixture-archive-formatter-split-read-only\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v179\"");
@@ -751,6 +753,30 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactAllowed\":false");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"readOnly\":true");
+    assert_contains(json, "\"nodeRouteCatalogCloseoutSnapshot\":{\"snapshotMode\":"
+                          "\"node-route-catalog-final-closeout-snapshot-read-only\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v184\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v184.json\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:5b7cd9ee9a9f2524\"");
+    assert_contains(json, "\"nodeFinalCloseoutVersion\":\"Node v464\"");
+    assert_contains(json, "\"routeCatalogBatchStart\":\"Node v433\"");
+    assert_contains(json, "\"routeCatalogBatchEnd\":\"Node v464\"");
+    assert_contains(json, "\"coveredNodeVersionCount\":32");
+    assert_contains(json, "\"focusedCloseoutTestFileCount\":7");
+    assert_contains(json, "\"focusedCloseoutTestCount\":17");
+    assert_contains(json, "\"nodeTypecheckPassed\":true");
+    assert_contains(json, "\"nodeBuildPassed\":true");
+    assert_contains(json, "\"nodeFullVitestFileCount\":393");
+    assert_contains(json, "\"nodeFullVitestTestCount\":1221");
+    assert_contains(json, "\"nodeConsumesFreshMiniKvEvidence\":false");
+    assert_contains(json, "\"miniKvRuntimeContractChanged\":false");
+    assert_contains(json, "\"snapshotOnly\":true");
+    assert_contains(json, "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(json, "\"startsMiniKvService\":false");
+    assert_contains(json, "\"routerActivationAllowed\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"boundaryCatalogMaintenance\":{\"maintenanceMode\":"
                           "\"boundary-field-catalog-split-contract-preserving\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v159\"");
@@ -781,14 +807,14 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"boundaryCatalogMaintenance.routerActivationAllowed\"");
     assert_contains(json, "\"boundaryCatalogMaintenance.writeRoutingAllowed\"");
     assert_contains(json, "\"boundaryCatalogMaintenance.executionAllowed\"");
-    assert_contains(json, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v11\"");
+    assert_contains(json, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v12\"");
     assert_contains(json, "\"sourceNodePlan\":"
                           "\"docs/plans3/"
-                          "v458-post-foundational-audit-route-group-split-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v183\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v183.json\"");
-    assert_contains(json, "\"fieldCount\":431");
-    assert_contains(json, "\"groupCount\":23");
+                          "v464-post-audit-route-catalog-final-closeout-roadmap.md\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v184\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v184.json\"");
+    assert_contains(json, "\"fieldCount\":448");
+    assert_contains(json, "\"groupCount\":24");
     assert_contains(json, "\"fieldListGeneratedFromSharedVector\":true");
     assert_contains(json, "\"catalogGroups\":[\"top-level-read-only\",\"slot-table-preview\","
                           "\"slot-table-preview-audit\",\"slot-table-preview-audit-maintenance\","
@@ -797,7 +823,8 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"shard-readiness-history-maintenance\"");
     assert_contains(json, "\"node-route-group-split-compatibility\","
                           "\"node-route-split-compatibility-window\","
-                          "\"node-route-split-compatibility-window-audit\",\"boundary-catalog-maintenance\","
+                          "\"node-route-split-compatibility-window-audit\","
+                          "\"node-route-catalog-closeout-snapshot\",\"boundary-catalog-maintenance\","
                           "\"boundary-catalog-index\"]");
     assert_contains(json, "\"slotTablePreviewCataloged\":true");
     assert_contains(json, "\"slotTablePreviewAuditCataloged\":true");
@@ -806,6 +833,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"shardReadinessReleaseCatalogAuditCataloged\":true");
     assert_contains(json, "\"nodeRouteSplitCompatibilityWindowCataloged\":true");
     assert_contains(json, "\"nodeRouteSplitCompatibilityWindowAuditCataloged\":true");
+    assert_contains(json, "\"nodeRouteCatalogCloseoutSnapshotCataloged\":true");
     assert_contains(json, "\"shardReadinessHistoryMaintenanceCataloged\":true");
     assert_contains(json, "\"boundaryCatalogMaintenancePreserved\":true");
     assert_contains(json, "\"slotTablePreview.routerActivationAllowed\"");
@@ -843,6 +871,12 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"nodeRouteSplitCompatibilityWindowAudit.routerActivationAllowed\"");
     assert_contains(json, "\"nodeRouteSplitCompatibilityWindowAudit.writeRoutingAllowed\"");
     assert_contains(json, "\"nodeRouteSplitCompatibilityWindowAudit.executionAllowed\"");
+    assert_contains(json, "\"nodeRouteCatalogCloseoutSnapshot.nodeConsumesFreshMiniKvEvidence\"");
+    assert_contains(json, "\"nodeRouteCatalogCloseoutSnapshot.miniKvRuntimeContractChanged\"");
+    assert_contains(json, "\"nodeRouteCatalogCloseoutSnapshot.snapshotOnly\"");
+    assert_contains(json, "\"nodeRouteCatalogCloseoutSnapshot.routerActivationAllowed\"");
+    assert_contains(json, "\"nodeRouteCatalogCloseoutSnapshot.writeRoutingAllowed\"");
+    assert_contains(json, "\"nodeRouteCatalogCloseoutSnapshot.executionAllowed\"");
     assert_contains(json, "\"shardReadinessHistoryMaintenance.preservesFixtureParity\"");
     assert_contains(json, "\"shardReadinessHistoryMaintenance.preservesArchiveCompatibility\"");
     assert_contains(json, "\"shardReadinessHistoryMaintenance.preservesHistoricalFallback\"");
@@ -943,6 +977,8 @@ int main() {
         std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v182.json";
     const auto consumed_v183_fixture_path =
         std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v183.json";
+    const auto consumed_v184_fixture_path =
+        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v184.json";
     const auto fixture = read_fixture_text(fixture_path);
     const auto historical_fixture = read_fixture_text(historical_fixture_path);
     const auto consumed_v145_fixture = read_fixture_text(consumed_v145_fixture_path);
@@ -984,6 +1020,7 @@ int main() {
     const auto consumed_v181_fixture = read_fixture_text(consumed_v181_fixture_path);
     const auto consumed_v182_fixture = read_fixture_text(consumed_v182_fixture_path);
     const auto consumed_v183_fixture = read_fixture_text(consumed_v183_fixture_path);
+    const auto consumed_v184_fixture = read_fixture_text(consumed_v184_fixture_path);
 
     assert(fixture == minikv::shard_readiness::format_json());
     assert(minikv::shard_readiness::fixture_path() == "fixtures/release/shard-readiness.json");
@@ -1028,6 +1065,7 @@ int main() {
     assert(fixture != consumed_v181_fixture);
     assert(fixture != consumed_v182_fixture);
     assert(fixture != consumed_v183_fixture);
+    assert(fixture != consumed_v184_fixture);
     assert_contains(historical_fixture, "\"releaseVersion\":\"v144\"");
     assert_contains(historical_fixture, "\"status\":\"prototype-ready-read-only\"");
     assert_contains(historical_fixture, "\"evidenceDigest\":\"fnv1a64:22d3c4815a440804\"");
@@ -1634,6 +1672,22 @@ int main() {
     assert_contains(consumed_v183_fixture, "\"writeRoutingAllowed\":false");
     assert_contains(consumed_v183_fixture, "\"executionAllowed\":false");
     assert_contains(consumed_v183_fixture, "\"evidenceDigest\":\"fnv1a64:8b252a90cb150a99\"");
+    assert_contains(consumed_v184_fixture, "\"releaseVersion\":\"v184\"");
+    assert_contains(consumed_v184_fixture, "\"status\":\"node-route-catalog-final-closeout-window-read-only\"");
+    assert_contains(consumed_v184_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+                                           "\"node-v433-v464-route-catalog-final-closeout-window-read-only\"");
+    assert_contains(consumed_v184_fixture, "\"sourceFrozenReleaseVersion\":\"v183\"");
+    assert_contains(consumed_v184_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v183.json\"");
+    assert_contains(consumed_v184_fixture, "\"windowEndNodeVersion\":\"Node v464\"");
+    assert_contains(consumed_v184_fixture, "\"splitRouteGroupCount\":32");
+    assert_contains(consumed_v184_fixture, "\"computedWindowVersionSpan\":32");
+    assert_contains(consumed_v184_fixture, "\"sourceFrozenWindowDigest\":\"fnv1a64:8b252a90cb150a99\"");
+    assert_contains(consumed_v184_fixture, "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(consumed_v184_fixture, "\"startsMiniKvService\":false");
+    assert_contains(consumed_v184_fixture, "\"routerActivationAllowed\":false");
+    assert_contains(consumed_v184_fixture, "\"writeRoutingAllowed\":false");
+    assert_contains(consumed_v184_fixture, "\"executionAllowed\":false");
+    assert_contains(consumed_v184_fixture, "\"evidenceDigest\":\"fnv1a64:5b7cd9ee9a9f2524\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
