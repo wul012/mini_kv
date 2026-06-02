@@ -20,17 +20,17 @@ void assert_not_contains(const std::string& text, const std::string& needle) {
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"releaseVersion\":\"v241\"");
+    assert_contains(json, "\"releaseVersion\":\"v242\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v522-post-java-mini-kv-route-catalog-cleanup-twenty-version-run-closeout-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v240\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v240.json\"");
-    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v522-stability-closeout-snapshot\"");
-    assert_contains(json, "\"stageSequence\":41");
-    assert_contains(json, "\"stageReleaseVersion\":\"v241\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v241\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":41");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v241\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v241.json\"");
+    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v522-stability-closeout-audit\"");
+    assert_contains(json, "\"stageSequence\":42");
+    assert_contains(json, "\"stageReleaseVersion\":\"v242\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v242\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":42");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v522\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":10");
     assert_contains(json, "\"archiveVerifierChecksPassed\":10");
