@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v277: freezes v276 as a versioned source fixture and moves runtime execution artifact, approval precheck, and final approval input JSON sections into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
 - v276: freezes v275 as a versioned source fixture and moves active prototype, live-read gate, consumer handoff, and operator lifecycle JSON sections into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
 - v275: freezes v274 as a versioned source fixture and extracts shared TCP RESP server lifecycle handling into the test support harness while preserving read-only/no-router/no-write/no-execution boundaries.
 - v274: freezes v273 as a versioned source fixture and extracts shared TCP RESP socket/protocol helpers into a dedicated test support header while preserving read-only/no-router/no-write/no-execution boundaries.
