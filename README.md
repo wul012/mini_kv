@@ -4,6 +4,8 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+Version 238 freezes v237 as a versioned source fixture and audits the Node v522 stability archive package while preserving read-only/no-router/no-write/no-execution boundaries. The rolling fixture digest is `fnv1a64:cb420f72e2db405d`, and the boundary catalog remains `read-only-boundary-fields.v29` with 821 fields and 40 groups.
+
 Version 237 freezes v236 as a versioned source fixture and packages the Node v522 stability archive handoff evidence while preserving read-only/no-router/no-write/no-execution boundaries. The rolling fixture digest is `fnv1a64:241dc6d5438fd5ee`, and the boundary catalog remains `read-only-boundary-fields.v29` with 821 fields and 40 groups.
 
 Version 236 freezes v235 as a versioned source fixture and audits the Node v522 stability evidence report readiness path while preserving read-only/no-router/no-write/no-execution boundaries. The rolling fixture digest is `fnv1a64:ffee5a44b8688bd6`, and the boundary catalog remains `read-only-boundary-fields.v29` with 821 fields and 40 groups.
