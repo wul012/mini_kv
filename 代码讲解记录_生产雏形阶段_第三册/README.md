@@ -113,6 +113,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `283-version-227-node-v505-readiness-handoff-archive-verification-route-checkpoint.md` - mini-kv v227 checkpoints the Node v505 readiness handoff archive verification route evidence chain from frozen v226 evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/227` archive.
 
+- `284-version-228-node-v505-readiness-handoff-archive-verification-route-checkpoint-audit.md` - mini-kv v228 audits the Node v505 readiness handoff archive verification route checkpoint from frozen v227 evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/228` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
