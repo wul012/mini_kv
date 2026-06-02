@@ -18,6 +18,6 @@ The key review question is not what new feature exists. The question is whether 
 
 ## Verification
 
-This release rebuilds mini-kv, runs targeted tests, full CTest, and a real TCP read-only SHARDJSON smoke. Archive screenshots are under e/263/images-equivalent folder 图片, and the explanation is under e/263/解释/说明.md.
+This release rebuilds mini-kv, runs targeted tests, full CTest, and a real TCP read-only SHARDJSON smoke. Archive screenshots and the explanation are stored under the versioned e/263 archive folder.
 
 One sentence: v263 lowers maintenance cost while keeping mini-kv as a read-only cross-project evidence provider.

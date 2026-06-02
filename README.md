@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v264: freezes v263 as a versioned source fixture and replaces hand-written historical fixture loading in shard readiness tests with version-indexed helpers while preserving read-only/no-router/no-write/no-execution boundaries.
 - v263: freezes v262 as a versioned source fixture and extracts shared test assertion/fixture helpers while preserving read-only/no-router/no-write/no-execution boundaries.
 - v262: freezes v261 as a versioned source fixture and prepares final Node v549 verification-ready evidence while preserving read-only/no-router/no-write/no-execution boundaries.
 - v261: freezes v260 as a versioned source fixture and audits the Node v549 final closeout package while preserving read-only/no-router/no-write/no-execution boundaries.

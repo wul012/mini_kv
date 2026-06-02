@@ -8,6 +8,7 @@
 #include <cassert>
 #include <filesystem>
 #include <iostream>
+#include <map>
 #include <string>
 #include <string_view>
 
@@ -16,12 +17,32 @@ namespace {
 using minikv::test_support::assert_contains;
 using minikv::test_support::read_fixture_text;
 
+std::map<int, std::string> read_shard_readiness_fixtures(int first_release, int last_release) {
+    assert(first_release <= last_release);
+
+    std::map<int, std::string> fixtures;
+    for (int release_version = first_release; release_version <= last_release; ++release_version) {
+        fixtures.emplace(release_version, minikv::test_support::read_shard_readiness_fixture(release_version));
+    }
+    return fixtures;
+}
+
+void assert_fixture_differs_from_each(const std::string& fixture,
+                                      const std::map<int, std::string>& historical_fixtures) {
+    for (const auto& [release_version, historical_fixture] : historical_fixtures) {
+        if (fixture == historical_fixture) {
+            std::cerr << "current fixture unexpectedly matched v" << release_version << '\n';
+        }
+        assert(fixture != historical_fixture);
+    }
+}
+
 void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"contract\":\"shard-readiness.v1\"");
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"releaseVersion\":\"v263\"");
+    assert_contains(json, "\"releaseVersion\":\"v264\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -190,7 +211,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
     assert_contains(
         json,
-        "\"nodeConsumer\":\"Node v550+ may consume v263 as maintenance-only test support extraction evidence only\"");
+        "\"nodeConsumer\":\"Node v550+ may consume v264 as maintenance-only shard readiness historical fixture loop evidence only\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -278,11 +299,11 @@ void assert_shard_readiness_contract(const std::string& json) {
                            "\"Node v473\",\"Node v474\",\"Node v475\",\"Node v476\",\"Node v477\","
                            "\"Node v478\",\"Node v479\",\"Node v480\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v262\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v262.json\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v263\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v263.json\"");
     assert_contains(
         json,
-        "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v262 as Node v549 final verification ready evidence only\"");
+        "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v263 as maintenance-only test support extraction evidence only\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_contains(json, "\"nodeV396ProgressIntakePreserved\":true");
     assert_contains(json, "\"nodeV397ContributionReviewPreserved\":true");
@@ -1227,19 +1248,19 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
     assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
                           "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v262\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v262.json\"");
-    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:e03c17ac665717f2\"");
-    assert_contains(json, "\"continuityStage\":\"maintenance-refactor-test-support-helper-extraction\"");
-    assert_contains(json, "\"stageSequence\":63");
-    assert_contains(json, "\"stageReleaseVersion\":\"v263\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v263\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v263.json\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:1e9e1013daf0ea8b\"");
+    assert_contains(json, "\"continuityStage\":\"maintenance-refactor-shard-readiness-history-fixture-loop\"");
+    assert_contains(json, "\"stageSequence\":64");
+    assert_contains(json, "\"stageReleaseVersion\":\"v264\"");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"previousCloseoutAuditReleaseVersion\":\"v200\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeStart\":\"v194\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_contains(json, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v263\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":63");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v264\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":64");
     assert_contains(json, "\"nodePlanStillLatestForMiniKv\":true");
     assert_contains(json, "\"sourceFixtureVersioned\":true");
     assert_contains(json, "\"rollingCurrentRejected\":true");
@@ -1564,180 +1585,12 @@ void assert_shard_readiness_contract(const std::string& json) {
 } // namespace
 
 int main() {
-    const auto fixture_path = std::filesystem::path{"fixtures"} / "release" / "shard-readiness.json";
-    const auto historical_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v144.json";
-    const auto consumed_v145_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v145.json";
-    const auto consumed_v146_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v146.json";
-    const auto consumed_v147_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v147.json";
-    const auto consumed_v148_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v148.json";
-    const auto consumed_v149_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v149.json";
-    const auto consumed_v150_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v150.json";
-    const auto consumed_v151_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v151.json";
-    const auto consumed_v152_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v152.json";
-    const auto consumed_v153_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v153.json";
-    const auto consumed_v154_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v154.json";
-    const auto consumed_v155_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v155.json";
-    const auto consumed_v156_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v156.json";
-    const auto consumed_v157_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v157.json";
-    const auto consumed_v158_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v158.json";
-    const auto consumed_v159_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v159.json";
-    const auto consumed_v160_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v160.json";
-    const auto consumed_v161_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v161.json";
-    const auto consumed_v162_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v162.json";
-    const auto consumed_v163_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v163.json";
-    const auto consumed_v164_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v164.json";
-    const auto consumed_v165_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v165.json";
-    const auto consumed_v166_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v166.json";
-    const auto consumed_v167_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v167.json";
-    const auto consumed_v168_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v168.json";
-    const auto consumed_v169_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v169.json";
-    const auto consumed_v170_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v170.json";
-    const auto consumed_v171_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v171.json";
-    const auto consumed_v172_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v172.json";
-    const auto consumed_v173_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v173.json";
-    const auto consumed_v174_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v174.json";
-    const auto consumed_v175_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v175.json";
-    const auto consumed_v176_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v176.json";
-    const auto consumed_v177_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v177.json";
-    const auto consumed_v178_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v178.json";
-    const auto consumed_v179_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v179.json";
-    const auto consumed_v180_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v180.json";
-    const auto consumed_v181_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v181.json";
-    const auto consumed_v182_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v182.json";
-    const auto consumed_v183_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v183.json";
-    const auto consumed_v184_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v184.json";
-    const auto consumed_v185_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v185.json";
-    const auto consumed_v186_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v186.json";
-    const auto consumed_v187_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v187.json";
-    const auto consumed_v188_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v188.json";
-    const auto consumed_v189_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v189.json";
-    const auto consumed_v190_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v190.json";
-    const auto consumed_v191_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v191.json";
-    const auto consumed_v192_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v192.json";
-    const auto consumed_v193_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v193.json";
-    const auto consumed_v194_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v194.json";
-    const auto consumed_v195_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v195.json";
-    const auto consumed_v196_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v196.json";
-    const auto consumed_v197_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v197.json";
-    const auto consumed_v198_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v198.json";
-    const auto consumed_v199_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v199.json";
-    const auto consumed_v200_fixture_path =
-        std::filesystem::path{"fixtures"} / "release" / "shard-readiness-v200.json";
-    const auto fixture = read_fixture_text(fixture_path);
-    const auto historical_fixture = read_fixture_text(historical_fixture_path);
-    const auto consumed_v145_fixture = read_fixture_text(consumed_v145_fixture_path);
-    const auto consumed_v146_fixture = read_fixture_text(consumed_v146_fixture_path);
-    const auto consumed_v147_fixture = read_fixture_text(consumed_v147_fixture_path);
-    const auto consumed_v148_fixture = read_fixture_text(consumed_v148_fixture_path);
-    const auto consumed_v149_fixture = read_fixture_text(consumed_v149_fixture_path);
-    const auto consumed_v150_fixture = read_fixture_text(consumed_v150_fixture_path);
-    const auto consumed_v151_fixture = read_fixture_text(consumed_v151_fixture_path);
-    const auto consumed_v152_fixture = read_fixture_text(consumed_v152_fixture_path);
-    const auto consumed_v153_fixture = read_fixture_text(consumed_v153_fixture_path);
-    const auto consumed_v154_fixture = read_fixture_text(consumed_v154_fixture_path);
-    const auto consumed_v155_fixture = read_fixture_text(consumed_v155_fixture_path);
-    const auto consumed_v156_fixture = read_fixture_text(consumed_v156_fixture_path);
-    const auto consumed_v157_fixture = read_fixture_text(consumed_v157_fixture_path);
-    const auto consumed_v158_fixture = read_fixture_text(consumed_v158_fixture_path);
-    const auto consumed_v159_fixture = read_fixture_text(consumed_v159_fixture_path);
-    const auto consumed_v160_fixture = read_fixture_text(consumed_v160_fixture_path);
-    const auto consumed_v161_fixture = read_fixture_text(consumed_v161_fixture_path);
-    const auto consumed_v162_fixture = read_fixture_text(consumed_v162_fixture_path);
-    const auto consumed_v163_fixture = read_fixture_text(consumed_v163_fixture_path);
-    const auto consumed_v164_fixture = read_fixture_text(consumed_v164_fixture_path);
-    const auto consumed_v165_fixture = read_fixture_text(consumed_v165_fixture_path);
-    const auto consumed_v166_fixture = read_fixture_text(consumed_v166_fixture_path);
-    const auto consumed_v167_fixture = read_fixture_text(consumed_v167_fixture_path);
-    const auto consumed_v168_fixture = read_fixture_text(consumed_v168_fixture_path);
-    const auto consumed_v169_fixture = read_fixture_text(consumed_v169_fixture_path);
-    const auto consumed_v170_fixture = read_fixture_text(consumed_v170_fixture_path);
-    const auto consumed_v171_fixture = read_fixture_text(consumed_v171_fixture_path);
-    const auto consumed_v172_fixture = read_fixture_text(consumed_v172_fixture_path);
-    const auto consumed_v173_fixture = read_fixture_text(consumed_v173_fixture_path);
-    const auto consumed_v174_fixture = read_fixture_text(consumed_v174_fixture_path);
-    const auto consumed_v175_fixture = read_fixture_text(consumed_v175_fixture_path);
-    const auto consumed_v176_fixture = read_fixture_text(consumed_v176_fixture_path);
-    const auto consumed_v177_fixture = read_fixture_text(consumed_v177_fixture_path);
-    const auto consumed_v178_fixture = read_fixture_text(consumed_v178_fixture_path);
-    const auto consumed_v179_fixture = read_fixture_text(consumed_v179_fixture_path);
-    const auto consumed_v180_fixture = read_fixture_text(consumed_v180_fixture_path);
-    const auto consumed_v181_fixture = read_fixture_text(consumed_v181_fixture_path);
-    const auto consumed_v182_fixture = read_fixture_text(consumed_v182_fixture_path);
-    const auto consumed_v183_fixture = read_fixture_text(consumed_v183_fixture_path);
-    const auto consumed_v184_fixture = read_fixture_text(consumed_v184_fixture_path);
-    const auto consumed_v185_fixture = read_fixture_text(consumed_v185_fixture_path);
-    const auto consumed_v186_fixture = read_fixture_text(consumed_v186_fixture_path);
-    const auto consumed_v187_fixture = read_fixture_text(consumed_v187_fixture_path);
-    const auto consumed_v188_fixture = read_fixture_text(consumed_v188_fixture_path);
-    const auto consumed_v189_fixture = read_fixture_text(consumed_v189_fixture_path);
-    const auto consumed_v190_fixture = read_fixture_text(consumed_v190_fixture_path);
-    const auto consumed_v191_fixture = read_fixture_text(consumed_v191_fixture_path);
-    const auto consumed_v192_fixture = read_fixture_text(consumed_v192_fixture_path);
-    const auto consumed_v193_fixture = read_fixture_text(consumed_v193_fixture_path);
-    const auto consumed_v194_fixture = read_fixture_text(consumed_v194_fixture_path);
-    const auto consumed_v195_fixture = read_fixture_text(consumed_v195_fixture_path);
-    const auto consumed_v196_fixture = read_fixture_text(consumed_v196_fixture_path);
-    const auto consumed_v197_fixture = read_fixture_text(consumed_v197_fixture_path);
-    const auto consumed_v198_fixture = read_fixture_text(consumed_v198_fixture_path);
-    const auto consumed_v199_fixture = read_fixture_text(consumed_v199_fixture_path);
-    const auto consumed_v200_fixture = read_fixture_text(consumed_v200_fixture_path);
-
+    const auto fixture = read_fixture_text(std::filesystem::path{"fixtures"} / "release" / "shard-readiness.json");
+    const auto historical_fixtures = read_shard_readiness_fixtures(144, 200);
+    const auto& historical_fixture = historical_fixtures.at(144);
+    const auto fixture_for = [&historical_fixtures](int release_version) -> const std::string& {
+        return historical_fixtures.at(release_version);
+    };
     const auto formatted_fixture = minikv::shard_readiness::format_json();
     if (fixture != formatted_fixture) {
         std::cerr << "fixture length=" << fixture.size()
@@ -1757,981 +1610,925 @@ int main() {
     assert(fixture == formatted_fixture);
     assert(minikv::shard_readiness::fixture_path() == "fixtures/release/shard-readiness.json");
     assert_shard_readiness_contract(fixture);
-    assert(fixture != historical_fixture);
-    assert(fixture != consumed_v145_fixture);
-    assert(fixture != consumed_v146_fixture);
-    assert(fixture != consumed_v147_fixture);
-    assert(fixture != consumed_v148_fixture);
-    assert(fixture != consumed_v149_fixture);
-    assert(fixture != consumed_v150_fixture);
-    assert(fixture != consumed_v151_fixture);
-    assert(fixture != consumed_v152_fixture);
-    assert(fixture != consumed_v153_fixture);
-    assert(fixture != consumed_v154_fixture);
-    assert(fixture != consumed_v155_fixture);
-    assert(fixture != consumed_v156_fixture);
-    assert(fixture != consumed_v157_fixture);
-    assert(fixture != consumed_v158_fixture);
-    assert(fixture != consumed_v159_fixture);
-    assert(fixture != consumed_v160_fixture);
-    assert(fixture != consumed_v161_fixture);
-    assert(fixture != consumed_v162_fixture);
-    assert(fixture != consumed_v163_fixture);
-    assert(fixture != consumed_v164_fixture);
-    assert(fixture != consumed_v165_fixture);
-    assert(fixture != consumed_v166_fixture);
-    assert(fixture != consumed_v167_fixture);
-    assert(fixture != consumed_v168_fixture);
-    assert(fixture != consumed_v169_fixture);
-    assert(fixture != consumed_v170_fixture);
-    assert(fixture != consumed_v171_fixture);
-    assert(fixture != consumed_v172_fixture);
-    assert(fixture != consumed_v173_fixture);
-    assert(fixture != consumed_v174_fixture);
-    assert(fixture != consumed_v175_fixture);
-    assert(fixture != consumed_v176_fixture);
-    assert(fixture != consumed_v177_fixture);
-    assert(fixture != consumed_v178_fixture);
-    assert(fixture != consumed_v179_fixture);
-    assert(fixture != consumed_v180_fixture);
-    assert(fixture != consumed_v181_fixture);
-    assert(fixture != consumed_v182_fixture);
-    assert(fixture != consumed_v183_fixture);
-    assert(fixture != consumed_v184_fixture);
-    assert(fixture != consumed_v185_fixture);
-    assert(fixture != consumed_v186_fixture);
-    assert(fixture != consumed_v187_fixture);
-    assert(fixture != consumed_v188_fixture);
-    assert(fixture != consumed_v189_fixture);
-    assert(fixture != consumed_v190_fixture);
-    assert(fixture != consumed_v191_fixture);
-    assert(fixture != consumed_v192_fixture);
-    assert(fixture != consumed_v193_fixture);
-    assert(fixture != consumed_v194_fixture);
-    assert(fixture != consumed_v195_fixture);
-    assert(fixture != consumed_v196_fixture);
-    assert(fixture != consumed_v197_fixture);
-    assert(fixture != consumed_v198_fixture);
-    assert(fixture != consumed_v199_fixture);
-    assert(fixture != consumed_v200_fixture);
+    assert_fixture_differs_from_each(fixture, historical_fixtures);
     assert_contains(historical_fixture, "\"releaseVersion\":\"v144\"");
     assert_contains(historical_fixture, "\"status\":\"prototype-ready-read-only\"");
     assert_contains(historical_fixture, "\"evidenceDigest\":\"fnv1a64:22d3c4815a440804\"");
-    assert_contains(consumed_v145_fixture, "\"releaseVersion\":\"v145\"");
-    assert_contains(consumed_v145_fixture, "\"status\":\"hardened-read-only\"");
-    assert_contains(consumed_v145_fixture, "\"evidenceDigest\":\"fnv1a64:ebe4c7e1a2704482\"");
-    assert_contains(consumed_v145_fixture, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_contains(consumed_v146_fixture, "\"releaseVersion\":\"v146\"");
-    assert_contains(consumed_v146_fixture, "\"status\":\"historical-fallback-hardened-read-only\"");
-    assert_contains(consumed_v146_fixture, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v145.json\"");
-    assert_contains(consumed_v146_fixture, "\"evidenceDigest\":\"fnv1a64:6847d87decb76fcb\"");
-    assert_contains(consumed_v147_fixture, "\"releaseVersion\":\"v147\"");
-    assert_contains(consumed_v147_fixture, "\"status\":\"active-prototype-prerequisite-read-only\"");
-    assert_contains(consumed_v147_fixture, "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
-    assert_contains(consumed_v147_fixture, "\"activeShardPrototypeAllowed\":false");
-    assert_contains(consumed_v147_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v147_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v147_fixture, "\"evidenceDigest\":\"fnv1a64:e4a386fc9add4eaf\"");
-    assert_contains(consumed_v148_fixture, "\"releaseVersion\":\"v148\"");
-    assert_contains(consumed_v148_fixture, "\"status\":\"active-prototype-plan-frozen-read-only\"");
-    assert_contains(consumed_v148_fixture, "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v147\"");
-    assert_contains(consumed_v148_fixture, "\"frozenRouterActivationAllowed\":false");
-    assert_contains(consumed_v148_fixture, "\"frozenWriteRoutingAllowed\":false");
-    assert_contains(consumed_v148_fixture, "\"evidenceDigest\":\"fnv1a64:8270eeebbf1a7f29\"");
-    assert_contains(consumed_v149_fixture, "\"releaseVersion\":\"v149\"");
-    assert_contains(consumed_v149_fixture, "\"status\":\"frozen-evidence-handoff-read-only\"");
-    assert_contains(consumed_v149_fixture, "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v148\"");
-    assert_contains(consumed_v149_fixture, "\"consumerHandoff\":{\"handoffMode\":\"frozen-evidence-only\"");
-    assert_contains(consumed_v149_fixture, "\"startsServices\":false");
-    assert_contains(consumed_v149_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v149_fixture, "\"evidenceDigest\":\"fnv1a64:521fe6dee47f7f2c\"");
-    assert_contains(consumed_v150_fixture, "\"releaseVersion\":\"v150\"");
-    assert_contains(consumed_v150_fixture, "\"status\":\"live-read-gate-prerequisite-read-only\"");
-    assert_contains(consumed_v150_fixture, "\"liveReadGatePlan\":{\"planMode\":\"service-lifecycle-prerequisite-only\"");
-    assert_contains(consumed_v150_fixture, "\"liveReadGateAllowed\":false");
-    assert_contains(consumed_v150_fixture, "\"runtimeProbeAllowed\":false");
-    assert_contains(consumed_v150_fixture, "\"startsServices\":false");
-    assert_contains(consumed_v150_fixture, "\"evidenceDigest\":\"fnv1a64:b8b134f6aa527ca4\"");
-    assert_contains(consumed_v151_fixture, "\"releaseVersion\":\"v151\"");
-    assert_contains(consumed_v151_fixture, "\"status\":\"operator-service-lifecycle-template-read-only\"");
-    assert_contains(consumed_v151_fixture, "\"operatorServiceLifecycleTemplate\":{\"evidenceMode\":\"template-only-no-runtime\"");
-    assert_contains(consumed_v151_fixture, "\"serviceOwnerDeclared\":false");
-    assert_contains(consumed_v151_fixture, "\"startupCommandDeclared\":false");
-    assert_contains(consumed_v151_fixture, "\"runtimeProbeAllowed\":false");
-    assert_contains(consumed_v151_fixture, "\"evidenceDigest\":\"fnv1a64:c9fb568ddff895e3\"");
-    assert_contains(consumed_v152_fixture, "\"releaseVersion\":\"v152\"");
-    assert_contains(consumed_v152_fixture, "\"status\":\"declared-operator-lifecycle-no-runtime-read-only\"");
-    assert_contains(consumed_v152_fixture,
+    assert_contains(fixture_for(145), "\"releaseVersion\":\"v145\"");
+    assert_contains(fixture_for(145), "\"status\":\"hardened-read-only\"");
+    assert_contains(fixture_for(145), "\"evidenceDigest\":\"fnv1a64:ebe4c7e1a2704482\"");
+    assert_contains(fixture_for(145), "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
+    assert_contains(fixture_for(146), "\"releaseVersion\":\"v146\"");
+    assert_contains(fixture_for(146), "\"status\":\"historical-fallback-hardened-read-only\"");
+    assert_contains(fixture_for(146), "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v145.json\"");
+    assert_contains(fixture_for(146), "\"evidenceDigest\":\"fnv1a64:6847d87decb76fcb\"");
+    assert_contains(fixture_for(147), "\"releaseVersion\":\"v147\"");
+    assert_contains(fixture_for(147), "\"status\":\"active-prototype-prerequisite-read-only\"");
+    assert_contains(fixture_for(147), "\"activePrototypePlan\":{\"planMode\":\"prerequisite-only\"");
+    assert_contains(fixture_for(147), "\"activeShardPrototypeAllowed\":false");
+    assert_contains(fixture_for(147), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(147), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(147), "\"evidenceDigest\":\"fnv1a64:e4a386fc9add4eaf\"");
+    assert_contains(fixture_for(148), "\"releaseVersion\":\"v148\"");
+    assert_contains(fixture_for(148), "\"status\":\"active-prototype-plan-frozen-read-only\"");
+    assert_contains(fixture_for(148), "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v147\"");
+    assert_contains(fixture_for(148), "\"frozenRouterActivationAllowed\":false");
+    assert_contains(fixture_for(148), "\"frozenWriteRoutingAllowed\":false");
+    assert_contains(fixture_for(148), "\"evidenceDigest\":\"fnv1a64:8270eeebbf1a7f29\"");
+    assert_contains(fixture_for(149), "\"releaseVersion\":\"v149\"");
+    assert_contains(fixture_for(149), "\"status\":\"frozen-evidence-handoff-read-only\"");
+    assert_contains(fixture_for(149), "\"activePrototypePlanFreeze\":{\"frozenReleaseVersion\":\"v148\"");
+    assert_contains(fixture_for(149), "\"consumerHandoff\":{\"handoffMode\":\"frozen-evidence-only\"");
+    assert_contains(fixture_for(149), "\"startsServices\":false");
+    assert_contains(fixture_for(149), "\"executionAllowed\":false");
+    assert_contains(fixture_for(149), "\"evidenceDigest\":\"fnv1a64:521fe6dee47f7f2c\"");
+    assert_contains(fixture_for(150), "\"releaseVersion\":\"v150\"");
+    assert_contains(fixture_for(150), "\"status\":\"live-read-gate-prerequisite-read-only\"");
+    assert_contains(fixture_for(150), "\"liveReadGatePlan\":{\"planMode\":\"service-lifecycle-prerequisite-only\"");
+    assert_contains(fixture_for(150), "\"liveReadGateAllowed\":false");
+    assert_contains(fixture_for(150), "\"runtimeProbeAllowed\":false");
+    assert_contains(fixture_for(150), "\"startsServices\":false");
+    assert_contains(fixture_for(150), "\"evidenceDigest\":\"fnv1a64:b8b134f6aa527ca4\"");
+    assert_contains(fixture_for(151), "\"releaseVersion\":\"v151\"");
+    assert_contains(fixture_for(151), "\"status\":\"operator-service-lifecycle-template-read-only\"");
+    assert_contains(fixture_for(151), "\"operatorServiceLifecycleTemplate\":{\"evidenceMode\":\"template-only-no-runtime\"");
+    assert_contains(fixture_for(151), "\"serviceOwnerDeclared\":false");
+    assert_contains(fixture_for(151), "\"startupCommandDeclared\":false");
+    assert_contains(fixture_for(151), "\"runtimeProbeAllowed\":false");
+    assert_contains(fixture_for(151), "\"evidenceDigest\":\"fnv1a64:c9fb568ddff895e3\"");
+    assert_contains(fixture_for(152), "\"releaseVersion\":\"v152\"");
+    assert_contains(fixture_for(152), "\"status\":\"declared-operator-lifecycle-no-runtime-read-only\"");
+    assert_contains(fixture_for(152),
                     "\"operatorServiceLifecycleEvidence\":{\"evidenceMode\":\"declared-lifecycle-no-runtime\"");
-    assert_contains(consumed_v152_fixture, "\"operatorOwnedServiceLifecycleDeclared\":true");
-    assert_contains(consumed_v152_fixture, "\"serviceOwnerDeclared\":true");
-    assert_contains(consumed_v152_fixture, "\"runtimeGateApproved\":false");
-    assert_contains(consumed_v152_fixture, "\"runtimeProbeAllowed\":false");
-    assert_contains(consumed_v152_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v152_fixture, "\"evidenceDigest\":\"fnv1a64:55cd5b8db109c64f\"");
-    assert_contains(consumed_v153_fixture, "\"releaseVersion\":\"v153\"");
-    assert_contains(consumed_v153_fixture,
+    assert_contains(fixture_for(152), "\"operatorOwnedServiceLifecycleDeclared\":true");
+    assert_contains(fixture_for(152), "\"serviceOwnerDeclared\":true");
+    assert_contains(fixture_for(152), "\"runtimeGateApproved\":false");
+    assert_contains(fixture_for(152), "\"runtimeProbeAllowed\":false");
+    assert_contains(fixture_for(152), "\"executionAllowed\":false");
+    assert_contains(fixture_for(152), "\"evidenceDigest\":\"fnv1a64:55cd5b8db109c64f\"");
+    assert_contains(fixture_for(153), "\"releaseVersion\":\"v153\"");
+    assert_contains(fixture_for(153),
                     "\"status\":\"runtime-execution-artifact-intake-preflight-blocked-read-only\"");
-    assert_contains(consumed_v153_fixture,
+    assert_contains(fixture_for(153),
                     "\"runtimeExecutionArtifactIntakePreflight\":{\"preflightMode\":"
                     "\"blocked-missing-runtime-execution-artifacts\"");
-    assert_contains(consumed_v153_fixture, "\"presentRuntimeExecutionArtifactCount\":0");
-    assert_contains(consumed_v153_fixture, "\"missingRuntimeExecutionArtifactCount\":6");
-    assert_contains(consumed_v153_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v153_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v153_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v153_fixture, "\"evidenceDigest\":\"fnv1a64:ca09095f3f3e4b2c\"");
-    assert_contains(consumed_v154_fixture, "\"releaseVersion\":\"v154\"");
-    assert_contains(consumed_v154_fixture,
+    assert_contains(fixture_for(153), "\"presentRuntimeExecutionArtifactCount\":0");
+    assert_contains(fixture_for(153), "\"missingRuntimeExecutionArtifactCount\":6");
+    assert_contains(fixture_for(153), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(153), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(153), "\"executionAllowed\":false");
+    assert_contains(fixture_for(153), "\"evidenceDigest\":\"fnv1a64:ca09095f3f3e4b2c\"");
+    assert_contains(fixture_for(154), "\"releaseVersion\":\"v154\"");
+    assert_contains(fixture_for(154),
                     "\"status\":\"mini-kv-runtime-execution-artifact-candidate-no-runtime-read-only\"");
-    assert_contains(consumed_v154_fixture,
+    assert_contains(fixture_for(154),
                     "\"miniKvRuntimeExecutionArtifactCandidate\":{\"candidateMode\":"
                     "\"mini-kv-side-candidate-no-runtime\"");
-    assert_contains(consumed_v154_fixture, "\"candidateArtifactCount\":4");
-    assert_contains(consumed_v154_fixture, "\"acceptedRuntimeExecutionArtifactCount\":0");
-    assert_contains(consumed_v154_fixture, "\"missingAcceptedRuntimeExecutionArtifactCount\":6");
-    assert_contains(consumed_v154_fixture, "\"miniKvLoopbackPortCandidate\":6424");
-    assert_contains(consumed_v154_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v154_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v154_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v154_fixture, "\"evidenceDigest\":\"fnv1a64:edbe9c546c0d780a\"");
-    assert_contains(consumed_v155_fixture, "\"releaseVersion\":\"v155\"");
-    assert_contains(consumed_v155_fixture,
+    assert_contains(fixture_for(154), "\"candidateArtifactCount\":4");
+    assert_contains(fixture_for(154), "\"acceptedRuntimeExecutionArtifactCount\":0");
+    assert_contains(fixture_for(154), "\"missingAcceptedRuntimeExecutionArtifactCount\":6");
+    assert_contains(fixture_for(154), "\"miniKvLoopbackPortCandidate\":6424");
+    assert_contains(fixture_for(154), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(154), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(154), "\"executionAllowed\":false");
+    assert_contains(fixture_for(154), "\"evidenceDigest\":\"fnv1a64:edbe9c546c0d780a\"");
+    assert_contains(fixture_for(155), "\"releaseVersion\":\"v155\"");
+    assert_contains(fixture_for(155),
                     "\"status\":\"runtime-execution-approval-gate-input-precheck-blocked-read-only\"");
-    assert_contains(consumed_v155_fixture,
+    assert_contains(fixture_for(155),
                     "\"runtimeExecutionApprovalGateInputPrecheck\":{\"precheckMode\":"
                     "\"blocked-missing-approval-gate-inputs\"");
-    assert_contains(consumed_v155_fixture, "\"approvalGateInputCount\":0");
-    assert_contains(consumed_v155_fixture, "\"missingApprovalGateInputCount\":3");
-    assert_contains(consumed_v155_fixture, "\"nodeApprovedRuntimeWindowPresent\":false");
-    assert_contains(consumed_v155_fixture, "\"correlatedOperatorApprovalRecordPresent\":false");
-    assert_contains(consumed_v155_fixture, "\"completeCrossProjectRuntimeExecutionPacketPresent\":false");
-    assert_contains(consumed_v155_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v155_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v155_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v155_fixture, "\"evidenceDigest\":\"fnv1a64:edb1c4d8534461ab\"");
-    assert_contains(consumed_v156_fixture, "\"releaseVersion\":\"v156\"");
-    assert_contains(consumed_v156_fixture, "\"status\":\"mini-kv-final-approval-gate-input-no-runtime-read-only\"");
-    assert_contains(consumed_v156_fixture,
+    assert_contains(fixture_for(155), "\"approvalGateInputCount\":0");
+    assert_contains(fixture_for(155), "\"missingApprovalGateInputCount\":3");
+    assert_contains(fixture_for(155), "\"nodeApprovedRuntimeWindowPresent\":false");
+    assert_contains(fixture_for(155), "\"correlatedOperatorApprovalRecordPresent\":false");
+    assert_contains(fixture_for(155), "\"completeCrossProjectRuntimeExecutionPacketPresent\":false");
+    assert_contains(fixture_for(155), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(155), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(155), "\"executionAllowed\":false");
+    assert_contains(fixture_for(155), "\"evidenceDigest\":\"fnv1a64:edb1c4d8534461ab\"");
+    assert_contains(fixture_for(156), "\"releaseVersion\":\"v156\"");
+    assert_contains(fixture_for(156), "\"status\":\"mini-kv-final-approval-gate-input-no-runtime-read-only\"");
+    assert_contains(fixture_for(156),
                     "\"miniKvFinalApprovalGateInput\":{\"inputMode\":\"mini-kv-final-approval-gate-input-no-runtime\"");
-    assert_contains(consumed_v156_fixture, "\"finalMiniKvApprovalGateInputPresent\":true");
-    assert_contains(consumed_v156_fixture, "\"miniKvApprovalGateInputComplete\":true");
-    assert_contains(consumed_v156_fixture, "\"miniKvLoopbackPort\":6424");
-    assert_contains(consumed_v156_fixture, "\"cleanupProofPresent\":false");
-    assert_contains(consumed_v156_fixture, "\"nodeApprovedRuntimeWindowPresent\":false");
-    assert_contains(consumed_v156_fixture, "\"correlatedOperatorApprovalRecordPresent\":false");
-    assert_contains(consumed_v156_fixture, "\"completeCrossProjectRuntimeExecutionPacketPresent\":false");
-    assert_contains(consumed_v156_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v156_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v156_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v156_fixture, "\"evidenceDigest\":\"fnv1a64:f240d1fe1b25fab7\"");
-    assert_contains(consumed_v157_fixture, "\"releaseVersion\":\"v157\"");
-    assert_contains(consumed_v157_fixture,
+    assert_contains(fixture_for(156), "\"finalMiniKvApprovalGateInputPresent\":true");
+    assert_contains(fixture_for(156), "\"miniKvApprovalGateInputComplete\":true");
+    assert_contains(fixture_for(156), "\"miniKvLoopbackPort\":6424");
+    assert_contains(fixture_for(156), "\"cleanupProofPresent\":false");
+    assert_contains(fixture_for(156), "\"nodeApprovedRuntimeWindowPresent\":false");
+    assert_contains(fixture_for(156), "\"correlatedOperatorApprovalRecordPresent\":false");
+    assert_contains(fixture_for(156), "\"completeCrossProjectRuntimeExecutionPacketPresent\":false");
+    assert_contains(fixture_for(156), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(156), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(156), "\"executionAllowed\":false");
+    assert_contains(fixture_for(156), "\"evidenceDigest\":\"fnv1a64:f240d1fe1b25fab7\"");
+    assert_contains(fixture_for(157), "\"releaseVersion\":\"v157\"");
+    assert_contains(fixture_for(157),
                     "\"status\":\"runtime-execution-approval-input-template-validator-echo-read-only\"");
-    assert_contains(consumed_v157_fixture,
+    assert_contains(fixture_for(157),
                     "\"runtimeExecutionApprovalInputTemplateValidatorEcho\":{\"echoMode\":"
                     "\"template-validator-echo-no-canonical-inputs\"");
-    assert_contains(consumed_v157_fixture, "\"templateOnlyInputCount\":3");
-    assert_contains(consumed_v157_fixture, "\"canonicalRuntimeInputPresent\":false");
-    assert_contains(consumed_v157_fixture, "\"templateCopiedToCanonicalInput\":false");
-    assert_contains(consumed_v157_fixture, "\"sharedApprovalCorrelationIdPresent\":false");
-    assert_contains(consumed_v157_fixture, "\"templatesAuthorizeRuntime\":false");
-    assert_contains(consumed_v157_fixture, "\"templateDigestAcceptedAsApproval\":false");
-    assert_contains(consumed_v157_fixture, "\"writesCanonicalApprovalInputFiles\":false");
-    assert_contains(consumed_v157_fixture, "\"changesNodeInputTemplateFiles\":false");
-    assert_contains(consumed_v157_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v157_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v157_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v157_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v157_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v157_fixture, "\"evidenceDigest\":\"fnv1a64:1d8cdf7f597f837e\"");
-    assert_contains(consumed_v158_fixture, "\"releaseVersion\":\"v158\"");
-    assert_contains(consumed_v158_fixture,
+    assert_contains(fixture_for(157), "\"templateOnlyInputCount\":3");
+    assert_contains(fixture_for(157), "\"canonicalRuntimeInputPresent\":false");
+    assert_contains(fixture_for(157), "\"templateCopiedToCanonicalInput\":false");
+    assert_contains(fixture_for(157), "\"sharedApprovalCorrelationIdPresent\":false");
+    assert_contains(fixture_for(157), "\"templatesAuthorizeRuntime\":false");
+    assert_contains(fixture_for(157), "\"templateDigestAcceptedAsApproval\":false");
+    assert_contains(fixture_for(157), "\"writesCanonicalApprovalInputFiles\":false");
+    assert_contains(fixture_for(157), "\"changesNodeInputTemplateFiles\":false");
+    assert_contains(fixture_for(157), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(157), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(157), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(157), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(157), "\"executionAllowed\":false");
+    assert_contains(fixture_for(157), "\"evidenceDigest\":\"fnv1a64:1d8cdf7f597f837e\"");
+    assert_contains(fixture_for(158), "\"releaseVersion\":\"v158\"");
+    assert_contains(fixture_for(158),
                     "\"status\":\"runtime-execution-canonical-approval-input-precheck-read-only\"");
-    assert_contains(consumed_v158_fixture,
+    assert_contains(fixture_for(158),
                     "\"runtimeExecutionCanonicalApprovalInputPrecheck\":{\"precheckMode\":"
                     "\"blocked-missing-canonical-approval-inputs\"");
-    assert_contains(consumed_v158_fixture, "\"requiredCanonicalInputCount\":3");
-    assert_contains(consumed_v158_fixture, "\"presentCanonicalInputCount\":0");
-    assert_contains(consumed_v158_fixture, "\"missingCanonicalInputCount\":3");
-    assert_contains(consumed_v158_fixture, "\"canonicalApprovalInputsComplete\":false");
-    assert_contains(consumed_v158_fixture, "\"sharedApprovalCorrelationIdValidated\":false");
-    assert_contains(consumed_v158_fixture, "\"templatesAcceptedAsCanonicalInputs\":false");
-    assert_contains(consumed_v158_fixture, "\"templateCompatibilityEvidenceAcceptedAsApproval\":false");
-    assert_contains(consumed_v158_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v158_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v158_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v158_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v158_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v158_fixture, "\"evidenceDigest\":\"fnv1a64:bce4629123167bc6\"");
-    assert_contains(consumed_v159_fixture, "\"releaseVersion\":\"v159\"");
-    assert_contains(consumed_v159_fixture, "\"status\":\"node-route-group-split-compatibility-read-only\"");
-    assert_contains(consumed_v159_fixture, "\"nodeRouteGroupSplitCompatibility\":{\"compatibilityMode\":"
+    assert_contains(fixture_for(158), "\"requiredCanonicalInputCount\":3");
+    assert_contains(fixture_for(158), "\"presentCanonicalInputCount\":0");
+    assert_contains(fixture_for(158), "\"missingCanonicalInputCount\":3");
+    assert_contains(fixture_for(158), "\"canonicalApprovalInputsComplete\":false");
+    assert_contains(fixture_for(158), "\"sharedApprovalCorrelationIdValidated\":false");
+    assert_contains(fixture_for(158), "\"templatesAcceptedAsCanonicalInputs\":false");
+    assert_contains(fixture_for(158), "\"templateCompatibilityEvidenceAcceptedAsApproval\":false");
+    assert_contains(fixture_for(158), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(158), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(158), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(158), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(158), "\"executionAllowed\":false");
+    assert_contains(fixture_for(158), "\"evidenceDigest\":\"fnv1a64:bce4629123167bc6\"");
+    assert_contains(fixture_for(159), "\"releaseVersion\":\"v159\"");
+    assert_contains(fixture_for(159), "\"status\":\"node-route-group-split-compatibility-read-only\"");
+    assert_contains(fixture_for(159), "\"nodeRouteGroupSplitCompatibility\":{\"compatibilityMode\":"
                                           "\"node-route-group-split-contract-stable\"");
-    assert_contains(consumed_v159_fixture,
+    assert_contains(fixture_for(159),
                     "\"sourceNodeVersion\":\"Node v418 sandbox endpoint credential resolver route group split\"");
-    assert_contains(consumed_v159_fixture, "\"sourceFrozenReleaseVersion\":\"v158\"");
-    assert_contains(consumed_v159_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v158.json\"");
-    assert_contains(consumed_v159_fixture, "\"miniKvContractChangedForNodeRouteSplit\":false");
-    assert_contains(consumed_v159_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v159_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v159_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v159_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v159_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v159_fixture, "\"evidenceDigest\":\"fnv1a64:0741c3475ee371e2\"");
-    assert_contains(consumed_v160_fixture, "\"releaseVersion\":\"v160\"");
-    assert_contains(consumed_v160_fixture, "\"status\":\"boundary-field-catalog-split-read-only\"");
-    assert_contains(consumed_v160_fixture, "\"boundaryCatalogMaintenance\":{\"maintenanceMode\":"
+    assert_contains(fixture_for(159), "\"sourceFrozenReleaseVersion\":\"v158\"");
+    assert_contains(fixture_for(159), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v158.json\"");
+    assert_contains(fixture_for(159), "\"miniKvContractChangedForNodeRouteSplit\":false");
+    assert_contains(fixture_for(159), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(159), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(159), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(159), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(159), "\"executionAllowed\":false");
+    assert_contains(fixture_for(159), "\"evidenceDigest\":\"fnv1a64:0741c3475ee371e2\"");
+    assert_contains(fixture_for(160), "\"releaseVersion\":\"v160\"");
+    assert_contains(fixture_for(160), "\"status\":\"boundary-field-catalog-split-read-only\"");
+    assert_contains(fixture_for(160), "\"boundaryCatalogMaintenance\":{\"maintenanceMode\":"
                                           "\"boundary-field-catalog-split-contract-preserving\"");
-    assert_contains(consumed_v160_fixture, "\"sourceFrozenReleaseVersion\":\"v159\"");
-    assert_contains(consumed_v160_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v159.json\"");
-    assert_contains(consumed_v160_fixture, "\"boundaryFieldCatalogExtracted\":true");
-    assert_contains(consumed_v160_fixture, "\"readOnlyBoundaryFieldsStillPublished\":true");
-    assert_contains(consumed_v160_fixture, "\"publicShardJsonContractChanged\":false");
-    assert_contains(consumed_v160_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v160_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v160_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v160_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v160_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v160_fixture, "\"evidenceDigest\":\"fnv1a64:c96ae9497cfd6386\"");
-    assert_contains(consumed_v161_fixture, "\"releaseVersion\":\"v161\"");
-    assert_contains(consumed_v161_fixture, "\"status\":\"boundary-field-catalog-index-read-only\"");
-    assert_contains(consumed_v161_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v2\"");
-    assert_contains(consumed_v161_fixture, "\"sourceFrozenReleaseVersion\":\"v160\"");
-    assert_contains(consumed_v161_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v160.json\"");
-    assert_contains(consumed_v161_fixture, "\"fieldCount\":290");
-    assert_contains(consumed_v161_fixture, "\"groupCount\":15");
-    assert_contains(consumed_v161_fixture, "\"readOnlyBoundaryFieldsStillPublished\":true");
-    assert_contains(consumed_v161_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v161_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v161_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v161_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v161_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v161_fixture, "\"evidenceDigest\":\"fnv1a64:2193962195ba633a\"");
-    assert_contains(consumed_v162_fixture, "\"releaseVersion\":\"v162\"");
-    assert_contains(consumed_v162_fixture, "\"status\":\"slot-table-preview-read-only\"");
-    assert_contains(consumed_v162_fixture, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
-    assert_contains(consumed_v162_fixture, "\"sourceFrozenReleaseVersion\":\"v161\"");
-    assert_contains(consumed_v162_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v161.json\"");
-    assert_contains(consumed_v162_fixture, "\"slotTablePreviewOnly\":true");
-    assert_contains(consumed_v162_fixture, "\"readOnlyShardMapPreview\":true");
-    assert_contains(consumed_v162_fixture, "\"activeRouterInstalled\":false");
-    assert_contains(consumed_v162_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v162_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v162_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v3\"");
-    assert_contains(consumed_v162_fixture, "\"fieldCount\":303");
-    assert_contains(consumed_v162_fixture, "\"groupCount\":16");
-    assert_contains(consumed_v162_fixture, "\"evidenceDigest\":\"fnv1a64:8c01a3657f07cfd1\"");
-    assert_contains(consumed_v163_fixture, "\"releaseVersion\":\"v163\"");
-    assert_contains(consumed_v163_fixture, "\"status\":\"slot-table-preview-audit-read-only\"");
-    assert_contains(consumed_v163_fixture, "\"slotTablePreviewAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(160), "\"sourceFrozenReleaseVersion\":\"v159\"");
+    assert_contains(fixture_for(160), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v159.json\"");
+    assert_contains(fixture_for(160), "\"boundaryFieldCatalogExtracted\":true");
+    assert_contains(fixture_for(160), "\"readOnlyBoundaryFieldsStillPublished\":true");
+    assert_contains(fixture_for(160), "\"publicShardJsonContractChanged\":false");
+    assert_contains(fixture_for(160), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(160), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(160), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(160), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(160), "\"executionAllowed\":false");
+    assert_contains(fixture_for(160), "\"evidenceDigest\":\"fnv1a64:c96ae9497cfd6386\"");
+    assert_contains(fixture_for(161), "\"releaseVersion\":\"v161\"");
+    assert_contains(fixture_for(161), "\"status\":\"boundary-field-catalog-index-read-only\"");
+    assert_contains(fixture_for(161), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v2\"");
+    assert_contains(fixture_for(161), "\"sourceFrozenReleaseVersion\":\"v160\"");
+    assert_contains(fixture_for(161), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v160.json\"");
+    assert_contains(fixture_for(161), "\"fieldCount\":290");
+    assert_contains(fixture_for(161), "\"groupCount\":15");
+    assert_contains(fixture_for(161), "\"readOnlyBoundaryFieldsStillPublished\":true");
+    assert_contains(fixture_for(161), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(161), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(161), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(161), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(161), "\"executionAllowed\":false");
+    assert_contains(fixture_for(161), "\"evidenceDigest\":\"fnv1a64:2193962195ba633a\"");
+    assert_contains(fixture_for(162), "\"releaseVersion\":\"v162\"");
+    assert_contains(fixture_for(162), "\"status\":\"slot-table-preview-read-only\"");
+    assert_contains(fixture_for(162), "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
+    assert_contains(fixture_for(162), "\"sourceFrozenReleaseVersion\":\"v161\"");
+    assert_contains(fixture_for(162), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v161.json\"");
+    assert_contains(fixture_for(162), "\"slotTablePreviewOnly\":true");
+    assert_contains(fixture_for(162), "\"readOnlyShardMapPreview\":true");
+    assert_contains(fixture_for(162), "\"activeRouterInstalled\":false");
+    assert_contains(fixture_for(162), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(162), "\"executionAllowed\":false");
+    assert_contains(fixture_for(162), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v3\"");
+    assert_contains(fixture_for(162), "\"fieldCount\":303");
+    assert_contains(fixture_for(162), "\"groupCount\":16");
+    assert_contains(fixture_for(162), "\"evidenceDigest\":\"fnv1a64:8c01a3657f07cfd1\"");
+    assert_contains(fixture_for(163), "\"releaseVersion\":\"v163\"");
+    assert_contains(fixture_for(163), "\"status\":\"slot-table-preview-audit-read-only\"");
+    assert_contains(fixture_for(163), "\"slotTablePreviewAudit\":{\"auditMode\":"
                                            "\"slot-table-preview-consistency-read-only\"");
-    assert_contains(consumed_v163_fixture, "\"sourceFrozenReleaseVersion\":\"v162\"");
-    assert_contains(consumed_v163_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v162.json\"");
-    assert_contains(consumed_v163_fixture, "\"observedSlotCount\":16");
-    assert_contains(consumed_v163_fixture, "\"contiguousSlotRange\":true");
-    assert_contains(consumed_v163_fixture, "\"duplicateSlotsDetected\":false");
-    assert_contains(consumed_v163_fixture, "\"unassignedSlotsDetected\":false");
-    assert_contains(consumed_v163_fixture, "\"allAssignmentsReadOnly\":true");
-    assert_contains(consumed_v163_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v163_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v163_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v163_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v4\"");
-    assert_contains(consumed_v163_fixture, "\"fieldCount\":319");
-    assert_contains(consumed_v163_fixture, "\"groupCount\":17");
-    assert_contains(consumed_v163_fixture, "\"evidenceDigest\":\"fnv1a64:f81c5b47cb396df6\"");
-    assert_contains(consumed_v164_fixture, "\"releaseVersion\":\"v164\"");
-    assert_contains(consumed_v164_fixture, "\"status\":\"slot-table-preview-audit-maintenance-read-only\"");
-    assert_contains(consumed_v164_fixture, "\"slotTablePreviewAuditMaintenance\":{\"maintenanceMode\":"
+    assert_contains(fixture_for(163), "\"sourceFrozenReleaseVersion\":\"v162\"");
+    assert_contains(fixture_for(163), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v162.json\"");
+    assert_contains(fixture_for(163), "\"observedSlotCount\":16");
+    assert_contains(fixture_for(163), "\"contiguousSlotRange\":true");
+    assert_contains(fixture_for(163), "\"duplicateSlotsDetected\":false");
+    assert_contains(fixture_for(163), "\"unassignedSlotsDetected\":false");
+    assert_contains(fixture_for(163), "\"allAssignmentsReadOnly\":true");
+    assert_contains(fixture_for(163), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(163), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(163), "\"executionAllowed\":false");
+    assert_contains(fixture_for(163), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v4\"");
+    assert_contains(fixture_for(163), "\"fieldCount\":319");
+    assert_contains(fixture_for(163), "\"groupCount\":17");
+    assert_contains(fixture_for(163), "\"evidenceDigest\":\"fnv1a64:f81c5b47cb396df6\"");
+    assert_contains(fixture_for(164), "\"releaseVersion\":\"v164\"");
+    assert_contains(fixture_for(164), "\"status\":\"slot-table-preview-audit-maintenance-read-only\"");
+    assert_contains(fixture_for(164), "\"slotTablePreviewAuditMaintenance\":{\"maintenanceMode\":"
                                            "\"slot-table-preview-audit-formatter-split-contract-preserving\"");
-    assert_contains(consumed_v164_fixture, "\"sourceFrozenReleaseVersion\":\"v163\"");
-    assert_contains(consumed_v164_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v163.json\"");
-    assert_contains(consumed_v164_fixture, "\"auditFormatterExtracted\":true");
-    assert_contains(consumed_v164_fixture, "\"slotPreviewModuleOwnsAssignments\":true");
-    assert_contains(consumed_v164_fixture, "\"slotPreviewAuditStillPublished\":true");
-    assert_contains(consumed_v164_fixture, "\"slotTablePreviewStillPublished\":true");
-    assert_contains(consumed_v164_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v164_fixture, "\"startsJavaService\":false");
-    assert_contains(consumed_v164_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v164_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v164_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v164_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v164_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v5\"");
-    assert_contains(consumed_v164_fixture, "\"fieldCount\":337");
-    assert_contains(consumed_v164_fixture, "\"groupCount\":18");
-    assert_contains(consumed_v164_fixture, "\"evidenceDigest\":\"fnv1a64:9935ccb959b5a3b8\"");
-    assert_contains(consumed_v165_fixture, "\"releaseVersion\":\"v165\"");
-    assert_contains(consumed_v165_fixture, "\"status\":\"shard-readiness-release-catalog-read-only\"");
-    assert_contains(consumed_v165_fixture, "\"shardReadinessReleaseCatalog\":{\"catalogMode\":"
+    assert_contains(fixture_for(164), "\"sourceFrozenReleaseVersion\":\"v163\"");
+    assert_contains(fixture_for(164), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v163.json\"");
+    assert_contains(fixture_for(164), "\"auditFormatterExtracted\":true");
+    assert_contains(fixture_for(164), "\"slotPreviewModuleOwnsAssignments\":true");
+    assert_contains(fixture_for(164), "\"slotPreviewAuditStillPublished\":true");
+    assert_contains(fixture_for(164), "\"slotTablePreviewStillPublished\":true");
+    assert_contains(fixture_for(164), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(164), "\"startsJavaService\":false");
+    assert_contains(fixture_for(164), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(164), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(164), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(164), "\"executionAllowed\":false");
+    assert_contains(fixture_for(164), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v5\"");
+    assert_contains(fixture_for(164), "\"fieldCount\":337");
+    assert_contains(fixture_for(164), "\"groupCount\":18");
+    assert_contains(fixture_for(164), "\"evidenceDigest\":\"fnv1a64:9935ccb959b5a3b8\"");
+    assert_contains(fixture_for(165), "\"releaseVersion\":\"v165\"");
+    assert_contains(fixture_for(165), "\"status\":\"shard-readiness-release-catalog-read-only\"");
+    assert_contains(fixture_for(165), "\"shardReadinessReleaseCatalog\":{\"catalogMode\":"
                                            "\"versioned-shard-readiness-release-catalog-read-only\"");
-    assert_contains(consumed_v165_fixture, "\"sourceFrozenReleaseVersion\":\"v164\"");
-    assert_contains(consumed_v165_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v164.json\"");
-    assert_contains(consumed_v165_fixture, "\"catalogedReleaseCount\":4");
-    assert_contains(consumed_v165_fixture, "\"latestCatalogedReleaseVersion\":\"v164\"");
-    assert_contains(consumed_v165_fixture, "\"latestCatalogedDigest\":\"fnv1a64:9935ccb959b5a3b8\"");
-    assert_contains(consumed_v165_fixture, "\"primarySection\":\"slotTablePreviewAuditMaintenance\"");
-    assert_contains(consumed_v165_fixture, "\"versionedFixtureCatalogOnly\":true");
-    assert_contains(consumed_v165_fixture, "\"rollingCurrentUsedForFrozenCatalog\":false");
-    assert_contains(consumed_v165_fixture, "\"activeRouterInstalled\":false");
-    assert_contains(consumed_v165_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v165_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v165_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v6\"");
-    assert_contains(consumed_v165_fixture, "\"fieldCount\":357");
-    assert_contains(consumed_v165_fixture, "\"groupCount\":19");
-    assert_contains(consumed_v165_fixture, "\"evidenceDigest\":\"fnv1a64:5e94e2a9b438d2ad\"");
-    assert_contains(consumed_v166_fixture, "\"releaseVersion\":\"v166\"");
-    assert_contains(consumed_v166_fixture, "\"status\":\"shard-readiness-release-catalog-audit-read-only\"");
-    assert_contains(consumed_v166_fixture, "\"shardReadinessReleaseCatalogAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(165), "\"sourceFrozenReleaseVersion\":\"v164\"");
+    assert_contains(fixture_for(165), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v164.json\"");
+    assert_contains(fixture_for(165), "\"catalogedReleaseCount\":4");
+    assert_contains(fixture_for(165), "\"latestCatalogedReleaseVersion\":\"v164\"");
+    assert_contains(fixture_for(165), "\"latestCatalogedDigest\":\"fnv1a64:9935ccb959b5a3b8\"");
+    assert_contains(fixture_for(165), "\"primarySection\":\"slotTablePreviewAuditMaintenance\"");
+    assert_contains(fixture_for(165), "\"versionedFixtureCatalogOnly\":true");
+    assert_contains(fixture_for(165), "\"rollingCurrentUsedForFrozenCatalog\":false");
+    assert_contains(fixture_for(165), "\"activeRouterInstalled\":false");
+    assert_contains(fixture_for(165), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(165), "\"executionAllowed\":false");
+    assert_contains(fixture_for(165), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v6\"");
+    assert_contains(fixture_for(165), "\"fieldCount\":357");
+    assert_contains(fixture_for(165), "\"groupCount\":19");
+    assert_contains(fixture_for(165), "\"evidenceDigest\":\"fnv1a64:5e94e2a9b438d2ad\"");
+    assert_contains(fixture_for(166), "\"releaseVersion\":\"v166\"");
+    assert_contains(fixture_for(166), "\"status\":\"shard-readiness-release-catalog-audit-read-only\"");
+    assert_contains(fixture_for(166), "\"shardReadinessReleaseCatalogAudit\":{\"auditMode\":"
                                            "\"shard-readiness-release-catalog-consistency-read-only\"");
-    assert_contains(consumed_v166_fixture, "\"sourceFrozenReleaseVersion\":\"v165\"");
-    assert_contains(consumed_v166_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v165.json\"");
-    assert_contains(consumed_v166_fixture, "\"expectedReleaseCount\":4");
-    assert_contains(consumed_v166_fixture, "\"observedReleaseCount\":4");
-    assert_contains(consumed_v166_fixture, "\"contiguousReleaseRange\":true");
-    assert_contains(consumed_v166_fixture, "\"duplicateReleasesDetected\":false");
-    assert_contains(consumed_v166_fixture, "\"latestDigestMatchesFrozenSource\":true");
-    assert_contains(consumed_v166_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v166_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v166_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v166_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v166_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v166_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v7\"");
-    assert_contains(consumed_v166_fixture, "\"fieldCount\":381");
-    assert_contains(consumed_v166_fixture, "\"groupCount\":20");
-    assert_contains(consumed_v166_fixture, "\"evidenceDigest\":\"fnv1a64:4bd18a01790dc5f1\"");
-    assert_contains(consumed_v167_fixture, "\"releaseVersion\":\"v167\"");
-    assert_contains(consumed_v167_fixture, "\"status\":\"node-route-split-window-compatibility-read-only\"");
-    assert_contains(consumed_v167_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(166), "\"sourceFrozenReleaseVersion\":\"v165\"");
+    assert_contains(fixture_for(166), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v165.json\"");
+    assert_contains(fixture_for(166), "\"expectedReleaseCount\":4");
+    assert_contains(fixture_for(166), "\"observedReleaseCount\":4");
+    assert_contains(fixture_for(166), "\"contiguousReleaseRange\":true");
+    assert_contains(fixture_for(166), "\"duplicateReleasesDetected\":false");
+    assert_contains(fixture_for(166), "\"latestDigestMatchesFrozenSource\":true");
+    assert_contains(fixture_for(166), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(166), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(166), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(166), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(166), "\"executionAllowed\":false");
+    assert_contains(fixture_for(166), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v7\"");
+    assert_contains(fixture_for(166), "\"fieldCount\":381");
+    assert_contains(fixture_for(166), "\"groupCount\":20");
+    assert_contains(fixture_for(166), "\"evidenceDigest\":\"fnv1a64:4bd18a01790dc5f1\"");
+    assert_contains(fixture_for(167), "\"releaseVersion\":\"v167\"");
+    assert_contains(fixture_for(167), "\"status\":\"node-route-split-window-compatibility-read-only\"");
+    assert_contains(fixture_for(167), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v440-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v167_fixture, "\"sourceFrozenReleaseVersion\":\"v166\"");
-    assert_contains(consumed_v167_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v166.json\"");
-    assert_contains(consumed_v167_fixture, "\"windowEndNodeVersion\":\"Node v440\"");
-    assert_contains(consumed_v167_fixture, "\"splitRouteGroupCount\":8");
-    assert_contains(consumed_v167_fixture, "\"nodeAddsEvidenceGate\":false");
-    assert_contains(consumed_v167_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v167_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v167_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v167_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v167_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v167_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v8\"");
-    assert_contains(consumed_v167_fixture, "\"fieldCount\":401");
-    assert_contains(consumed_v167_fixture, "\"groupCount\":21");
-    assert_contains(consumed_v167_fixture, "\"evidenceDigest\":\"fnv1a64:caf300915d4e988c\"");
-    assert_contains(consumed_v168_fixture, "\"releaseVersion\":\"v168\"");
-    assert_contains(consumed_v168_fixture, "\"status\":\"node-route-split-window-preparation-plan-read-only\"");
-    assert_contains(consumed_v168_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(167), "\"sourceFrozenReleaseVersion\":\"v166\"");
+    assert_contains(fixture_for(167), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v166.json\"");
+    assert_contains(fixture_for(167), "\"windowEndNodeVersion\":\"Node v440\"");
+    assert_contains(fixture_for(167), "\"splitRouteGroupCount\":8");
+    assert_contains(fixture_for(167), "\"nodeAddsEvidenceGate\":false");
+    assert_contains(fixture_for(167), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(167), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(167), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(167), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(167), "\"executionAllowed\":false");
+    assert_contains(fixture_for(167), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v8\"");
+    assert_contains(fixture_for(167), "\"fieldCount\":401");
+    assert_contains(fixture_for(167), "\"groupCount\":21");
+    assert_contains(fixture_for(167), "\"evidenceDigest\":\"fnv1a64:caf300915d4e988c\"");
+    assert_contains(fixture_for(168), "\"releaseVersion\":\"v168\"");
+    assert_contains(fixture_for(168), "\"status\":\"node-route-split-window-preparation-plan-read-only\"");
+    assert_contains(fixture_for(168), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v441-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v168_fixture, "\"sourceFrozenReleaseVersion\":\"v167\"");
-    assert_contains(consumed_v168_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v167.json\"");
-    assert_contains(consumed_v168_fixture, "\"windowEndNodeVersion\":\"Node v441\"");
-    assert_contains(consumed_v168_fixture, "\"splitRouteGroupCount\":9");
-    assert_contains(consumed_v168_fixture, "\"nodeV441DesignDraftBodyPreparationPlanRouteSplitPreserved\":true");
-    assert_contains(consumed_v168_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v168_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v168_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v168_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v168_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v168_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v8\"");
-    assert_contains(consumed_v168_fixture, "\"fieldCount\":401");
-    assert_contains(consumed_v168_fixture, "\"groupCount\":21");
-    assert_contains(consumed_v168_fixture, "\"evidenceDigest\":\"fnv1a64:d0d0ef2b2a0f5a0a\"");
-    assert_contains(consumed_v169_fixture, "\"releaseVersion\":\"v169\"");
-    assert_contains(consumed_v169_fixture, "\"status\":\"node-route-split-window-audit-read-only\"");
-    assert_contains(consumed_v169_fixture, "\"nodeRouteSplitCompatibilityWindowAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(168), "\"sourceFrozenReleaseVersion\":\"v167\"");
+    assert_contains(fixture_for(168), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v167.json\"");
+    assert_contains(fixture_for(168), "\"windowEndNodeVersion\":\"Node v441\"");
+    assert_contains(fixture_for(168), "\"splitRouteGroupCount\":9");
+    assert_contains(fixture_for(168), "\"nodeV441DesignDraftBodyPreparationPlanRouteSplitPreserved\":true");
+    assert_contains(fixture_for(168), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(168), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(168), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(168), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(168), "\"executionAllowed\":false");
+    assert_contains(fixture_for(168), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v8\"");
+    assert_contains(fixture_for(168), "\"fieldCount\":401");
+    assert_contains(fixture_for(168), "\"groupCount\":21");
+    assert_contains(fixture_for(168), "\"evidenceDigest\":\"fnv1a64:d0d0ef2b2a0f5a0a\"");
+    assert_contains(fixture_for(169), "\"releaseVersion\":\"v169\"");
+    assert_contains(fixture_for(169), "\"status\":\"node-route-split-window-audit-read-only\"");
+    assert_contains(fixture_for(169), "\"nodeRouteSplitCompatibilityWindowAudit\":{\"auditMode\":"
                                            "\"node-route-split-compatibility-window-consistency-read-only\"");
-    assert_contains(consumed_v169_fixture, "\"sourceFrozenReleaseVersion\":\"v168\"");
-    assert_contains(consumed_v169_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v168.json\"");
-    assert_contains(consumed_v169_fixture, "\"expectedWindowVersionCount\":9");
-    assert_contains(consumed_v169_fixture, "\"observedWindowVersionCount\":9");
-    assert_contains(consumed_v169_fixture, "\"windowRangeEnd\":\"Node v441\"");
-    assert_contains(consumed_v169_fixture, "\"sourceFrozenWindowDigest\":\"fnv1a64:d0d0ef2b2a0f5a0a\"");
-    assert_contains(consumed_v169_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v169_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v169_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v169_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v169_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v169_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v169_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v169_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v169_fixture, "\"evidenceDigest\":\"fnv1a64:eaa587d1a50d8200\"");
-    assert_contains(consumed_v170_fixture, "\"releaseVersion\":\"v170\"");
-    assert_contains(consumed_v170_fixture, "\"status\":\"node-route-split-window-draft-candidate-read-only\"");
-    assert_contains(consumed_v170_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(169), "\"sourceFrozenReleaseVersion\":\"v168\"");
+    assert_contains(fixture_for(169), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v168.json\"");
+    assert_contains(fixture_for(169), "\"expectedWindowVersionCount\":9");
+    assert_contains(fixture_for(169), "\"observedWindowVersionCount\":9");
+    assert_contains(fixture_for(169), "\"windowRangeEnd\":\"Node v441\"");
+    assert_contains(fixture_for(169), "\"sourceFrozenWindowDigest\":\"fnv1a64:d0d0ef2b2a0f5a0a\"");
+    assert_contains(fixture_for(169), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(169), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(169), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(169), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(169), "\"executionAllowed\":false");
+    assert_contains(fixture_for(169), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(169), "\"fieldCount\":420");
+    assert_contains(fixture_for(169), "\"groupCount\":22");
+    assert_contains(fixture_for(169), "\"evidenceDigest\":\"fnv1a64:eaa587d1a50d8200\"");
+    assert_contains(fixture_for(170), "\"releaseVersion\":\"v170\"");
+    assert_contains(fixture_for(170), "\"status\":\"node-route-split-window-draft-candidate-read-only\"");
+    assert_contains(fixture_for(170), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v442-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v170_fixture, "\"sourceFrozenReleaseVersion\":\"v169\"");
-    assert_contains(consumed_v170_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v169.json\"");
-    assert_contains(consumed_v170_fixture, "\"windowEndNodeVersion\":\"Node v442\"");
-    assert_contains(consumed_v170_fixture, "\"splitRouteGroupCount\":10");
-    assert_contains(consumed_v170_fixture, "\"observedWindowVersionCount\":10");
-    assert_contains(consumed_v170_fixture, "\"nodeV442DesignDraftBodyDraftCandidateRouteSplitPreserved\":true");
-    assert_contains(consumed_v170_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v170_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v170_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v170_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v170_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v170_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v170_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v170_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v170_fixture, "\"evidenceDigest\":\"fnv1a64:d06aaa033f5c1d86\"");
-    assert_contains(consumed_v171_fixture, "\"releaseVersion\":\"v171\"");
-    assert_contains(consumed_v171_fixture, "\"status\":\"node-route-split-window-managed-audit-read-only\"");
-    assert_contains(consumed_v171_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(170), "\"sourceFrozenReleaseVersion\":\"v169\"");
+    assert_contains(fixture_for(170), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v169.json\"");
+    assert_contains(fixture_for(170), "\"windowEndNodeVersion\":\"Node v442\"");
+    assert_contains(fixture_for(170), "\"splitRouteGroupCount\":10");
+    assert_contains(fixture_for(170), "\"observedWindowVersionCount\":10");
+    assert_contains(fixture_for(170), "\"nodeV442DesignDraftBodyDraftCandidateRouteSplitPreserved\":true");
+    assert_contains(fixture_for(170), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(170), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(170), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(170), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(170), "\"executionAllowed\":false");
+    assert_contains(fixture_for(170), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(170), "\"fieldCount\":420");
+    assert_contains(fixture_for(170), "\"groupCount\":22");
+    assert_contains(fixture_for(170), "\"evidenceDigest\":\"fnv1a64:d06aaa033f5c1d86\"");
+    assert_contains(fixture_for(171), "\"releaseVersion\":\"v171\"");
+    assert_contains(fixture_for(171), "\"status\":\"node-route-split-window-managed-audit-read-only\"");
+    assert_contains(fixture_for(171), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v444-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v171_fixture, "\"sourceFrozenReleaseVersion\":\"v170\"");
-    assert_contains(consumed_v171_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v170.json\"");
-    assert_contains(consumed_v171_fixture, "\"windowEndNodeVersion\":\"Node v444\"");
-    assert_contains(consumed_v171_fixture, "\"splitRouteGroupCount\":12");
-    assert_contains(consumed_v171_fixture, "\"observedWindowVersionCount\":12");
-    assert_contains(consumed_v171_fixture, "\"nodeV443ManagedAuditAdapterRouteSplitPreserved\":true");
-    assert_contains(consumed_v171_fixture, "\"nodeV444ManagedAuditPersistenceRouteSplitPreserved\":true");
-    assert_contains(consumed_v171_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v171_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v171_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v171_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v171_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v171_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v171_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v171_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v171_fixture, "\"evidenceDigest\":\"fnv1a64:9f6aa583ef521d1a\"");
-    assert_contains(consumed_v172_fixture, "\"releaseVersion\":\"v172\"");
-    assert_contains(consumed_v172_fixture, "\"status\":\"node-route-split-window-restore-drill-read-only\"");
-    assert_contains(consumed_v172_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(171), "\"sourceFrozenReleaseVersion\":\"v170\"");
+    assert_contains(fixture_for(171), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v170.json\"");
+    assert_contains(fixture_for(171), "\"windowEndNodeVersion\":\"Node v444\"");
+    assert_contains(fixture_for(171), "\"splitRouteGroupCount\":12");
+    assert_contains(fixture_for(171), "\"observedWindowVersionCount\":12");
+    assert_contains(fixture_for(171), "\"nodeV443ManagedAuditAdapterRouteSplitPreserved\":true");
+    assert_contains(fixture_for(171), "\"nodeV444ManagedAuditPersistenceRouteSplitPreserved\":true");
+    assert_contains(fixture_for(171), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(171), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(171), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(171), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(171), "\"executionAllowed\":false");
+    assert_contains(fixture_for(171), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(171), "\"fieldCount\":420");
+    assert_contains(fixture_for(171), "\"groupCount\":22");
+    assert_contains(fixture_for(171), "\"evidenceDigest\":\"fnv1a64:9f6aa583ef521d1a\"");
+    assert_contains(fixture_for(172), "\"releaseVersion\":\"v172\"");
+    assert_contains(fixture_for(172), "\"status\":\"node-route-split-window-restore-drill-read-only\"");
+    assert_contains(fixture_for(172), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v446-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v172_fixture, "\"sourceFrozenReleaseVersion\":\"v171\"");
-    assert_contains(consumed_v172_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v171.json\"");
-    assert_contains(consumed_v172_fixture, "\"windowEndNodeVersion\":\"Node v446\"");
-    assert_contains(consumed_v172_fixture, "\"splitRouteGroupCount\":14");
-    assert_contains(consumed_v172_fixture, "\"observedWindowVersionCount\":14");
-    assert_contains(consumed_v172_fixture, "\"nodeV445ManagedAuditIdentityApprovalRouteSplitPreserved\":true");
-    assert_contains(consumed_v172_fixture, "\"nodeV446ManagedAuditRestoreDrillRouteSplitPreserved\":true");
-    assert_contains(consumed_v172_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v172_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v172_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v172_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v172_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v172_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v172_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v172_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v172_fixture, "\"evidenceDigest\":\"fnv1a64:85f0acb5a011256f\"");
-    assert_contains(consumed_v173_fixture, "\"releaseVersion\":\"v173\"");
-    assert_contains(consumed_v173_fixture, "\"status\":\"node-route-split-window-dry-run-adapter-read-only\"");
-    assert_contains(consumed_v173_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(172), "\"sourceFrozenReleaseVersion\":\"v171\"");
+    assert_contains(fixture_for(172), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v171.json\"");
+    assert_contains(fixture_for(172), "\"windowEndNodeVersion\":\"Node v446\"");
+    assert_contains(fixture_for(172), "\"splitRouteGroupCount\":14");
+    assert_contains(fixture_for(172), "\"observedWindowVersionCount\":14");
+    assert_contains(fixture_for(172), "\"nodeV445ManagedAuditIdentityApprovalRouteSplitPreserved\":true");
+    assert_contains(fixture_for(172), "\"nodeV446ManagedAuditRestoreDrillRouteSplitPreserved\":true");
+    assert_contains(fixture_for(172), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(172), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(172), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(172), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(172), "\"executionAllowed\":false");
+    assert_contains(fixture_for(172), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(172), "\"fieldCount\":420");
+    assert_contains(fixture_for(172), "\"groupCount\":22");
+    assert_contains(fixture_for(172), "\"evidenceDigest\":\"fnv1a64:85f0acb5a011256f\"");
+    assert_contains(fixture_for(173), "\"releaseVersion\":\"v173\"");
+    assert_contains(fixture_for(173), "\"status\":\"node-route-split-window-dry-run-adapter-read-only\"");
+    assert_contains(fixture_for(173), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v447-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v173_fixture, "\"sourceFrozenReleaseVersion\":\"v172\"");
-    assert_contains(consumed_v173_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v172.json\"");
-    assert_contains(consumed_v173_fixture, "\"windowEndNodeVersion\":\"Node v447\"");
-    assert_contains(consumed_v173_fixture, "\"splitRouteGroupCount\":15");
-    assert_contains(consumed_v173_fixture, "\"observedWindowVersionCount\":15");
-    assert_contains(consumed_v173_fixture, "\"nodeV447ManagedAuditDryRunAdapterRouteSplitPreserved\":true");
-    assert_contains(consumed_v173_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v173_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v173_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v173_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v173_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v173_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v173_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v173_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v173_fixture, "\"evidenceDigest\":\"fnv1a64:33a60bc1d66fd286\"");
-    assert_contains(consumed_v174_fixture, "\"releaseVersion\":\"v174\"");
-    assert_contains(consumed_v174_fixture, "\"status\":\"node-route-split-window-route-quality-read-only\"");
-    assert_contains(consumed_v174_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(173), "\"sourceFrozenReleaseVersion\":\"v172\"");
+    assert_contains(fixture_for(173), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v172.json\"");
+    assert_contains(fixture_for(173), "\"windowEndNodeVersion\":\"Node v447\"");
+    assert_contains(fixture_for(173), "\"splitRouteGroupCount\":15");
+    assert_contains(fixture_for(173), "\"observedWindowVersionCount\":15");
+    assert_contains(fixture_for(173), "\"nodeV447ManagedAuditDryRunAdapterRouteSplitPreserved\":true");
+    assert_contains(fixture_for(173), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(173), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(173), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(173), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(173), "\"executionAllowed\":false");
+    assert_contains(fixture_for(173), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(173), "\"fieldCount\":420");
+    assert_contains(fixture_for(173), "\"groupCount\":22");
+    assert_contains(fixture_for(173), "\"evidenceDigest\":\"fnv1a64:33a60bc1d66fd286\"");
+    assert_contains(fixture_for(174), "\"releaseVersion\":\"v174\"");
+    assert_contains(fixture_for(174), "\"status\":\"node-route-split-window-route-quality-read-only\"");
+    assert_contains(fixture_for(174), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v448-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v174_fixture, "\"sourceFrozenReleaseVersion\":\"v173\"");
-    assert_contains(consumed_v174_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v173.json\"");
-    assert_contains(consumed_v174_fixture, "\"windowEndNodeVersion\":\"Node v448\"");
-    assert_contains(consumed_v174_fixture, "\"splitRouteGroupCount\":16");
-    assert_contains(consumed_v174_fixture, "\"observedWindowVersionCount\":16");
-    assert_contains(consumed_v174_fixture, "\"nodeV448ManagedAuditRouteQualityRouteSplitPreserved\":true");
-    assert_contains(consumed_v174_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v174_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v174_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v174_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v174_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v174_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v174_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v174_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v174_fixture, "\"evidenceDigest\":\"fnv1a64:d582c3d04aed99e1\"");
-    assert_contains(consumed_v175_fixture, "\"releaseVersion\":\"v175\"");
-    assert_contains(consumed_v175_fixture, "\"status\":\"node-route-split-window-adapter-implementation-read-only\"");
-    assert_contains(consumed_v175_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(174), "\"sourceFrozenReleaseVersion\":\"v173\"");
+    assert_contains(fixture_for(174), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v173.json\"");
+    assert_contains(fixture_for(174), "\"windowEndNodeVersion\":\"Node v448\"");
+    assert_contains(fixture_for(174), "\"splitRouteGroupCount\":16");
+    assert_contains(fixture_for(174), "\"observedWindowVersionCount\":16");
+    assert_contains(fixture_for(174), "\"nodeV448ManagedAuditRouteQualityRouteSplitPreserved\":true");
+    assert_contains(fixture_for(174), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(174), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(174), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(174), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(174), "\"executionAllowed\":false");
+    assert_contains(fixture_for(174), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(174), "\"fieldCount\":420");
+    assert_contains(fixture_for(174), "\"groupCount\":22");
+    assert_contains(fixture_for(174), "\"evidenceDigest\":\"fnv1a64:d582c3d04aed99e1\"");
+    assert_contains(fixture_for(175), "\"releaseVersion\":\"v175\"");
+    assert_contains(fixture_for(175), "\"status\":\"node-route-split-window-adapter-implementation-read-only\"");
+    assert_contains(fixture_for(175), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v449-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v175_fixture, "\"sourceFrozenReleaseVersion\":\"v174\"");
-    assert_contains(consumed_v175_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v174.json\"");
-    assert_contains(consumed_v175_fixture, "\"windowEndNodeVersion\":\"Node v449\"");
-    assert_contains(consumed_v175_fixture, "\"splitRouteGroupCount\":17");
-    assert_contains(consumed_v175_fixture, "\"observedWindowVersionCount\":17");
-    assert_contains(consumed_v175_fixture, "\"nodeV449ManagedAuditAdapterImplementationRouteSplitPreserved\":true");
-    assert_contains(consumed_v175_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v175_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v175_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v175_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v175_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v175_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v175_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v175_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v175_fixture, "\"evidenceDigest\":\"fnv1a64:61e561e1c8ba7d50\"");
-    assert_contains(consumed_v176_fixture, "\"releaseVersion\":\"v176\"");
-    assert_contains(consumed_v176_fixture,
+    assert_contains(fixture_for(175), "\"sourceFrozenReleaseVersion\":\"v174\"");
+    assert_contains(fixture_for(175), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v174.json\"");
+    assert_contains(fixture_for(175), "\"windowEndNodeVersion\":\"Node v449\"");
+    assert_contains(fixture_for(175), "\"splitRouteGroupCount\":17");
+    assert_contains(fixture_for(175), "\"observedWindowVersionCount\":17");
+    assert_contains(fixture_for(175), "\"nodeV449ManagedAuditAdapterImplementationRouteSplitPreserved\":true");
+    assert_contains(fixture_for(175), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(175), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(175), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(175), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(175), "\"executionAllowed\":false");
+    assert_contains(fixture_for(175), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(175), "\"fieldCount\":420");
+    assert_contains(fixture_for(175), "\"groupCount\":22");
+    assert_contains(fixture_for(175), "\"evidenceDigest\":\"fnv1a64:61e561e1c8ba7d50\"");
+    assert_contains(fixture_for(176), "\"releaseVersion\":\"v176\"");
+    assert_contains(fixture_for(176),
                     "\"status\":\"node-route-split-window-manual-sandbox-fake-transport-read-only\"");
-    assert_contains(consumed_v176_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(176), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v457-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v176_fixture, "\"sourceFrozenReleaseVersion\":\"v175\"");
-    assert_contains(consumed_v176_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v175.json\"");
-    assert_contains(consumed_v176_fixture, "\"windowEndNodeVersion\":\"Node v457\"");
-    assert_contains(consumed_v176_fixture, "\"splitRouteGroupCount\":25");
-    assert_contains(consumed_v176_fixture, "\"observedWindowVersionCount\":25");
-    assert_contains(consumed_v176_fixture, "\"nodeV457ManualSandboxConnectionFakeTransportRouteSplitPreserved\":true");
-    assert_contains(consumed_v176_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v176_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v176_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v176_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v176_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v176_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v176_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v176_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v176_fixture, "\"evidenceDigest\":\"fnv1a64:528073c4315ef89b\"");
-    assert_contains(consumed_v177_fixture, "\"releaseVersion\":\"v177\"");
-    assert_contains(consumed_v177_fixture, "\"status\":\"node-route-split-window-foundational-audit-read-only\"");
-    assert_contains(consumed_v177_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(176), "\"sourceFrozenReleaseVersion\":\"v175\"");
+    assert_contains(fixture_for(176), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v175.json\"");
+    assert_contains(fixture_for(176), "\"windowEndNodeVersion\":\"Node v457\"");
+    assert_contains(fixture_for(176), "\"splitRouteGroupCount\":25");
+    assert_contains(fixture_for(176), "\"observedWindowVersionCount\":25");
+    assert_contains(fixture_for(176), "\"nodeV457ManualSandboxConnectionFakeTransportRouteSplitPreserved\":true");
+    assert_contains(fixture_for(176), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(176), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(176), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(176), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(176), "\"executionAllowed\":false");
+    assert_contains(fixture_for(176), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(176), "\"fieldCount\":420");
+    assert_contains(fixture_for(176), "\"groupCount\":22");
+    assert_contains(fixture_for(176), "\"evidenceDigest\":\"fnv1a64:528073c4315ef89b\"");
+    assert_contains(fixture_for(177), "\"releaseVersion\":\"v177\"");
+    assert_contains(fixture_for(177), "\"status\":\"node-route-split-window-foundational-audit-read-only\"");
+    assert_contains(fixture_for(177), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v458-route-split-window-contract-stable-read-only\"");
-    assert_contains(consumed_v177_fixture, "\"sourceFrozenReleaseVersion\":\"v176\"");
-    assert_contains(consumed_v177_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v176.json\"");
-    assert_contains(consumed_v177_fixture, "\"windowEndNodeVersion\":\"Node v458\"");
-    assert_contains(consumed_v177_fixture, "\"splitRouteGroupCount\":26");
-    assert_contains(consumed_v177_fixture, "\"observedWindowVersionCount\":26");
-    assert_contains(consumed_v177_fixture, "\"nodeV458FoundationalAuditRouteSplitPreserved\":true");
-    assert_contains(consumed_v177_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v177_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v177_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v177_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v177_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v177_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v177_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v177_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v177_fixture, "\"evidenceDigest\":\"fnv1a64:e773708a4decc60e\"");
-    assert_contains(consumed_v178_fixture, "\"releaseVersion\":\"v178\"");
-    assert_contains(consumed_v178_fixture, "\"status\":\"node-route-split-window-computed-audit-read-only\"");
-    assert_contains(consumed_v178_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(177), "\"sourceFrozenReleaseVersion\":\"v176\"");
+    assert_contains(fixture_for(177), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v176.json\"");
+    assert_contains(fixture_for(177), "\"windowEndNodeVersion\":\"Node v458\"");
+    assert_contains(fixture_for(177), "\"splitRouteGroupCount\":26");
+    assert_contains(fixture_for(177), "\"observedWindowVersionCount\":26");
+    assert_contains(fixture_for(177), "\"nodeV458FoundationalAuditRouteSplitPreserved\":true");
+    assert_contains(fixture_for(177), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(177), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(177), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(177), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(177), "\"executionAllowed\":false");
+    assert_contains(fixture_for(177), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(177), "\"fieldCount\":420");
+    assert_contains(fixture_for(177), "\"groupCount\":22");
+    assert_contains(fixture_for(177), "\"evidenceDigest\":\"fnv1a64:e773708a4decc60e\"");
+    assert_contains(fixture_for(178), "\"releaseVersion\":\"v178\"");
+    assert_contains(fixture_for(178), "\"status\":\"node-route-split-window-computed-audit-read-only\"");
+    assert_contains(fixture_for(178), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v458-route-split-window-computed-audit-read-only\"");
-    assert_contains(consumed_v178_fixture, "\"sourceFrozenReleaseVersion\":\"v177\"");
-    assert_contains(consumed_v178_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v177.json\"");
-    assert_contains(consumed_v178_fixture, "\"windowEndNodeVersion\":\"Node v458\"");
-    assert_contains(consumed_v178_fixture, "\"splitRouteGroupCount\":26");
-    assert_contains(consumed_v178_fixture, "\"observedWindowVersionCount\":26");
-    assert_contains(consumed_v178_fixture, "\"contiguousNodeVersionWindow\":true");
-    assert_contains(consumed_v178_fixture, "\"duplicateWindowVersionsDetected\":false");
-    assert_contains(consumed_v178_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v178_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v178_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v178_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v178_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v178_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
-    assert_contains(consumed_v178_fixture, "\"fieldCount\":420");
-    assert_contains(consumed_v178_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v178_fixture, "\"evidenceDigest\":\"fnv1a64:dd89f7c3bd63d7c3\"");
-    assert_contains(consumed_v179_fixture, "\"releaseVersion\":\"v179\"");
-    assert_contains(consumed_v179_fixture, "\"status\":\"node-route-split-window-numeric-span-audit-read-only\"");
-    assert_contains(consumed_v179_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(178), "\"sourceFrozenReleaseVersion\":\"v177\"");
+    assert_contains(fixture_for(178), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v177.json\"");
+    assert_contains(fixture_for(178), "\"windowEndNodeVersion\":\"Node v458\"");
+    assert_contains(fixture_for(178), "\"splitRouteGroupCount\":26");
+    assert_contains(fixture_for(178), "\"observedWindowVersionCount\":26");
+    assert_contains(fixture_for(178), "\"contiguousNodeVersionWindow\":true");
+    assert_contains(fixture_for(178), "\"duplicateWindowVersionsDetected\":false");
+    assert_contains(fixture_for(178), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(178), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(178), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(178), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(178), "\"executionAllowed\":false");
+    assert_contains(fixture_for(178), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v9\"");
+    assert_contains(fixture_for(178), "\"fieldCount\":420");
+    assert_contains(fixture_for(178), "\"groupCount\":22");
+    assert_contains(fixture_for(178), "\"evidenceDigest\":\"fnv1a64:dd89f7c3bd63d7c3\"");
+    assert_contains(fixture_for(179), "\"releaseVersion\":\"v179\"");
+    assert_contains(fixture_for(179), "\"status\":\"node-route-split-window-numeric-span-audit-read-only\"");
+    assert_contains(fixture_for(179), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v458-route-split-window-numeric-span-audit-read-only\"");
-    assert_contains(consumed_v179_fixture, "\"sourceFrozenReleaseVersion\":\"v178\"");
-    assert_contains(consumed_v179_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v178.json\"");
-    assert_contains(consumed_v179_fixture, "\"windowRangeStartNumber\":433");
-    assert_contains(consumed_v179_fixture, "\"windowRangeEndNumber\":458");
-    assert_contains(consumed_v179_fixture, "\"computedWindowVersionSpan\":26");
-    assert_contains(consumed_v179_fixture, "\"windowRangeNumbersParseable\":true");
-    assert_contains(consumed_v179_fixture, "\"windowCountMatchesRange\":true");
-    assert_contains(consumed_v179_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v179_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v179_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v179_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v179_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v179_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v10\"");
-    assert_contains(consumed_v179_fixture, "\"fieldCount\":422");
-    assert_contains(consumed_v179_fixture, "\"groupCount\":22");
-    assert_contains(consumed_v179_fixture, "\"evidenceDigest\":\"fnv1a64:d88350b581f2c458\"");
-    assert_contains(consumed_v180_fixture, "\"releaseVersion\":\"v180\"");
-    assert_contains(consumed_v180_fixture, "\"status\":\"shard-readiness-history-formatter-maintenance-read-only\"");
-    assert_contains(consumed_v180_fixture, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
+    assert_contains(fixture_for(179), "\"sourceFrozenReleaseVersion\":\"v178\"");
+    assert_contains(fixture_for(179), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v178.json\"");
+    assert_contains(fixture_for(179), "\"windowRangeStartNumber\":433");
+    assert_contains(fixture_for(179), "\"windowRangeEndNumber\":458");
+    assert_contains(fixture_for(179), "\"computedWindowVersionSpan\":26");
+    assert_contains(fixture_for(179), "\"windowRangeNumbersParseable\":true");
+    assert_contains(fixture_for(179), "\"windowCountMatchesRange\":true");
+    assert_contains(fixture_for(179), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(179), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(179), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(179), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(179), "\"executionAllowed\":false");
+    assert_contains(fixture_for(179), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v10\"");
+    assert_contains(fixture_for(179), "\"fieldCount\":422");
+    assert_contains(fixture_for(179), "\"groupCount\":22");
+    assert_contains(fixture_for(179), "\"evidenceDigest\":\"fnv1a64:d88350b581f2c458\"");
+    assert_contains(fixture_for(180), "\"releaseVersion\":\"v180\"");
+    assert_contains(fixture_for(180), "\"status\":\"shard-readiness-history-formatter-maintenance-read-only\"");
+    assert_contains(fixture_for(180), "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                            "\"history-fixture-archive-formatter-split-read-only\"");
-    assert_contains(consumed_v180_fixture, "\"sourceFrozenReleaseVersion\":\"v179\"");
-    assert_contains(consumed_v180_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v179.json\"");
-    assert_contains(consumed_v180_fixture, "\"sourceFrozenDigest\":\"fnv1a64:d88350b581f2c458\"");
-    assert_contains(consumed_v180_fixture, "\"preservesFixtureParity\":true");
-    assert_contains(consumed_v180_fixture, "\"preservesArchiveCompatibility\":true");
-    assert_contains(consumed_v180_fixture, "\"preservesHistoricalFallback\":true");
-    assert_contains(consumed_v180_fixture, "\"changesShardJsonCommand\":false");
-    assert_contains(consumed_v180_fixture, "\"changesFixturePath\":false");
-    assert_contains(consumed_v180_fixture, "\"startsServices\":false");
-    assert_contains(consumed_v180_fixture, "\"runtimeProbeAllowed\":false");
-    assert_contains(consumed_v180_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v180_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v180_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v11\"");
-    assert_contains(consumed_v180_fixture, "\"fieldCount\":431");
-    assert_contains(consumed_v180_fixture, "\"groupCount\":23");
-    assert_contains(consumed_v180_fixture, "\"evidenceDigest\":\"fnv1a64:3403c490a3e623e0\"");
-    assert_contains(consumed_v181_fixture, "\"releaseVersion\":\"v181\"");
-    assert_contains(consumed_v181_fixture, "\"status\":\"node-route-catalog-integrity-window-read-only\"");
-    assert_contains(consumed_v181_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(180), "\"sourceFrozenReleaseVersion\":\"v179\"");
+    assert_contains(fixture_for(180), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v179.json\"");
+    assert_contains(fixture_for(180), "\"sourceFrozenDigest\":\"fnv1a64:d88350b581f2c458\"");
+    assert_contains(fixture_for(180), "\"preservesFixtureParity\":true");
+    assert_contains(fixture_for(180), "\"preservesArchiveCompatibility\":true");
+    assert_contains(fixture_for(180), "\"preservesHistoricalFallback\":true");
+    assert_contains(fixture_for(180), "\"changesShardJsonCommand\":false");
+    assert_contains(fixture_for(180), "\"changesFixturePath\":false");
+    assert_contains(fixture_for(180), "\"startsServices\":false");
+    assert_contains(fixture_for(180), "\"runtimeProbeAllowed\":false");
+    assert_contains(fixture_for(180), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(180), "\"executionAllowed\":false");
+    assert_contains(fixture_for(180), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v11\"");
+    assert_contains(fixture_for(180), "\"fieldCount\":431");
+    assert_contains(fixture_for(180), "\"groupCount\":23");
+    assert_contains(fixture_for(180), "\"evidenceDigest\":\"fnv1a64:3403c490a3e623e0\"");
+    assert_contains(fixture_for(181), "\"releaseVersion\":\"v181\"");
+    assert_contains(fixture_for(181), "\"status\":\"node-route-catalog-integrity-window-read-only\"");
+    assert_contains(fixture_for(181), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v460-route-catalog-integrity-window-read-only\"");
-    assert_contains(consumed_v181_fixture, "\"sourceFrozenReleaseVersion\":\"v180\"");
-    assert_contains(consumed_v181_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v180.json\"");
-    assert_contains(consumed_v181_fixture, "\"windowEndNodeVersion\":\"Node v460\"");
-    assert_contains(consumed_v181_fixture, "\"splitRouteGroupCount\":28");
-    assert_contains(consumed_v181_fixture, "\"computedWindowVersionSpan\":28");
-    assert_contains(consumed_v181_fixture, "\"sourceFrozenWindowDigest\":\"fnv1a64:3403c490a3e623e0\"");
-    assert_contains(consumed_v181_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v181_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v181_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v181_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v181_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v181_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v11\"");
-    assert_contains(consumed_v181_fixture, "\"fieldCount\":431");
-    assert_contains(consumed_v181_fixture, "\"groupCount\":23");
-    assert_contains(consumed_v181_fixture, "\"evidenceDigest\":\"fnv1a64:58e9b51084ad91e5\"");
-    assert_contains(consumed_v182_fixture, "\"releaseVersion\":\"v182\"");
-    assert_contains(consumed_v182_fixture, "\"status\":\"node-route-catalog-test-migration-window-read-only\"");
-    assert_contains(consumed_v182_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(181), "\"sourceFrozenReleaseVersion\":\"v180\"");
+    assert_contains(fixture_for(181), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v180.json\"");
+    assert_contains(fixture_for(181), "\"windowEndNodeVersion\":\"Node v460\"");
+    assert_contains(fixture_for(181), "\"splitRouteGroupCount\":28");
+    assert_contains(fixture_for(181), "\"computedWindowVersionSpan\":28");
+    assert_contains(fixture_for(181), "\"sourceFrozenWindowDigest\":\"fnv1a64:3403c490a3e623e0\"");
+    assert_contains(fixture_for(181), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(181), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(181), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(181), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(181), "\"executionAllowed\":false");
+    assert_contains(fixture_for(181), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v11\"");
+    assert_contains(fixture_for(181), "\"fieldCount\":431");
+    assert_contains(fixture_for(181), "\"groupCount\":23");
+    assert_contains(fixture_for(181), "\"evidenceDigest\":\"fnv1a64:58e9b51084ad91e5\"");
+    assert_contains(fixture_for(182), "\"releaseVersion\":\"v182\"");
+    assert_contains(fixture_for(182), "\"status\":\"node-route-catalog-test-migration-window-read-only\"");
+    assert_contains(fixture_for(182), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v462-route-catalog-test-migration-window-read-only\"");
-    assert_contains(consumed_v182_fixture, "\"sourceFrozenReleaseVersion\":\"v181\"");
-    assert_contains(consumed_v182_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v181.json\"");
-    assert_contains(consumed_v182_fixture, "\"windowEndNodeVersion\":\"Node v462\"");
-    assert_contains(consumed_v182_fixture, "\"splitRouteGroupCount\":30");
-    assert_contains(consumed_v182_fixture, "\"computedWindowVersionSpan\":30");
-    assert_contains(consumed_v182_fixture, "\"sourceFrozenWindowDigest\":\"fnv1a64:58e9b51084ad91e5\"");
-    assert_contains(consumed_v182_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v182_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v182_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v182_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v182_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v182_fixture, "\"evidenceDigest\":\"fnv1a64:e4a40fd2e1d1d741\"");
-    assert_contains(consumed_v183_fixture, "\"releaseVersion\":\"v183\"");
-    assert_contains(consumed_v183_fixture, "\"status\":\"node-route-quality-catalog-integrity-window-read-only\"");
-    assert_contains(consumed_v183_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(182), "\"sourceFrozenReleaseVersion\":\"v181\"");
+    assert_contains(fixture_for(182), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v181.json\"");
+    assert_contains(fixture_for(182), "\"windowEndNodeVersion\":\"Node v462\"");
+    assert_contains(fixture_for(182), "\"splitRouteGroupCount\":30");
+    assert_contains(fixture_for(182), "\"computedWindowVersionSpan\":30");
+    assert_contains(fixture_for(182), "\"sourceFrozenWindowDigest\":\"fnv1a64:58e9b51084ad91e5\"");
+    assert_contains(fixture_for(182), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(182), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(182), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(182), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(182), "\"executionAllowed\":false");
+    assert_contains(fixture_for(182), "\"evidenceDigest\":\"fnv1a64:e4a40fd2e1d1d741\"");
+    assert_contains(fixture_for(183), "\"releaseVersion\":\"v183\"");
+    assert_contains(fixture_for(183), "\"status\":\"node-route-quality-catalog-integrity-window-read-only\"");
+    assert_contains(fixture_for(183), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v463-route-quality-catalog-integrity-window-read-only\"");
-    assert_contains(consumed_v183_fixture, "\"sourceFrozenReleaseVersion\":\"v182\"");
-    assert_contains(consumed_v183_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v182.json\"");
-    assert_contains(consumed_v183_fixture, "\"windowEndNodeVersion\":\"Node v463\"");
-    assert_contains(consumed_v183_fixture, "\"splitRouteGroupCount\":31");
-    assert_contains(consumed_v183_fixture, "\"computedWindowVersionSpan\":31");
-    assert_contains(consumed_v183_fixture, "\"sourceFrozenWindowDigest\":\"fnv1a64:e4a40fd2e1d1d741\"");
-    assert_contains(consumed_v183_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v183_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v183_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v183_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v183_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v183_fixture, "\"evidenceDigest\":\"fnv1a64:8b252a90cb150a99\"");
-    assert_contains(consumed_v184_fixture, "\"releaseVersion\":\"v184\"");
-    assert_contains(consumed_v184_fixture, "\"status\":\"node-route-catalog-final-closeout-window-read-only\"");
-    assert_contains(consumed_v184_fixture, "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
+    assert_contains(fixture_for(183), "\"sourceFrozenReleaseVersion\":\"v182\"");
+    assert_contains(fixture_for(183), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v182.json\"");
+    assert_contains(fixture_for(183), "\"windowEndNodeVersion\":\"Node v463\"");
+    assert_contains(fixture_for(183), "\"splitRouteGroupCount\":31");
+    assert_contains(fixture_for(183), "\"computedWindowVersionSpan\":31");
+    assert_contains(fixture_for(183), "\"sourceFrozenWindowDigest\":\"fnv1a64:e4a40fd2e1d1d741\"");
+    assert_contains(fixture_for(183), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(183), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(183), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(183), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(183), "\"executionAllowed\":false");
+    assert_contains(fixture_for(183), "\"evidenceDigest\":\"fnv1a64:8b252a90cb150a99\"");
+    assert_contains(fixture_for(184), "\"releaseVersion\":\"v184\"");
+    assert_contains(fixture_for(184), "\"status\":\"node-route-catalog-final-closeout-window-read-only\"");
+    assert_contains(fixture_for(184), "\"nodeRouteSplitCompatibilityWindow\":{\"windowMode\":"
                                            "\"node-v433-v464-route-catalog-final-closeout-window-read-only\"");
-    assert_contains(consumed_v184_fixture, "\"sourceFrozenReleaseVersion\":\"v183\"");
-    assert_contains(consumed_v184_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v183.json\"");
-    assert_contains(consumed_v184_fixture, "\"windowEndNodeVersion\":\"Node v464\"");
-    assert_contains(consumed_v184_fixture, "\"splitRouteGroupCount\":32");
-    assert_contains(consumed_v184_fixture, "\"computedWindowVersionSpan\":32");
-    assert_contains(consumed_v184_fixture, "\"sourceFrozenWindowDigest\":\"fnv1a64:8b252a90cb150a99\"");
-    assert_contains(consumed_v184_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v184_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v184_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v184_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v184_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v184_fixture, "\"evidenceDigest\":\"fnv1a64:5b7cd9ee9a9f2524\"");
-    assert_contains(consumed_v185_fixture, "\"releaseVersion\":\"v185\"");
-    assert_contains(consumed_v185_fixture, "\"status\":\"node-route-catalog-closeout-snapshot-read-only\"");
-    assert_contains(consumed_v185_fixture, "\"nodeRouteCatalogCloseoutSnapshot\":{\"snapshotMode\":"
+    assert_contains(fixture_for(184), "\"sourceFrozenReleaseVersion\":\"v183\"");
+    assert_contains(fixture_for(184), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v183.json\"");
+    assert_contains(fixture_for(184), "\"windowEndNodeVersion\":\"Node v464\"");
+    assert_contains(fixture_for(184), "\"splitRouteGroupCount\":32");
+    assert_contains(fixture_for(184), "\"computedWindowVersionSpan\":32");
+    assert_contains(fixture_for(184), "\"sourceFrozenWindowDigest\":\"fnv1a64:8b252a90cb150a99\"");
+    assert_contains(fixture_for(184), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(184), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(184), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(184), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(184), "\"executionAllowed\":false");
+    assert_contains(fixture_for(184), "\"evidenceDigest\":\"fnv1a64:5b7cd9ee9a9f2524\"");
+    assert_contains(fixture_for(185), "\"releaseVersion\":\"v185\"");
+    assert_contains(fixture_for(185), "\"status\":\"node-route-catalog-closeout-snapshot-read-only\"");
+    assert_contains(fixture_for(185), "\"nodeRouteCatalogCloseoutSnapshot\":{\"snapshotMode\":"
                                            "\"node-route-catalog-final-closeout-snapshot-read-only\"");
-    assert_contains(consumed_v185_fixture, "\"sourceFrozenReleaseVersion\":\"v184\"");
-    assert_contains(consumed_v185_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v184.json\"");
-    assert_contains(consumed_v185_fixture, "\"sourceFrozenDigest\":\"fnv1a64:5b7cd9ee9a9f2524\"");
-    assert_contains(consumed_v185_fixture, "\"focusedCloseoutTestFileCount\":7");
-    assert_contains(consumed_v185_fixture, "\"focusedCloseoutTestCount\":17");
-    assert_contains(consumed_v185_fixture, "\"nodeFullVitestFileCount\":393");
-    assert_contains(consumed_v185_fixture, "\"nodeFullVitestTestCount\":1221");
-    assert_contains(consumed_v185_fixture, "\"nodeConsumesFreshMiniKvEvidence\":false");
-    assert_contains(consumed_v185_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v185_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v185_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v185_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v185_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v185_fixture, "\"evidenceDigest\":\"fnv1a64:6a6b4cbdac4bdb46\"");
-    assert_contains(consumed_v186_fixture, "\"releaseVersion\":\"v186\"");
-    assert_contains(consumed_v186_fixture, "\"status\":\"node-route-catalog-anchor-removal-audit-read-only\"");
-    assert_contains(consumed_v186_fixture, "\"nodeRouteCatalogAnchorRemovalAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(185), "\"sourceFrozenReleaseVersion\":\"v184\"");
+    assert_contains(fixture_for(185), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v184.json\"");
+    assert_contains(fixture_for(185), "\"sourceFrozenDigest\":\"fnv1a64:5b7cd9ee9a9f2524\"");
+    assert_contains(fixture_for(185), "\"focusedCloseoutTestFileCount\":7");
+    assert_contains(fixture_for(185), "\"focusedCloseoutTestCount\":17");
+    assert_contains(fixture_for(185), "\"nodeFullVitestFileCount\":393");
+    assert_contains(fixture_for(185), "\"nodeFullVitestTestCount\":1221");
+    assert_contains(fixture_for(185), "\"nodeConsumesFreshMiniKvEvidence\":false");
+    assert_contains(fixture_for(185), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(185), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(185), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(185), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(185), "\"executionAllowed\":false");
+    assert_contains(fixture_for(185), "\"evidenceDigest\":\"fnv1a64:6a6b4cbdac4bdb46\"");
+    assert_contains(fixture_for(186), "\"releaseVersion\":\"v186\"");
+    assert_contains(fixture_for(186), "\"status\":\"node-route-catalog-anchor-removal-audit-read-only\"");
+    assert_contains(fixture_for(186), "\"nodeRouteCatalogAnchorRemovalAudit\":{\"auditMode\":"
                                            "\"node-route-catalog-anchor-removal-audit-read-only\"");
-    assert_contains(consumed_v186_fixture, "\"sourceFrozenReleaseVersion\":\"v185\"");
-    assert_contains(consumed_v186_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v185.json\"");
-    assert_contains(consumed_v186_fixture, "\"sourceFrozenDigest\":\"fnv1a64:6a6b4cbdac4bdb46\"");
-    assert_contains(consumed_v186_fixture, "\"windowEndNodeVersion\":\"Node v467\"");
-    assert_contains(consumed_v186_fixture, "\"splitRouteGroupCount\":35");
-    assert_contains(consumed_v186_fixture, "\"computedWindowVersionSpan\":35");
-    assert_contains(consumed_v186_fixture, "\"sourceAnchorCompatibilityRemoved\":true");
-    assert_contains(consumed_v186_fixture, "\"miniKvRouteAnchorDependencyIntroduced\":false");
-    assert_contains(consumed_v186_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v186_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v186_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v186_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v186_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v186_fixture, "\"evidenceDigest\":\"fnv1a64:a5d69dff949088ee\"");
-    assert_contains(consumed_v187_fixture, "\"releaseVersion\":\"v187\"");
-    assert_contains(consumed_v187_fixture,
+    assert_contains(fixture_for(186), "\"sourceFrozenReleaseVersion\":\"v185\"");
+    assert_contains(fixture_for(186), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v185.json\"");
+    assert_contains(fixture_for(186), "\"sourceFrozenDigest\":\"fnv1a64:6a6b4cbdac4bdb46\"");
+    assert_contains(fixture_for(186), "\"windowEndNodeVersion\":\"Node v467\"");
+    assert_contains(fixture_for(186), "\"splitRouteGroupCount\":35");
+    assert_contains(fixture_for(186), "\"computedWindowVersionSpan\":35");
+    assert_contains(fixture_for(186), "\"sourceAnchorCompatibilityRemoved\":true");
+    assert_contains(fixture_for(186), "\"miniKvRouteAnchorDependencyIntroduced\":false");
+    assert_contains(fixture_for(186), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(186), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(186), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(186), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(186), "\"executionAllowed\":false");
+    assert_contains(fixture_for(186), "\"evidenceDigest\":\"fnv1a64:a5d69dff949088ee\"");
+    assert_contains(fixture_for(187), "\"releaseVersion\":\"v187\"");
+    assert_contains(fixture_for(187),
                     "\"status\":\"node-route-catalog-expected-integrity-snapshot-audit-read-only\"");
-    assert_contains(consumed_v187_fixture, "\"nodeRouteCatalogExpectedIntegritySnapshotAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(187), "\"nodeRouteCatalogExpectedIntegritySnapshotAudit\":{\"auditMode\":"
                                            "\"node-route-catalog-expected-integrity-snapshot-audit-read-only\"");
-    assert_contains(consumed_v187_fixture, "\"sourceFrozenReleaseVersion\":\"v186\"");
-    assert_contains(consumed_v187_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v186.json\"");
-    assert_contains(consumed_v187_fixture, "\"sourceFrozenDigest\":\"fnv1a64:a5d69dff949088ee\"");
-    assert_contains(consumed_v187_fixture, "\"windowEndNodeVersion\":\"Node v471\"");
-    assert_contains(consumed_v187_fixture, "\"splitRouteGroupCount\":39");
-    assert_contains(consumed_v187_fixture, "\"computedWindowVersionSpan\":39");
-    assert_contains(consumed_v187_fixture, "\"expectedIntegritySnapshotFactoryMovedByNodeV471\":true");
-    assert_contains(consumed_v187_fixture, "\"miniKvOwnsNodeCatalogIntegritySnapshot\":false");
-    assert_contains(consumed_v187_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v187_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v187_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v187_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v187_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v187_fixture, "\"evidenceDigest\":\"fnv1a64:f4459b7beacceedd\"");
-    assert_contains(consumed_v188_fixture, "\"releaseVersion\":\"v188\"");
-    assert_contains(consumed_v188_fixture,
+    assert_contains(fixture_for(187), "\"sourceFrozenReleaseVersion\":\"v186\"");
+    assert_contains(fixture_for(187), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v186.json\"");
+    assert_contains(fixture_for(187), "\"sourceFrozenDigest\":\"fnv1a64:a5d69dff949088ee\"");
+    assert_contains(fixture_for(187), "\"windowEndNodeVersion\":\"Node v471\"");
+    assert_contains(fixture_for(187), "\"splitRouteGroupCount\":39");
+    assert_contains(fixture_for(187), "\"computedWindowVersionSpan\":39");
+    assert_contains(fixture_for(187), "\"expectedIntegritySnapshotFactoryMovedByNodeV471\":true");
+    assert_contains(fixture_for(187), "\"miniKvOwnsNodeCatalogIntegritySnapshot\":false");
+    assert_contains(fixture_for(187), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(187), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(187), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(187), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(187), "\"executionAllowed\":false");
+    assert_contains(fixture_for(187), "\"evidenceDigest\":\"fnv1a64:f4459b7beacceedd\"");
+    assert_contains(fixture_for(188), "\"releaseVersion\":\"v188\"");
+    assert_contains(fixture_for(188),
                     "\"status\":\"node-route-catalog-expected-integrity-snapshot-freeze-read-only\"");
-    assert_contains(consumed_v188_fixture, "\"nodeRouteCatalogExpectedIntegritySnapshotFreeze\":{\"freezeMode\":"
+    assert_contains(fixture_for(188), "\"nodeRouteCatalogExpectedIntegritySnapshotFreeze\":{\"freezeMode\":"
                                            "\"node-route-catalog-expected-integrity-snapshot-freeze-read-only\"");
-    assert_contains(consumed_v188_fixture, "\"frozenReleaseVersion\":\"v187\"");
-    assert_contains(consumed_v188_fixture, "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v187.json\"");
-    assert_contains(consumed_v188_fixture, "\"frozenEvidenceDigest\":\"fnv1a64:f4459b7beacceedd\"");
-    assert_contains(consumed_v188_fixture, "\"sourceFrozenWindowDigest\":\"fnv1a64:f4459b7beacceedd\"");
-    assert_contains(consumed_v188_fixture, "\"rollingCurrentUsedForFrozenBaseline\":false");
-    assert_contains(consumed_v188_fixture, "\"preservesExpectedIntegritySnapshotAudit\":true");
-    assert_contains(consumed_v188_fixture, "\"miniKvOwnsNodeCatalogIntegritySnapshot\":false");
-    assert_contains(consumed_v188_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v188_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v188_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v188_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v188_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v188_fixture, "\"evidenceDigest\":\"fnv1a64:565e5ce1fdb5f308\"");
-    assert_contains(consumed_v189_fixture, "\"releaseVersion\":\"v189\"");
-    assert_contains(consumed_v189_fixture, "\"status\":\"node-route-catalog-evidence-chain-read-only\"");
-    assert_contains(consumed_v189_fixture, "\"nodeRouteCatalogEvidenceChain\":{\"catalogMode\":"
+    assert_contains(fixture_for(188), "\"frozenReleaseVersion\":\"v187\"");
+    assert_contains(fixture_for(188), "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v187.json\"");
+    assert_contains(fixture_for(188), "\"frozenEvidenceDigest\":\"fnv1a64:f4459b7beacceedd\"");
+    assert_contains(fixture_for(188), "\"sourceFrozenWindowDigest\":\"fnv1a64:f4459b7beacceedd\"");
+    assert_contains(fixture_for(188), "\"rollingCurrentUsedForFrozenBaseline\":false");
+    assert_contains(fixture_for(188), "\"preservesExpectedIntegritySnapshotAudit\":true");
+    assert_contains(fixture_for(188), "\"miniKvOwnsNodeCatalogIntegritySnapshot\":false");
+    assert_contains(fixture_for(188), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(188), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(188), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(188), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(188), "\"executionAllowed\":false");
+    assert_contains(fixture_for(188), "\"evidenceDigest\":\"fnv1a64:565e5ce1fdb5f308\"");
+    assert_contains(fixture_for(189), "\"releaseVersion\":\"v189\"");
+    assert_contains(fixture_for(189), "\"status\":\"node-route-catalog-evidence-chain-read-only\"");
+    assert_contains(fixture_for(189), "\"nodeRouteCatalogEvidenceChain\":{\"catalogMode\":"
                                            "\"node-route-catalog-evidence-chain-read-only\"");
-    assert_contains(consumed_v189_fixture, "\"sourceFrozenReleaseVersion\":\"v188\"");
-    assert_contains(consumed_v189_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v188.json\"");
-    assert_contains(consumed_v189_fixture, "\"sourceFrozenDigest\":\"fnv1a64:565e5ce1fdb5f308\"");
-    assert_contains(consumed_v189_fixture, "\"catalogedReleaseCount\":4");
-    assert_contains(consumed_v189_fixture, "\"releaseRangeEnd\":\"v188\"");
-    assert_contains(consumed_v189_fixture, "\"latestCatalogedDigest\":\"fnv1a64:565e5ce1fdb5f308\"");
-    assert_contains(consumed_v189_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v17\"");
-    assert_contains(consumed_v189_fixture, "\"fieldCount\":547");
-    assert_contains(consumed_v189_fixture, "\"groupCount\":28");
-    assert_contains(consumed_v189_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v189_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v189_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v189_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v189_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v189_fixture, "\"evidenceDigest\":\"fnv1a64:a595f2d9cdcbac8d\"");
-    assert_contains(consumed_v190_fixture, "\"releaseVersion\":\"v190\"");
-    assert_contains(consumed_v190_fixture, "\"status\":\"node-route-catalog-evidence-chain-audit-read-only\"");
-    assert_contains(consumed_v190_fixture, "\"nodeRouteCatalogEvidenceChainAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(189), "\"sourceFrozenReleaseVersion\":\"v188\"");
+    assert_contains(fixture_for(189), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v188.json\"");
+    assert_contains(fixture_for(189), "\"sourceFrozenDigest\":\"fnv1a64:565e5ce1fdb5f308\"");
+    assert_contains(fixture_for(189), "\"catalogedReleaseCount\":4");
+    assert_contains(fixture_for(189), "\"releaseRangeEnd\":\"v188\"");
+    assert_contains(fixture_for(189), "\"latestCatalogedDigest\":\"fnv1a64:565e5ce1fdb5f308\"");
+    assert_contains(fixture_for(189), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v17\"");
+    assert_contains(fixture_for(189), "\"fieldCount\":547");
+    assert_contains(fixture_for(189), "\"groupCount\":28");
+    assert_contains(fixture_for(189), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(189), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(189), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(189), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(189), "\"executionAllowed\":false");
+    assert_contains(fixture_for(189), "\"evidenceDigest\":\"fnv1a64:a595f2d9cdcbac8d\"");
+    assert_contains(fixture_for(190), "\"releaseVersion\":\"v190\"");
+    assert_contains(fixture_for(190), "\"status\":\"node-route-catalog-evidence-chain-audit-read-only\"");
+    assert_contains(fixture_for(190), "\"nodeRouteCatalogEvidenceChainAudit\":{\"auditMode\":"
                                            "\"node-route-catalog-evidence-chain-audit-read-only\"");
-    assert_contains(consumed_v190_fixture, "\"sourceFrozenReleaseVersion\":\"v189\"");
-    assert_contains(consumed_v190_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v189.json\"");
-    assert_contains(consumed_v190_fixture, "\"nodeCleanupCloseoutVersion\":\"Node v472\"");
-    assert_contains(consumed_v190_fixture, "\"nodeFullVitestTestCount\":1222");
-    assert_contains(consumed_v190_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v18\"");
-    assert_contains(consumed_v190_fixture, "\"fieldCount\":573");
-    assert_contains(consumed_v190_fixture, "\"groupCount\":29");
-    assert_contains(consumed_v190_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v190_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v190_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v190_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v190_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v190_fixture, "\"evidenceDigest\":\"fnv1a64:b24193bae62876e6\"");
-    assert_contains(consumed_v191_fixture, "\"releaseVersion\":\"v191\"");
-    assert_contains(consumed_v191_fixture, "\"status\":\"node-route-catalog-cleanup-closeout-handoff-read-only\"");
-    assert_contains(consumed_v191_fixture, "\"nodeRouteCatalogCleanupCloseoutHandoff\":{\"handoffMode\":"
+    assert_contains(fixture_for(190), "\"sourceFrozenReleaseVersion\":\"v189\"");
+    assert_contains(fixture_for(190), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v189.json\"");
+    assert_contains(fixture_for(190), "\"nodeCleanupCloseoutVersion\":\"Node v472\"");
+    assert_contains(fixture_for(190), "\"nodeFullVitestTestCount\":1222");
+    assert_contains(fixture_for(190), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v18\"");
+    assert_contains(fixture_for(190), "\"fieldCount\":573");
+    assert_contains(fixture_for(190), "\"groupCount\":29");
+    assert_contains(fixture_for(190), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(190), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(190), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(190), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(190), "\"executionAllowed\":false");
+    assert_contains(fixture_for(190), "\"evidenceDigest\":\"fnv1a64:b24193bae62876e6\"");
+    assert_contains(fixture_for(191), "\"releaseVersion\":\"v191\"");
+    assert_contains(fixture_for(191), "\"status\":\"node-route-catalog-cleanup-closeout-handoff-read-only\"");
+    assert_contains(fixture_for(191), "\"nodeRouteCatalogCleanupCloseoutHandoff\":{\"handoffMode\":"
                                            "\"node-route-catalog-cleanup-closeout-handoff-read-only\"");
-    assert_contains(consumed_v191_fixture, "\"sourceFrozenReleaseVersion\":\"v190\"");
-    assert_contains(consumed_v191_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v190.json\"");
-    assert_contains(consumed_v191_fixture, "\"readyForDownstreamConsumption\":true");
-    assert_contains(consumed_v191_fixture, "\"handoffBoundaryCatalogVersion\":\"read-only-boundary-fields.v18\"");
-    assert_contains(consumed_v191_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v19\"");
-    assert_contains(consumed_v191_fixture, "\"fieldCount\":597");
-    assert_contains(consumed_v191_fixture, "\"groupCount\":30");
-    assert_contains(consumed_v191_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v191_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v191_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v191_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v191_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v191_fixture, "\"evidenceDigest\":\"fnv1a64:e6a06c9207144d9d\"");
-    assert_contains(consumed_v192_fixture, "\"releaseVersion\":\"v192\"");
-    assert_contains(consumed_v192_fixture, "\"status\":\"node-route-catalog-cleanup-closeout-handoff-audit-read-only\"");
-    assert_contains(consumed_v192_fixture, "\"nodeRouteCatalogCleanupCloseoutHandoffAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(191), "\"sourceFrozenReleaseVersion\":\"v190\"");
+    assert_contains(fixture_for(191), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v190.json\"");
+    assert_contains(fixture_for(191), "\"readyForDownstreamConsumption\":true");
+    assert_contains(fixture_for(191), "\"handoffBoundaryCatalogVersion\":\"read-only-boundary-fields.v18\"");
+    assert_contains(fixture_for(191), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v19\"");
+    assert_contains(fixture_for(191), "\"fieldCount\":597");
+    assert_contains(fixture_for(191), "\"groupCount\":30");
+    assert_contains(fixture_for(191), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(191), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(191), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(191), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(191), "\"executionAllowed\":false");
+    assert_contains(fixture_for(191), "\"evidenceDigest\":\"fnv1a64:e6a06c9207144d9d\"");
+    assert_contains(fixture_for(192), "\"releaseVersion\":\"v192\"");
+    assert_contains(fixture_for(192), "\"status\":\"node-route-catalog-cleanup-closeout-handoff-audit-read-only\"");
+    assert_contains(fixture_for(192), "\"nodeRouteCatalogCleanupCloseoutHandoffAudit\":{\"auditMode\":"
                                            "\"node-route-catalog-cleanup-closeout-handoff-audit-read-only\"");
-    assert_contains(consumed_v192_fixture, "\"sourceFrozenReleaseVersion\":\"v191\"");
-    assert_contains(consumed_v192_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v191.json\"");
-    assert_contains(consumed_v192_fixture, "\"handoffIncludedSectionsComplete\":true");
-    assert_contains(consumed_v192_fixture, "\"rollingCurrentRejected\":true");
-    assert_contains(consumed_v192_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v20\"");
-    assert_contains(consumed_v192_fixture, "\"fieldCount\":625");
-    assert_contains(consumed_v192_fixture, "\"groupCount\":31");
-    assert_contains(consumed_v192_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v192_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v192_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v192_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v192_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v192_fixture, "\"evidenceDigest\":\"fnv1a64:89bf4177b09f1ec0\"");
-    assert_contains(consumed_v193_fixture, "\"releaseVersion\":\"v193\"");
-    assert_contains(consumed_v193_fixture, "\"status\":\"node-route-catalog-cleanup-closeout-handoff-audit-freeze-read-only\"");
-    assert_contains(consumed_v193_fixture, "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze\":{\"freezeMode\":"
+    assert_contains(fixture_for(192), "\"sourceFrozenReleaseVersion\":\"v191\"");
+    assert_contains(fixture_for(192), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v191.json\"");
+    assert_contains(fixture_for(192), "\"handoffIncludedSectionsComplete\":true");
+    assert_contains(fixture_for(192), "\"rollingCurrentRejected\":true");
+    assert_contains(fixture_for(192), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v20\"");
+    assert_contains(fixture_for(192), "\"fieldCount\":625");
+    assert_contains(fixture_for(192), "\"groupCount\":31");
+    assert_contains(fixture_for(192), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(192), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(192), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(192), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(192), "\"executionAllowed\":false");
+    assert_contains(fixture_for(192), "\"evidenceDigest\":\"fnv1a64:89bf4177b09f1ec0\"");
+    assert_contains(fixture_for(193), "\"releaseVersion\":\"v193\"");
+    assert_contains(fixture_for(193), "\"status\":\"node-route-catalog-cleanup-closeout-handoff-audit-freeze-read-only\"");
+    assert_contains(fixture_for(193), "\"nodeRouteCatalogCleanupCloseoutHandoffAuditFreeze\":{\"freezeMode\":"
                                            "\"node-route-catalog-cleanup-closeout-handoff-audit-freeze-read-only\"");
-    assert_contains(consumed_v193_fixture, "\"frozenReleaseVersion\":\"v192\"");
-    assert_contains(consumed_v193_fixture, "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v192.json\"");
-    assert_contains(consumed_v193_fixture, "\"frozenEvidenceDigest\":\"fnv1a64:89bf4177b09f1ec0\"");
-    assert_contains(consumed_v193_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v21\"");
-    assert_contains(consumed_v193_fixture, "\"fieldCount\":648");
-    assert_contains(consumed_v193_fixture, "\"groupCount\":32");
-    assert_contains(consumed_v193_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v193_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v193_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v193_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v193_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v193_fixture, "\"evidenceDigest\":\"fnv1a64:0aad0fd5d2732af5\"");
-    assert_contains(consumed_v194_fixture, "\"releaseVersion\":\"v194\"");
-    assert_contains(consumed_v194_fixture, "\"status\":\"node-route-catalog-cleanup-closeout-release-catalog-read-only\"");
-    assert_contains(consumed_v194_fixture, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog\":{\"catalogMode\":"
+    assert_contains(fixture_for(193), "\"frozenReleaseVersion\":\"v192\"");
+    assert_contains(fixture_for(193), "\"frozenFixturePath\":\"fixtures/release/shard-readiness-v192.json\"");
+    assert_contains(fixture_for(193), "\"frozenEvidenceDigest\":\"fnv1a64:89bf4177b09f1ec0\"");
+    assert_contains(fixture_for(193), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v21\"");
+    assert_contains(fixture_for(193), "\"fieldCount\":648");
+    assert_contains(fixture_for(193), "\"groupCount\":32");
+    assert_contains(fixture_for(193), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(193), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(193), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(193), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(193), "\"executionAllowed\":false");
+    assert_contains(fixture_for(193), "\"evidenceDigest\":\"fnv1a64:0aad0fd5d2732af5\"");
+    assert_contains(fixture_for(194), "\"releaseVersion\":\"v194\"");
+    assert_contains(fixture_for(194), "\"status\":\"node-route-catalog-cleanup-closeout-release-catalog-read-only\"");
+    assert_contains(fixture_for(194), "\"nodeRouteCatalogCleanupCloseoutReleaseCatalog\":{\"catalogMode\":"
                                            "\"node-route-catalog-cleanup-closeout-release-catalog-read-only\"");
-    assert_contains(consumed_v194_fixture, "\"sourceFrozenReleaseVersion\":\"v193\"");
-    assert_contains(consumed_v194_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v193.json\"");
-    assert_contains(consumed_v194_fixture, "\"catalogedReleaseCount\":4");
-    assert_contains(consumed_v194_fixture, "\"latestCatalogedReleaseVersion\":\"v193\"");
-    assert_contains(consumed_v194_fixture, "\"latestCatalogedDigest\":\"fnv1a64:0aad0fd5d2732af5\"");
-    assert_contains(consumed_v194_fixture, "\"allCatalogedEntriesReadOnly\":true");
-    assert_contains(consumed_v194_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v22\"");
-    assert_contains(consumed_v194_fixture, "\"fieldCount\":669");
-    assert_contains(consumed_v194_fixture, "\"groupCount\":33");
-    assert_contains(consumed_v194_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v194_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v194_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v194_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v194_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v194_fixture, "\"evidenceDigest\":\"fnv1a64:626f5a2a96a980c2\"");
-    assert_contains(consumed_v195_fixture, "\"releaseVersion\":\"v195\"");
-    assert_contains(consumed_v195_fixture, "\"status\":\"node-route-catalog-cleanup-closeout-release-catalog-audit-read-only\"");
-    assert_contains(consumed_v195_fixture, "\"nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(194), "\"sourceFrozenReleaseVersion\":\"v193\"");
+    assert_contains(fixture_for(194), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v193.json\"");
+    assert_contains(fixture_for(194), "\"catalogedReleaseCount\":4");
+    assert_contains(fixture_for(194), "\"latestCatalogedReleaseVersion\":\"v193\"");
+    assert_contains(fixture_for(194), "\"latestCatalogedDigest\":\"fnv1a64:0aad0fd5d2732af5\"");
+    assert_contains(fixture_for(194), "\"allCatalogedEntriesReadOnly\":true");
+    assert_contains(fixture_for(194), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v22\"");
+    assert_contains(fixture_for(194), "\"fieldCount\":669");
+    assert_contains(fixture_for(194), "\"groupCount\":33");
+    assert_contains(fixture_for(194), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(194), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(194), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(194), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(194), "\"executionAllowed\":false");
+    assert_contains(fixture_for(194), "\"evidenceDigest\":\"fnv1a64:626f5a2a96a980c2\"");
+    assert_contains(fixture_for(195), "\"releaseVersion\":\"v195\"");
+    assert_contains(fixture_for(195), "\"status\":\"node-route-catalog-cleanup-closeout-release-catalog-audit-read-only\"");
+    assert_contains(fixture_for(195), "\"nodeRouteCatalogCleanupCloseoutReleaseCatalogAudit\":{\"auditMode\":"
                                            "\"node-route-catalog-cleanup-closeout-release-catalog-consistency-read-only\"");
-    assert_contains(consumed_v195_fixture, "\"sourceFrozenReleaseVersion\":\"v194\"");
-    assert_contains(consumed_v195_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v194.json\"");
-    assert_contains(consumed_v195_fixture, "\"sourceFrozenDigest\":\"fnv1a64:626f5a2a96a980c2\"");
-    assert_contains(consumed_v195_fixture, "\"observedCatalogedReleaseCount\":4");
-    assert_contains(consumed_v195_fixture, "\"releaseVersionsContiguous\":true");
-    assert_contains(consumed_v195_fixture, "\"latestDigestMatchesFrozenSource\":true");
-    assert_contains(consumed_v195_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v23\"");
-    assert_contains(consumed_v195_fixture, "\"fieldCount\":693");
-    assert_contains(consumed_v195_fixture, "\"groupCount\":34");
-    assert_contains(consumed_v195_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v195_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v195_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v195_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v195_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v195_fixture, "\"evidenceDigest\":\"fnv1a64:36463a895469c4bc\"");
-    assert_contains(consumed_v196_fixture, "\"releaseVersion\":\"v196\"");
-    assert_contains(consumed_v196_fixture, "\"status\":\"node-route-catalog-cleanup-closeout-catalog-formatter-split-read-only\"");
-    assert_contains(consumed_v196_fixture, "\"nodeRouteCatalogCleanupCloseoutCatalogMaintenance\":{\"maintenanceMode\":"
+    assert_contains(fixture_for(195), "\"sourceFrozenReleaseVersion\":\"v194\"");
+    assert_contains(fixture_for(195), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v194.json\"");
+    assert_contains(fixture_for(195), "\"sourceFrozenDigest\":\"fnv1a64:626f5a2a96a980c2\"");
+    assert_contains(fixture_for(195), "\"observedCatalogedReleaseCount\":4");
+    assert_contains(fixture_for(195), "\"releaseVersionsContiguous\":true");
+    assert_contains(fixture_for(195), "\"latestDigestMatchesFrozenSource\":true");
+    assert_contains(fixture_for(195), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v23\"");
+    assert_contains(fixture_for(195), "\"fieldCount\":693");
+    assert_contains(fixture_for(195), "\"groupCount\":34");
+    assert_contains(fixture_for(195), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(195), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(195), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(195), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(195), "\"executionAllowed\":false");
+    assert_contains(fixture_for(195), "\"evidenceDigest\":\"fnv1a64:36463a895469c4bc\"");
+    assert_contains(fixture_for(196), "\"releaseVersion\":\"v196\"");
+    assert_contains(fixture_for(196), "\"status\":\"node-route-catalog-cleanup-closeout-catalog-formatter-split-read-only\"");
+    assert_contains(fixture_for(196), "\"nodeRouteCatalogCleanupCloseoutCatalogMaintenance\":{\"maintenanceMode\":"
                                            "\"node-route-catalog-cleanup-closeout-catalog-formatter-split-read-only\"");
-    assert_contains(consumed_v196_fixture, "\"sourceFrozenReleaseVersion\":\"v195\"");
-    assert_contains(consumed_v196_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v195.json\"");
-    assert_contains(consumed_v196_fixture, "\"sourceFrozenDigest\":\"fnv1a64:36463a895469c4bc\"");
-    assert_contains(consumed_v196_fixture, "\"extractedCatalogFormatter\":true");
-    assert_contains(consumed_v196_fixture, "\"preservesReleaseCatalogAudit\":true");
-    assert_contains(consumed_v196_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v24\"");
-    assert_contains(consumed_v196_fixture, "\"fieldCount\":714");
-    assert_contains(consumed_v196_fixture, "\"groupCount\":35");
-    assert_contains(consumed_v196_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v196_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v196_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v196_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v196_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v196_fixture, "\"evidenceDigest\":\"fnv1a64:116ec6b912bb4026\"");
-    assert_contains(consumed_v197_fixture, "\"releaseVersion\":\"v197\"");
-    assert_contains(consumed_v197_fixture, "\"status\":\"node-route-catalog-cleanup-latest-evidence-package-read-only\"");
-    assert_contains(consumed_v197_fixture, "\"nodeRouteCatalogCleanupLatestEvidencePackage\":{\"packageMode\":"
+    assert_contains(fixture_for(196), "\"sourceFrozenReleaseVersion\":\"v195\"");
+    assert_contains(fixture_for(196), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v195.json\"");
+    assert_contains(fixture_for(196), "\"sourceFrozenDigest\":\"fnv1a64:36463a895469c4bc\"");
+    assert_contains(fixture_for(196), "\"extractedCatalogFormatter\":true");
+    assert_contains(fixture_for(196), "\"preservesReleaseCatalogAudit\":true");
+    assert_contains(fixture_for(196), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v24\"");
+    assert_contains(fixture_for(196), "\"fieldCount\":714");
+    assert_contains(fixture_for(196), "\"groupCount\":35");
+    assert_contains(fixture_for(196), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(196), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(196), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(196), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(196), "\"executionAllowed\":false");
+    assert_contains(fixture_for(196), "\"evidenceDigest\":\"fnv1a64:116ec6b912bb4026\"");
+    assert_contains(fixture_for(197), "\"releaseVersion\":\"v197\"");
+    assert_contains(fixture_for(197), "\"status\":\"node-route-catalog-cleanup-latest-evidence-package-read-only\"");
+    assert_contains(fixture_for(197), "\"nodeRouteCatalogCleanupLatestEvidencePackage\":{\"packageMode\":"
                                            "\"node-route-catalog-cleanup-latest-evidence-package-read-only\"");
-    assert_contains(consumed_v197_fixture, "\"sourceFrozenReleaseVersion\":\"v196\"");
-    assert_contains(consumed_v197_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v196.json\"");
-    assert_contains(consumed_v197_fixture, "\"sourceFrozenDigest\":\"fnv1a64:116ec6b912bb4026\"");
-    assert_contains(consumed_v197_fixture, "\"packageReleaseCount\":3");
-    assert_contains(consumed_v197_fixture, "\"latestPackagedReleaseVersion\":\"v196\"");
-    assert_contains(consumed_v197_fixture, "\"latestPackagedDigest\":\"fnv1a64:116ec6b912bb4026\"");
-    assert_contains(consumed_v197_fixture, "\"packageReadyForArchiveVerification\":true");
-    assert_contains(consumed_v197_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v25\"");
-    assert_contains(consumed_v197_fixture, "\"fieldCount\":735");
-    assert_contains(consumed_v197_fixture, "\"groupCount\":36");
-    assert_contains(consumed_v197_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v197_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v197_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v197_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v197_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v197_fixture, "\"evidenceDigest\":\"fnv1a64:836d9f0b3956fe30\"");
-    assert_contains(consumed_v198_fixture, "\"releaseVersion\":\"v198\"");
-    assert_contains(consumed_v198_fixture, "\"status\":\"node-route-catalog-cleanup-latest-evidence-package-audit-read-only\"");
-    assert_contains(consumed_v198_fixture, "\"nodeRouteCatalogCleanupLatestEvidencePackageAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(197), "\"sourceFrozenReleaseVersion\":\"v196\"");
+    assert_contains(fixture_for(197), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v196.json\"");
+    assert_contains(fixture_for(197), "\"sourceFrozenDigest\":\"fnv1a64:116ec6b912bb4026\"");
+    assert_contains(fixture_for(197), "\"packageReleaseCount\":3");
+    assert_contains(fixture_for(197), "\"latestPackagedReleaseVersion\":\"v196\"");
+    assert_contains(fixture_for(197), "\"latestPackagedDigest\":\"fnv1a64:116ec6b912bb4026\"");
+    assert_contains(fixture_for(197), "\"packageReadyForArchiveVerification\":true");
+    assert_contains(fixture_for(197), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v25\"");
+    assert_contains(fixture_for(197), "\"fieldCount\":735");
+    assert_contains(fixture_for(197), "\"groupCount\":36");
+    assert_contains(fixture_for(197), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(197), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(197), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(197), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(197), "\"executionAllowed\":false");
+    assert_contains(fixture_for(197), "\"evidenceDigest\":\"fnv1a64:836d9f0b3956fe30\"");
+    assert_contains(fixture_for(198), "\"releaseVersion\":\"v198\"");
+    assert_contains(fixture_for(198), "\"status\":\"node-route-catalog-cleanup-latest-evidence-package-audit-read-only\"");
+    assert_contains(fixture_for(198), "\"nodeRouteCatalogCleanupLatestEvidencePackageAudit\":{\"auditMode\":"
                                            "\"node-route-catalog-cleanup-latest-evidence-package-consistency-read-only\"");
-    assert_contains(consumed_v198_fixture, "\"sourceFrozenReleaseVersion\":\"v197\"");
-    assert_contains(consumed_v198_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v197.json\"");
-    assert_contains(consumed_v198_fixture, "\"sourceFrozenDigest\":\"fnv1a64:836d9f0b3956fe30\"");
-    assert_contains(consumed_v198_fixture, "\"observedPackageReleaseCount\":3");
-    assert_contains(consumed_v198_fixture, "\"releaseVersionsContiguous\":true");
-    assert_contains(consumed_v198_fixture, "\"latestPackagedDigestMatchesPackageSource\":true");
-    assert_contains(consumed_v198_fixture, "\"packageReadyForArchiveVerification\":true");
-    assert_contains(consumed_v198_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v26\"");
-    assert_contains(consumed_v198_fixture, "\"fieldCount\":756");
-    assert_contains(consumed_v198_fixture, "\"groupCount\":37");
-    assert_contains(consumed_v198_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v198_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v198_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v198_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v198_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v198_fixture, "\"evidenceDigest\":\"fnv1a64:8fcbe53d8b1700b7\"");
-    assert_contains(consumed_v199_fixture, "\"releaseVersion\":\"v199\"");
-    assert_contains(consumed_v199_fixture, "\"status\":\"node-route-catalog-cleanup-evidence-batch-closeout-read-only\"");
-    assert_contains(consumed_v199_fixture, "\"nodeRouteCatalogCleanupEvidenceBatchCloseout\":{\"closeoutMode\":"
+    assert_contains(fixture_for(198), "\"sourceFrozenReleaseVersion\":\"v197\"");
+    assert_contains(fixture_for(198), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v197.json\"");
+    assert_contains(fixture_for(198), "\"sourceFrozenDigest\":\"fnv1a64:836d9f0b3956fe30\"");
+    assert_contains(fixture_for(198), "\"observedPackageReleaseCount\":3");
+    assert_contains(fixture_for(198), "\"releaseVersionsContiguous\":true");
+    assert_contains(fixture_for(198), "\"latestPackagedDigestMatchesPackageSource\":true");
+    assert_contains(fixture_for(198), "\"packageReadyForArchiveVerification\":true");
+    assert_contains(fixture_for(198), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v26\"");
+    assert_contains(fixture_for(198), "\"fieldCount\":756");
+    assert_contains(fixture_for(198), "\"groupCount\":37");
+    assert_contains(fixture_for(198), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(198), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(198), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(198), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(198), "\"executionAllowed\":false");
+    assert_contains(fixture_for(198), "\"evidenceDigest\":\"fnv1a64:8fcbe53d8b1700b7\"");
+    assert_contains(fixture_for(199), "\"releaseVersion\":\"v199\"");
+    assert_contains(fixture_for(199), "\"status\":\"node-route-catalog-cleanup-evidence-batch-closeout-read-only\"");
+    assert_contains(fixture_for(199), "\"nodeRouteCatalogCleanupEvidenceBatchCloseout\":{\"closeoutMode\":"
                                            "\"node-route-catalog-cleanup-evidence-batch-closeout-read-only\"");
-    assert_contains(consumed_v199_fixture, "\"sourceFrozenReleaseVersion\":\"v198\"");
-    assert_contains(consumed_v199_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v198.json\"");
-    assert_contains(consumed_v199_fixture, "\"sourceFrozenDigest\":\"fnv1a64:8fcbe53d8b1700b7\"");
-    assert_contains(consumed_v199_fixture, "\"miniKvCloseoutReleaseCount\":5");
-    assert_contains(consumed_v199_fixture, "\"latestCloseoutReleaseVersion\":\"v198\"");
-    assert_contains(consumed_v199_fixture, "\"latestCloseoutDigest\":\"fnv1a64:8fcbe53d8b1700b7\"");
-    assert_contains(consumed_v199_fixture, "\"closeoutReadyForNextBatch\":true");
-    assert_contains(consumed_v199_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v27\"");
-    assert_contains(consumed_v199_fixture, "\"fieldCount\":778");
-    assert_contains(consumed_v199_fixture, "\"groupCount\":38");
-    assert_contains(consumed_v199_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v199_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v199_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v199_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v199_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v199_fixture, "\"evidenceDigest\":\"fnv1a64:3a5716f6f09c2b3b\"");
-    assert_contains(consumed_v200_fixture, "\"releaseVersion\":\"v200\"");
-    assert_contains(consumed_v200_fixture,
+    assert_contains(fixture_for(199), "\"sourceFrozenReleaseVersion\":\"v198\"");
+    assert_contains(fixture_for(199), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v198.json\"");
+    assert_contains(fixture_for(199), "\"sourceFrozenDigest\":\"fnv1a64:8fcbe53d8b1700b7\"");
+    assert_contains(fixture_for(199), "\"miniKvCloseoutReleaseCount\":5");
+    assert_contains(fixture_for(199), "\"latestCloseoutReleaseVersion\":\"v198\"");
+    assert_contains(fixture_for(199), "\"latestCloseoutDigest\":\"fnv1a64:8fcbe53d8b1700b7\"");
+    assert_contains(fixture_for(199), "\"closeoutReadyForNextBatch\":true");
+    assert_contains(fixture_for(199), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v27\"");
+    assert_contains(fixture_for(199), "\"fieldCount\":778");
+    assert_contains(fixture_for(199), "\"groupCount\":38");
+    assert_contains(fixture_for(199), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(199), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(199), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(199), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(199), "\"executionAllowed\":false");
+    assert_contains(fixture_for(199), "\"evidenceDigest\":\"fnv1a64:3a5716f6f09c2b3b\"");
+    assert_contains(fixture_for(200), "\"releaseVersion\":\"v200\"");
+    assert_contains(fixture_for(200),
                     "\"status\":\"node-route-catalog-cleanup-evidence-batch-closeout-audit-read-only\"");
-    assert_contains(consumed_v200_fixture, "\"nodeRouteCatalogCleanupEvidenceBatchCloseoutAudit\":{\"auditMode\":"
+    assert_contains(fixture_for(200), "\"nodeRouteCatalogCleanupEvidenceBatchCloseoutAudit\":{\"auditMode\":"
                                            "\"node-route-catalog-cleanup-evidence-batch-closeout-consistency-read-only\"");
-    assert_contains(consumed_v200_fixture, "\"sourceFrozenReleaseVersion\":\"v199\"");
-    assert_contains(consumed_v200_fixture, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v199.json\"");
-    assert_contains(consumed_v200_fixture, "\"sourceFrozenDigest\":\"fnv1a64:3a5716f6f09c2b3b\"");
-    assert_contains(consumed_v200_fixture, "\"observedCloseoutReleaseCount\":5");
-    assert_contains(consumed_v200_fixture, "\"releaseVersionsContiguous\":true");
-    assert_contains(consumed_v200_fixture, "\"latestCloseoutDigestMatchesCloseoutSource\":true");
-    assert_contains(consumed_v200_fixture, "\"closeoutReadyForNextBatch\":true");
-    assert_contains(consumed_v200_fixture, "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v28\"");
-    assert_contains(consumed_v200_fixture, "\"fieldCount\":800");
-    assert_contains(consumed_v200_fixture, "\"groupCount\":39");
-    assert_contains(consumed_v200_fixture, "\"runtimeExecutionPacketExecutable\":false");
-    assert_contains(consumed_v200_fixture, "\"startsMiniKvService\":false");
-    assert_contains(consumed_v200_fixture, "\"routerActivationAllowed\":false");
-    assert_contains(consumed_v200_fixture, "\"writeRoutingAllowed\":false");
-    assert_contains(consumed_v200_fixture, "\"executionAllowed\":false");
-    assert_contains(consumed_v200_fixture, "\"evidenceDigest\":\"fnv1a64:d1e889711b5d8574\"");
+    assert_contains(fixture_for(200), "\"sourceFrozenReleaseVersion\":\"v199\"");
+    assert_contains(fixture_for(200), "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v199.json\"");
+    assert_contains(fixture_for(200), "\"sourceFrozenDigest\":\"fnv1a64:3a5716f6f09c2b3b\"");
+    assert_contains(fixture_for(200), "\"observedCloseoutReleaseCount\":5");
+    assert_contains(fixture_for(200), "\"releaseVersionsContiguous\":true");
+    assert_contains(fixture_for(200), "\"latestCloseoutDigestMatchesCloseoutSource\":true");
+    assert_contains(fixture_for(200), "\"closeoutReadyForNextBatch\":true");
+    assert_contains(fixture_for(200), "\"boundaryCatalogIndex\":{\"catalogVersion\":\"read-only-boundary-fields.v28\"");
+    assert_contains(fixture_for(200), "\"fieldCount\":800");
+    assert_contains(fixture_for(200), "\"groupCount\":39");
+    assert_contains(fixture_for(200), "\"runtimeExecutionPacketExecutable\":false");
+    assert_contains(fixture_for(200), "\"startsMiniKvService\":false");
+    assert_contains(fixture_for(200), "\"routerActivationAllowed\":false");
+    assert_contains(fixture_for(200), "\"writeRoutingAllowed\":false");
+    assert_contains(fixture_for(200), "\"executionAllowed\":false");
+    assert_contains(fixture_for(200), "\"evidenceDigest\":\"fnv1a64:d1e889711b5d8574\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};

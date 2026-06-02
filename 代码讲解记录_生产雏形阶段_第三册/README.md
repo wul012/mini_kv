@@ -163,3 +163,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - Keep each walkthrough focused on purpose, boundaries, module roles, tests, smoke evidence, and downstream value.
 - Do not move historical walkthroughs from earlier walkthrough folders.
 - [323-version-263-test-support-helper-extraction.md](323-version-263-test-support-helper-extraction.md) - Test Support Helper Extraction
+- [324-version-264-shard-readiness-history-fixture-loop.md](324-version-264-shard-readiness-history-fixture-loop.md) - Shard Readiness History Fixture Loop
