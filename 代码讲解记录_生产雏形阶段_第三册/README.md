@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- `293-version-237-node-v522-stability-archive-package.md` - mini-kv v237 Node v522 Stability Archive Package, freezes v236 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/237` archive.
 - `292-version-236-node-v522-stability-evidence-report-readiness-audit.md` - mini-kv v236 Node v522 Stability Evidence Report Readiness Audit, freezes v235 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/236` archive.
 - `291-version-235-node-v522-stability-evidence-report-readiness.md` - mini-kv v235 Node v522 Stability Evidence Report Readiness, freezes v234 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/235` archive.
 - `290-version-234-node-v522-twenty-version-run-closeout-alignment-audit.md` - mini-kv v234 Node v522 Twenty-Version Run Closeout Alignment Audit, freezes v233 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/234` archive.
