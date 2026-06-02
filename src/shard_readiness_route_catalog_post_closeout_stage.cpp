@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "post-closeout-continuity-stage-descriptor-freeze",
-    15,
+    "post-closeout-continuity-stage-descriptor-audit",
+    16,
+    "v216",
+    "audit the frozen split stage descriptor while preserving downstream read-only semantics",
     "v215",
-    "freeze the split post-closeout stage descriptor as a versioned source baseline",
-    "v214",
-    "fixtures/release/shard-readiness-v214.json",
-    "fnv1a64:05b61e656f9925b7",
-    "frozen v214 fixture is the source baseline",
+    "fixtures/release/shard-readiness-v215.json",
+    "fnv1a64:b745fa9e79265743",
+    "frozen v215 fixture is the source baseline",
 };
 
 } // namespace

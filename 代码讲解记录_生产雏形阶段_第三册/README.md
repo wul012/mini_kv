@@ -89,6 +89,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `271-version-215-node-route-catalog-cleanup-post-closeout-continuity-stage-descriptor-freeze.md` - mini-kv v215 freezes v214 and proves the split stage descriptor is now a versioned source baseline, with tests, TCP smoke, and `e/215` archive.
 
+- `272-version-216-node-route-catalog-cleanup-post-closeout-continuity-stage-descriptor-audit.md` - mini-kv v216 freezes v215 and audits the stage descriptor lifecycle while preserving the read-only SHARDJSON contract, tests, TCP smoke, and `e/216` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
