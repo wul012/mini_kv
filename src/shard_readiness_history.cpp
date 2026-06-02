@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v506+ may consume v224 as route catalog cleanup readiness handoff archive verification route package audit evidence only\","
+           "\"nodeConsumer\":\"Node v506+ may consume v225 as route catalog cleanup readiness handoff archive verification route release catalog evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -106,6 +106,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v221.json",
                 "fixtures/release/shard-readiness-v222.json",
                 "fixtures/release/shard-readiness-v223.json",
+                "fixtures/release/shard-readiness-v224.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -217,9 +218,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v223\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v223.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v506+ may consume v223 route catalog cleanup readiness handoff archive verification route package evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v224\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v224.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v506+ may consume v224 route catalog cleanup readiness handoff archive verification route package audit evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"

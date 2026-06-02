@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "post-closeout-continuity-node-v505-readiness-handoff-archive-verification-route-package-audit",
-    24,
+    "post-closeout-continuity-node-v505-readiness-handoff-archive-verification-route-release-catalog",
+    25,
+    "v225",
+    "catalog the v221-v224 Node v505 readiness handoff archive verification route evidence releases",
     "v224",
-    "audit the Node v505 readiness handoff archive verification route evidence package from frozen v223 evidence",
-    "v223",
-    "fixtures/release/shard-readiness-v223.json",
-    "fnv1a64:b183e9895c167ee3",
-    "frozen v223 fixture is the source baseline",
+    "fixtures/release/shard-readiness-v224.json",
+    "fnv1a64:011a92d8d38f3557",
+    "frozen v224 fixture is the source baseline",
 };
 
 } // namespace
