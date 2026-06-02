@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v506+ may consume v226 as route catalog cleanup readiness handoff archive verification route release catalog audit evidence only\","
+           "\"nodeConsumer\":\"Node v506+ may consume v227 as route catalog cleanup readiness handoff archive verification route checkpoint evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -108,6 +108,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v223.json",
                 "fixtures/release/shard-readiness-v224.json",
                 "fixtures/release/shard-readiness-v225.json",
+                "fixtures/release/shard-readiness-v226.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -219,9 +220,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v225\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v225.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v506+ may consume v225 route catalog cleanup readiness handoff archive verification route release catalog evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v226\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v226.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v506+ may consume v226 route catalog cleanup readiness handoff archive verification route release catalog audit evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
