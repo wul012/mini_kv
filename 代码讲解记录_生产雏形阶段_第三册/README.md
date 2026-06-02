@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 318-version-258-node-v550-route-exposure-readiness.md - mini-kv v258 Node v550 Route Exposure Readiness, freezes v257 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/258 archive.
 - 317-version-257-node-v549-archive-files-consumption-handoff-audit.md - mini-kv v257 Node v549 Archive Files Consumption Handoff Audit, freezes v256 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/257 archive.
 - 316-version-256-node-v549-archive-files-consumption-handoff.md - mini-kv v256 Node v549 Archive Files Consumption Handoff, freezes v255 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/256 archive.
 - 315-version-255-node-v549-live-smoke-boundary-reconfirmation-audit.md - mini-kv v255 Node v549 Live-Smoke Boundary Reconfirmation Audit, freezes v254 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/255 archive.
