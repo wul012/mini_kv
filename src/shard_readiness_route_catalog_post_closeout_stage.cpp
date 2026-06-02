@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "post-closeout-continuity-node-v549-latest-sibling-clean-quality-reminder",
-    52,
+    "post-closeout-continuity-node-v549-latest-sibling-clean-quality-reminder-audit",
+    53,
+    "v253",
+    "audits the Node v549 latest sibling clean quality reminder from frozen v252 evidence",
     "v252",
-    "records clean latest sibling evidence quality reminder for the Node v549 archive verification line",
-    "v251",
-    "fixtures/release/shard-readiness-v251.json",
-    "fnv1a64:6ae0e5e1c1d08de9",
-    "frozen v251 fixture is the source baseline for Node v549 latest sibling archive verification continuity",
+    "fixtures/release/shard-readiness-v252.json",
+    "fnv1a64:e07e3351e7c4c747",
+    "frozen v252 fixture is the source baseline for Node v549 latest sibling archive verification continuity",
 };
 
 } // namespace
