@@ -16,17 +16,17 @@ using minikv::test_support::assert_not_contains;
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"releaseVersion\":\"v268\"");
+    assert_contains(json, "\"releaseVersion\":\"v269\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v267\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v267.json\"");
-    assert_contains(json, "\"continuityStage\":\"maintenance-refactor-boundary-field-name-table-split\"");
-    assert_contains(json, "\"stageSequence\":68");
-    assert_contains(json, "\"stageReleaseVersion\":\"v268\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v268\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":68");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v268\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v268.json\"");
+    assert_contains(json, "\"continuityStage\":\"maintenance-refactor-boundary-catalog-group-table-split\"");
+    assert_contains(json, "\"stageSequence\":69");
+    assert_contains(json, "\"stageReleaseVersion\":\"v269\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v269\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":69");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":3");
     assert_contains(json, "\"archiveVerifierChecksPassed\":3");

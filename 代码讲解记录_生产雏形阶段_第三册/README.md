@@ -168,3 +168,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [326-version-266-cmake-source-dir-test-helper.md](326-version-266-cmake-source-dir-test-helper.md) - CMake Source Dir Test Helper
 - [327-version-267-cmake-testing-module-split.md](327-version-267-cmake-testing-module-split.md) - CMake Testing Module Split
 - [328-version-268-boundary-field-name-table-split.md](328-version-268-boundary-field-name-table-split.md) - Boundary Field Name Table Split
+- [329-version-269-boundary-catalog-group-table-split.md](329-version-269-boundary-catalog-group-table-split.md) - Boundary Catalog Group Table Split
