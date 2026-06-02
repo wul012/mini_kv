@@ -4,6 +4,8 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+Version 235 freezes v234 as a versioned source fixture and prepares the Node v522 stability evidence report path while preserving read-only/no-router/no-write/no-execution boundaries. The rolling fixture digest is `fnv1a64:801952cee74210ef`, and the boundary catalog remains `read-only-boundary-fields.v29` with 821 fields and 40 groups.
+
 Version 234 freezes v233 as a versioned source fixture and audits the Node v522 twenty-version run closeout alignment while preserving read-only/no-router/no-write/no-execution boundaries. The rolling fixture digest is `fnv1a64:97d3419bb7663fde`, and the boundary catalog remains `read-only-boundary-fields.v29` with 821 fields and 40 groups.
 
 Version 233 freezes the v232 Node v505 readiness handoff archive verification route final audit as `fixtures/release/shard-readiness-v232.json` and aligns `nodeRouteCatalogCleanupPostCloseoutContinuity` with the Node v522 twenty-version run closeout. It also adds a dedicated post-closeout continuity test so v233+ assertions no longer grow the historical giant shard-readiness test. It remains read-only alignment evidence and still does not claim fresh Node runtime consumption. It adds no route, evidence gate, service startup, runtime probe, active router, write/admin command, LOAD/RESTORE/COMPACT path, or execution authority. The rolling fixture digest is `fnv1a64:ebf4eddbb67bc47b`, and the boundary catalog remains `read-only-boundary-fields.v29` with 821 fields and 40 groups.
