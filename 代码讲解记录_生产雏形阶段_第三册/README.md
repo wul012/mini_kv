@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 311-version-251-node-v549-archive-verification-route-readiness-audit.md - mini-kv v251 Node v549 Archive Verification Route Readiness Audit, freezes v250 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/251 archive.
 - 310-version-250-node-v549-archive-verification-route-readiness-snapshot.md - mini-kv v250 Node v549 Archive Verification Route Readiness Snapshot, freezes v249 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/250 archive.
 - 309-version-249-node-v549-archive-verification-alignment-audit.md - mini-kv v249 Node v549 Archive Verification Alignment Audit, freezes v248 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/249 archive.
 - 308-version-248-node-v549-archive-verification-alignment.md - mini-kv v248 Node v549 Archive Verification Alignment, freezes v247 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/248 archive.
