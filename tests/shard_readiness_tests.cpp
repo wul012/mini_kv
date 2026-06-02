@@ -39,7 +39,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"releaseVersion\":\"v248\"");
+    assert_contains(json, "\"releaseVersion\":\"v249\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -208,7 +208,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
     assert_contains(
         json,
-        "\"nodeConsumer\":\"Node v550+ may consume v248 as Node v549 archive verification alignment evidence only\"");
+        "\"nodeConsumer\":\"Node v550+ may consume v249 as Node v549 archive verification alignment audit evidence only\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -272,7 +272,7 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"fixtures/release/shard-readiness-v197.json\","
                           "\"fixtures/release/shard-readiness-v198.json\","
                           "\"fixtures/release/shard-readiness-v199.json\","
-                          "\"fixtures/release/shard-readiness-v200.json\",\"fixtures/release/shard-readiness-v201.json\",\"fixtures/release/shard-readiness-v202.json\",\"fixtures/release/shard-readiness-v203.json\",\"fixtures/release/shard-readiness-v204.json\",\"fixtures/release/shard-readiness-v205.json\",\"fixtures/release/shard-readiness-v206.json\",\"fixtures/release/shard-readiness-v207.json\",\"fixtures/release/shard-readiness-v208.json\",\"fixtures/release/shard-readiness-v209.json\",\"fixtures/release/shard-readiness-v210.json\",\"fixtures/release/shard-readiness-v211.json\",\"fixtures/release/shard-readiness-v212.json\",\"fixtures/release/shard-readiness-v213.json\",\"fixtures/release/shard-readiness-v214.json\",\"fixtures/release/shard-readiness-v215.json\",\"fixtures/release/shard-readiness-v216.json\",\"fixtures/release/shard-readiness-v217.json\",\"fixtures/release/shard-readiness-v218.json\",\"fixtures/release/shard-readiness-v219.json\",\"fixtures/release/shard-readiness-v220.json\",\"fixtures/release/shard-readiness-v221.json\",\"fixtures/release/shard-readiness-v222.json\",\"fixtures/release/shard-readiness-v223.json\",\"fixtures/release/shard-readiness-v224.json\",\"fixtures/release/shard-readiness-v225.json\",\"fixtures/release/shard-readiness-v226.json\",\"fixtures/release/shard-readiness-v227.json\",\"fixtures/release/shard-readiness-v228.json\",\"fixtures/release/shard-readiness-v229.json\",\"fixtures/release/shard-readiness-v230.json\",\"fixtures/release/shard-readiness-v231.json\",\"fixtures/release/shard-readiness-v232.json\",\"fixtures/release/shard-readiness-v233.json\",\"fixtures/release/shard-readiness-v234.json\",\"fixtures/release/shard-readiness-v235.json\",\"fixtures/release/shard-readiness-v236.json\",\"fixtures/release/shard-readiness-v237.json\",\"fixtures/release/shard-readiness-v238.json\",\"fixtures/release/shard-readiness-v239.json\",\"fixtures/release/shard-readiness-v240.json\",\"fixtures/release/shard-readiness-v241.json\",\"fixtures/release/shard-readiness-v242.json\",\"fixtures/release/shard-readiness-v243.json\",\"fixtures/release/shard-readiness-v244.json\",\"fixtures/release/shard-readiness-v245.json\",\"fixtures/release/shard-readiness-v246.json\",\"fixtures/release/shard-readiness-v247.json\"]");
+                          "\"fixtures/release/shard-readiness-v200.json\",\"fixtures/release/shard-readiness-v201.json\",\"fixtures/release/shard-readiness-v202.json\",\"fixtures/release/shard-readiness-v203.json\",\"fixtures/release/shard-readiness-v204.json\",\"fixtures/release/shard-readiness-v205.json\",\"fixtures/release/shard-readiness-v206.json\",\"fixtures/release/shard-readiness-v207.json\",\"fixtures/release/shard-readiness-v208.json\",\"fixtures/release/shard-readiness-v209.json\",\"fixtures/release/shard-readiness-v210.json\",\"fixtures/release/shard-readiness-v211.json\",\"fixtures/release/shard-readiness-v212.json\",\"fixtures/release/shard-readiness-v213.json\",\"fixtures/release/shard-readiness-v214.json\",\"fixtures/release/shard-readiness-v215.json\",\"fixtures/release/shard-readiness-v216.json\",\"fixtures/release/shard-readiness-v217.json\",\"fixtures/release/shard-readiness-v218.json\",\"fixtures/release/shard-readiness-v219.json\",\"fixtures/release/shard-readiness-v220.json\",\"fixtures/release/shard-readiness-v221.json\",\"fixtures/release/shard-readiness-v222.json\",\"fixtures/release/shard-readiness-v223.json\",\"fixtures/release/shard-readiness-v224.json\",\"fixtures/release/shard-readiness-v225.json\",\"fixtures/release/shard-readiness-v226.json\",\"fixtures/release/shard-readiness-v227.json\",\"fixtures/release/shard-readiness-v228.json\",\"fixtures/release/shard-readiness-v229.json\",\"fixtures/release/shard-readiness-v230.json\",\"fixtures/release/shard-readiness-v231.json\",\"fixtures/release/shard-readiness-v232.json\",\"fixtures/release/shard-readiness-v233.json\",\"fixtures/release/shard-readiness-v234.json\",\"fixtures/release/shard-readiness-v235.json\",\"fixtures/release/shard-readiness-v236.json\",\"fixtures/release/shard-readiness-v237.json\",\"fixtures/release/shard-readiness-v238.json\",\"fixtures/release/shard-readiness-v239.json\",\"fixtures/release/shard-readiness-v240.json\",\"fixtures/release/shard-readiness-v241.json\",\"fixtures/release/shard-readiness-v242.json\",\"fixtures/release/shard-readiness-v243.json\",\"fixtures/release/shard-readiness-v244.json\",\"fixtures/release/shard-readiness-v245.json\",\"fixtures/release/shard-readiness-v246.json\",\"fixtures/release/shard-readiness-v247.json\",\"fixtures/release/shard-readiness-v248.json\"]");
     assert_contains(json, "\"runtimeMatchesCurrentFixture\":true");
     assert_contains(json, "\"historicalFixturesPreserved\":true");
     assert_contains(json, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
@@ -296,11 +296,11 @@ void assert_shard_readiness_contract(const std::string& json) {
                            "\"Node v473\",\"Node v474\",\"Node v475\",\"Node v476\",\"Node v477\","
                            "\"Node v478\",\"Node v479\",\"Node v480\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v247\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v247.json\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v248\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v248.json\"");
     assert_contains(
         json,
-        "\"previousConsumptionNodeVersion\":\"Node v523+ may consume v247 Node v522 final verification route readiness evidence\"");
+        "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v248 Node v549 archive verification alignment evidence\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_contains(json, "\"nodeV396ProgressIntakePreserved\":true");
     assert_contains(json, "\"nodeV397ContributionReviewPreserved\":true");
@@ -1245,19 +1245,19 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
     assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
                           "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v247\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v247.json\"");
-    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:9fb71e13c517fff8\"");
-    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v549-archive-verification-alignment\"");
-    assert_contains(json, "\"stageSequence\":48");
-    assert_contains(json, "\"stageReleaseVersion\":\"v248\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v248\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v248.json\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:b001b36a42e8e809\"");
+    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v549-archive-verification-alignment-audit\"");
+    assert_contains(json, "\"stageSequence\":49");
+    assert_contains(json, "\"stageReleaseVersion\":\"v249\"");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"previousCloseoutAuditReleaseVersion\":\"v200\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeStart\":\"v194\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_contains(json, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v248\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":48");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v249\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":49");
     assert_contains(json, "\"nodePlanStillLatestForMiniKv\":true");
     assert_contains(json, "\"sourceFixtureVersioned\":true");
     assert_contains(json, "\"rollingCurrentRejected\":true");
