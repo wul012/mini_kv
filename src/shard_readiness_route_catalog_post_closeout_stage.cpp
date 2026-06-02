@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "maintenance-refactor-boundary-catalog-group-table-split",
-    69,
+    "maintenance-refactor-boundary-catalog-index-split",
+    70,
+    "v270",
+    "moves boundary catalog index JSON formatting into a dedicated source file",
     "v269",
-    "moves the boundary catalog group table into a dedicated source file",
-    "v268",
-    "fixtures/release/shard-readiness-v268.json",
-    "fnv1a64:efe3aa43bc5101cc",
-    "frozen v268 fixture is the source baseline for maintenance-only refactor continuity",
+    "fixtures/release/shard-readiness-v269.json",
+    "fnv1a64:d18e6a49fe86a53d",
+    "frozen v269 fixture is the source baseline for maintenance-only refactor continuity",
 };
 
 } // namespace

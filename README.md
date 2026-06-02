@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v270: freezes v269 as a versioned source fixture and moves the boundary catalog index JSON formatter into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
 - v269: freezes v268 as a versioned source fixture and moves the boundary catalog group table into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
 - v268: freezes v267 as a versioned source fixture and moves the read-only boundary field name table into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
 - v267: freezes v266 as a versioned source fixture and moves CMake test registration helpers into a dedicated testing module while preserving read-only/no-router/no-write/no-execution boundaries.

@@ -169,3 +169,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [327-version-267-cmake-testing-module-split.md](327-version-267-cmake-testing-module-split.md) - CMake Testing Module Split
 - [328-version-268-boundary-field-name-table-split.md](328-version-268-boundary-field-name-table-split.md) - Boundary Field Name Table Split
 - [329-version-269-boundary-catalog-group-table-split.md](329-version-269-boundary-catalog-group-table-split.md) - Boundary Catalog Group Table Split
+- [330-version-270-boundary-catalog-index-formatter-split.md](330-version-270-boundary-catalog-index-formatter-split.md) - Boundary Catalog Index Formatter Split
