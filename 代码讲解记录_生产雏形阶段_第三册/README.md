@@ -93,6 +93,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `273-version-217-node-route-catalog-cleanup-post-closeout-continuity-node-v498-consumer-readiness-handshake-package.md` - mini-kv v217 freezes v216 and packages the Node v498 consumer-readiness handshake as read-only mini-kv evidence, tests, TCP smoke, and `e/217` archive.
 
+- `274-version-218-node-route-catalog-cleanup-post-closeout-continuity-node-v498-consumer-readiness-handshake-package-audit.md` - mini-kv v218 freezes v217 and audits the Node v498 consumer-readiness handshake package while preserving no-runtime boundaries, tests, TCP smoke, and `e/218` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.

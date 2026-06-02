@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "post-closeout-continuity-node-v498-consumer-readiness-handshake-package",
-    17,
+    "post-closeout-continuity-node-v498-consumer-readiness-handshake-package-audit",
+    18,
+    "v218",
+    "audit the Node v498 consumer readiness handshake package while preserving read-only boundaries",
     "v217",
-    "package the Node v498 consumer readiness batch closeout archive handshake as read-only evidence",
-    "v216",
-    "fixtures/release/shard-readiness-v216.json",
-    "fnv1a64:e4fc4c802f59ad80",
-    "frozen v216 fixture is the source baseline",
+    "fixtures/release/shard-readiness-v217.json",
+    "fnv1a64:c335f2b6ab5014b7",
+    "frozen v217 fixture is the source baseline",
 };
 
 } // namespace
