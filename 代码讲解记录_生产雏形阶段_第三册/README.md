@@ -121,6 +121,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `287-version-231-node-v505-readiness-handoff-archive-verification-route-closure-snapshot.md` - mini-kv v231 snapshots the v221-v230 Node v505 readiness handoff archive verification route continuity closure from frozen v230 evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/231` archive.
 
+- `288-version-232-node-v505-readiness-handoff-archive-verification-route-final-audit.md` - mini-kv v232 final-audits the v221-v231 Node v505 readiness handoff archive verification route continuity closure from frozen v231 evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/232` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
