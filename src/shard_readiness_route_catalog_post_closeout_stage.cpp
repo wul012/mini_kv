@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "maintenance-refactor-cmake-testing-module-split",
-    67,
+    "maintenance-refactor-boundary-field-name-table-split",
+    68,
+    "v268",
+    "moves the read-only boundary field name table into a dedicated source file",
     "v267",
-    "moves CMake test registration helpers into a dedicated testing module",
-    "v266",
-    "fixtures/release/shard-readiness-v266.json",
-    "fnv1a64:fb40aa3d8da66ba6",
-    "frozen v266 fixture is the source baseline for maintenance-only refactor continuity",
+    "fixtures/release/shard-readiness-v267.json",
+    "fnv1a64:c4c8467762fe031f",
+    "frozen v267 fixture is the source baseline for maintenance-only refactor continuity",
 };
 
 } // namespace

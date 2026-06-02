@@ -312,7 +312,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v267\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v268\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -430,8 +430,8 @@ int main() {
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v266\"");
-    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v266.json\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v267\"");
+    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v267.json\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                      "\"history-fixture-archive-formatter-split-read-only\"");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v179\"");
@@ -1132,17 +1132,17 @@ int main() {
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupPostCloseoutContinuity\":{\"continuityMode\":"
                                      "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v266\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v266.json\"");
-    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:fb40aa3d8da66ba6\"");
-    assert_response_contains(result, "\"continuityStage\":\"maintenance-refactor-cmake-testing-module-split\"");
-    assert_response_contains(result, "\"stageSequence\":67");
-    assert_response_contains(result, "\"stageReleaseVersion\":\"v267\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v267\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v267.json\"");
+    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:c4c8467762fe031f\"");
+    assert_response_contains(result, "\"continuityStage\":\"maintenance-refactor-boundary-field-name-table-split\"");
+    assert_response_contains(result, "\"stageSequence\":68");
+    assert_response_contains(result, "\"stageReleaseVersion\":\"v268\"");
     assert_response_contains(result, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_response_contains(result, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_response_contains(result, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v267\"");
-    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":67");
+    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v268\"");
+    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":68");
     assert_response_contains(result, "\"nodePlanStillLatestForMiniKv\":true");
     assert_response_contains(result, "\"sourceFixtureVersioned\":true");
     assert_response_contains(result, "\"rollingCurrentRejected\":true");
