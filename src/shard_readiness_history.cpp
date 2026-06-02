@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v506+ may consume v221 as route catalog cleanup readiness handoff archive verification route evidence only\","
+           "\"nodeConsumer\":\"Node v506+ may consume v222 as route catalog cleanup readiness handoff archive verification route alignment audit evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -103,6 +103,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v218.json",
                 "fixtures/release/shard-readiness-v219.json",
                 "fixtures/release/shard-readiness-v220.json",
+                "fixtures/release/shard-readiness-v221.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -214,9 +215,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v220\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v220.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v506+ may consume v220 post closeout continuity v211-v219 batch package audit\","
+    return "{\"previousConsumedReleaseVersion\":\"v221\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v221.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v506+ may consume v221 route catalog cleanup readiness handoff archive verification route alignment evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
