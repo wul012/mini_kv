@@ -134,6 +134,15 @@ function(minikv_add_linked_test target_name test_name source_file)
     add_test(NAME ${test_name} COMMAND ${target_name})
 endfunction()
 
+function(minikv_add_source_dir_test target_name test_name source_file)
+    minikv_add_linked_test(${target_name} ${test_name} ${source_file})
+
+    target_compile_definitions(${target_name}
+        PRIVATE
+            MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
+    )
+endfunction()
+
 add_executable(minikv_dependabot_config_tests
     tests/dependabot_config_tests.cpp
 )
@@ -151,31 +160,17 @@ minikv_add_linked_test(
     tests/store_tests.cpp
 )
 
-add_executable(minikv_command_tests
+minikv_add_source_dir_test(
+    minikv_command_tests
+    command_tests
     tests/command_tests.cpp
 )
 
-target_link_libraries(minikv_command_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_command_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME command_tests COMMAND minikv_command_tests)
-
-add_executable(minikv_shard_readiness_tests
+minikv_add_source_dir_test(
+    minikv_shard_readiness_tests
+    shard_readiness_tests
     tests/shard_readiness_tests.cpp
 )
-
-target_link_libraries(minikv_shard_readiness_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_shard_readiness_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME shard_readiness_tests COMMAND minikv_shard_readiness_tests)
 
 minikv_add_linked_test(
     minikv_shard_readiness_post_closeout_continuity_tests
@@ -195,18 +190,11 @@ minikv_add_linked_test(
     tests/managed_audit_receipts_tests.cpp
 )
 
-add_executable(minikv_readonly_fixture_tests
+minikv_add_source_dir_test(
+    minikv_readonly_fixture_tests
+    readonly_fixture_tests
     tests/readonly_fixture_tests.cpp
 )
-
-target_link_libraries(minikv_readonly_fixture_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_readonly_fixture_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME readonly_fixture_tests COMMAND minikv_readonly_fixture_tests)
 
 minikv_add_linked_test(
     minikv_wal_tests
@@ -274,678 +262,314 @@ minikv_add_linked_test(
     tests/metrics_file_tests.cpp
 )
 
-add_executable(minikv_recovery_evidence_tests
+minikv_add_source_dir_test(
+    minikv_recovery_evidence_tests
+    recovery_evidence_tests
     tests/recovery_evidence_tests.cpp
 )
 
-target_link_libraries(minikv_recovery_evidence_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_recovery_evidence_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME recovery_evidence_tests COMMAND minikv_recovery_evidence_tests)
-
-add_executable(minikv_recovery_fixture_index_tests
+minikv_add_source_dir_test(
+    minikv_recovery_fixture_index_tests
+    recovery_fixture_index_tests
     tests/recovery_fixture_index_tests.cpp
 )
 
-target_link_libraries(minikv_recovery_fixture_index_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_recovery_fixture_index_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME recovery_fixture_index_tests COMMAND minikv_recovery_fixture_index_tests)
-
-add_executable(minikv_ttl_token_recovery_tests
+minikv_add_source_dir_test(
+    minikv_ttl_token_recovery_tests
+    ttl_token_recovery_tests
     tests/ttl_token_recovery_tests.cpp
 )
 
-target_link_libraries(minikv_ttl_token_recovery_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_ttl_token_recovery_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME ttl_token_recovery_tests COMMAND minikv_ttl_token_recovery_tests)
-
-add_executable(minikv_release_verification_manifest_tests
+minikv_add_source_dir_test(
+    minikv_release_verification_manifest_tests
+    release_verification_manifest_tests
     tests/release_verification_manifest_tests.cpp
 )
 
-target_link_libraries(minikv_release_verification_manifest_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_release_verification_manifest_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME release_verification_manifest_tests COMMAND minikv_release_verification_manifest_tests)
-
-add_executable(minikv_runtime_artifact_rollback_evidence_tests
+minikv_add_source_dir_test(
+    minikv_runtime_artifact_rollback_evidence_tests
+    runtime_artifact_rollback_evidence_tests
     tests/runtime_artifact_rollback_evidence_tests.cpp
 )
 
-target_link_libraries(minikv_runtime_artifact_rollback_evidence_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_runtime_artifact_rollback_evidence_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME runtime_artifact_rollback_evidence_tests COMMAND minikv_runtime_artifact_rollback_evidence_tests)
-
-add_executable(minikv_runtime_artifact_bundle_manifest_tests
+minikv_add_source_dir_test(
+    minikv_runtime_artifact_bundle_manifest_tests
+    runtime_artifact_bundle_manifest_tests
     tests/runtime_artifact_bundle_manifest_tests.cpp
 )
 
-target_link_libraries(minikv_runtime_artifact_bundle_manifest_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_runtime_artifact_bundle_manifest_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME runtime_artifact_bundle_manifest_tests COMMAND minikv_runtime_artifact_bundle_manifest_tests)
-
-add_executable(minikv_restore_compatibility_handoff_tests
+minikv_add_source_dir_test(
+    minikv_restore_compatibility_handoff_tests
+    restore_compatibility_handoff_tests
     tests/restore_compatibility_handoff_tests.cpp
 )
 
-target_link_libraries(minikv_restore_compatibility_handoff_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_restore_compatibility_handoff_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME restore_compatibility_handoff_tests COMMAND minikv_restore_compatibility_handoff_tests)
-
-add_executable(minikv_restore_dry_run_operator_package_tests
+minikv_add_source_dir_test(
+    minikv_restore_dry_run_operator_package_tests
+    restore_dry_run_operator_package_tests
     tests/restore_dry_run_operator_package_tests.cpp
 )
 
-target_link_libraries(minikv_restore_dry_run_operator_package_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_restore_dry_run_operator_package_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME restore_dry_run_operator_package_tests COMMAND minikv_restore_dry_run_operator_package_tests)
-
-add_executable(minikv_artifact_digest_compatibility_matrix_tests
+minikv_add_source_dir_test(
+    minikv_artifact_digest_compatibility_matrix_tests
+    artifact_digest_compatibility_matrix_tests
     tests/artifact_digest_compatibility_matrix_tests.cpp
 )
 
-target_link_libraries(minikv_artifact_digest_compatibility_matrix_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_artifact_digest_compatibility_matrix_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME artifact_digest_compatibility_matrix_tests COMMAND minikv_artifact_digest_compatibility_matrix_tests)
-
-add_executable(minikv_release_artifact_digest_package_tests
+minikv_add_source_dir_test(
+    minikv_release_artifact_digest_package_tests
+    release_artifact_digest_package_tests
     tests/release_artifact_digest_package_tests.cpp
 )
 
-target_link_libraries(minikv_release_artifact_digest_package_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_release_artifact_digest_package_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME release_artifact_digest_package_tests COMMAND minikv_release_artifact_digest_package_tests)
-
-add_executable(minikv_restore_drill_evidence_tests
+minikv_add_source_dir_test(
+    minikv_restore_drill_evidence_tests
+    restore_drill_evidence_tests
     tests/restore_drill_evidence_tests.cpp
 )
 
-target_link_libraries(minikv_restore_drill_evidence_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_restore_drill_evidence_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME restore_drill_evidence_tests COMMAND minikv_restore_drill_evidence_tests)
-
-add_executable(minikv_restore_handoff_checklist_tests
+minikv_add_source_dir_test(
+    minikv_restore_handoff_checklist_tests
+    restore_handoff_checklist_tests
     tests/restore_handoff_checklist_tests.cpp
 )
 
-target_link_libraries(minikv_restore_handoff_checklist_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_restore_handoff_checklist_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME restore_handoff_checklist_tests COMMAND minikv_restore_handoff_checklist_tests)
-
-add_executable(minikv_restore_evidence_retention_tests
+minikv_add_source_dir_test(
+    minikv_restore_evidence_retention_tests
+    restore_evidence_retention_tests
     tests/restore_evidence_retention_tests.cpp
 )
 
-target_link_libraries(minikv_restore_evidence_retention_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_restore_evidence_retention_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME restore_evidence_retention_tests COMMAND minikv_restore_evidence_retention_tests)
-
-add_executable(minikv_retained_restore_artifact_digest_tests
+minikv_add_source_dir_test(
+    minikv_retained_restore_artifact_digest_tests
+    retained_restore_artifact_digest_tests
     tests/retained_restore_artifact_digest_tests.cpp
 )
 
-target_link_libraries(minikv_retained_restore_artifact_digest_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_retained_restore_artifact_digest_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME retained_restore_artifact_digest_tests COMMAND minikv_retained_restore_artifact_digest_tests)
-
-add_executable(minikv_restore_approval_boundary_tests
+minikv_add_source_dir_test(
+    minikv_restore_approval_boundary_tests
+    restore_approval_boundary_tests
     tests/restore_approval_boundary_tests.cpp
 )
 
-target_link_libraries(minikv_restore_approval_boundary_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_restore_approval_boundary_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME restore_approval_boundary_tests COMMAND minikv_restore_approval_boundary_tests)
-
-add_executable(minikv_restore_boundary_smoke_manifest_tests
+minikv_add_source_dir_test(
+    minikv_restore_boundary_smoke_manifest_tests
+    restore_boundary_smoke_manifest_tests
     tests/restore_boundary_smoke_manifest_tests.cpp
 )
 
-target_link_libraries(minikv_restore_boundary_smoke_manifest_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_restore_boundary_smoke_manifest_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME restore_boundary_smoke_manifest_tests COMMAND minikv_restore_boundary_smoke_manifest_tests)
-
-add_executable(minikv_runtime_smoke_evidence_tests
+minikv_add_source_dir_test(
+    minikv_runtime_smoke_evidence_tests
+    runtime_smoke_evidence_tests
     tests/runtime_smoke_evidence_tests.cpp
 )
 
-target_link_libraries(minikv_runtime_smoke_evidence_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_runtime_smoke_evidence_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME runtime_smoke_evidence_tests COMMAND minikv_runtime_smoke_evidence_tests)
-
-add_executable(minikv_current_runtime_fixture_rolling_guard_tests
+minikv_add_source_dir_test(
+    minikv_current_runtime_fixture_rolling_guard_tests
+    current_runtime_fixture_rolling_guard_tests
     tests/current_runtime_fixture_rolling_guard_tests.cpp
 )
 
-target_link_libraries(minikv_current_runtime_fixture_rolling_guard_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_current_runtime_fixture_rolling_guard_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME current_runtime_fixture_rolling_guard_tests COMMAND minikv_current_runtime_fixture_rolling_guard_tests)
-
-add_executable(minikv_runtime_no_start_no_write_follow_up_tests
+minikv_add_source_dir_test(
+    minikv_runtime_no_start_no_write_follow_up_tests
+    runtime_no_start_no_write_follow_up_tests
     tests/runtime_no_start_no_write_follow_up_tests.cpp
 )
 
-target_link_libraries(minikv_runtime_no_start_no_write_follow_up_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_runtime_no_start_no_write_follow_up_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME runtime_no_start_no_write_follow_up_tests COMMAND minikv_runtime_no_start_no_write_follow_up_tests)
-
-add_executable(minikv_operator_window_no_start_no_write_receipt_tests
+minikv_add_source_dir_test(
+    minikv_operator_window_no_start_no_write_receipt_tests
+    operator_window_no_start_no_write_receipt_tests
     tests/operator_window_no_start_no_write_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_operator_window_no_start_no_write_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_operator_window_no_start_no_write_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME operator_window_no_start_no_write_receipt_tests COMMAND minikv_operator_window_no_start_no_write_receipt_tests)
-
-add_executable(minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests
+    manual_sandbox_dry_run_command_non_participation_receipt_tests
     tests/manual_sandbox_dry_run_command_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME manual_sandbox_dry_run_command_non_participation_receipt_tests COMMAND minikv_manual_sandbox_dry_run_command_non_participation_receipt_tests)
-
-add_executable(minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests
+    manual_sandbox_connection_precheck_non_participation_receipt_tests
     tests/manual_sandbox_connection_precheck_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME manual_sandbox_connection_precheck_non_participation_receipt_tests COMMAND minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests)
-
-add_executable(minikv_disabled_adapter_client_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_disabled_adapter_client_non_participation_receipt_tests
+    disabled_adapter_client_non_participation_receipt_tests
     tests/disabled_adapter_client_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_disabled_adapter_client_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_disabled_adapter_client_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME disabled_adapter_client_non_participation_receipt_tests COMMAND minikv_disabled_adapter_client_non_participation_receipt_tests)
-
-add_executable(minikv_fake_transport_dry_run_packet_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_fake_transport_dry_run_packet_non_participation_receipt_tests
+    fake_transport_dry_run_packet_non_participation_receipt_tests
     tests/fake_transport_dry_run_packet_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_fake_transport_dry_run_packet_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_fake_transport_dry_run_packet_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME fake_transport_dry_run_packet_non_participation_receipt_tests COMMAND minikv_fake_transport_dry_run_packet_non_participation_receipt_tests)
-
-add_executable(minikv_sandbox_endpoint_handle_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_sandbox_endpoint_handle_non_participation_receipt_tests
+    sandbox_endpoint_handle_non_participation_receipt_tests
     tests/sandbox_endpoint_handle_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_sandbox_endpoint_handle_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_sandbox_endpoint_handle_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME sandbox_endpoint_handle_non_participation_receipt_tests COMMAND minikv_sandbox_endpoint_handle_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_non_participation_receipt_tests
+    credential_resolver_non_participation_receipt_tests
     tests/credential_resolver_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_non_participation_receipt_tests COMMAND minikv_credential_resolver_non_participation_receipt_tests)
-
-add_executable(minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests
+    disabled_credential_resolver_precheck_non_participation_receipt_tests
     tests/disabled_credential_resolver_precheck_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME disabled_credential_resolver_precheck_non_participation_receipt_tests COMMAND minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests)
-
-add_executable(minikv_test_only_resolver_shell_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_test_only_resolver_shell_non_participation_receipt_tests
+    test_only_resolver_shell_non_participation_receipt_tests
     tests/test_only_resolver_shell_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_test_only_resolver_shell_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_test_only_resolver_shell_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME test_only_resolver_shell_non_participation_receipt_tests COMMAND minikv_test_only_resolver_shell_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests
+    credential_resolver_fake_shell_archive_non_participation_receipt_tests
     tests/credential_resolver_fake_shell_archive_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_fake_shell_archive_non_participation_receipt_tests COMMAND minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests
+    credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests
     tests/credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests COMMAND minikv_credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests
+    credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests
     tests/credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests COMMAND minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests
+    credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests
     tests/credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests COMMAND minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests
+    credential_resolver_approval_required_boundary_non_participation_receipt_tests
     tests/credential_resolver_approval_required_boundary_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_approval_required_boundary_non_participation_receipt_tests COMMAND minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_impl_readiness_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_impl_readiness_receipt_tests
+    credential_resolver_approval_required_implementation_readiness_non_participation_receipt_tests
     tests/credential_resolver_approval_required_implementation_readiness_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_impl_readiness_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_impl_readiness_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_approval_required_implementation_readiness_non_participation_receipt_tests COMMAND minikv_credential_resolver_impl_readiness_receipt_tests)
-
-add_executable(minikv_credential_resolver_implementation_plan_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_implementation_plan_non_participation_receipt_tests
+    credential_resolver_implementation_plan_non_participation_receipt_tests
     tests/credential_resolver_implementation_plan_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_implementation_plan_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_implementation_plan_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_implementation_plan_non_participation_receipt_tests COMMAND minikv_credential_resolver_implementation_plan_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_disabled_fake_harness_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_disabled_fake_harness_non_participation_receipt_tests
+    credential_resolver_disabled_fake_harness_non_participation_receipt_tests
     tests/credential_resolver_disabled_fake_harness_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_disabled_fake_harness_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_disabled_fake_harness_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_disabled_fake_harness_non_participation_receipt_tests COMMAND minikv_credential_resolver_disabled_fake_harness_non_participation_receipt_tests)
-
-add_executable(minikv_credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_tests
+    credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_tests
     tests/credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_tests COMMAND minikv_credential_resolver_disabled_fake_harness_execution_denied_non_participation_receipt_tests)
-
-add_executable(minikv_cred_res_exec_denied_retention_check_tests
+minikv_add_source_dir_test(
+    minikv_cred_res_exec_denied_retention_check_tests
+    cred_res_exec_denied_retention_check_tests
     tests/credential_resolver_disabled_fake_harness_execution_denied_receipt_verification_retention_check_tests.cpp
 )
 
-target_link_libraries(minikv_cred_res_exec_denied_retention_check_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_cred_res_exec_denied_retention_check_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME cred_res_exec_denied_retention_check_tests COMMAND minikv_cred_res_exec_denied_retention_check_tests)
-
-add_executable(minikv_disabled_runtime_shell_receipt_tests
+minikv_add_source_dir_test(
+    minikv_disabled_runtime_shell_receipt_tests
+    disabled_runtime_shell_receipt_tests
     tests/credential_resolver_disabled_runtime_shell_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_disabled_runtime_shell_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_disabled_runtime_shell_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME disabled_runtime_shell_receipt_tests COMMAND minikv_disabled_runtime_shell_receipt_tests)
-
-add_executable(minikv_disabled_runtime_shell_candidate_gate_receipt_tests
+minikv_add_source_dir_test(
+    minikv_disabled_runtime_shell_candidate_gate_receipt_tests
+    disabled_runtime_shell_candidate_gate_receipt_tests
     tests/credential_resolver_disabled_runtime_shell_candidate_gate_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_disabled_runtime_shell_candidate_gate_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_disabled_runtime_shell_candidate_gate_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME disabled_runtime_shell_candidate_gate_receipt_tests COMMAND minikv_disabled_runtime_shell_candidate_gate_receipt_tests)
-
-add_executable(minikv_runtime_shell_decision_record_receipt_tests
+minikv_add_source_dir_test(
+    minikv_runtime_shell_decision_record_receipt_tests
+    runtime_shell_decision_record_receipt_tests
     tests/credential_resolver_runtime_shell_decision_record_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_runtime_shell_decision_record_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_runtime_shell_decision_record_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME runtime_shell_decision_record_receipt_tests COMMAND minikv_runtime_shell_decision_record_receipt_tests)
-
-add_executable(minikv_runtime_shell_post_decision_plan_intake_receipt_tests
+minikv_add_source_dir_test(
+    minikv_runtime_shell_post_decision_plan_intake_receipt_tests
+    runtime_shell_post_decision_plan_intake_receipt_tests
     tests/credential_resolver_runtime_shell_post_decision_plan_intake_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_runtime_shell_post_decision_plan_intake_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_runtime_shell_post_decision_plan_intake_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME runtime_shell_post_decision_plan_intake_receipt_tests COMMAND minikv_runtime_shell_post_decision_plan_intake_receipt_tests)
-
-add_executable(minikv_runtime_shell_chain_stop_prerequisite_receipt_tests
+minikv_add_source_dir_test(
+    minikv_runtime_shell_chain_stop_prerequisite_receipt_tests
+    runtime_shell_chain_stop_prerequisite_receipt_tests
     tests/credential_resolver_runtime_shell_chain_stop_or_prerequisite_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_runtime_shell_chain_stop_prerequisite_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_runtime_shell_chain_stop_prerequisite_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME runtime_shell_chain_stop_prerequisite_receipt_tests COMMAND minikv_runtime_shell_chain_stop_prerequisite_receipt_tests)
-
-add_executable(minikv_approval_prerequisite_artifact_intake_receipt_tests
+minikv_add_source_dir_test(
+    minikv_approval_prerequisite_artifact_intake_receipt_tests
+    approval_prerequisite_artifact_intake_receipt_tests
     tests/credential_resolver_approval_prerequisite_artifact_intake_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_approval_prerequisite_artifact_intake_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_approval_prerequisite_artifact_intake_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME approval_prerequisite_artifact_intake_receipt_tests COMMAND minikv_approval_prerequisite_artifact_intake_receipt_tests)
-
-add_executable(minikv_human_approval_artifact_review_receipt_tests
+minikv_add_source_dir_test(
+    minikv_human_approval_artifact_review_receipt_tests
+    human_approval_artifact_review_receipt_tests
     tests/credential_resolver_human_approval_artifact_review_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_human_approval_artifact_review_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_human_approval_artifact_review_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME human_approval_artifact_review_receipt_tests COMMAND minikv_human_approval_artifact_review_receipt_tests)
-
-add_executable(minikv_human_approval_post_echo_decision_receipt_tests
+minikv_add_source_dir_test(
+    minikv_human_approval_post_echo_decision_receipt_tests
+    human_approval_post_echo_decision_receipt_tests
     tests/credential_resolver_human_approval_post_echo_decision_gate_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_human_approval_post_echo_decision_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_human_approval_post_echo_decision_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME human_approval_post_echo_decision_receipt_tests COMMAND minikv_human_approval_post_echo_decision_receipt_tests)
-
-add_executable(minikv_signed_human_approval_artifact_contract_receipt_tests
+minikv_add_source_dir_test(
+    minikv_signed_human_approval_artifact_contract_receipt_tests
+    signed_human_approval_artifact_contract_receipt_tests
     tests/credential_resolver_signed_human_approval_artifact_contract_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_signed_human_approval_artifact_contract_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_signed_human_approval_artifact_contract_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME signed_human_approval_artifact_contract_receipt_tests COMMAND minikv_signed_human_approval_artifact_contract_receipt_tests)
-
-add_executable(minikv_credential_handle_approval_contract_receipt_tests
+minikv_add_source_dir_test(
+    minikv_credential_handle_approval_contract_receipt_tests
+    credential_handle_approval_contract_receipt_tests
     tests/credential_resolver_credential_handle_approval_contract_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_credential_handle_approval_contract_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_credential_handle_approval_contract_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME credential_handle_approval_contract_receipt_tests COMMAND minikv_credential_handle_approval_contract_receipt_tests)
-
-add_executable(minikv_endpoint_handle_allowlist_approval_contract_receipt_tests
+minikv_add_source_dir_test(
+    minikv_endpoint_handle_allowlist_approval_contract_receipt_tests
+    endpoint_handle_allowlist_approval_contract_receipt_tests
     tests/credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_endpoint_handle_allowlist_approval_contract_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_endpoint_handle_allowlist_approval_contract_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME endpoint_handle_allowlist_approval_contract_receipt_tests COMMAND minikv_endpoint_handle_allowlist_approval_contract_receipt_tests)
-
-add_executable(minikv_no_network_safety_fixture_contract_receipt_tests
+minikv_add_source_dir_test(
+    minikv_no_network_safety_fixture_contract_receipt_tests
+    no_network_safety_fixture_contract_receipt_tests
     tests/credential_resolver_no_network_safety_fixture_contract_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_no_network_safety_fixture_contract_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_no_network_safety_fixture_contract_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME no_network_safety_fixture_contract_receipt_tests COMMAND minikv_no_network_safety_fixture_contract_receipt_tests)
-
-add_executable(minikv_abort_rollback_semantics_contract_receipt_tests
+minikv_add_source_dir_test(
+    minikv_abort_rollback_semantics_contract_receipt_tests
+    abort_rollback_semantics_contract_receipt_tests
     tests/credential_resolver_abort_rollback_semantics_contract_non_participation_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_abort_rollback_semantics_contract_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_abort_rollback_semantics_contract_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME abort_rollback_semantics_contract_receipt_tests COMMAND minikv_abort_rollback_semantics_contract_receipt_tests)
-
-add_executable(minikv_input_hardening_candidate_gate_receipt_tests
+minikv_add_source_dir_test(
+    minikv_input_hardening_candidate_gate_receipt_tests
+    input_hardening_candidate_gate_receipt_tests
     tests/credential_resolver_implementation_candidate_gate_input_hardening_non_participation_receipt_tests.cpp
 )
-
-target_link_libraries(minikv_input_hardening_candidate_gate_receipt_tests PRIVATE minikv)
-
-target_compile_definitions(minikv_input_hardening_candidate_gate_receipt_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME input_hardening_candidate_gate_receipt_tests COMMAND minikv_input_hardening_candidate_gate_receipt_tests)

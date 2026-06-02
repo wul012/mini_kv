@@ -165,3 +165,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [323-version-263-test-support-helper-extraction.md](323-version-263-test-support-helper-extraction.md) - Test Support Helper Extraction
 - [324-version-264-shard-readiness-history-fixture-loop.md](324-version-264-shard-readiness-history-fixture-loop.md) - Shard Readiness History Fixture Loop
 - [325-version-265-cmake-linked-test-helper.md](325-version-265-cmake-linked-test-helper.md) - CMake Linked Test Helper
+- [326-version-266-cmake-source-dir-test-helper.md](326-version-266-cmake-source-dir-test-helper.md) - CMake Source Dir Test Helper
