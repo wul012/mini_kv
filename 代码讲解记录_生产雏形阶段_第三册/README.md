@@ -91,6 +91,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `272-version-216-node-route-catalog-cleanup-post-closeout-continuity-stage-descriptor-audit.md` - mini-kv v216 freezes v215 and audits the stage descriptor lifecycle while preserving the read-only SHARDJSON contract, tests, TCP smoke, and `e/216` archive.
 
+- `273-version-217-node-route-catalog-cleanup-post-closeout-continuity-node-v498-consumer-readiness-handshake-package.md` - mini-kv v217 freezes v216 and packages the Node v498 consumer-readiness handshake as read-only mini-kv evidence, tests, TCP smoke, and `e/217` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
