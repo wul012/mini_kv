@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v259: freezes v258 as a versioned source fixture and audits Node v550 route exposure readiness evidence while preserving read-only/no-router/no-write/no-execution boundaries.
 - v258: freezes v257 as a versioned source fixture and prepares Node v550 route exposure readiness evidence while preserving read-only/no-router/no-write/no-execution boundaries.
 - v257: freezes v256 as a versioned source fixture and audits the Node v549 archive-files consumption handoff while preserving read-only/no-router/no-write/no-execution boundaries.
 - v256: freezes v255 as a versioned source fixture and hands off Node v549 archive-files consumption evidence while preserving read-only/no-router/no-write/no-execution boundaries.
