@@ -1,9 +1,10 @@
-﻿# mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+# mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
 
 This sibling folder continues the mini-kv production-prototype walkthrough series after Volume 2 became crowded.
 
 ## Entries
 
+- `290-version-234-node-v522-twenty-version-run-closeout-alignment-audit.md` - mini-kv v234 Node v522 Twenty-Version Run Closeout Alignment Audit, freezes v233 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/234` archive.
 - `289-version-233-node-v522-twenty-version-run-closeout-alignment.md` - mini-kv v233 align node v522 twenty-version run closeout continuity, freezes v232 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/233` archive.
 - `200-version-144-shard-readiness-read-only-prototype.md` - mini-kv v144 read-only shard readiness prototype for Node v370, `SHARDJSON`, fixture parity, command catalog exposure, tests, TCP smoke, and `e/144` archive.
 - `201-version-145-shard-readiness-hardening.md` - mini-kv v145 `SHARDJSON` hardening with command catalog posture, fixture parity, archived Node evidence compatibility, read-only boundary fields, tests, TCP smoke, and `e/145` archive.
