@@ -169,6 +169,17 @@ target_compile_definitions(minikv_shard_readiness_tests
 
 add_test(NAME shard_readiness_tests COMMAND minikv_shard_readiness_tests)
 
+add_executable(minikv_shard_readiness_post_closeout_continuity_tests
+    tests/shard_readiness_post_closeout_continuity_tests.cpp
+)
+
+target_link_libraries(minikv_shard_readiness_post_closeout_continuity_tests PRIVATE minikv)
+
+add_test(
+    NAME shard_readiness_post_closeout_continuity_tests
+    COMMAND minikv_shard_readiness_post_closeout_continuity_tests
+)
+
 add_executable(minikv_smokejson_command_receipt_tests
     tests/smokejson_command_receipt_tests.cpp
 )

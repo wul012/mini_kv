@@ -3,6 +3,7 @@
 #include "minikv/store.hpp"
 #include "minikv/version.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -38,7 +39,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"releaseVersion\":\"v232\"");
+    assert_contains(json, "\"releaseVersion\":\"v233\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -207,7 +208,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
     assert_contains(
         json,
-        "\"nodeConsumer\":\"Node v506+ may consume v232 as route catalog cleanup readiness handoff archive verification route final audit evidence only\"");
+        "\"nodeConsumer\":\"Node v523+ may consume v233 as Node v522 twenty-version run closeout alignment evidence only\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -271,7 +272,7 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"fixtures/release/shard-readiness-v197.json\","
                           "\"fixtures/release/shard-readiness-v198.json\","
                           "\"fixtures/release/shard-readiness-v199.json\","
-                          "\"fixtures/release/shard-readiness-v200.json\",\"fixtures/release/shard-readiness-v201.json\",\"fixtures/release/shard-readiness-v202.json\",\"fixtures/release/shard-readiness-v203.json\",\"fixtures/release/shard-readiness-v204.json\",\"fixtures/release/shard-readiness-v205.json\",\"fixtures/release/shard-readiness-v206.json\",\"fixtures/release/shard-readiness-v207.json\",\"fixtures/release/shard-readiness-v208.json\",\"fixtures/release/shard-readiness-v209.json\",\"fixtures/release/shard-readiness-v210.json\",\"fixtures/release/shard-readiness-v211.json\",\"fixtures/release/shard-readiness-v212.json\",\"fixtures/release/shard-readiness-v213.json\",\"fixtures/release/shard-readiness-v214.json\",\"fixtures/release/shard-readiness-v215.json\",\"fixtures/release/shard-readiness-v216.json\",\"fixtures/release/shard-readiness-v217.json\",\"fixtures/release/shard-readiness-v218.json\",\"fixtures/release/shard-readiness-v219.json\",\"fixtures/release/shard-readiness-v220.json\",\"fixtures/release/shard-readiness-v221.json\",\"fixtures/release/shard-readiness-v222.json\",\"fixtures/release/shard-readiness-v223.json\",\"fixtures/release/shard-readiness-v224.json\",\"fixtures/release/shard-readiness-v225.json\",\"fixtures/release/shard-readiness-v226.json\",\"fixtures/release/shard-readiness-v227.json\",\"fixtures/release/shard-readiness-v228.json\",\"fixtures/release/shard-readiness-v229.json\",\"fixtures/release/shard-readiness-v230.json\",\"fixtures/release/shard-readiness-v231.json\"]");
+                          "\"fixtures/release/shard-readiness-v200.json\",\"fixtures/release/shard-readiness-v201.json\",\"fixtures/release/shard-readiness-v202.json\",\"fixtures/release/shard-readiness-v203.json\",\"fixtures/release/shard-readiness-v204.json\",\"fixtures/release/shard-readiness-v205.json\",\"fixtures/release/shard-readiness-v206.json\",\"fixtures/release/shard-readiness-v207.json\",\"fixtures/release/shard-readiness-v208.json\",\"fixtures/release/shard-readiness-v209.json\",\"fixtures/release/shard-readiness-v210.json\",\"fixtures/release/shard-readiness-v211.json\",\"fixtures/release/shard-readiness-v212.json\",\"fixtures/release/shard-readiness-v213.json\",\"fixtures/release/shard-readiness-v214.json\",\"fixtures/release/shard-readiness-v215.json\",\"fixtures/release/shard-readiness-v216.json\",\"fixtures/release/shard-readiness-v217.json\",\"fixtures/release/shard-readiness-v218.json\",\"fixtures/release/shard-readiness-v219.json\",\"fixtures/release/shard-readiness-v220.json\",\"fixtures/release/shard-readiness-v221.json\",\"fixtures/release/shard-readiness-v222.json\",\"fixtures/release/shard-readiness-v223.json\",\"fixtures/release/shard-readiness-v224.json\",\"fixtures/release/shard-readiness-v225.json\",\"fixtures/release/shard-readiness-v226.json\",\"fixtures/release/shard-readiness-v227.json\",\"fixtures/release/shard-readiness-v228.json\",\"fixtures/release/shard-readiness-v229.json\",\"fixtures/release/shard-readiness-v230.json\",\"fixtures/release/shard-readiness-v231.json\",\"fixtures/release/shard-readiness-v232.json\"]");
     assert_contains(json, "\"runtimeMatchesCurrentFixture\":true");
     assert_contains(json, "\"historicalFixturesPreserved\":true");
     assert_contains(json, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
@@ -295,11 +296,11 @@ void assert_shard_readiness_contract(const std::string& json) {
                            "\"Node v473\",\"Node v474\",\"Node v475\",\"Node v476\",\"Node v477\","
                            "\"Node v478\",\"Node v479\",\"Node v480\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v231\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v231.json\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v232\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v232.json\"");
     assert_contains(
         json,
-        "\"previousConsumptionNodeVersion\":\"Node v506+ may consume v231 route catalog cleanup readiness handoff archive verification route closure snapshot evidence\"");
+        "\"previousConsumptionNodeVersion\":\"Node v523+ may consume v232 route catalog cleanup readiness handoff archive verification route final audit evidence\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_contains(json, "\"nodeV396ProgressIntakePreserved\":true");
     assert_contains(json, "\"nodeV397ContributionReviewPreserved\":true");
@@ -1243,20 +1244,20 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"nodeRouteCatalogCleanupPostCloseoutContinuity\":{\"continuityMode\":"
                           "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
     assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
-                          "v505-post-java-mini-kv-route-catalog-cleanup-readiness-handoff-evidence-archive-verification-route-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v231\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v231.json\"");
-    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:e5ecccc9d95c6ffd\"");
-    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v505-readiness-handoff-archive-verification-route-final-audit\"");
-    assert_contains(json, "\"stageSequence\":32");
-    assert_contains(json, "\"stageReleaseVersion\":\"v232\"");
-    assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v505\"");
+                          "v522-post-java-mini-kv-route-catalog-cleanup-twenty-version-run-closeout-roadmap.md\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v232\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v232.json\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:b4781a6b786af6f5\"");
+    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v522-twenty-version-run-closeout-alignment\"");
+    assert_contains(json, "\"stageSequence\":33");
+    assert_contains(json, "\"stageReleaseVersion\":\"v233\"");
+    assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v522\"");
     assert_contains(json, "\"previousCloseoutAuditReleaseVersion\":\"v200\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeStart\":\"v194\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_contains(json, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v232\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":32");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v233\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":33");
     assert_contains(json, "\"nodePlanStillLatestForMiniKv\":true");
     assert_contains(json, "\"sourceFixtureVersioned\":true");
     assert_contains(json, "\"rollingCurrentRejected\":true");
@@ -1264,8 +1265,8 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"preservesBatchCloseoutAudit\":true");
     assert_contains(json, "\"preservesNodeV480Validation\":true");
     assert_contains(json, "\"preservesArchiveVerifierChecks\":true");
-    assert_contains(json, "\"archiveVerifierCheckCount\":16");
-    assert_contains(json, "\"archiveVerifierChecksPassed\":16");
+    assert_contains(json, "\"archiveVerifierCheckCount\":10");
+    assert_contains(json, "\"archiveVerifierChecksPassed\":10");
     assert_contains(json, "\"postCloseoutStageOnly\":true");
     assert_contains(json, "\"readyForNextNodeBatch\":true");
     assert_contains(json, "\"runtimeExecutionPacketExecutable\":false");
@@ -1755,7 +1756,23 @@ int main() {
     const auto consumed_v199_fixture = read_fixture_text(consumed_v199_fixture_path);
     const auto consumed_v200_fixture = read_fixture_text(consumed_v200_fixture_path);
 
-    assert(fixture == minikv::shard_readiness::format_json());
+    const auto formatted_fixture = minikv::shard_readiness::format_json();
+    if (fixture != formatted_fixture) {
+        std::cerr << "fixture length=" << fixture.size()
+                  << " formatted length=" << formatted_fixture.size() << '\n';
+        const auto limit = std::min(fixture.size(), formatted_fixture.size());
+        for (std::size_t index = 0; index < limit; ++index) {
+            if (fixture[index] != formatted_fixture[index]) {
+                std::cerr << "first diff at " << index << " fixture="
+                          << static_cast<int>(static_cast<unsigned char>(fixture[index]))
+                          << " formatted="
+                          << static_cast<int>(static_cast<unsigned char>(formatted_fixture[index]))
+                          << '\n';
+                break;
+            }
+        }
+    }
+    assert(fixture == formatted_fixture);
     assert(minikv::shard_readiness::fixture_path() == "fixtures/release/shard-readiness.json");
     assert_shard_readiness_contract(fixture);
     assert(fixture != historical_fixture);

@@ -24,7 +24,7 @@ std::string format_post_closeout_continuity_json() {
     const PostCloseoutStageDescriptor& descriptor = current_stage_descriptor();
 
     return "{\"continuityMode\":\"node-route-catalog-cleanup-post-closeout-continuity-read-only\","
-           "\"sourceNodePlan\":\"docs/plans3/v505-post-java-mini-kv-route-catalog-cleanup-readiness-handoff-evidence-archive-verification-route-roadmap.md\","
+           "\"sourceNodePlan\":\"docs/plans3/v522-post-java-mini-kv-route-catalog-cleanup-twenty-version-run-closeout-roadmap.md\","
            "\"sourceFrozenReleaseVersion\":" +
            json_string(descriptor.source_frozen_release_version) +
            ",\"sourceFrozenFixturePath\":" + json_string(descriptor.source_frozen_fixture_path) +
@@ -41,7 +41,7 @@ std::string format_post_closeout_continuity_json() {
            "\"trackedPostCloseoutRangeEnd\":" +
            json_string(descriptor.stage_release_version) +
            ",\"trackedPostCloseoutReleaseCount\":" + std::to_string(descriptor.stage_sequence) +
-           ",\"nodeBatchCloseoutVersion\":\"Node v505\","
+           ",\"nodeBatchCloseoutVersion\":\"Node v522\","
            "\"nodePlanStillLatestForMiniKv\":true,"
            "\"sourceFixtureVersioned\":true,"
            "\"rollingCurrentRejected\":true,"
@@ -49,8 +49,8 @@ std::string format_post_closeout_continuity_json() {
            "\"preservesBatchCloseoutAudit\":true,"
            "\"preservesNodeV480Validation\":true,"
            "\"preservesArchiveVerifierChecks\":true,"
-           "\"archiveVerifierCheckCount\":16,"
-           "\"archiveVerifierChecksPassed\":16,"
+           "\"archiveVerifierCheckCount\":10,"
+           "\"archiveVerifierChecksPassed\":10,"
            "\"stageAssertions\":" +
            json_string_array({
                std::string{descriptor.source_baseline_assertion},
