@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 312-version-252-node-v549-latest-sibling-clean-quality-reminder.md - mini-kv v252 Node v549 Latest Sibling Clean Quality Reminder, freezes v251 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/252 archive.
 - 311-version-251-node-v549-archive-verification-route-readiness-audit.md - mini-kv v251 Node v549 Archive Verification Route Readiness Audit, freezes v250 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/251 archive.
 - 310-version-250-node-v549-archive-verification-route-readiness-snapshot.md - mini-kv v250 Node v549 Archive Verification Route Readiness Snapshot, freezes v249 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/250 archive.
 - 309-version-249-node-v549-archive-verification-alignment-audit.md - mini-kv v249 Node v549 Archive Verification Alignment Audit, freezes v248 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/249 archive.
