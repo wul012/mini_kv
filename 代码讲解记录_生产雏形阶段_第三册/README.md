@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- `302-version-246-node-v522-final-closeout-package-audit.md` - mini-kv v246 Node v522 Final Closeout Package Audit, freezes v245 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/246` archive.
 - `301-version-245-node-v522-final-closeout-package.md` - mini-kv v245 Node v522 Final Closeout Package, freezes v244 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/245` archive.
 - `300-version-244-node-v522-downstream-consumption-handoff-audit.md` - mini-kv v244 Node v522 Downstream Consumption Handoff Audit, freezes v243 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/244` archive.
 - `299-version-243-node-v522-downstream-consumption-handoff.md` - mini-kv v243 Node v522 Downstream Consumption Handoff, freezes v242 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/243` archive.
