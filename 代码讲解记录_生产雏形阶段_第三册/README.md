@@ -97,6 +97,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `275-version-219-node-route-catalog-cleanup-post-closeout-continuity-v211-v218-batch-package.md` - mini-kv v219 freezes v218 and packages the v211-v218 post-closeout continuity run as durable read-only evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/219` archive.
 
+- `276-version-220-node-route-catalog-cleanup-post-closeout-continuity-v211-v219-batch-package-audit.md` - mini-kv v220 freezes v219 and audits the v211-v219 post-closeout continuity batch package from immutable v219 evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/220` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
