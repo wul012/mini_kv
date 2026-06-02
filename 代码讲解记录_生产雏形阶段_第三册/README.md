@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- `296-version-240-node-v522-ci-catalog-health-audit.md` - mini-kv v240 Node v522 CI Catalog Health Audit, freezes v239 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/240` archive.
 - `295-version-239-node-v522-ci-catalog-health-snapshot.md` - mini-kv v239 Node v522 CI Catalog Health Snapshot, freezes v238 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/239` archive.
 - `294-version-238-node-v522-stability-archive-package-audit.md` - mini-kv v238 Node v522 Stability Archive Package Audit, freezes v237 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/238` archive.
 - `293-version-237-node-v522-stability-archive-package.md` - mini-kv v237 Node v522 Stability Archive Package, freezes v236 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/237` archive.
