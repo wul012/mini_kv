@@ -331,7 +331,7 @@ int main() {
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
-    assert_response_contains(result, "\"releaseVersion\":\"v247\"");
+    assert_response_contains(result, "\"releaseVersion\":\"v248\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -449,8 +449,8 @@ int main() {
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v246\"");
-    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v246.json\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v247\"");
+    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v247.json\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                      "\"history-fixture-archive-formatter-split-read-only\"");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v179\"");
@@ -1151,23 +1151,23 @@ int main() {
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupPostCloseoutContinuity\":{\"continuityMode\":"
                                      "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v246\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v246.json\"");
-    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:41faff0a29161016\"");
-    assert_response_contains(result, "\"continuityStage\":\"post-closeout-continuity-node-v522-final-verification-route-readiness\"");
-    assert_response_contains(result, "\"stageSequence\":47");
-    assert_response_contains(result, "\"stageReleaseVersion\":\"v247\"");
-    assert_response_contains(result, "\"nodeBatchCloseoutVersion\":\"Node v522\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v247\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v247.json\"");
+    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:9fb71e13c517fff8\"");
+    assert_response_contains(result, "\"continuityStage\":\"post-closeout-continuity-node-v549-archive-verification-alignment\"");
+    assert_response_contains(result, "\"stageSequence\":48");
+    assert_response_contains(result, "\"stageReleaseVersion\":\"v248\"");
+    assert_response_contains(result, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_response_contains(result, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_response_contains(result, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v247\"");
-    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":47");
+    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v248\"");
+    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":48");
     assert_response_contains(result, "\"nodePlanStillLatestForMiniKv\":true");
     assert_response_contains(result, "\"sourceFixtureVersioned\":true");
     assert_response_contains(result, "\"rollingCurrentRejected\":true");
     assert_response_contains(result, "\"preservesBatchCloseoutAudit\":true");
     assert_response_contains(result, "\"preservesNodeV480Validation\":true");
-    assert_response_contains(result, "\"archiveVerifierChecksPassed\":10");
+    assert_response_contains(result, "\"archiveVerifierChecksPassed\":3");
     assert_response_contains(result, "\"postCloseoutStageOnly\":true");
     assert_response_contains(result, "\"readyForNextNodeBatch\":true");
     assert_response_contains(result, "\"routerActivationAllowed\":false");

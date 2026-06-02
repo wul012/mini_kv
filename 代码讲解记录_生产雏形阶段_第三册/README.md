@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 308-version-248-node-v549-archive-verification-alignment.md - mini-kv v248 Node v549 Archive Verification Alignment, freezes v247 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/248 archive.
 - `307-walkthrough-markdown-generation-guardrail.md` - documents the Markdown generation guardrail after the v247 whitespace cleanup, including control-character and trailing-whitespace checks.
 - `306-quality-judgment-v233-v247-evidence-chain.md` - records the quality judgment for the v233-v247 evidence chain: source and test direction stable, generated walkthrough hygiene corrected.
 - `305-progress-direction-v248-v262-node-v549-alignment.md` - records the next fifteen-version direction against Node v549 latest sibling live-smoke archive verification route archive verification.

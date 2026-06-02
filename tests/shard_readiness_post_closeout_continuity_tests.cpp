@@ -20,20 +20,20 @@ void assert_not_contains(const std::string& text, const std::string& needle) {
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"releaseVersion\":\"v247\"");
+    assert_contains(json, "\"releaseVersion\":\"v248\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
-                    "v522-post-java-mini-kv-route-catalog-cleanup-twenty-version-run-closeout-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v246\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v246.json\"");
-    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v522-final-verification-route-readiness\"");
-    assert_contains(json, "\"stageSequence\":47");
-    assert_contains(json, "\"stageReleaseVersion\":\"v247\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v247\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":47");
-    assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v522\"");
-    assert_contains(json, "\"archiveVerifierCheckCount\":10");
-    assert_contains(json, "\"archiveVerifierChecksPassed\":10");
+                    "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v247\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v247.json\"");
+    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v549-archive-verification-alignment\"");
+    assert_contains(json, "\"stageSequence\":48");
+    assert_contains(json, "\"stageReleaseVersion\":\"v248\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v248\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":48");
+    assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
+    assert_contains(json, "\"archiveVerifierCheckCount\":3");
+    assert_contains(json, "\"archiveVerifierChecksPassed\":3");
     assert_contains(json, "\"stage descriptor lifecycle preserves the JSON contract\"");
     assert_contains(json, "\"no router, write routing, or execution authority is opened\"");
     assert_contains(json, "\"nodeConsumesFreshMiniKvEvidence\":false");
