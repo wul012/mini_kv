@@ -103,6 +103,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `278-version-222-node-v505-readiness-handoff-archive-verification-route-alignment-audit.md` - mini-kv v222 audits the Node v505 readiness handoff archive verification route alignment from frozen v221 evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/222` archive.
 
+- `279-version-223-node-v505-readiness-handoff-archive-verification-route-package.md` - mini-kv v223 packages the Node v505 readiness handoff archive verification route evidence from frozen v222 audit, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/223` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
