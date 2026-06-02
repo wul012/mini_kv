@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v499+ may consume v218 as route catalog cleanup consumer readiness handshake audit evidence only\","
+           "\"nodeConsumer\":\"Node v499+ may consume v219 as route catalog cleanup continuity batch package evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -100,6 +100,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v215.json",
                 "fixtures/release/shard-readiness-v216.json",
                 "fixtures/release/shard-readiness-v217.json",
+                "fixtures/release/shard-readiness-v218.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -211,9 +212,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v217\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v217.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v499+ may consume v217 post closeout continuity Node v498 consumer readiness handshake package\","
+    return "{\"previousConsumedReleaseVersion\":\"v218\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v218.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v499+ may consume v218 post closeout continuity Node v498 consumer readiness handshake package audit\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
