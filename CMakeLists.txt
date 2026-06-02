@@ -124,24 +124,7 @@ set_tests_properties(benchmark_evidence_guard
         PASS_REGULAR_EXPRESSION "\"evidence_type\":\"mini-kv-benchmark-evidence-guard\\.v1\".*\"wal_enabled\":false.*\"network_started\":false.*\"restore_executed\":false.*\"managed_audit_connection_opened\":false.*\"final_store_size\":0"
 )
 
-function(minikv_add_linked_test target_name test_name source_file)
-    add_executable(${target_name}
-        ${source_file}
-    )
-
-    target_link_libraries(${target_name} PRIVATE minikv)
-
-    add_test(NAME ${test_name} COMMAND ${target_name})
-endfunction()
-
-function(minikv_add_source_dir_test target_name test_name source_file)
-    minikv_add_linked_test(${target_name} ${test_name} ${source_file})
-
-    target_compile_definitions(${target_name}
-        PRIVATE
-            MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-    )
-endfunction()
+include(cmake/MinikvTesting.cmake)
 
 add_executable(minikv_dependabot_config_tests
     tests/dependabot_config_tests.cpp

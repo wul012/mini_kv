@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "maintenance-refactor-cmake-source-dir-test-helper",
-    66,
+    "maintenance-refactor-cmake-testing-module-split",
+    67,
+    "v267",
+    "moves CMake test registration helpers into a dedicated testing module",
     "v266",
-    "extracts common CMake registration for source-dir fixture test targets",
-    "v265",
-    "fixtures/release/shard-readiness-v265.json",
-    "fnv1a64:16f6535206b72859",
-    "frozen v265 fixture is the source baseline for maintenance-only refactor continuity",
+    "fixtures/release/shard-readiness-v266.json",
+    "fnv1a64:fb40aa3d8da66ba6",
+    "frozen v266 fixture is the source baseline for maintenance-only refactor continuity",
 };
 
 } // namespace

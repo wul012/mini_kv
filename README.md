@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v267: freezes v266 as a versioned source fixture and moves CMake test registration helpers into a dedicated testing module while preserving read-only/no-router/no-write/no-execution boundaries.
 - v266: freezes v265 as a versioned source fixture and extracts common CMake registration for source-dir fixture test targets while preserving read-only/no-router/no-write/no-execution boundaries.
 - v265: freezes v264 as a versioned source fixture and extracts common CMake registration for plain linked test targets while preserving read-only/no-router/no-write/no-execution boundaries.
 - v264: freezes v263 as a versioned source fixture and replaces hand-written historical fixture loading in shard readiness tests with version-indexed helpers while preserving read-only/no-router/no-write/no-execution boundaries.
