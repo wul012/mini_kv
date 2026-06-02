@@ -124,6 +124,16 @@ set_tests_properties(benchmark_evidence_guard
         PASS_REGULAR_EXPRESSION "\"evidence_type\":\"mini-kv-benchmark-evidence-guard\\.v1\".*\"wal_enabled\":false.*\"network_started\":false.*\"restore_executed\":false.*\"managed_audit_connection_opened\":false.*\"final_store_size\":0"
 )
 
+function(minikv_add_linked_test target_name test_name source_file)
+    add_executable(${target_name}
+        ${source_file}
+    )
+
+    target_link_libraries(${target_name} PRIVATE minikv)
+
+    add_test(NAME ${test_name} COMMAND ${target_name})
+endfunction()
+
 add_executable(minikv_dependabot_config_tests
     tests/dependabot_config_tests.cpp
 )
@@ -135,13 +145,11 @@ target_compile_definitions(minikv_dependabot_config_tests
 
 add_test(NAME dependabot_config_tests COMMAND minikv_dependabot_config_tests)
 
-add_executable(minikv_store_tests
+minikv_add_linked_test(
+    minikv_store_tests
+    store_tests
     tests/store_tests.cpp
 )
-
-target_link_libraries(minikv_store_tests PRIVATE minikv)
-
-add_test(NAME store_tests COMMAND minikv_store_tests)
 
 add_executable(minikv_command_tests
     tests/command_tests.cpp
@@ -169,32 +177,23 @@ target_compile_definitions(minikv_shard_readiness_tests
 
 add_test(NAME shard_readiness_tests COMMAND minikv_shard_readiness_tests)
 
-add_executable(minikv_shard_readiness_post_closeout_continuity_tests
+minikv_add_linked_test(
+    minikv_shard_readiness_post_closeout_continuity_tests
+    shard_readiness_post_closeout_continuity_tests
     tests/shard_readiness_post_closeout_continuity_tests.cpp
 )
 
-target_link_libraries(minikv_shard_readiness_post_closeout_continuity_tests PRIVATE minikv)
-
-add_test(
-    NAME shard_readiness_post_closeout_continuity_tests
-    COMMAND minikv_shard_readiness_post_closeout_continuity_tests
-)
-
-add_executable(minikv_smokejson_command_receipt_tests
+minikv_add_linked_test(
+    minikv_smokejson_command_receipt_tests
+    smokejson_command_receipt_tests
     tests/smokejson_command_receipt_tests.cpp
 )
 
-target_link_libraries(minikv_smokejson_command_receipt_tests PRIVATE minikv)
-
-add_test(NAME smokejson_command_receipt_tests COMMAND minikv_smokejson_command_receipt_tests)
-
-add_executable(minikv_managed_audit_receipts_tests
+minikv_add_linked_test(
+    minikv_managed_audit_receipts_tests
+    managed_audit_receipts_tests
     tests/managed_audit_receipts_tests.cpp
 )
-
-target_link_libraries(minikv_managed_audit_receipts_tests PRIVATE minikv)
-
-add_test(NAME managed_audit_receipts_tests COMMAND minikv_managed_audit_receipts_tests)
 
 add_executable(minikv_readonly_fixture_tests
     tests/readonly_fixture_tests.cpp
@@ -209,93 +208,71 @@ target_compile_definitions(minikv_readonly_fixture_tests
 
 add_test(NAME readonly_fixture_tests COMMAND minikv_readonly_fixture_tests)
 
-add_executable(minikv_wal_tests
+minikv_add_linked_test(
+    minikv_wal_tests
+    wal_tests
     tests/wal_tests.cpp
 )
 
-target_link_libraries(minikv_wal_tests PRIVATE minikv)
-
-add_test(NAME wal_tests COMMAND minikv_wal_tests)
-
-add_executable(minikv_snapshot_tests
+minikv_add_linked_test(
+    minikv_snapshot_tests
+    snapshot_tests
     tests/snapshot_tests.cpp
 )
 
-target_link_libraries(minikv_snapshot_tests PRIVATE minikv)
-
-add_test(NAME snapshot_tests COMMAND minikv_snapshot_tests)
-
-add_executable(minikv_stress_tests
+minikv_add_linked_test(
+    minikv_stress_tests
+    stress_tests
     tests/stress_tests.cpp
 )
 
-target_link_libraries(minikv_stress_tests PRIVATE minikv)
-
-add_test(NAME stress_tests COMMAND minikv_stress_tests)
-
-add_executable(minikv_resp_tests
+minikv_add_linked_test(
+    minikv_resp_tests
+    resp_tests
     tests/resp_tests.cpp
 )
 
-target_link_libraries(minikv_resp_tests PRIVATE minikv)
-
-add_test(NAME resp_tests COMMAND minikv_resp_tests)
-
-add_executable(minikv_tcp_server_tests
+minikv_add_linked_test(
+    minikv_tcp_server_tests
+    tcp_server_tests
     tests/tcp_server_tests.cpp
 )
 
-target_link_libraries(minikv_tcp_server_tests PRIVATE minikv)
-
-add_test(NAME tcp_server_tests COMMAND minikv_tcp_server_tests)
-
-add_executable(minikv_tcp_resp_tests
+minikv_add_linked_test(
+    minikv_tcp_resp_tests
+    tcp_resp_tests
     tests/tcp_resp_tests.cpp
 )
 
-target_link_libraries(minikv_tcp_resp_tests PRIVATE minikv)
-
-add_test(NAME tcp_resp_tests COMMAND minikv_tcp_resp_tests)
-
-add_executable(minikv_tcp_resp_compat_tests
+minikv_add_linked_test(
+    minikv_tcp_resp_compat_tests
+    tcp_resp_compat_tests
     tests/tcp_resp_compat_tests.cpp
 )
 
-target_link_libraries(minikv_tcp_resp_compat_tests PRIVATE minikv)
-
-add_test(NAME tcp_resp_compat_tests COMMAND minikv_tcp_resp_compat_tests)
-
-add_executable(minikv_tcp_resp_concurrency_tests
+minikv_add_linked_test(
+    minikv_tcp_resp_concurrency_tests
+    tcp_resp_concurrency_tests
     tests/tcp_resp_concurrency_tests.cpp
 )
 
-target_link_libraries(minikv_tcp_resp_concurrency_tests PRIVATE minikv)
-
-add_test(NAME tcp_resp_concurrency_tests COMMAND minikv_tcp_resp_concurrency_tests)
-
-add_executable(minikv_client_history_tests
+minikv_add_linked_test(
+    minikv_client_history_tests
+    client_history_tests
     tests/client_history_tests.cpp
 )
 
-target_link_libraries(minikv_client_history_tests PRIVATE minikv)
-
-add_test(NAME client_history_tests COMMAND minikv_client_history_tests)
-
-add_executable(minikv_line_editor_tests
+minikv_add_linked_test(
+    minikv_line_editor_tests
+    line_editor_tests
     tests/line_editor_tests.cpp
 )
 
-target_link_libraries(minikv_line_editor_tests PRIVATE minikv)
-
-add_test(NAME line_editor_tests COMMAND minikv_line_editor_tests)
-
-add_executable(minikv_metrics_file_tests
+minikv_add_linked_test(
+    minikv_metrics_file_tests
+    metrics_file_tests
     tests/metrics_file_tests.cpp
 )
-
-target_link_libraries(minikv_metrics_file_tests PRIVATE minikv)
-
-add_test(NAME metrics_file_tests COMMAND minikv_metrics_file_tests)
 
 add_executable(minikv_recovery_evidence_tests
     tests/recovery_evidence_tests.cpp
