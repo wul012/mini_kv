@@ -4,6 +4,10 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- `307-walkthrough-markdown-generation-guardrail.md` - documents the Markdown generation guardrail after the v247 whitespace cleanup, including control-character and trailing-whitespace checks.
+- `306-quality-judgment-v233-v247-evidence-chain.md` - records the quality judgment for the v233-v247 evidence chain: source and test direction stable, generated walkthrough hygiene corrected.
+- `305-progress-direction-v248-v262-node-v549-alignment.md` - records the next fifteen-version direction against Node v549 latest sibling live-smoke archive verification route archive verification.
+- `304-quality-reminder-v247-walkthrough-whitespace.md` - records the v247 walkthrough trailing-whitespace reminder and why it is a documentation quality issue rather than a C++ contract issue.
 - `303-version-247-node-v522-final-verification-route-readiness.md` - mini-kv v247 Node v522 Final Verification Route Readiness, freezes v246 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/247` archive.
 - `302-version-246-node-v522-final-closeout-package-audit.md` - mini-kv v246 Node v522 Final Closeout Package Audit, freezes v245 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/246` archive.
 - `301-version-245-node-v522-final-closeout-package.md` - mini-kv v245 Node v522 Final Closeout Package, freezes v244 evidence, updates Node v522-aligned post-closeout continuity, tests, TCP smoke, and `e/245` archive.
