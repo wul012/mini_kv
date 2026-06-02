@@ -99,6 +99,8 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 - `276-version-220-node-route-catalog-cleanup-post-closeout-continuity-v211-v219-batch-package-audit.md` - mini-kv v220 freezes v219 and audits the v211-v219 post-closeout continuity batch package from immutable v219 evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/220` archive.
 
+- `277-version-221-node-v505-readiness-handoff-archive-verification-route-alignment.md` - mini-kv v221 aligns the post-closeout continuity evidence with the Node v505 readiness handoff evidence archive verification route from frozen v220 evidence, with detailed source/fallback/boundary explanation, tests, TCP smoke, and `e/221` archive.
+
 ## Rules
 
 - Continue file numbering from Volume 2.
