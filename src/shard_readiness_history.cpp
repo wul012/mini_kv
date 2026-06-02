@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v550+ may consume v254 as Node v549 live-smoke boundary reconfirmation evidence only\","
+           "\"nodeConsumer\":\"Node v550+ may consume v255 as Node v549 live-smoke boundary reconfirmation audit evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -136,6 +136,7 @@ std::string format_fixture_parity_json() {
                 "fixtures/release/shard-readiness-v251.json",
                 "fixtures/release/shard-readiness-v252.json",
                 "fixtures/release/shard-readiness-v253.json",
+                "fixtures/release/shard-readiness-v254.json",
             }) +
            ",\"runtimeMatchesCurrentFixture\":true,\"historicalFixturesPreserved\":true}";
 }
@@ -247,9 +248,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v253\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v253.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v253 Node v549 latest sibling clean quality reminder audit evidence\","
+    return "{\"previousConsumedReleaseVersion\":\"v254\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v254.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v254 Node v549 live-smoke boundary reconfirmation evidence\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
