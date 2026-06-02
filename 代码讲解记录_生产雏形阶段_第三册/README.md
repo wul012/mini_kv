@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 316-version-256-node-v549-archive-files-consumption-handoff.md - mini-kv v256 Node v549 Archive Files Consumption Handoff, freezes v255 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/256 archive.
 - 315-version-255-node-v549-live-smoke-boundary-reconfirmation-audit.md - mini-kv v255 Node v549 Live-Smoke Boundary Reconfirmation Audit, freezes v254 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/255 archive.
 - 314-version-254-node-v549-live-smoke-boundary-reconfirmation.md - mini-kv v254 Node v549 Live-Smoke Boundary Reconfirmation, freezes v253 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/254 archive.
 - 313-version-253-node-v549-latest-sibling-clean-quality-reminder-audit.md - mini-kv v253 Node v549 Latest Sibling Clean Quality Reminder Audit, freezes v252 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/253 archive.
