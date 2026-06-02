@@ -172,3 +172,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [330-version-270-boundary-catalog-index-formatter-split.md](330-version-270-boundary-catalog-index-formatter-split.md) - Boundary Catalog Index Formatter Split
 - [331-version-271-boundary-catalog-maintenance-formatter-split.md](331-version-271-boundary-catalog-maintenance-formatter-split.md) - Boundary Catalog Maintenance Formatter Split
 - [332-version-272-boundary-field-facade-simplification.md](332-version-272-boundary-field-facade-simplification.md) - Boundary Field Facade Simplification
+- [333-version-273-cmake-standalone-source-dir-test-helper.md](333-version-273-cmake-standalone-source-dir-test-helper.md) - CMake Standalone Source Dir Test Helper

@@ -130,16 +130,11 @@ set_tests_properties(benchmark_evidence_guard
 
 include(cmake/MinikvTesting.cmake)
 
-add_executable(minikv_dependabot_config_tests
+minikv_add_standalone_source_dir_test(
+    minikv_dependabot_config_tests
+    dependabot_config_tests
     tests/dependabot_config_tests.cpp
 )
-
-target_compile_definitions(minikv_dependabot_config_tests
-    PRIVATE
-        MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
-)
-
-add_test(NAME dependabot_config_tests COMMAND minikv_dependabot_config_tests)
 
 minikv_add_linked_test(
     minikv_store_tests

@@ -16,17 +16,17 @@ using minikv::test_support::assert_not_contains;
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"releaseVersion\":\"v272\"");
+    assert_contains(json, "\"releaseVersion\":\"v273\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v271\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v271.json\"");
-    assert_contains(json, "\"continuityStage\":\"maintenance-refactor-boundary-field-facade-simplification\"");
-    assert_contains(json, "\"stageSequence\":72");
-    assert_contains(json, "\"stageReleaseVersion\":\"v272\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v272\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":72");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v272\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v272.json\"");
+    assert_contains(json, "\"continuityStage\":\"maintenance-refactor-cmake-standalone-source-dir-test-helper\"");
+    assert_contains(json, "\"stageSequence\":73");
+    assert_contains(json, "\"stageReleaseVersion\":\"v273\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v273\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":73");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":3");
     assert_contains(json, "\"archiveVerifierChecksPassed\":3");
