@@ -171,3 +171,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [329-version-269-boundary-catalog-group-table-split.md](329-version-269-boundary-catalog-group-table-split.md) - Boundary Catalog Group Table Split
 - [330-version-270-boundary-catalog-index-formatter-split.md](330-version-270-boundary-catalog-index-formatter-split.md) - Boundary Catalog Index Formatter Split
 - [331-version-271-boundary-catalog-maintenance-formatter-split.md](331-version-271-boundary-catalog-maintenance-formatter-split.md) - Boundary Catalog Maintenance Formatter Split
+- [332-version-272-boundary-field-facade-simplification.md](332-version-272-boundary-field-facade-simplification.md) - Boundary Field Facade Simplification

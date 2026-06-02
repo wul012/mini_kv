@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v272: freezes v271 as a versioned source fixture and removes the local boundary field JSON array wrapper in favor of the shared runtime evidence formatter while preserving read-only/no-router/no-write/no-execution boundaries.
 - v271: freezes v270 as a versioned source fixture and moves the boundary catalog maintenance JSON formatter into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
 - v270: freezes v269 as a versioned source fixture and moves the boundary catalog index JSON formatter into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
 - v269: freezes v268 as a versioned source fixture and moves the boundary catalog group table into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
