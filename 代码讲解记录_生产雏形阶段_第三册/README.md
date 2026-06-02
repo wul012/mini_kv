@@ -177,3 +177,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [335-version-275-tcp-resp-server-harness-extraction.md](335-version-275-tcp-resp-server-harness-extraction.md) - TCP RESP Server Harness Extraction
 - [336-version-276-shard-readiness-lifecycle-section-split.md](336-version-276-shard-readiness-lifecycle-section-split.md) - Shard Readiness Lifecycle Section Split
 - [337-version-277-shard-readiness-runtime-gate-section-split.md](337-version-277-shard-readiness-runtime-gate-section-split.md) - Shard Readiness Runtime Gate Section Split
+- [338-version-278-shard-readiness-summary-notes-split.md](338-version-278-shard-readiness-summary-notes-split.md) - Shard Readiness Summary Notes Split
