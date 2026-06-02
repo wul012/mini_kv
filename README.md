@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v274: freezes v273 as a versioned source fixture and extracts shared TCP RESP socket/protocol helpers into a dedicated test support header while preserving read-only/no-router/no-write/no-execution boundaries.
 - v273: freezes v272 as a versioned source fixture and extracts standalone source-dir test registration into the shared CMake testing module while preserving read-only/no-router/no-write/no-execution boundaries.
 - v272: freezes v271 as a versioned source fixture and removes the local boundary field JSON array wrapper in favor of the shared runtime evidence formatter while preserving read-only/no-router/no-write/no-execution boundaries.
 - v271: freezes v270 as a versioned source fixture and moves the boundary catalog maintenance JSON formatter into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.

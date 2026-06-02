@@ -173,3 +173,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [331-version-271-boundary-catalog-maintenance-formatter-split.md](331-version-271-boundary-catalog-maintenance-formatter-split.md) - Boundary Catalog Maintenance Formatter Split
 - [332-version-272-boundary-field-facade-simplification.md](332-version-272-boundary-field-facade-simplification.md) - Boundary Field Facade Simplification
 - [333-version-273-cmake-standalone-source-dir-test-helper.md](333-version-273-cmake-standalone-source-dir-test-helper.md) - CMake Standalone Source Dir Test Helper
+- [334-version-274-tcp-resp-test-support-extraction.md](334-version-274-tcp-resp-test-support-extraction.md) - TCP RESP Test Support Extraction

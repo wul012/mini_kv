@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "maintenance-refactor-cmake-standalone-source-dir-test-helper",
-    73,
+    "maintenance-refactor-tcp-resp-test-support-extraction",
+    74,
+    "v274",
+    "extracts shared TCP RESP socket and protocol helpers into a dedicated test support header",
     "v273",
-    "extracts standalone source-dir test registration into the shared CMake testing module",
-    "v272",
-    "fixtures/release/shard-readiness-v272.json",
-    "fnv1a64:4f819aca4d500c49",
-    "frozen v272 fixture is the source baseline for maintenance-only refactor continuity",
+    "fixtures/release/shard-readiness-v273.json",
+    "fnv1a64:d744fba839270c98",
+    "frozen v273 fixture is the source baseline for maintenance-only refactor continuity",
 };
 
 } // namespace
