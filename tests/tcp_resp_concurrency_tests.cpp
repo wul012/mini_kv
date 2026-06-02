@@ -1,6 +1,3 @@
-#include "minikv/store.hpp"
-#include "minikv/tcp_server.hpp"
-
 #include "tcp_test_support.hpp"
 
 #include <cassert>
@@ -8,7 +5,6 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
-#include <exception>
 #include <functional>
 #include <mutex>
 #include <stdexcept>
@@ -23,14 +19,13 @@ constexpr std::size_t client_count = 4;
 
 using minikv::test_support::TestNetworkRuntime;
 using minikv::test_support::TestSocketGuard;
+using minikv::test_support::TestTcpServerHarness;
 using minikv::test_support::bulk_string;
 using minikv::test_support::connect_test_socket;
-using minikv::test_support::contains_log;
 using minikv::test_support::make_resp_array;
 using minikv::test_support::receive_all;
 using minikv::test_support::send_all;
 using minikv::test_support::shutdown_write;
-using minikv::test_support::wait_for_log;
 
 bool has_failures(const std::vector<std::string>& failures, std::mutex& failures_mutex) {
     std::lock_guard lock{failures_mutex};
@@ -143,32 +138,8 @@ void run_client(std::uint16_t port,
 int main() {
     using namespace std::chrono_literals;
 
-    minikv::Store store;
-    minikv::TcpServer::Options options;
-    options.host = "127.0.0.1";
-    options.port = 0;
-    options.accept_poll_interval = 10ms;
-
-    std::mutex logs_mutex;
-    std::vector<std::string> logs;
-    options.logger = [&](const std::string& message) {
-        std::lock_guard lock{logs_mutex};
-        logs.push_back(message);
-    };
-
-    minikv::TcpServer server{store, options};
-    std::exception_ptr failure;
-    std::thread server_thread{[&] {
-        try {
-            server.run();
-        } catch (...) {
-            failure = std::current_exception();
-        }
-    }};
-
-    wait_for_log(logs, logs_mutex, "event=tcp_listen");
-    const auto bound_port = server.bound_port();
-    assert(bound_port > 0);
+    TestTcpServerHarness harness;
+    const auto bound_port = harness.bound_port();
 
     std::atomic_bool start{false};
     std::atomic_size_t ready_clients{0};
@@ -188,39 +159,32 @@ int main() {
     }
 
     const bool concurrent_clients_ready =
-        wait_for_concurrent_clients(server, ready_clients, failures, failures_mutex);
+        wait_for_concurrent_clients(harness.server(), ready_clients, failures, failures_mutex);
     start.store(true);
 
     for (auto& client : clients) {
         client.join();
     }
 
-    wait_for_closed_clients(server);
+    wait_for_closed_clients(harness.server());
 
-    server.request_stop();
-    server_thread.join();
-
-    if (failure) {
-        std::rethrow_exception(failure);
-    }
+    harness.stop();
 
     assert(concurrent_clients_ready);
     assert(!has_failures(failures, failures_mutex));
-    assert(server.stop_requested());
 
-    const auto stats = server.connection_stats();
+    const auto stats = harness.server().connection_stats();
     assert(stats.total_connections == client_count);
     assert(stats.active_connections == 0);
     assert(stats.peak_connections == client_count);
-    assert(store.size() == 0);
+    assert(harness.store().size() == 0);
 
-    std::lock_guard lock{logs_mutex};
-    assert(contains_log(logs, "event=tcp_listen"));
-    assert(contains_log(logs, "event=tcp_client_accepted"));
-    assert(contains_log(logs, "event=tcp_client_closed"));
-    assert(contains_log(logs, "event=tcp_stop"));
-    assert(contains_log(logs, "total_connections=" + std::to_string(client_count)));
-    assert(contains_log(logs, "peak_connections=" + std::to_string(client_count)));
+    assert(harness.contains_log("event=tcp_listen"));
+    assert(harness.contains_log("event=tcp_client_accepted"));
+    assert(harness.contains_log("event=tcp_client_closed"));
+    assert(harness.contains_log("event=tcp_stop"));
+    assert(harness.contains_log("total_connections=" + std::to_string(client_count)));
+    assert(harness.contains_log("peak_connections=" + std::to_string(client_count)));
 
     return 0;
 }

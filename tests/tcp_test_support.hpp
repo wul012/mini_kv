@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstdint>
 #include <cstring>
+#include <exception>
 #include <initializer_list>
 #include <mutex>
 #include <stdexcept>
@@ -284,5 +285,94 @@ inline void wait_for_connection_total(const TcpServer& server, std::uint64_t tot
     assert(stats.total_connections == total_connections);
     assert(stats.active_connections == 0);
 }
+
+class TestTcpServerHarness {
+public:
+    TestTcpServerHarness()
+        : options_(make_options(logs_, logs_mutex_)),
+          server_(store_, options_) {
+        server_thread_ = std::thread{[this] {
+            try {
+                server_.run();
+            } catch (...) {
+                failure_ = std::current_exception();
+            }
+        }};
+
+        wait_for_log(logs_, logs_mutex_, "event=tcp_listen");
+        assert(bound_port() > 0);
+    }
+
+    ~TestTcpServerHarness() {
+        if (!stopped_) {
+            server_.request_stop();
+            if (server_thread_.joinable()) {
+                server_thread_.join();
+            }
+        }
+    }
+
+    TestTcpServerHarness(const TestTcpServerHarness&) = delete;
+    TestTcpServerHarness& operator=(const TestTcpServerHarness&) = delete;
+
+    Store& store() {
+        return store_;
+    }
+
+    TcpServer& server() {
+        return server_;
+    }
+
+    const TcpServer& server() const {
+        return server_;
+    }
+
+    std::uint16_t bound_port() const {
+        return server_.bound_port();
+    }
+
+    bool contains_log(std::string_view needle) const {
+        std::lock_guard lock{logs_mutex_};
+        return minikv::test_support::contains_log(logs_, needle);
+    }
+
+    void stop() {
+        server_.request_stop();
+        if (server_thread_.joinable()) {
+            server_thread_.join();
+        }
+        stopped_ = true;
+
+        if (failure_) {
+            std::rethrow_exception(failure_);
+        }
+
+        assert(server_.stop_requested());
+    }
+
+private:
+    static TcpServer::Options make_options(std::vector<std::string>& logs, std::mutex& logs_mutex) {
+        using namespace std::chrono_literals;
+
+        TcpServer::Options options;
+        options.host = "127.0.0.1";
+        options.port = 0;
+        options.accept_poll_interval = 10ms;
+        options.logger = [&](const std::string& message) {
+            std::lock_guard lock{logs_mutex};
+            logs.push_back(message);
+        };
+        return options;
+    }
+
+    Store store_;
+    mutable std::mutex logs_mutex_;
+    std::vector<std::string> logs_;
+    TcpServer::Options options_;
+    TcpServer server_;
+    std::exception_ptr failure_;
+    std::thread server_thread_;
+    bool stopped_ = false;
+};
 
 } // namespace minikv::test_support

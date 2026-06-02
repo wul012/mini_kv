@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "maintenance-refactor-tcp-resp-test-support-extraction",
-    74,
+    "maintenance-refactor-tcp-resp-server-harness-extraction",
+    75,
+    "v275",
+    "extracts shared TCP RESP server lifecycle handling into the test support harness",
     "v274",
-    "extracts shared TCP RESP socket and protocol helpers into a dedicated test support header",
-    "v273",
-    "fixtures/release/shard-readiness-v273.json",
-    "fnv1a64:d744fba839270c98",
-    "frozen v273 fixture is the source baseline for maintenance-only refactor continuity",
+    "fixtures/release/shard-readiness-v274.json",
+    "fnv1a64:66e6baa3d02e74bb",
+    "frozen v274 fixture is the source baseline for maintenance-only refactor continuity",
 };
 
 } // namespace
