@@ -175,3 +175,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [333-version-273-cmake-standalone-source-dir-test-helper.md](333-version-273-cmake-standalone-source-dir-test-helper.md) - CMake Standalone Source Dir Test Helper
 - [334-version-274-tcp-resp-test-support-extraction.md](334-version-274-tcp-resp-test-support-extraction.md) - TCP RESP Test Support Extraction
 - [335-version-275-tcp-resp-server-harness-extraction.md](335-version-275-tcp-resp-server-harness-extraction.md) - TCP RESP Server Harness Extraction
+- [336-version-276-shard-readiness-lifecycle-section-split.md](336-version-276-shard-readiness-lifecycle-section-split.md) - Shard Readiness Lifecycle Section Split
