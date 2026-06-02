@@ -1,36 +1,32 @@
 #include "minikv/command.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/store.hpp"
+#include "test_support.hpp"
 
 #include <cassert>
 #include <string>
 
 namespace {
 
-void assert_contains(const std::string& text, const std::string& needle) {
-    assert(text.find(needle) != std::string::npos);
-}
-
-void assert_not_contains(const std::string& text, const std::string& needle) {
-    assert(text.find(needle) == std::string::npos);
-}
+using minikv::test_support::assert_contains;
+using minikv::test_support::assert_not_contains;
 
 } // namespace
 
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"releaseVersion\":\"v262\"");
+    assert_contains(json, "\"releaseVersion\":\"v263\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v261\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v261.json\"");
-    assert_contains(json, "\"continuityStage\":\"post-closeout-continuity-node-v549-final-verification-ready\"");
-    assert_contains(json, "\"stageSequence\":62");
-    assert_contains(json, "\"stageReleaseVersion\":\"v262\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v262\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":62");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v262\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v262.json\"");
+    assert_contains(json, "\"continuityStage\":\"maintenance-refactor-test-support-helper-extraction\"");
+    assert_contains(json, "\"stageSequence\":63");
+    assert_contains(json, "\"stageReleaseVersion\":\"v263\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v263\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":63");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":3");
     assert_contains(json, "\"archiveVerifierChecksPassed\":3");

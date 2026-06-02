@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "post-closeout-continuity-node-v549-final-verification-ready",
-    62,
+    "maintenance-refactor-test-support-helper-extraction",
+    63,
+    "v263",
+    "extracts shared test assertion and fixture helpers without changing mini-kv runtime behavior",
     "v262",
-    "prepares final mini-kv read-only evidence readiness for the Node v549 archive verification line",
-    "v261",
-    "fixtures/release/shard-readiness-v261.json",
-    "fnv1a64:1c833e424df779d8",
-    "frozen v261 fixture is the source baseline for Node v549 latest sibling archive verification continuity",
+    "fixtures/release/shard-readiness-v262.json",
+    "fnv1a64:e03c17ac665717f2",
+    "frozen v262 fixture is the source baseline for maintenance-only refactor continuity",
 };
 
 } // namespace
