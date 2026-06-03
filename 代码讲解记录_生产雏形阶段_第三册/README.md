@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [372-version-312-java-echo-handoff.md](372-version-312-java-echo-handoff.md) - Route Preview Verification Java Echo Handoff
 - [371-version-311-node-consumer-handoff.md](371-version-311-node-consumer-handoff.md) - Route Preview Verification Node Consumer Handoff
 - [370-version-310-operator-handoff.md](370-version-310-operator-handoff.md) - Route Preview Verification Operator Handoff
 - [369-version-309-history-fallback-freeze.md](369-version-309-history-fallback-freeze.md) - Route Preview Verification History Fallback Freeze
