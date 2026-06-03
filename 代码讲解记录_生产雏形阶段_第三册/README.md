@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [367-version-307-rollout-catalog.md](367-version-307-rollout-catalog.md) - Route Preview Verification Rollout Catalog
 - [366-version-306-sample-parity-audit.md](366-version-306-sample-parity-audit.md) - Route Preview Verification Sample Parity Audit
 - [365-version-305-fixture-freeze.md](365-version-305-fixture-freeze.md) - Route Preview Verification Fixture Freeze
 - [364-version-304-tcp-smoke-contract.md](364-version-304-tcp-smoke-contract.md) - Route Preview Verification Tcp Smoke Contract
