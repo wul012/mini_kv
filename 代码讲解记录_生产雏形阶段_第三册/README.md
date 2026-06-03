@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 342-version-282-route-preview-checkjson-contract.md - mini-kv v282 route-preview-checkjson-contract, freezes v281 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/282 archive.
 - 341-version-281-route-preview-command-explain-contract.md - mini-kv v281 route-preview-command-explain-contract, freezes v280 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/281 archive.
 - 340-version-280-route-preview-command-catalog-alignment.md - mini-kv v280 route-preview-command-catalog-alignment, freezes v279 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/280 archive.
 - 339-version-279-read-only-shard-route-preview-command.md - mini-kv v279 read-only SHARDROUTE / SHARDROUTEJSON key route preview command, freezes v278 evidence, updates command catalog, tests, TCP smoke, and e/279 archive.

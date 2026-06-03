@@ -16,7 +16,7 @@ namespace {
 constexpr int preview_slot_count = 16;
 constexpr std::string_view preview_shard_id = "shard-0";
 constexpr std::string_view preview_route_mode = "preview-only";
-constexpr int current_rollout_stage_count = 3;
+constexpr int current_rollout_stage_count = 4;
 
 struct PinnedSample {
     std::string_view key;
