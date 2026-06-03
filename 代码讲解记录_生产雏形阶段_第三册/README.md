@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [371-version-311-node-consumer-handoff.md](371-version-311-node-consumer-handoff.md) - Route Preview Verification Node Consumer Handoff
 - [370-version-310-operator-handoff.md](370-version-310-operator-handoff.md) - Route Preview Verification Operator Handoff
 - [369-version-309-history-fallback-freeze.md](369-version-309-history-fallback-freeze.md) - Route Preview Verification History Fallback Freeze
 - [368-version-308-rollout-catalog-audit.md](368-version-308-rollout-catalog-audit.md) - Route Preview Verification Rollout Catalog Audit
