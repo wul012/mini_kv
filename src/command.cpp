@@ -2,6 +2,7 @@
 
 #include "minikv/command_contracts.hpp"
 #include "minikv/command_response_formatters.hpp"
+#include "minikv/shard_route_preview.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/string_utils.hpp"
 #include "minikv/snapshot.hpp"
@@ -59,7 +60,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 30> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 32> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -83,6 +84,8 @@ constexpr std::array<CommandDispatchEntry, 30> command_dispatch_table = {{
     {"INFO", CommandDispatchVerb::RuntimeEvidence},
     {"INFOJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTE", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -444,6 +447,19 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         return {shard_readiness::format_json()};
     }
 
+    if (command == "SHARDROUTE" || command == "SHARDROUTEJSON") {
+        std::string key;
+        input >> key;
+        if (key.empty() || has_extra_token(input)) {
+            return usage(std::string{command} + " key");
+        }
+
+        if (command == "SHARDROUTE") {
+            return {shard_route_preview::format_route_text(key)};
+        }
+        return {shard_route_preview::format_route_json(key)};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -798,6 +814,8 @@ std::string CommandProcessor::help_text() {
            "  INFO\n"
            "  INFOJSON\n"
            "  SHARDJSON\n"
+           "  SHARDROUTE key\n"
+           "  SHARDROUTEJSON key\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

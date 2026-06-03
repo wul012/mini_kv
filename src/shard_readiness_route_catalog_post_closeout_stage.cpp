@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "maintenance-refactor-shard-readiness-summary-notes-split",
-    78,
+    "feature-read-only-shard-route-preview-command-contract",
+    79,
+    "v279",
+    "adds read-only SHARDROUTE and SHARDROUTEJSON preview commands with no active router",
     "v278",
-    "moves shard readiness summary notes JSON construction into a dedicated source file",
-    "v277",
-    "fixtures/release/shard-readiness-v277.json",
-    "fnv1a64:ce4d290795868b84",
-    "frozen v277 fixture is the source baseline for maintenance-only refactor continuity",
+    "fixtures/release/shard-readiness-v278.json",
+    "fnv1a64:26f55eb7b8108367",
+    "frozen v278 fixture is the source baseline for route preview command contract evidence",
 };
 
 } // namespace

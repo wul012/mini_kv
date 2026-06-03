@@ -75,6 +75,7 @@ add_library(minikv
     src/shard_readiness_slot_preview.cpp
     src/shard_readiness_slot_preview_audit.cpp
     src/shard_readiness_summary_sections.cpp
+    src/shard_route_preview.cpp
     src/snapshot.cpp
     src/store.cpp
     src/tcp_server.cpp
@@ -161,6 +162,12 @@ minikv_add_linked_test(
     minikv_shard_readiness_post_closeout_continuity_tests
     shard_readiness_post_closeout_continuity_tests
     tests/shard_readiness_post_closeout_continuity_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_tests
+    shard_route_preview_tests
+    tests/shard_route_preview_tests.cpp
 )
 
 minikv_add_linked_test(
