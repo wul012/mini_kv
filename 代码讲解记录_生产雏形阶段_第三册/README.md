@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 346-version-286-route-preview-sample-parity-audit.md - mini-kv v286 route-preview-sample-parity-audit, freezes v285 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/286 archive.
 - 345-version-285-route-preview-fixture-freeze.md - mini-kv v285 route-preview-fixture-freeze, freezes v284 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/285 archive.
 - 344-version-284-route-preview-tcp-smoke-contract.md - mini-kv v284 route-preview-tcp-smoke-contract, freezes v283 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/284 archive.
 - 343-version-283-route-preview-cli-smoke-contract.md - mini-kv v283 route-preview-cli-smoke-contract, freezes v282 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/283 archive.
