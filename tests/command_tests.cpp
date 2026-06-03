@@ -330,7 +330,7 @@ int main() {
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
     assert_response_contains(result, "\"version\":\"" + std::string{minikv::version} +
-                                         "\",\"releaseVersion\":\"v323\"");
+                                         "\",\"releaseVersion\":\"v324\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -421,12 +421,12 @@ int main() {
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardRoutePreviewVerificationReport\":{\"rolloutMode\":"
                                      "\"read-only-shard-route-preview-verification-report-rollout\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v322\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v322.json\"");
-    assert_response_contains(result, "\"rolloutStage\":\"route-preview-verification-report-checkjson-contract\"");
-    assert_response_contains(result, "\"rolloutStageSequence\":4");
-    assert_response_contains(result, "\"rolloutReleaseVersion\":\"v323\"");
-    assert_response_contains(result, "\"publishedStageCount\":4");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v323\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v323.json\"");
+    assert_response_contains(result, "\"rolloutStage\":\"route-preview-verification-report-cli-smoke-contract\"");
+    assert_response_contains(result, "\"rolloutStageSequence\":5");
+    assert_response_contains(result, "\"rolloutReleaseVersion\":\"v324\"");
+    assert_response_contains(result, "\"publishedStageCount\":5");
     assert_response_contains(result, "\"reportCommandAvailable\":true");
     assert_response_contains(result, "\"reportedCommand\":\"SHARDROUTEVERIFYJSON\"");
     assert_response_contains(result, "\"previewCommand\":\"SHARDROUTEJSON\"");
@@ -489,8 +489,8 @@ int main() {
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v322\"");
-    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v322.json\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v323\"");
+    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v323.json\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                      "\"history-fixture-archive-formatter-split-read-only\"");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v179\"");
@@ -1191,19 +1191,19 @@ int main() {
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupPostCloseoutContinuity\":{\"continuityMode\":"
                                      "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v322\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v322.json\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v323\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v323.json\"");
     assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:2193962195ba633a\"");
     assert_response_contains(
         result,
-        "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-checkjson-contract\"");
-    assert_response_contains(result, "\"stageSequence\":123");
-    assert_response_contains(result, "\"stageReleaseVersion\":\"v323\"");
+        "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-cli-smoke-contract\"");
+    assert_response_contains(result, "\"stageSequence\":124");
+    assert_response_contains(result, "\"stageReleaseVersion\":\"v324\"");
     assert_response_contains(result, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_response_contains(result, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_response_contains(result, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v323\"");
-    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":123");
+    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v324\"");
+    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":124");
     assert_response_contains(result, "\"nodePlanStillLatestForMiniKv\":true");
     assert_response_contains(result, "\"sourceFixtureVersioned\":true");
     assert_response_contains(result, "\"rollingCurrentRejected\":true");
