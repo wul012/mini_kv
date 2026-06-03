@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [380-version-320-report-command-contract.md](380-version-320-report-command-contract.md) - Route Preview Verification Report Command Contract
 - [379-version-319-closeout-audit.md](379-version-319-closeout-audit.md) - Route Preview Verification Closeout Audit
 - [378-version-318-release-package-audit.md](378-version-318-release-package-audit.md) - Route Preview Verification Release Package Audit
 - [377-version-317-release-package.md](377-version-317-release-package.md) - Route Preview Verification Release Package

@@ -4,6 +4,7 @@
 #include "minikv/command_response_formatters.hpp"
 #include "minikv/shard_route_preview.hpp"
 #include "minikv/shard_route_preview_verification.hpp"
+#include "minikv/shard_route_preview_verification_report.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/string_utils.hpp"
 #include "minikv/snapshot.hpp"
@@ -61,7 +62,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 33> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 34> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -88,6 +89,7 @@ constexpr std::array<CommandDispatchEntry, 33> command_dispatch_table = {{
     {"SHARDROUTE", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVERIFYREPORTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -472,6 +474,16 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         return {shard_route_preview_verification::format_verification_json(key)};
     }
 
+    if (command == "SHARDROUTEVERIFYREPORTJSON") {
+        std::string key;
+        input >> key;
+        if (key.empty() || has_extra_token(input)) {
+            return usage("SHARDROUTEVERIFYREPORTJSON key");
+        }
+
+        return {shard_route_preview_verification_report::format_report_json(key)};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -829,6 +841,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTE key\n"
            "  SHARDROUTEJSON key\n"
            "  SHARDROUTEVERIFYJSON key\n"
+           "  SHARDROUTEVERIFYREPORTJSON key\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

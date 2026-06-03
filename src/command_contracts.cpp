@@ -101,6 +101,12 @@ constexpr CommandCatalogEntry command_catalog[] = {
      false,
      true,
      "Verify a route preview JSON contract without enabling active routing"},
+    {"SHARDROUTEVERIFYREPORTJSON",
+     "read",
+     false,
+     false,
+     true,
+     "Package route preview verification evidence without enabling active routing"},
     {"COMMANDS", "meta", false, false, true, "Read command catalog as text"},
     {"COMMANDSJSON", "meta", false, false, true, "Read command catalog as JSON"},
     {"EXPLAINJSON", "meta", false, false, true, "Explain a command risk profile as JSON without executing it"},
@@ -301,7 +307,7 @@ CommandExplain explain_command(std::string_view line) {
     }
 
     if (explain.command == "SHARDROUTE" || explain.command == "SHARDROUTEJSON" ||
-        explain.command == "SHARDROUTEVERIFYJSON") {
+        explain.command == "SHARDROUTEVERIFYJSON" || explain.command == "SHARDROUTEVERIFYREPORTJSON") {
         explain.side_effects.push_back("metadata_read");
         std::string key;
         input >> key;
