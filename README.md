@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v306: freezes v305 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYJSON` route preview verification to `route-preview-verification-sample-parity-audit` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v305: freezes v304 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYJSON` route preview verification to `route-preview-verification-fixture-freeze` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v304: freezes v303 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYJSON` route preview verification to `route-preview-verification-tcp-smoke-contract` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v303: freezes v302 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYJSON` route preview verification to `route-preview-verification-cli-smoke-contract` while preserving no active router, no write routing, no WAL touch, and no execution authority.
