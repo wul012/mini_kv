@@ -14,7 +14,7 @@ namespace {
 constexpr int preview_slot_count = 16;
 constexpr std::string_view preview_shard_id = "shard-0";
 constexpr std::string_view preview_route_mode = "preview-only";
-constexpr int current_verification_stage_count = 1;
+constexpr int current_verification_stage_count = 2;
 
 struct PinnedSampleExpectation {
     std::string_view key;
@@ -36,7 +36,7 @@ constexpr std::array<PinnedSampleExpectation, 3> pinned_samples = {{
     {"mini-kv:health", 14},
 }};
 
-constexpr std::array<VerificationStage, 20> verification_stages = {{
+constexpr std::array<VerificationStage, 21> verification_stages = {{
     {1,
      "v299",
      "route-preview-verification-command-contract",
@@ -157,6 +157,12 @@ constexpr std::array<VerificationStage, 20> verification_stages = {{
      "v317",
      "fixtures/release/shard-readiness-v317.json",
      "audits route preview verification rollout release package"},
+    {21,
+     "v319",
+     "route-preview-verification-closeout-audit",
+     "v318",
+     "fixtures/release/shard-readiness-v318.json",
+     "audits route preview verification closeout continuity"},
 }};
 
 std::string json_string(std::string_view value) {

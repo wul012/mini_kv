@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [360-version-300-command-catalog-alignment.md](360-version-300-command-catalog-alignment.md) - Route Preview Verification Command Catalog Alignment
 
 This sibling folder continues the mini-kv production-prototype walkthrough series after Volume 2 became crowded.
 
