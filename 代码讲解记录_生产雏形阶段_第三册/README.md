@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [375-version-315-no-write-audit.md](375-version-315-no-write-audit.md) - Route Preview Verification No Write Audit
 - [374-version-314-no-router-audit.md](374-version-314-no-router-audit.md) - Route Preview Verification No Router Audit
 - [373-version-313-boundary-field-audit.md](373-version-313-boundary-field-audit.md) - Route Preview Verification Boundary Field Audit
 - [372-version-312-java-echo-handoff.md](372-version-312-java-echo-handoff.md) - Route Preview Verification Java Echo Handoff
