@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [398-version-338-release-package.md](398-version-338-release-package.md) - Route Preview Verification Report Release Package
 - [397-version-337-no-execution-audit.md](397-version-337-no-execution-audit.md) - Route Preview Verification Report No Execution Audit
 - [396-version-336-no-write-audit.md](396-version-336-no-write-audit.md) - Route Preview Verification Report No Write Audit
 - [395-version-335-no-router-audit.md](395-version-335-no-router-audit.md) - Route Preview Verification Report No Router Audit
