@@ -517,7 +517,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "EXPLAINJSON",    "CHECKJSON", "WALINFO",     "STATS",      "STATSJSON",
                                   "SMOKEJSON",      "STORAGEJSON", "RESETSTATS", "HEALTH",    "INFO",
                                   "INFOJSON",       "SHARDJSON", "SHARDROUTE",  "SHARDROUTEJSON",
-                                  "HELP",           "EXIT",      "QUIT",        ":history"};
+                                  "SHARDROUTEVERIFYJSON", "HELP", "EXIT",      "QUIT",        ":history"};
     return options;
 }
 

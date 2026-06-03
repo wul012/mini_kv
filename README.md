@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v299: freezes v298 as a versioned source fixture and adds read-only `SHARDROUTEVERIFYJSON` route preview verification while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v298: freezes v297 as a versioned source fixture and advances read-only shard route preview to `route-preview-release-package-audit` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v297: freezes v296 as a versioned source fixture and advances read-only shard route preview to `route-preview-release-package` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v296: freezes v295 as a versioned source fixture and advances read-only shard route preview to `route-preview-no-execution-audit` while preserving no active router, no write routing, no WAL touch, and no execution authority.
@@ -22,9 +23,6 @@ A C++20 practice project for building a small Redis-like key-value engine.
 - v283: freezes v282 as a versioned source fixture and advances read-only shard route preview to `route-preview-cli-smoke-contract` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v282: freezes v281 as a versioned source fixture and advances read-only shard route preview to `route-preview-checkjson-contract` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v281: freezes v280 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-explain-contract` while preserving no active router, no write routing, no WAL touch, and no execution authority.
-- v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.
-- v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.
-- v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v279: freezes v278 as a versioned source fixture and adds read-only `SHARDROUTE` / `SHARDROUTEJSON` key route preview commands while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v278: freezes v277 as a versioned source fixture and moves shard readiness summary notes JSON construction into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.

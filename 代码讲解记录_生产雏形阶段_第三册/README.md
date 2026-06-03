@@ -198,3 +198,24 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [336-version-276-shard-readiness-lifecycle-section-split.md](336-version-276-shard-readiness-lifecycle-section-split.md) - Shard Readiness Lifecycle Section Split
 - [337-version-277-shard-readiness-runtime-gate-section-split.md](337-version-277-shard-readiness-runtime-gate-section-split.md) - Shard Readiness Runtime Gate Section Split
 - [338-version-278-shard-readiness-summary-notes-split.md](338-version-278-shard-readiness-summary-notes-split.md) - Shard Readiness Summary Notes Split
+- [339-version-279-read-only-shard-route-preview-command.md](339-version-279-read-only-shard-route-preview-command.md) - Read Only Shard Route Preview Command
+- [340-version-280-route-preview-command-catalog-alignment.md](340-version-280-route-preview-command-catalog-alignment.md) - Route Preview Command Catalog Alignment
+- [341-version-281-route-preview-command-explain-contract.md](341-version-281-route-preview-command-explain-contract.md) - Route Preview Command Explain Contract
+- [342-version-282-route-preview-checkjson-contract.md](342-version-282-route-preview-checkjson-contract.md) - Route Preview CHECKJSON Contract
+- [343-version-283-route-preview-cli-smoke-contract.md](343-version-283-route-preview-cli-smoke-contract.md) - Route Preview CLI Smoke Contract
+- [344-version-284-route-preview-tcp-smoke-contract.md](344-version-284-route-preview-tcp-smoke-contract.md) - Route Preview TCP Smoke Contract
+- [345-version-285-route-preview-fixture-freeze.md](345-version-285-route-preview-fixture-freeze.md) - Route Preview Fixture Freeze
+- [346-version-286-route-preview-sample-parity-audit.md](346-version-286-route-preview-sample-parity-audit.md) - Route Preview Sample Parity Audit
+- [347-version-287-route-preview-rollout-catalog.md](347-version-287-route-preview-rollout-catalog.md) - Route Preview Rollout Catalog
+- [348-version-288-route-preview-rollout-catalog-audit.md](348-version-288-route-preview-rollout-catalog-audit.md) - Route Preview Rollout Catalog Audit
+- [349-version-289-route-preview-history-fallback-freeze.md](349-version-289-route-preview-history-fallback-freeze.md) - Route Preview History Fallback Freeze
+- [350-version-290-route-preview-operator-handoff.md](350-version-290-route-preview-operator-handoff.md) - Route Preview Operator Handoff
+- [351-version-291-route-preview-node-consumer-handoff.md](351-version-291-route-preview-node-consumer-handoff.md) - Route Preview Node Consumer Handoff
+- [352-version-292-route-preview-java-echo-handoff.md](352-version-292-route-preview-java-echo-handoff.md) - Route Preview Java Echo Handoff
+- [353-version-293-route-preview-boundary-field-audit.md](353-version-293-route-preview-boundary-field-audit.md) - Route Preview Boundary Field Audit
+- [354-version-294-route-preview-no-router-audit.md](354-version-294-route-preview-no-router-audit.md) - Route Preview No Router Audit
+- [355-version-295-route-preview-no-write-audit.md](355-version-295-route-preview-no-write-audit.md) - Route Preview No Write Audit
+- [356-version-296-route-preview-no-execution-audit.md](356-version-296-route-preview-no-execution-audit.md) - Route Preview No Execution Audit
+- [357-version-297-route-preview-release-package.md](357-version-297-route-preview-release-package.md) - Route Preview Release Package
+- [358-version-298-route-preview-release-package-audit.md](358-version-298-route-preview-release-package-audit.md) - Route Preview Release Package Audit
+- [359-version-299-route-preview-verification-command.md](359-version-299-route-preview-verification-command.md) - Route Preview Verification Command

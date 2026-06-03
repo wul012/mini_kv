@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=32") != std::string::npos);
+    assert(result.response.find("command_count=33") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -283,6 +283,8 @@ int main() {
     assert(result.response.find("SHARDJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SHARDROUTE(category=read,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SHARDROUTEJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find("SHARDROUTEVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -308,6 +310,8 @@ int main() {
                                 "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"SHARDROUTEJSON\",\"category\":\"read\",\"mutates_store\":false,"
                                 "\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find("\"name\":\"SHARDROUTEVERIFYJSON\",\"category\":\"read\",\"mutates_store\":false,"
+                                "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -320,7 +324,7 @@ int main() {
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
     assert_response_contains(result, "\"version\":\"" + std::string{minikv::version} +
-                                         "\",\"releaseVersion\":\"v298\"");
+                                         "\",\"releaseVersion\":\"v299\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -394,6 +398,21 @@ int main() {
     assert_response_contains(result, "\"activeRouterInstalled\":false");
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"shardRoutePreviewVerification\":{\"rolloutMode\":"
+                                     "\"read-only-shard-route-preview-verification-rollout\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v298\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v298.json\"");
+    assert_response_contains(result, "\"rolloutStage\":\"route-preview-verification-command-contract\"");
+    assert_response_contains(result, "\"rolloutStageSequence\":1");
+    assert_response_contains(result, "\"rolloutReleaseVersion\":\"v299\"");
+    assert_response_contains(result, "\"publishedStageCount\":1");
+    assert_response_contains(result, "\"verificationCommandAvailable\":true");
+    assert_response_contains(result, "\"verifiedCommand\":\"SHARDROUTEJSON\"");
+    assert_response_contains(result, "\"commands\":[\"SHARDROUTEVERIFYJSON\"]");
+    assert_response_contains(result, "\"executesRoute\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardReadinessReleaseCatalog\":{\"catalogMode\":"
                                      "\"versioned-shard-readiness-release-catalog-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
@@ -448,8 +467,8 @@ int main() {
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v297\"");
-    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v297.json\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v298\"");
+    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v298.json\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                      "\"history-fixture-archive-formatter-split-read-only\"");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v179\"");
@@ -1150,17 +1169,17 @@ int main() {
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupPostCloseoutContinuity\":{\"continuityMode\":"
                                      "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v297\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v297.json\"");
-    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:2193962195ba633a\"");
-    assert_response_contains(result, "\"continuityStage\":\"feature-read-only-shard-route-preview-release-package-audit\"");
-    assert_response_contains(result, "\"stageSequence\":98");
-    assert_response_contains(result, "\"stageReleaseVersion\":\"v298\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v298\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v298.json\"");
+    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:a58cf80e8ddfc6e3\"");
+    assert_response_contains(result, "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-command-contract\"");
+    assert_response_contains(result, "\"stageSequence\":99");
+    assert_response_contains(result, "\"stageReleaseVersion\":\"v299\"");
     assert_response_contains(result, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_response_contains(result, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_response_contains(result, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v298\"");
-    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":98");
+    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v299\"");
+    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":99");
     assert_response_contains(result, "\"nodePlanStillLatestForMiniKv\":true");
     assert_response_contains(result, "\"sourceFixtureVersioned\":true");
     assert_response_contains(result, "\"rollingCurrentRejected\":true");

@@ -2,6 +2,7 @@
 
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/shard_route_preview.hpp"
+#include "minikv/shard_route_preview_verification.hpp"
 #include "minikv/shard_readiness_approval_inputs.hpp"
 #include "minikv/shard_readiness_boundary_fields.hpp"
 #include "minikv/shard_readiness_history.hpp"
@@ -26,7 +27,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v298";
+constexpr std::string_view release_version = "v299";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -48,7 +49,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v298",
+        "mini-kv-shard-readiness-v299",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -90,6 +91,7 @@ std::string evidence_digest() {
             {"slotTablePreviewAudit=v163-contiguous-no-duplicates-no-router-no-execution"},
             {"slotTablePreviewAuditMaintenance=v164-formatter-split-contract-preserving"},
             {"shardRoutePreview=" + shard_route_preview::rollout_digest_marker()},
+            {"shardRoutePreviewVerification=" + shard_route_preview_verification::rollout_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -141,6 +143,7 @@ std::string format_json() {
            ",\"slotTablePreviewAuditMaintenance\":" +
            slot_preview_audit::format_slot_table_preview_audit_maintenance_json() +
            ",\"shardRoutePreview\":" + shard_route_preview::format_rollout_json() +
+           ",\"shardRoutePreviewVerification\":" + shard_route_preview_verification::format_rollout_json() +
            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

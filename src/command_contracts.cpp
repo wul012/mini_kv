@@ -95,6 +95,12 @@ constexpr CommandCatalogEntry command_catalog[] = {
     {"SHARDJSON", "read", false, false, true, "Read shard readiness evidence as JSON without enabling shard writes"},
     {"SHARDROUTE", "read", false, false, true, "Preview a key slot and shard without enabling active routing"},
     {"SHARDROUTEJSON", "read", false, false, true, "Preview a key slot and shard as JSON without enabling active routing"},
+    {"SHARDROUTEVERIFYJSON",
+     "read",
+     false,
+     false,
+     true,
+     "Verify a route preview JSON contract without enabling active routing"},
     {"COMMANDS", "meta", false, false, true, "Read command catalog as text"},
     {"COMMANDSJSON", "meta", false, false, true, "Read command catalog as JSON"},
     {"EXPLAINJSON", "meta", false, false, true, "Explain a command risk profile as JSON without executing it"},
@@ -294,7 +300,8 @@ CommandExplain explain_command(std::string_view line) {
         return explain;
     }
 
-    if (explain.command == "SHARDROUTE" || explain.command == "SHARDROUTEJSON") {
+    if (explain.command == "SHARDROUTE" || explain.command == "SHARDROUTEJSON" ||
+        explain.command == "SHARDROUTEVERIFYJSON") {
         explain.side_effects.push_back("metadata_read");
         std::string key;
         input >> key;
