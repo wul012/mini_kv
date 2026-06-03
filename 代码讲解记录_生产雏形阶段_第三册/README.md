@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 357-version-297-route-preview-release-package.md - mini-kv v297 route-preview-release-package, freezes v296 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/297 archive.
 - 356-version-296-route-preview-no-execution-audit.md - mini-kv v296 route-preview-no-execution-audit, freezes v295 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/296 archive.
 - 355-version-295-route-preview-no-write-audit.md - mini-kv v295 route-preview-no-write-audit, freezes v294 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/295 archive.
 - 354-version-294-route-preview-no-router-audit.md - mini-kv v294 route-preview-no-router-audit, freezes v293 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/294 archive.
