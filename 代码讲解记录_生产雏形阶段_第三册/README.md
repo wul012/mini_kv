@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 350-version-290-route-preview-operator-handoff.md - mini-kv v290 route-preview-operator-handoff, freezes v289 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/290 archive.
 - 349-version-289-route-preview-history-fallback-freeze.md - mini-kv v289 route-preview-history-fallback-freeze, freezes v288 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/289 archive.
 - 348-version-288-route-preview-rollout-catalog-audit.md - mini-kv v288 route-preview-rollout-catalog-audit, freezes v287 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/288 archive.
 - 347-version-287-route-preview-rollout-catalog.md - mini-kv v287 route-preview-rollout-catalog, freezes v286 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/287 archive.
