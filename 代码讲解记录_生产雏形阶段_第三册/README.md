@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [376-version-316-no-execution-audit.md](376-version-316-no-execution-audit.md) - Route Preview Verification No Execution Audit
 - [375-version-315-no-write-audit.md](375-version-315-no-write-audit.md) - Route Preview Verification No Write Audit
 - [374-version-314-no-router-audit.md](374-version-314-no-router-audit.md) - Route Preview Verification No Router Audit
 - [373-version-313-boundary-field-audit.md](373-version-313-boundary-field-audit.md) - Route Preview Verification Boundary Field Audit
