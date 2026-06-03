@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 340-version-280-route-preview-command-catalog-alignment.md - mini-kv v280 route-preview-command-catalog-alignment, freezes v279 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/280 archive.
 - 339-version-279-read-only-shard-route-preview-command.md - mini-kv v279 read-only SHARDROUTE / SHARDROUTEJSON key route preview command, freezes v278 evidence, updates command catalog, tests, TCP smoke, and e/279 archive.
 - 322-version-262-node-v549-final-verification-ready.md - mini-kv v262 Node v549 Final Verification Ready, freezes v261 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/262 archive.
 - 321-version-261-node-v549-final-closeout-package-audit.md - mini-kv v261 Node v549 Final Closeout Package Audit, freezes v260 evidence, updates Node v549-aligned post-closeout continuity, tests, TCP smoke, and e/261 archive.

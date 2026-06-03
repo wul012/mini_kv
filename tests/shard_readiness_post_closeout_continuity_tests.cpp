@@ -1,6 +1,7 @@
-﻿#include "minikv/command.hpp"
+#include "minikv/command.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/store.hpp"
+#include "minikv/version.hpp"
 #include "test_support.hpp"
 
 #include <cassert>
@@ -16,17 +17,17 @@ using minikv::test_support::assert_not_contains;
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"releaseVersion\":\"v279\"");
+    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v280\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v278\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v278.json\"");
-    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-command-contract\"");
-    assert_contains(json, "\"stageSequence\":79");
-    assert_contains(json, "\"stageReleaseVersion\":\"v279\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v279\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":79");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v279\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v279.json\"");
+    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-command-catalog-alignment\"");
+    assert_contains(json, "\"stageSequence\":80");
+    assert_contains(json, "\"stageReleaseVersion\":\"v280\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v280\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":80");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":3");
     assert_contains(json, "\"archiveVerifierChecksPassed\":3");

@@ -4,6 +4,10 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.
+- v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.
+- v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.
+- v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v279: freezes v278 as a versioned source fixture and adds read-only `SHARDROUTE` / `SHARDROUTEJSON` key route preview commands while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v278: freezes v277 as a versioned source fixture and moves shard readiness summary notes JSON construction into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
 - v277: freezes v276 as a versioned source fixture and moves runtime execution artifact, approval precheck, and final approval input JSON sections into a dedicated source file while preserving read-only/no-router/no-write/no-execution boundaries.
