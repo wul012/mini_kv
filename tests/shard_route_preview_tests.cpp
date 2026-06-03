@@ -52,12 +52,12 @@ int main() {
 
     const std::string rollout = minikv::shard_route_preview::format_rollout_json();
     assert_contains(rollout, "\"rolloutMode\":\"read-only-shard-route-preview-rollout\"");
-    assert_contains(rollout, "\"sourceFrozenReleaseVersion\":\"v289\"");
-    assert_contains(rollout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v289.json\"");
-    assert_contains(rollout, "\"rolloutStage\":\"route-preview-operator-handoff\"");
-    assert_contains(rollout, "\"rolloutStageSequence\":12");
-    assert_contains(rollout, "\"rolloutReleaseVersion\":\"v290\"");
-    assert_contains(rollout, "\"publishedStageCount\":12");
+    assert_contains(rollout, "\"sourceFrozenReleaseVersion\":\"v290\"");
+    assert_contains(rollout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v290.json\"");
+    assert_contains(rollout, "\"rolloutStage\":\"route-preview-node-consumer-handoff\"");
+    assert_contains(rollout, "\"rolloutStageSequence\":13");
+    assert_contains(rollout, "\"rolloutReleaseVersion\":\"v291\"");
+    assert_contains(rollout, "\"publishedStageCount\":13");
     assert_contains(rollout, "\"commands\":[\"SHARDROUTE\",\"SHARDROUTEJSON\"]");
     assert_contains(rollout, "\"sampleSlotsPinnedToExistingEvidence\":true");
     assert_contains(rollout, "\"activeRouterInstalled\":false");

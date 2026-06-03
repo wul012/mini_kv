@@ -17,17 +17,17 @@ using minikv::test_support::assert_not_contains;
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v290\"");
+    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v291\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v289\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v289.json\"");
-    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-operator-handoff\"");
-    assert_contains(json, "\"stageSequence\":90");
-    assert_contains(json, "\"stageReleaseVersion\":\"v290\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v290\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":90");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v290\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v290.json\"");
+    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-node-consumer-handoff\"");
+    assert_contains(json, "\"stageSequence\":91");
+    assert_contains(json, "\"stageReleaseVersion\":\"v291\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v291\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":91");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":3");
     assert_contains(json, "\"archiveVerifierChecksPassed\":3");
