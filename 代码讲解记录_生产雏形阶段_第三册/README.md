@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [387-version-327-sample-parity-audit.md](387-version-327-sample-parity-audit.md) - Route Preview Verification Report Sample Parity Audit
 - [386-version-326-fixture-freeze.md](386-version-326-fixture-freeze.md) - Route Preview Verification Report Fixture Freeze
 - [385-version-325-tcp-smoke-contract.md](385-version-325-tcp-smoke-contract.md) - Route Preview Verification Report Tcp Smoke Contract
 - [384-version-324-cli-smoke-contract.md](384-version-324-cli-smoke-contract.md) - Route Preview Verification Report Cli Smoke Contract
