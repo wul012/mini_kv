@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [383-version-323-checkjson-contract.md](383-version-323-checkjson-contract.md) - Route Preview Verification Report Checkjson Contract
 - [382-version-322-explain-contract.md](382-version-322-explain-contract.md) - Route Preview Verification Report Explain Contract
 - [381-version-321-command-catalog-alignment.md](381-version-321-command-catalog-alignment.md) - Route Preview Verification Report Command Catalog Alignment
 - [380-version-320-report-command-contract.md](380-version-320-report-command-contract.md) - Route Preview Verification Report Command Contract
