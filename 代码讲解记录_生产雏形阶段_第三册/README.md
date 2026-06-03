@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [393-version-333-java-echo-handoff.md](393-version-333-java-echo-handoff.md) - Route Preview Verification Report Java Echo Handoff
 - [392-version-332-node-consumer-handoff.md](392-version-332-node-consumer-handoff.md) - Route Preview Verification Report Node Consumer Handoff
 - [391-version-331-operator-handoff.md](391-version-331-operator-handoff.md) - Route Preview Verification Report Operator Handoff
 - [390-version-330-history-fallback-freeze.md](390-version-330-history-fallback-freeze.md) - Route Preview Verification Report History Fallback Freeze

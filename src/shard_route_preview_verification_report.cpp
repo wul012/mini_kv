@@ -12,7 +12,7 @@
 namespace minikv::shard_route_preview_verification_report {
 namespace {
 
-constexpr int current_report_stage_count = 13;
+constexpr int current_report_stage_count = 14;
 
 struct ReportStage {
     int sequence;
