@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [391-version-331-operator-handoff.md](391-version-331-operator-handoff.md) - Route Preview Verification Report Operator Handoff
 - [390-version-330-history-fallback-freeze.md](390-version-330-history-fallback-freeze.md) - Route Preview Verification Report History Fallback Freeze
 - [389-version-329-rollout-catalog-audit.md](389-version-329-rollout-catalog-audit.md) - Route Preview Verification Report Rollout Catalog Audit
 - [388-version-328-rollout-catalog.md](388-version-328-rollout-catalog.md) - Route Preview Verification Report Rollout Catalog
