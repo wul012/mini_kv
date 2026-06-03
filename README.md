@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v292: freezes v291 as a versioned source fixture and advances read-only shard route preview to `route-preview-java-echo-handoff` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v291: freezes v290 as a versioned source fixture and advances read-only shard route preview to `route-preview-node-consumer-handoff` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v290: freezes v289 as a versioned source fixture and advances read-only shard route preview to `route-preview-operator-handoff` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v289: freezes v288 as a versioned source fixture and advances read-only shard route preview to `route-preview-history-fallback-freeze` while preserving no active router, no write routing, no WAL touch, and no execution authority.

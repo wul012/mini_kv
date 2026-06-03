@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 352-version-292-route-preview-java-echo-handoff.md - mini-kv v292 route-preview-java-echo-handoff, freezes v291 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/292 archive.
 - 351-version-291-route-preview-node-consumer-handoff.md - mini-kv v291 route-preview-node-consumer-handoff, freezes v290 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/291 archive.
 - 350-version-290-route-preview-operator-handoff.md - mini-kv v290 route-preview-operator-handoff, freezes v289 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/290 archive.
 - 349-version-289-route-preview-history-fallback-freeze.md - mini-kv v289 route-preview-history-fallback-freeze, freezes v288 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/289 archive.

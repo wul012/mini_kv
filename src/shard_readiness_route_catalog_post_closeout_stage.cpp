@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "feature-read-only-shard-route-preview-node-consumer-handoff",
-    91,
+    "feature-read-only-shard-route-preview-java-echo-handoff",
+    92,
+    "v292",
+    "documents Java echo handoff for route preview evidence",
     "v291",
-    "documents Node consumer handoff for route preview evidence",
-    "v290",
-    "fixtures/release/shard-readiness-v290.json",
+    "fixtures/release/shard-readiness-v291.json",
     "fnv1a64:2193962195ba633a",
-    "frozen v290 fixture is the source baseline for route-preview-node-consumer-handoff evidence",
+    "frozen v291 fixture is the source baseline for route-preview-java-echo-handoff evidence",
 };
 
 } // namespace
