@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v283: freezes v282 as a versioned source fixture and advances read-only shard route preview to `route-preview-cli-smoke-contract` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v282: freezes v281 as a versioned source fixture and advances read-only shard route preview to `route-preview-checkjson-contract` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v281: freezes v280 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-explain-contract` while preserving no active router, no write routing, no WAL touch, and no execution authority.
 - v280: freezes v279 as a versioned source fixture and advances read-only shard route preview to `route-preview-command-catalog-alignment` while preserving no active router, no write routing, no WAL touch, and no execution authority.

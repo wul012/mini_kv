@@ -4,6 +4,7 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 
 ## Entries
 
+- 343-version-283-route-preview-cli-smoke-contract.md - mini-kv v283 route-preview-cli-smoke-contract, freezes v282 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/283 archive.
 - 342-version-282-route-preview-checkjson-contract.md - mini-kv v282 route-preview-checkjson-contract, freezes v281 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/282 archive.
 - 341-version-281-route-preview-command-explain-contract.md - mini-kv v281 route-preview-command-explain-contract, freezes v280 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/281 archive.
 - 340-version-280-route-preview-command-catalog-alignment.md - mini-kv v280 route-preview-command-catalog-alignment, freezes v279 evidence, updates route preview rollout evidence, tests, TCP smoke, and e/280 archive.

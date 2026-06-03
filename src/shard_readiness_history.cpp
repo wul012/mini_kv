@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v550+ may consume v282 as read-only shard route preview route-preview-checkjson-contract evidence only\","
+           "\"nodeConsumer\":\"Node v550+ may consume v283 as read-only shard route preview route-preview-cli-smoke-contract evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -255,9 +255,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v281\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v281.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v281 as read-only shard route preview route-preview-command-explain-contract evidence only\","
+    return "{\"previousConsumedReleaseVersion\":\"v282\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v282.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v282 as read-only shard route preview route-preview-checkjson-contract evidence only\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"
