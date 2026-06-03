@@ -42,7 +42,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v284\"");
+    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v285\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -125,12 +125,12 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactAllowed\":false");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardRoutePreview\":{\"rolloutMode\":\"read-only-shard-route-preview-rollout\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v283\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v283.json\"");
-    assert_contains(json, "\"rolloutStage\":\"route-preview-tcp-smoke-contract\"");
-    assert_contains(json, "\"rolloutStageSequence\":6");
-    assert_contains(json, "\"rolloutReleaseVersion\":\"v284\"");
-    assert_contains(json, "\"publishedStageCount\":6");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v284\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v284.json\"");
+    assert_contains(json, "\"rolloutStage\":\"route-preview-fixture-freeze\"");
+    assert_contains(json, "\"rolloutStageSequence\":7");
+    assert_contains(json, "\"rolloutReleaseVersion\":\"v285\"");
+    assert_contains(json, "\"publishedStageCount\":7");
     assert_contains(json, "\"commands\":[\"SHARDROUTE\",\"SHARDROUTEJSON\"]");
     assert_contains(json, "\"sampleSlotsPinnedToExistingEvidence\":true");
     assert_contains(json, "\"activeRouterInstalled\":false");
@@ -223,7 +223,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
     assert_contains(
         json,
-        "\"nodeConsumer\":\"Node v550+ may consume v284 as read-only shard route preview route-preview-tcp-smoke-contract evidence only\"");
+        "\"nodeConsumer\":\"Node v550+ may consume v285 as read-only shard route preview route-preview-fixture-freeze evidence only\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -311,11 +311,11 @@ void assert_shard_readiness_contract(const std::string& json) {
                            "\"Node v473\",\"Node v474\",\"Node v475\",\"Node v476\",\"Node v477\","
                            "\"Node v478\",\"Node v479\",\"Node v480\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v283\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v283.json\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v284\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v284.json\"");
     assert_contains(
         json,
-        "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v283 as read-only shard route preview route-preview-cli-smoke-contract evidence only\"");
+        "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v284 as read-only shard route preview route-preview-tcp-smoke-contract evidence only\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_contains(json, "\"nodeV396ProgressIntakePreserved\":true");
     assert_contains(json, "\"nodeV397ContributionReviewPreserved\":true");
@@ -1260,19 +1260,19 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
     assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
                           "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v283\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v283.json\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v284\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v284.json\"");
     assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:2193962195ba633a\"");
-    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-tcp-smoke-contract\"");
-    assert_contains(json, "\"stageSequence\":84");
-    assert_contains(json, "\"stageReleaseVersion\":\"v284\"");
+    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-fixture-freeze\"");
+    assert_contains(json, "\"stageSequence\":85");
+    assert_contains(json, "\"stageReleaseVersion\":\"v285\"");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"previousCloseoutAuditReleaseVersion\":\"v200\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeStart\":\"v194\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_contains(json, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v284\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":84");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v285\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":85");
     assert_contains(json, "\"nodePlanStillLatestForMiniKv\":true");
     assert_contains(json, "\"sourceFixtureVersioned\":true");
     assert_contains(json, "\"rollingCurrentRejected\":true");
