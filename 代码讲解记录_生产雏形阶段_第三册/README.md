@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [369-version-309-history-fallback-freeze.md](369-version-309-history-fallback-freeze.md) - Route Preview Verification History Fallback Freeze
 - [368-version-308-rollout-catalog-audit.md](368-version-308-rollout-catalog-audit.md) - Route Preview Verification Rollout Catalog Audit
 - [367-version-307-rollout-catalog.md](367-version-307-rollout-catalog.md) - Route Preview Verification Rollout Catalog
 - [366-version-306-sample-parity-audit.md](366-version-306-sample-parity-audit.md) - Route Preview Verification Sample Parity Audit
