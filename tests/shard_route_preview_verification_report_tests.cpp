@@ -29,11 +29,11 @@ int main() {
     assert_contains(report, "\"checkCount\":9");
     assert_contains(report, "\"passedCount\":9");
     assert_contains(report, "\"failedCount\":0");
-    assert_contains(report, "\"reportStage\":\"route-preview-verification-report-sample-parity-audit\"");
-    assert_contains(report, "\"reportStageSequence\":8");
-    assert_contains(report, "\"reportReleaseVersion\":\"v327\"");
-    assert_contains(report, "\"sourceFrozenReleaseVersion\":\"v326\"");
-    assert_contains(report, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v326.json\"");
+    assert_contains(report, "\"reportStage\":\"route-preview-verification-report-rollout-catalog\"");
+    assert_contains(report, "\"reportStageSequence\":9");
+    assert_contains(report, "\"reportReleaseVersion\":\"v328\"");
+    assert_contains(report, "\"sourceFrozenReleaseVersion\":\"v327\"");
+    assert_contains(report, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v327.json\"");
     assert_contains(report, "\"readOnly\":true");
     assert_contains(report, "\"mutatesStore\":false");
     assert_contains(report, "\"touchesWal\":false");
@@ -44,12 +44,12 @@ int main() {
 
     const std::string rollout = minikv::shard_route_preview_verification_report::format_rollout_json();
     assert_contains(rollout, "\"rolloutMode\":\"read-only-shard-route-preview-verification-report-rollout\"");
-    assert_contains(rollout, "\"sourceFrozenReleaseVersion\":\"v326\"");
-    assert_contains(rollout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v326.json\"");
-    assert_contains(rollout, "\"rolloutStage\":\"route-preview-verification-report-sample-parity-audit\"");
-    assert_contains(rollout, "\"rolloutStageSequence\":8");
-    assert_contains(rollout, "\"rolloutReleaseVersion\":\"v327\"");
-    assert_contains(rollout, "\"publishedStageCount\":8");
+    assert_contains(rollout, "\"sourceFrozenReleaseVersion\":\"v327\"");
+    assert_contains(rollout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v327.json\"");
+    assert_contains(rollout, "\"rolloutStage\":\"route-preview-verification-report-rollout-catalog\"");
+    assert_contains(rollout, "\"rolloutStageSequence\":9");
+    assert_contains(rollout, "\"rolloutReleaseVersion\":\"v328\"");
+    assert_contains(rollout, "\"publishedStageCount\":9");
     assert_contains(rollout, "\"reportCommandAvailable\":true");
     assert_contains(rollout, "\"reportedCommand\":\"SHARDROUTEVERIFYJSON\"");
     assert_contains(rollout, "\"previewCommand\":\"SHARDROUTEJSON\"");
