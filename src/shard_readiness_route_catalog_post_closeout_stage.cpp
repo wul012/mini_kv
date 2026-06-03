@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "feature-read-only-shard-route-preview-boundary-field-audit",
-    93,
+    "feature-read-only-shard-route-preview-no-router-audit",
+    94,
+    "v294",
+    "audits that route preview still installs no active router",
     "v293",
-    "audits route preview read-only boundary fields",
-    "v292",
-    "fixtures/release/shard-readiness-v292.json",
+    "fixtures/release/shard-readiness-v293.json",
     "fnv1a64:2193962195ba633a",
-    "frozen v292 fixture is the source baseline for route-preview-boundary-field-audit evidence",
+    "frozen v293 fixture is the source baseline for route-preview-no-router-audit evidence",
 };
 
 } // namespace
