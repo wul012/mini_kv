@@ -47,9 +47,9 @@ int main() {
     assert_contains(verification_json, "\"failedCount\":0");
     assert_contains(verification_json, "\"name\":\"slot_within_range\",\"passed\":true");
     assert_contains(verification_json, "\"name\":\"no_execution\",\"passed\":true");
-    assert_contains(verification_json, "\"rolloutStage\":\"route-preview-verification-boundary-field-audit\"");
-    assert_contains(verification_json, "\"rolloutStageSequence\":15");
-    assert_contains(verification_json, "\"rolloutReleaseVersion\":\"v313\"");
+    assert_contains(verification_json, "\"rolloutStage\":\"route-preview-verification-no-router-audit\"");
+    assert_contains(verification_json, "\"rolloutStageSequence\":16");
+    assert_contains(verification_json, "\"rolloutReleaseVersion\":\"v314\"");
     assert_contains(verification_json, "\"readOnly\":true");
     assert_contains(verification_json, "\"mutatesStore\":false");
     assert_contains(verification_json, "\"touchesWal\":false");
@@ -60,12 +60,12 @@ int main() {
 
     const std::string rollout = minikv::shard_route_preview_verification::format_rollout_json();
     assert_contains(rollout, "\"rolloutMode\":\"read-only-shard-route-preview-verification-rollout\"");
-    assert_contains(rollout, "\"sourceFrozenReleaseVersion\":\"v312\"");
-    assert_contains(rollout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v312.json\"");
-    assert_contains(rollout, "\"rolloutStage\":\"route-preview-verification-boundary-field-audit\"");
-    assert_contains(rollout, "\"rolloutStageSequence\":15");
-    assert_contains(rollout, "\"rolloutReleaseVersion\":\"v313\"");
-    assert_contains(rollout, "\"publishedStageCount\":15");
+    assert_contains(rollout, "\"sourceFrozenReleaseVersion\":\"v313\"");
+    assert_contains(rollout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v313.json\"");
+    assert_contains(rollout, "\"rolloutStage\":\"route-preview-verification-no-router-audit\"");
+    assert_contains(rollout, "\"rolloutStageSequence\":16");
+    assert_contains(rollout, "\"rolloutReleaseVersion\":\"v314\"");
+    assert_contains(rollout, "\"publishedStageCount\":16");
     assert_contains(rollout, "\"verificationCommandAvailable\":true");
     assert_contains(rollout, "\"verifiedCommand\":\"SHARDROUTEJSON\"");
     assert_contains(rollout, "\"commands\":[\"SHARDROUTEVERIFYJSON\"]");
