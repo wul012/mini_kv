@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "feature-read-only-shard-route-preview-verification-no-execution-audit",
-    116,
+    "feature-read-only-shard-route-preview-verification-release-package",
+    117,
+    "v317",
+    "advances read-only SHARDROUTEVERIFYJSON preview verification to route-preview-verification-release-package with no active router",
     "v316",
-    "advances read-only SHARDROUTEVERIFYJSON preview verification to route-preview-verification-no-execution-audit with no active router",
-    "v315",
-    "fixtures/release/shard-readiness-v315.json",
+    "fixtures/release/shard-readiness-v316.json",
     "fnv1a64:2193962195ba633a",
-    "frozen v315 fixture is the source baseline for route preview verification no-execution-audit evidence",
+    "frozen v316 fixture is the source baseline for route preview verification release-package evidence",
 };
 
 } // namespace
