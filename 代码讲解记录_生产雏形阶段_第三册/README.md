@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [364-version-304-tcp-smoke-contract.md](364-version-304-tcp-smoke-contract.md) - Route Preview Verification Tcp Smoke Contract
 - [363-version-303-cli-smoke-contract.md](363-version-303-cli-smoke-contract.md) - Route Preview Verification Cli Smoke Contract
 - [362-version-302-checkjson-contract.md](362-version-302-checkjson-contract.md) - Route Preview Verification Checkjson Contract
 - [361-version-301-explain-contract.md](361-version-301-explain-contract.md) - Route Preview Verification Explain Contract
