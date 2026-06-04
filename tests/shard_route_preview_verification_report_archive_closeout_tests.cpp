@@ -30,13 +30,13 @@ int main() {
     assert_contains(closeout, "\"sourceArchivePlannedStageCount\":20");
     assert_contains(closeout, "\"sourceArchiveChainComplete\":true");
     assert_contains(closeout, "\"sourceArchiveDigestMarker\":\"v360-route-preview-verification-report-archive-closeout-audit-20-of-20-stages\"");
-    assert_contains(closeout, "\"closeoutStage\":\"route-preview-verification-report-archive-closeout-no-execution-audit\"");
-    assert_contains(closeout, "\"closeoutStageSequence\":19");
-    assert_contains(closeout, "\"closeoutReleaseVersion\":\"v379\"");
-    assert_contains(closeout, "\"publishedStageCount\":19");
+    assert_contains(closeout, "\"closeoutStage\":\"route-preview-verification-report-archive-closeout-release-package\"");
+    assert_contains(closeout, "\"closeoutStageSequence\":20");
+    assert_contains(closeout, "\"closeoutReleaseVersion\":\"v380\"");
+    assert_contains(closeout, "\"publishedStageCount\":20");
     assert_contains(closeout, "\"plannedStageCount\":20");
-    assert_contains(closeout, "\"sourceFrozenReleaseVersion\":\"v378\"");
-    assert_contains(closeout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v378.json\"");
+    assert_contains(closeout, "\"sourceFrozenReleaseVersion\":\"v379\"");
+    assert_contains(closeout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_contains(closeout, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
     assert_contains(closeout, "\"archivedArchiveReleaseRangeEnd\":\"v360\"");
     assert_contains(closeout, "\"archivedArchiveReleaseCount\":20");
@@ -44,7 +44,7 @@ int main() {
     assert_contains(closeout, "\"archivedReportReleaseRangeEnd\":\"v339\"");
     assert_contains(closeout, "\"archivedReportCloseoutReleaseVersion\":\"v340\"");
     assert_contains(closeout, "\"archiveCloseoutCommandAvailable\":true");
-    assert_contains(closeout, "\"archiveCloseoutChainComplete\":false");
+    assert_contains(closeout, "\"archiveCloseoutChainComplete\":true");
     assert_contains(closeout, "\"filesystemReadPerformed\":false");
     assert_contains(closeout, "\"runtimeArchiveWalkAllowed\":false");
     assert_contains(closeout, "\"readOnly\":true");

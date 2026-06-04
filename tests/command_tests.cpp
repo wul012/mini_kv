@@ -348,7 +348,7 @@ int main() {
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
     assert_response_contains(result, "\"version\":\"" + std::string{minikv::version} +
-                                        "\",\"releaseVersion\":\"v379\"");
+                                        "\",\"releaseVersion\":\"v380\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -416,7 +416,7 @@ int main() {
     assert_response_contains(result, "\"rolloutStage\":\"route-preview-release-package-audit\"");
     assert_response_contains(result, "\"rolloutStageSequence\":20");
     assert_response_contains(result, "\"rolloutReleaseVersion\":\"v298\"");
-    assert_response_contains(result, "\"publishedStageCount\":190");
+    assert_response_contains(result, "\"publishedStageCount\":200");
     assert_response_contains(result, "\"commands\":[\"SHARDROUTE\",\"SHARDROUTEJSON\"]");
     assert_response_contains(result, "\"sampleSlotsPinnedToExistingEvidence\":true");
     assert_response_contains(result, "\"activeRouterInstalled\":false");
@@ -429,7 +429,7 @@ int main() {
     assert_response_contains(result, "\"rolloutStage\":\"route-preview-verification-closeout-audit\"");
     assert_response_contains(result, "\"rolloutStageSequence\":21");
     assert_response_contains(result, "\"rolloutReleaseVersion\":\"v319\"");
-    assert_response_contains(result, "\"publishedStageCount\":191");
+    assert_response_contains(result, "\"publishedStageCount\":201");
     assert_response_contains(result, "\"verificationCommandAvailable\":true");
     assert_response_contains(result, "\"verifiedCommand\":\"SHARDROUTEJSON\"");
     assert_response_contains(result, "\"commands\":[\"SHARDROUTEVERIFYJSON\"]");
@@ -444,7 +444,7 @@ int main() {
     assert_response_contains(result, "\"rolloutStage\":\"route-preview-verification-report-closeout-audit\"");
     assert_response_contains(result, "\"rolloutStageSequence\":20");
     assert_response_contains(result, "\"rolloutReleaseVersion\":\"v339\"");
-    assert_response_contains(result, "\"publishedStageCount\":190");
+    assert_response_contains(result, "\"publishedStageCount\":200");
     assert_response_contains(result, "\"reportCommandAvailable\":true");
     assert_response_contains(result, "\"reportedCommand\":\"SHARDROUTEVERIFYJSON\"");
     assert_response_contains(result, "\"previewCommand\":\"SHARDROUTEJSON\"");
@@ -476,7 +476,7 @@ int main() {
     assert_response_contains(result, "\"archiveStage\":\"route-preview-verification-report-archive-closeout-audit\"");
     assert_response_contains(result, "\"archiveStageSequence\":20");
     assert_response_contains(result, "\"archiveReleaseVersion\":\"v360\"");
-    assert_response_contains(result, "\"publishedStageCount\":190");
+    assert_response_contains(result, "\"publishedStageCount\":200");
     assert_response_contains(result, "\"plannedStageCount\":20");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v359\"");
     assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v359.json\"");
@@ -494,18 +494,18 @@ int main() {
     assert_response_contains(result, "\"sourceArchiveFixturePath\":\"fixtures/release/shard-readiness-v360.json\"");
     assert_response_contains(result, "\"sourceArchivePublishedStageCount\":20");
     assert_response_contains(result, "\"sourceArchiveChainComplete\":true");
-    assert_response_contains(result, "\"closeoutStage\":\"route-preview-verification-report-archive-closeout-no-execution-audit\"");
-    assert_response_contains(result, "\"closeoutStageSequence\":19");
-    assert_response_contains(result, "\"closeoutReleaseVersion\":\"v379\"");
-    assert_response_contains(result, "\"publishedStageCount\":19");
+    assert_response_contains(result, "\"closeoutStage\":\"route-preview-verification-report-archive-closeout-release-package\"");
+    assert_response_contains(result, "\"closeoutStageSequence\":20");
+    assert_response_contains(result, "\"closeoutReleaseVersion\":\"v380\"");
+    assert_response_contains(result, "\"publishedStageCount\":20");
     assert_response_contains(result, "\"plannedStageCount\":20");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v378\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v378.json\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v379\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeEnd\":\"v360\"");
     assert_response_contains(result, "\"archivedArchiveReleaseCount\":20");
     assert_response_contains(result, "\"archiveCloseoutCommandAvailable\":true");
-    assert_response_contains(result, "\"archiveCloseoutChainComplete\":false");
+    assert_response_contains(result, "\"archiveCloseoutChainComplete\":true");
     assert_response_contains(result, "\"filesystemReadPerformed\":false");
     assert_response_contains(result, "\"runtimeArchiveWalkAllowed\":false");
     assert_response_contains(result, "\"activeRouterInstalled\":false");
@@ -1267,19 +1267,19 @@ int main() {
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupPostCloseoutContinuity\":{\"continuityMode\":"
                                      "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v378\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v378.json\"");
-    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:ce475d7c9ffb11ca\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v379\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
+    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:01e736bc2963baae\"");
     assert_response_contains(
         result,
-        "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-no-execution-audit\"");
-    assert_response_contains(result, "\"stageSequence\":179");
-    assert_response_contains(result, "\"stageReleaseVersion\":\"v379\"");
+        "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-release-package\"");
+    assert_response_contains(result, "\"stageSequence\":180");
+    assert_response_contains(result, "\"stageReleaseVersion\":\"v380\"");
     assert_response_contains(result, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_response_contains(result, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_response_contains(result, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v379\"");
-    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":179");
+    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v380\"");
+    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":180");
     assert_response_contains(result, "\"nodePlanStillLatestForMiniKv\":true");
     assert_response_contains(result, "\"sourceFixtureVersioned\":true");
     assert_response_contains(result, "\"rollingCurrentRejected\":true");
