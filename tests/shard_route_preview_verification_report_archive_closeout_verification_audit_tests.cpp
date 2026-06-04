@@ -42,13 +42,13 @@ int main() {
     assert_contains(audit, "\"sourceVerificationChainComplete\":true");
     assert_contains(audit,
                     "\"sourceVerificationDigestMarker\":\"v400-route-preview-verification-report-archive-closeout-verification-release-package-20-of-20-stages\"");
-    assert_contains(audit, "\"auditStage\":\"route-preview-verification-report-archive-closeout-verification-audit-java-echo-handoff\"");
-    assert_contains(audit, "\"auditStageSequence\":14");
-    assert_contains(audit, "\"auditReleaseVersion\":\"v414\"");
-    assert_contains(audit, "\"publishedStageCount\":14");
+    assert_contains(audit, "\"auditStage\":\"route-preview-verification-report-archive-closeout-verification-audit-java-echo-audit\"");
+    assert_contains(audit, "\"auditStageSequence\":15");
+    assert_contains(audit, "\"auditReleaseVersion\":\"v415\"");
+    assert_contains(audit, "\"publishedStageCount\":15");
     assert_contains(audit, "\"plannedStageCount\":20");
-    assert_contains(audit, "\"sourceFrozenReleaseVersion\":\"v413\"");
-    assert_contains(audit, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v413.json\"");
+    assert_contains(audit, "\"sourceFrozenReleaseVersion\":\"v414\"");
+    assert_contains(audit, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v414.json\"");
     assert_contains(audit, "\"auditedVerificationReleaseRangeStart\":\"v381\"");
     assert_contains(audit, "\"auditedVerificationReleaseRangeEnd\":\"v400\"");
     assert_contains(audit, "\"auditedVerificationReleaseCount\":20");
@@ -77,7 +77,7 @@ int main() {
     const std::string shard = minikv::shard_readiness::format_json();
     assert(occurrence_count(shard, "\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":") == 1);
     assert(occurrence_count(shard, "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAudit\":") == 1);
-    assert_contains(shard, "\"auditReleaseVersion\":\"v414\"");
+    assert_contains(shard, "\"auditReleaseVersion\":\"v415\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
