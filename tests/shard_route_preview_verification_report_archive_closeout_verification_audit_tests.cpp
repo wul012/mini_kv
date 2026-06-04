@@ -42,13 +42,13 @@ int main() {
     assert_contains(audit, "\"sourceVerificationChainComplete\":true");
     assert_contains(audit,
                     "\"sourceVerificationDigestMarker\":\"v400-route-preview-verification-report-archive-closeout-verification-release-package-20-of-20-stages\"");
-    assert_contains(audit, "\"auditStage\":\"route-preview-verification-report-archive-closeout-verification-audit-no-execution-audit\"");
-    assert_contains(audit, "\"auditStageSequence\":19");
-    assert_contains(audit, "\"auditReleaseVersion\":\"v419\"");
-    assert_contains(audit, "\"publishedStageCount\":19");
+    assert_contains(audit, "\"auditStage\":\"route-preview-verification-report-archive-closeout-verification-audit-release-package\"");
+    assert_contains(audit, "\"auditStageSequence\":20");
+    assert_contains(audit, "\"auditReleaseVersion\":\"v420\"");
+    assert_contains(audit, "\"publishedStageCount\":20");
     assert_contains(audit, "\"plannedStageCount\":20");
-    assert_contains(audit, "\"sourceFrozenReleaseVersion\":\"v418\"");
-    assert_contains(audit, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v418.json\"");
+    assert_contains(audit, "\"sourceFrozenReleaseVersion\":\"v419\"");
+    assert_contains(audit, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v419.json\"");
     assert_contains(audit, "\"auditedVerificationReleaseRangeStart\":\"v381\"");
     assert_contains(audit, "\"auditedVerificationReleaseRangeEnd\":\"v400\"");
     assert_contains(audit, "\"auditedVerificationReleaseCount\":20");
@@ -59,7 +59,7 @@ int main() {
     assert_contains(audit, "\"singleAuditSectionExpected\":true");
     assert_contains(audit, "\"duplicateVerificationSectionRemovedInCurrent\":true");
     assert_contains(audit, "\"archiveCloseoutVerificationAuditCommandAvailable\":true");
-    assert_contains(audit, "\"archiveCloseoutVerificationAuditChainComplete\":false");
+    assert_contains(audit, "\"archiveCloseoutVerificationAuditChainComplete\":true");
     assert_contains(audit, "\"filesystemReadPerformed\":false");
     assert_contains(audit, "\"runtimeArchiveWalkAllowed\":false");
     assert_contains(audit, "\"readOnly\":true");
@@ -77,7 +77,7 @@ int main() {
     const std::string shard = minikv::shard_readiness::format_json();
     assert(occurrence_count(shard, "\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":") == 1);
     assert(occurrence_count(shard, "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAudit\":") == 1);
-    assert_contains(shard, "\"auditReleaseVersion\":\"v419\"");
+    assert_contains(shard, "\"auditReleaseVersion\":\"v420\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
