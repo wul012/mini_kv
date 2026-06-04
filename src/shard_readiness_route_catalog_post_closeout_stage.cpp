@@ -4,14 +4,14 @@ namespace minikv::shard_readiness::route_catalog_post_closeout {
 namespace {
 
 constexpr PostCloseoutStageDescriptor descriptor{
-    "feature-read-only-shard-route-preview-verification-report-archive-closeout-checkjson-contract",
-    164,
+    "feature-read-only-shard-route-preview-verification-report-archive-closeout-cli-smoke-contract",
+    165,
+    "v365",
+    "records CLI smoke expectations for the archive closeout command",
     "v364",
-    "pins CHECKJSON semantics for the archive closeout command",
-    "v363",
-    "fixtures/release/shard-readiness-v363.json",
-    "fnv1a64:e38a70be9e5ca290",
-    "frozen v363 fixture is the source baseline for route preview verification report archive-closeout-checkjson-contract evidence",
+    "fixtures/release/shard-readiness-v364.json",
+    "fnv1a64:fcb0fb568757a6ce",
+    "frozen v364 fixture is the source baseline for route preview verification report archive-closeout-cli-smoke-contract evidence",
 };
 
 } // namespace

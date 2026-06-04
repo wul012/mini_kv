@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [425-version-365-report-archive-closeout-cli-smoke-contract.md](425-version-365-report-archive-closeout-cli-smoke-contract.md) - Route Preview Verification Report Archive Closeout Cli Smoke Contract
 - [424-version-364-report-archive-closeout-checkjson-contract.md](424-version-364-report-archive-closeout-checkjson-contract.md) - Route Preview Verification Report Archive Closeout Checkjson Contract
 - [423-version-363-report-archive-closeout-explain-contract.md](423-version-363-report-archive-closeout-explain-contract.md) - Route Preview Verification Report Archive Closeout Explain Contract
 - [422-version-362-report-archive-closeout-catalog-alignment.md](422-version-362-report-archive-closeout-catalog-alignment.md) - Route Preview Verification Report Archive Closeout Catalog Alignment
