@@ -12,7 +12,7 @@
 namespace minikv::shard_route_preview_verification_report_archive {
 namespace {
 
-constexpr int current_archive_stage_count = 1;
+constexpr int current_archive_stage_count = 2;
 constexpr int planned_archive_stage_count = 20;
 
 constexpr std::string_view source_node_plan =
@@ -155,6 +155,10 @@ std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
 }
 
+std::string json_bool(bool value) {
+    return runtime_evidence::json_bool(value);
+}
+
 std::string json_string_array(const std::vector<std::string>& values) {
     return runtime_evidence::json_string_array(values);
 }
@@ -227,7 +231,8 @@ std::string format_archive_json() {
            ",\"archiveStageCatalog\":" + format_stage_catalog_json() +
            ",\"archiveManifestPublished\":true"
            ",\"archiveVerificationPlannedReleaseVersion\":\"v342\""
-           ",\"archiveChainComplete\":false"
+           ",\"archiveVerificationPublished\":" + json_bool(current_archive_stage_count >= 2) +
+           ",\"archiveChainComplete\":" + json_bool(current_archive_stage_count == planned_archive_stage_count) +
            ",\"controlPlaneInterpretation\":" +
            json_string_array({"read archive evidence manifest only",
                               "do not install route writers",

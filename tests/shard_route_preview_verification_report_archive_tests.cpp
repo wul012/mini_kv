@@ -24,13 +24,13 @@ int main() {
     assert_contains(archive, "\"sourcePreviewCommand\":\"SHARDROUTEJSON\"");
     assert_contains(archive, "\"sourceCloseoutReleaseVersion\":\"v340\"");
     assert_contains(archive, "\"sourceCloseoutFixturePath\":\"fixtures/release/shard-readiness-v340.json\"");
-    assert_contains(archive, "\"archiveStage\":\"route-preview-verification-report-archive-manifest\"");
-    assert_contains(archive, "\"archiveStageSequence\":1");
-    assert_contains(archive, "\"archiveReleaseVersion\":\"v341\"");
-    assert_contains(archive, "\"publishedStageCount\":1");
+    assert_contains(archive, "\"archiveStage\":\"route-preview-verification-report-archive-verification\"");
+    assert_contains(archive, "\"archiveStageSequence\":2");
+    assert_contains(archive, "\"archiveReleaseVersion\":\"v342\"");
+    assert_contains(archive, "\"publishedStageCount\":2");
     assert_contains(archive, "\"plannedStageCount\":20");
-    assert_contains(archive, "\"sourceFrozenReleaseVersion\":\"v340\"");
-    assert_contains(archive, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v340.json\"");
+    assert_contains(archive, "\"sourceFrozenReleaseVersion\":\"v341\"");
+    assert_contains(archive, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v341.json\"");
     assert_contains(archive, "\"archivedReportReleaseRangeStart\":\"v320\"");
     assert_contains(archive, "\"archivedReportReleaseRangeEnd\":\"v339\"");
     assert_contains(archive, "\"archivedCloseoutReleaseVersion\":\"v340\"");
@@ -38,6 +38,7 @@ int main() {
     assert_contains(archive, "\"archivedCloseoutReleaseCount\":1");
     assert_contains(archive, "\"archiveManifestPublished\":true");
     assert_contains(archive, "\"archiveVerificationPlannedReleaseVersion\":\"v342\"");
+    assert_contains(archive, "\"archiveVerificationPublished\":true");
     assert_contains(archive, "\"archiveChainComplete\":false");
     assert_contains(archive, "\"filesystemReadPerformed\":false");
     assert_contains(archive, "\"runtimeArchiveWalkAllowed\":false");
