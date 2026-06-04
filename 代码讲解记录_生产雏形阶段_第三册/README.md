@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [434-version-374-report-archive-closeout-java-echo-handoff.md](434-version-374-report-archive-closeout-java-echo-handoff.md) - Route Preview Verification Report Archive Closeout Java Echo Handoff
 - [433-version-373-report-archive-closeout-consumer-handoff-audit.md](433-version-373-report-archive-closeout-consumer-handoff-audit.md) - Route Preview Verification Report Archive Closeout Consumer Handoff Audit
 - [432-version-372-report-archive-closeout-consumer-handoff.md](432-version-372-report-archive-closeout-consumer-handoff.md) - Route Preview Verification Report Archive Closeout Consumer Handoff
 - [431-version-371-report-archive-closeout-retention-audit.md](431-version-371-report-archive-closeout-retention-audit.md) - Route Preview Verification Report Archive Closeout Retention Audit
