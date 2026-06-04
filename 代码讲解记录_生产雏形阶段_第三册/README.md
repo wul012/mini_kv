@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [428-version-368-report-archive-closeout-index.md](428-version-368-report-archive-closeout-index.md) - Route Preview Verification Report Archive Closeout Index
 - [427-version-367-report-archive-closeout-fixture-freeze.md](427-version-367-report-archive-closeout-fixture-freeze.md) - Route Preview Verification Report Archive Closeout Fixture Freeze
 - [426-version-366-report-archive-closeout-tcp-smoke-contract.md](426-version-366-report-archive-closeout-tcp-smoke-contract.md) - Route Preview Verification Report Archive Closeout Tcp Smoke Contract
 - [425-version-365-report-archive-closeout-cli-smoke-contract.md](425-version-365-report-archive-closeout-cli-smoke-contract.md) - Route Preview Verification Report Archive Closeout Cli Smoke Contract
