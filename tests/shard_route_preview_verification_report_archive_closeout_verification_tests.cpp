@@ -29,13 +29,13 @@ int main() {
     assert_contains(verification, "\"sourceArchiveCloseoutChainComplete\":true");
     assert_contains(verification,
                     "\"sourceArchiveCloseoutDigestMarker\":\"v380-route-preview-verification-report-archive-closeout-release-package-20-of-20-stages\"");
-    assert_contains(verification, "\"verificationStage\":\"route-preview-verification-report-archive-closeout-verification-java-echo-handoff\"");
-    assert_contains(verification, "\"verificationStageSequence\":14");
-    assert_contains(verification, "\"verificationReleaseVersion\":\"v394\"");
-    assert_contains(verification, "\"publishedStageCount\":14");
+    assert_contains(verification, "\"verificationStage\":\"route-preview-verification-report-archive-closeout-verification-java-echo-audit\"");
+    assert_contains(verification, "\"verificationStageSequence\":15");
+    assert_contains(verification, "\"verificationReleaseVersion\":\"v395\"");
+    assert_contains(verification, "\"publishedStageCount\":15");
     assert_contains(verification, "\"plannedStageCount\":20");
-    assert_contains(verification, "\"sourceFrozenReleaseVersion\":\"v393\"");
-    assert_contains(verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v393.json\"");
+    assert_contains(verification, "\"sourceFrozenReleaseVersion\":\"v394\"");
+    assert_contains(verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v394.json\"");
     assert_contains(verification, "\"verifiedCloseoutReleaseRangeStart\":\"v361\"");
     assert_contains(verification, "\"verifiedCloseoutReleaseRangeEnd\":\"v380\"");
     assert_contains(verification, "\"verifiedCloseoutReleaseCount\":20");
