@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [403-version-343-report-archive-index.md](403-version-343-report-archive-index.md) - Route Preview Verification Report Archive Index
 - [402-version-342-report-archive-verification.md](402-version-342-report-archive-verification.md) - Route Preview Verification Report Archive Verification
 - [401-version-341-report-archive-manifest.md](401-version-341-report-archive-manifest.md) - Route Preview Verification Report Archive Manifest
 - [400-version-340-report-closeout-summary.md](400-version-340-report-closeout-summary.md) - Route Preview Verification Report Closeout Summary
