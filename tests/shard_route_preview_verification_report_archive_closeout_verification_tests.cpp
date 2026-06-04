@@ -29,13 +29,13 @@ int main() {
     assert_contains(verification, "\"sourceArchiveCloseoutChainComplete\":true");
     assert_contains(verification,
                     "\"sourceArchiveCloseoutDigestMarker\":\"v380-route-preview-verification-report-archive-closeout-release-package-20-of-20-stages\"");
-    assert_contains(verification, "\"verificationStage\":\"route-preview-verification-report-archive-closeout-verification-no-execution-audit\"");
-    assert_contains(verification, "\"verificationStageSequence\":19");
-    assert_contains(verification, "\"verificationReleaseVersion\":\"v399\"");
-    assert_contains(verification, "\"publishedStageCount\":19");
+    assert_contains(verification, "\"verificationStage\":\"route-preview-verification-report-archive-closeout-verification-release-package\"");
+    assert_contains(verification, "\"verificationStageSequence\":20");
+    assert_contains(verification, "\"verificationReleaseVersion\":\"v400\"");
+    assert_contains(verification, "\"publishedStageCount\":20");
     assert_contains(verification, "\"plannedStageCount\":20");
-    assert_contains(verification, "\"sourceFrozenReleaseVersion\":\"v398\"");
-    assert_contains(verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v398.json\"");
+    assert_contains(verification, "\"sourceFrozenReleaseVersion\":\"v399\"");
+    assert_contains(verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v399.json\"");
     assert_contains(verification, "\"verifiedCloseoutReleaseRangeStart\":\"v361\"");
     assert_contains(verification, "\"verifiedCloseoutReleaseRangeEnd\":\"v380\"");
     assert_contains(verification, "\"verifiedCloseoutReleaseCount\":20");
@@ -49,7 +49,7 @@ int main() {
     assert_contains(verification, "\"sourceDigestMarkerPinned\":true");
     assert_contains(verification, "\"versionedFixtureExpected\":true");
     assert_contains(verification, "\"archiveCloseoutVerificationCommandAvailable\":true");
-    assert_contains(verification, "\"archiveCloseoutVerificationChainComplete\":false");
+    assert_contains(verification, "\"archiveCloseoutVerificationChainComplete\":true");
     assert_contains(verification, "\"filesystemReadPerformed\":false");
     assert_contains(verification, "\"runtimeArchiveWalkAllowed\":false");
     assert_contains(verification, "\"readOnly\":true");
