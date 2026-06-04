@@ -17,19 +17,19 @@ using minikv::test_support::assert_not_contains;
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v349\"");
+    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v350\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v348\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v348.json\"");
-    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-consumer-handoff\"");
-    assert_contains(json, "\"stageSequence\":149");
-    assert_contains(json, "\"stageReleaseVersion\":\"v349\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v349\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":149");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v349\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v349.json\"");
+    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-consumer-handoff-audit\"");
+    assert_contains(json, "\"stageSequence\":150");
+    assert_contains(json, "\"stageReleaseVersion\":\"v350\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v350\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":150");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
-    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:2c9eac6c48d4776d\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:c513172d8269d288\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":3");
     assert_contains(json, "\"archiveVerifierChecksPassed\":3");
     assert_contains(json, "\"stage descriptor lifecycle preserves the JSON contract\"");
