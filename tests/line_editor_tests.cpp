@@ -75,7 +75,8 @@ int main() {
     minikv::LineEditorCompletion completion{
         {"PING", "SET", "SETNXEX", "GET", "SAVE", "SIZE", "KEYS", "KEYSJSON", "COMPACT", "STATS", "STATSJSON",
          "RESETSTATS", "SMOKEJSON", "STORAGEJSON", "HELP", "HEALTH", "INFO", "INFOJSON", "SHARDJSON",
-         "SHARDROUTE", "SHARDROUTEJSON", "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON", "COMMANDS",
+         "SHARDROUTE", "SHARDROUTEJSON", "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON",
+         "SHARDROUTEVERIFYREPORTCLOSEOUTJSON", "COMMANDS",
          "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON", "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
@@ -103,8 +104,11 @@ int main() {
     assert(completion.complete("SHARDROUTEJ", 11) == std::optional<std::string>{"SHARDROUTEJSON "});
     assert(completion.complete("SHARDROUTEV", 11) == std::optional<std::string>{"SHARDROUTEVERIFY"});
     assert(completion.complete("SHARDROUTEVERIFYJ", 17) == std::optional<std::string>{"SHARDROUTEVERIFYJSON "});
-    assert(completion.complete("SHARDROUTEVERIFYR", 17) ==
+    assert(completion.complete("SHARDROUTEVERIFYR", 17) == std::optional<std::string>{"SHARDROUTEVERIFYREPORT"});
+    assert(completion.complete("SHARDROUTEVERIFYREPORTJ", 23) ==
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTJSON "});
+    assert(completion.complete("SHARDROUTEVERIFYREPORTC", 23) ==
+           std::optional<std::string>{"SHARDROUTEVERIFYREPORTCLOSEOUTJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());
