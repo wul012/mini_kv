@@ -24,13 +24,13 @@ int main() {
     assert_contains(archive, "\"sourcePreviewCommand\":\"SHARDROUTEJSON\"");
     assert_contains(archive, "\"sourceCloseoutReleaseVersion\":\"v340\"");
     assert_contains(archive, "\"sourceCloseoutFixturePath\":\"fixtures/release/shard-readiness-v340.json\"");
-    assert_contains(archive, "\"archiveStage\":\"route-preview-verification-report-archive-release-package\"");
-    assert_contains(archive, "\"archiveStageSequence\":19");
-    assert_contains(archive, "\"archiveReleaseVersion\":\"v359\"");
-    assert_contains(archive, "\"publishedStageCount\":19");
+    assert_contains(archive, "\"archiveStage\":\"route-preview-verification-report-archive-closeout-audit\"");
+    assert_contains(archive, "\"archiveStageSequence\":20");
+    assert_contains(archive, "\"archiveReleaseVersion\":\"v360\"");
+    assert_contains(archive, "\"publishedStageCount\":20");
     assert_contains(archive, "\"plannedStageCount\":20");
-    assert_contains(archive, "\"sourceFrozenReleaseVersion\":\"v358\"");
-    assert_contains(archive, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v358.json\"");
+    assert_contains(archive, "\"sourceFrozenReleaseVersion\":\"v359\"");
+    assert_contains(archive, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v359.json\"");
     assert_contains(archive, "\"archivedReportReleaseRangeStart\":\"v320\"");
     assert_contains(archive, "\"archivedReportReleaseRangeEnd\":\"v339\"");
     assert_contains(archive, "\"archivedCloseoutReleaseVersion\":\"v340\"");
@@ -39,7 +39,7 @@ int main() {
     assert_contains(archive, "\"archiveManifestPublished\":true");
     assert_contains(archive, "\"archiveVerificationPlannedReleaseVersion\":\"v342\"");
     assert_contains(archive, "\"archiveVerificationPublished\":true");
-    assert_contains(archive, "\"archiveChainComplete\":false");
+    assert_contains(archive, "\"archiveChainComplete\":true");
     assert_contains(archive, "\"filesystemReadPerformed\":false");
     assert_contains(archive, "\"runtimeArchiveWalkAllowed\":false");
     assert_contains(archive, "\"readOnly\":true");
