@@ -6,6 +6,7 @@
 #include "minikv/shard_route_preview_verification_report.hpp"
 #include "minikv/shard_route_preview_verification_report_archive.hpp"
 #include "minikv/shard_route_preview_verification_report_archive_closeout.hpp"
+#include "minikv/shard_route_preview_verification_report_archive_closeout_verification.hpp"
 #include "minikv/shard_route_preview_verification_report_closeout.hpp"
 #include "minikv/shard_readiness_approval_inputs.hpp"
 #include "minikv/shard_readiness_boundary_fields.hpp"
@@ -31,7 +32,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v380";
+constexpr std::string_view release_version = "v381";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -53,7 +54,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v380",
+        "mini-kv-shard-readiness-v381",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -104,6 +105,8 @@ std::string evidence_digest() {
              shard_route_preview_verification_report_archive::archive_digest_marker()},
             {"shardRoutePreviewVerificationReportArchiveCloseout=" +
              shard_route_preview_verification_report_archive_closeout::closeout_digest_marker()},
+            {"shardRoutePreviewVerificationReportArchiveCloseoutVerification=" +
+             shard_route_preview_verification_report_archive_closeout_verification::verification_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -164,6 +167,22 @@ std::string format_json() {
             shard_route_preview_verification_report_archive::format_archive_json() +
             ",\"shardRoutePreviewVerificationReportArchiveCloseout\":" +
             shard_route_preview_verification_report_archive_closeout::format_closeout_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

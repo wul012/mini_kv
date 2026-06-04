@@ -77,7 +77,7 @@ int main() {
          "RESETSTATS", "SMOKEJSON", "STORAGEJSON", "HELP", "HEALTH", "INFO", "INFOJSON", "SHARDJSON",
          "SHARDROUTE", "SHARDROUTEJSON", "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON",
          "SHARDROUTEVERIFYREPORTCLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVEJSON",
-         "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON", "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
+         "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON", "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
@@ -114,8 +114,15 @@ int main() {
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVE"});
     assert(completion.complete("SHARDROUTEVERIFYREPORTARCHIVEJ", 30) ==
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVEJSON "});
-    assert(completion.complete("SHARDROUTEVERIFYREPORTARCHIVEC", 30) ==
+    const std::string archive_closeout_prefix = "SHARDROUTEVERIFYREPORTARCHIVEC";
+    assert(completion.complete(archive_closeout_prefix, archive_closeout_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUT"});
+    const std::string archive_closeout_json_prefix = "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJ";
+    assert(completion.complete(archive_closeout_json_prefix, archive_closeout_json_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON "});
+    const std::string archive_closeout_verify_prefix = "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTV";
+    assert(completion.complete(archive_closeout_verify_prefix, archive_closeout_verify_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());
