@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [477-version-417-report-archive-closeout-verification-audit-no-router-audit.md](477-version-417-report-archive-closeout-verification-audit-no-router-audit.md) - Archive Closeout Verification Audit No Router Audit
 - [476-version-416-report-archive-closeout-verification-audit-boundary-field-audit.md](476-version-416-report-archive-closeout-verification-audit-boundary-field-audit.md) - Archive Closeout Verification Audit Boundary Field Audit
 - [475-version-415-report-archive-closeout-verification-audit-java-echo-audit.md](475-version-415-report-archive-closeout-verification-audit-java-echo-audit.md) - Archive Closeout Verification Audit Java Echo Audit
 - [474-version-414-report-archive-closeout-verification-audit-java-echo-handoff.md](474-version-414-report-archive-closeout-verification-audit-java-echo-handoff.md) - Archive Closeout Verification Audit Java Echo Handoff
