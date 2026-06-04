@@ -17,20 +17,20 @@ using minikv::test_support::assert_not_contains;
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v370\"");
+    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v371\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v360\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v360.json\"");
     assert_contains(json,
-                    "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-retention-map\"");
-    assert_contains(json, "\"stageSequence\":170");
-    assert_contains(json, "\"stageReleaseVersion\":\"v370\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v370\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":170");
+                    "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-retention-audit\"");
+    assert_contains(json, "\"stageSequence\":171");
+    assert_contains(json, "\"stageReleaseVersion\":\"v371\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v371\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":171");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
-    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:1a17d2e62f244c81\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:f31e435e5f8ab4ad\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":3");
     assert_contains(json, "\"archiveVerifierChecksPassed\":3");
     assert_contains(json, "\"stage descriptor lifecycle preserves the JSON contract\"");
