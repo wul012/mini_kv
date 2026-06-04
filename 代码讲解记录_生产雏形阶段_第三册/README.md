@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [415-version-355-report-archive-tcp-smoke-contract.md](415-version-355-report-archive-tcp-smoke-contract.md) - Route Preview Verification Report Archive TCP Smoke Contract
 - [414-version-354-report-archive-cli-smoke-contract.md](414-version-354-report-archive-cli-smoke-contract.md) - Route Preview Verification Report Archive CLI Smoke Contract
 - [413-version-353-report-archive-fixture-freeze.md](413-version-353-report-archive-fixture-freeze.md) - Route Preview Verification Report Archive Fixture Freeze
 - [412-version-352-report-archive-java-echo-audit.md](412-version-352-report-archive-java-echo-audit.md) - Route Preview Verification Report Archive Java Echo Audit
