@@ -12,7 +12,7 @@
 namespace minikv::shard_route_preview_verification_report_archive {
 namespace {
 
-constexpr int current_archive_stage_count = 7;
+constexpr int current_archive_stage_count = 8;
 constexpr int planned_archive_stage_count = 20;
 
 constexpr std::string_view source_node_plan =
