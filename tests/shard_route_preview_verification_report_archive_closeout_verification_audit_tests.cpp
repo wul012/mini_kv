@@ -42,13 +42,13 @@ int main() {
     assert_contains(audit, "\"sourceVerificationChainComplete\":true");
     assert_contains(audit,
                     "\"sourceVerificationDigestMarker\":\"v400-route-preview-verification-report-archive-closeout-verification-release-package-20-of-20-stages\"");
-    assert_contains(audit, "\"auditStage\":\"route-preview-verification-report-archive-closeout-verification-audit-source-verification-index\"");
-    assert_contains(audit, "\"auditStageSequence\":8");
-    assert_contains(audit, "\"auditReleaseVersion\":\"v408\"");
-    assert_contains(audit, "\"publishedStageCount\":8");
+    assert_contains(audit, "\"auditStage\":\"route-preview-verification-report-archive-closeout-verification-audit-source-verification-index-audit\"");
+    assert_contains(audit, "\"auditStageSequence\":9");
+    assert_contains(audit, "\"auditReleaseVersion\":\"v409\"");
+    assert_contains(audit, "\"publishedStageCount\":9");
     assert_contains(audit, "\"plannedStageCount\":20");
-    assert_contains(audit, "\"sourceFrozenReleaseVersion\":\"v407\"");
-    assert_contains(audit, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v407.json\"");
+    assert_contains(audit, "\"sourceFrozenReleaseVersion\":\"v408\"");
+    assert_contains(audit, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v408.json\"");
     assert_contains(audit, "\"auditedVerificationReleaseRangeStart\":\"v381\"");
     assert_contains(audit, "\"auditedVerificationReleaseRangeEnd\":\"v400\"");
     assert_contains(audit, "\"auditedVerificationReleaseCount\":20");
@@ -77,7 +77,7 @@ int main() {
     const std::string shard = minikv::shard_readiness::format_json();
     assert(occurrence_count(shard, "\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":") == 1);
     assert(occurrence_count(shard, "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAudit\":") == 1);
-    assert_contains(shard, "\"auditReleaseVersion\":\"v408\"");
+    assert_contains(shard, "\"auditReleaseVersion\":\"v409\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
