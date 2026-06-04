@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=38") != std::string::npos);
+    assert(result.response.find("command_count=39") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -300,6 +300,8 @@ int main() {
            std::string::npos);
     assert(result.response.find(
                "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);    assert(result.response.find(
+               "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -341,6 +343,8 @@ int main() {
                "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON\",\"category\":\"read\",\"mutates_store\":false,"
+               "\"touches_wal\":false") != std::string::npos);    assert(result.response.find(
+               "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\",\"category\":\"read\",\"mutates_store\":false,"
                "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
@@ -354,7 +358,7 @@ int main() {
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
     assert_response_contains(result, "\"version\":\"" + std::string{minikv::version} +
-                                        "\",\"releaseVersion\":\"v400\"");
+                                        "\",\"releaseVersion\":\"v401\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -534,6 +538,38 @@ int main() {
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
     // End archive closeout verification rollout assertions.
+    // Archive closeout verification audit rollout assertions updated per mini-kv release.
+    assert_response_contains(result, "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAudit\":{\"contract\":"
+                                     "\"shard-route-preview-verification-report-archive-closeout-verification-audit.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\"");
+    assert_response_contains(result,
+                             "\"auditMode\":\"read-only-route-preview-verification-report-archive-closeout-verification-audit\"");
+    assert_response_contains(result, "\"sourceVerificationCommand\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON\"");
+    assert_response_contains(result, "\"sourceVerificationReleaseVersion\":\"v400\"");
+    assert_response_contains(result, "\"sourceVerificationFixturePath\":\"fixtures/release/shard-readiness-v400.json\"");
+    assert_response_contains(result, "\"sourceVerificationPublishedStageCount\":20");
+    assert_response_contains(result, "\"sourceVerificationChainComplete\":true");
+    assert_response_contains(result, "\"auditStage\":\"route-preview-verification-report-archive-closeout-verification-audit-command-contract-and-section-dedup\"");
+    assert_response_contains(result, "\"auditStageSequence\":1");
+    assert_response_contains(result, "\"auditReleaseVersion\":\"v401\"");
+    assert_response_contains(result, "\"publishedStageCount\":1");
+    assert_response_contains(result, "\"plannedStageCount\":20");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v400\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v400.json\"");
+    assert_response_contains(result, "\"auditedVerificationReleaseRangeStart\":\"v381\"");
+    assert_response_contains(result, "\"auditedVerificationReleaseRangeEnd\":\"v400\"");
+    assert_response_contains(result, "\"sourceVerificationVersionedFixturePath\":\"fixtures/release/shard-readiness-v400.json\"");
+    assert_response_contains(result, "\"singleVerificationSectionExpected\":true");
+    assert_response_contains(result, "\"singleAuditSectionExpected\":true");
+    assert_response_contains(result, "\"duplicateVerificationSectionRemovedInCurrent\":true");
+    assert_response_contains(result, "\"archiveCloseoutVerificationAuditCommandAvailable\":true");
+    assert_response_contains(result, "\"archiveCloseoutVerificationAuditChainComplete\":false");
+    assert_response_contains(result, "\"filesystemReadPerformed\":false");
+    assert_response_contains(result, "\"runtimeArchiveWalkAllowed\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    // End archive closeout verification audit rollout assertions.
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v379\"");
     assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
@@ -600,8 +636,8 @@ int main() {
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v399\"");
-    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v399.json\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v400\"");
+    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v400.json\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                      "\"history-fixture-archive-formatter-split-read-only\"");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v179\"");
@@ -2013,6 +2049,7 @@ int main() {
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVEJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);

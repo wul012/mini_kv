@@ -7,6 +7,7 @@
 #include "minikv/shard_route_preview_verification_report_archive.hpp"
 #include "minikv/shard_route_preview_verification_report_archive_closeout.hpp"
 #include "minikv/shard_route_preview_verification_report_archive_closeout_verification.hpp"
+#include "minikv/shard_route_preview_verification_report_archive_closeout_verification_audit.hpp"
 #include "minikv/shard_route_preview_verification_report_closeout.hpp"
 #include "minikv/shard_readiness_approval_inputs.hpp"
 #include "minikv/shard_readiness_boundary_fields.hpp"
@@ -32,7 +33,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v400";
+constexpr std::string_view release_version = "v401";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -54,7 +55,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v400",
+        "mini-kv-shard-readiness-v401",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -107,6 +108,8 @@ std::string evidence_digest() {
              shard_route_preview_verification_report_archive_closeout::closeout_digest_marker()},
             {"shardRoutePreviewVerificationReportArchiveCloseoutVerification=" +
              shard_route_preview_verification_report_archive_closeout_verification::verification_digest_marker()},
+            {"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAudit=" +
+             shard_route_preview_verification_report_archive_closeout_verification_audit::audit_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -159,68 +162,18 @@ std::string format_json() {
            slot_preview_audit::format_slot_table_preview_audit_maintenance_json() +
            ",\"shardRoutePreview\":" + shard_route_preview::format_rollout_json() +
            ",\"shardRoutePreviewVerification\":" + shard_route_preview_verification::format_rollout_json() +
-          ",\"shardRoutePreviewVerificationReport\":" +
-          shard_route_preview_verification_report::format_rollout_json() +
-            ",\"shardRoutePreviewVerificationReportCloseout\":" +
-            shard_route_preview_verification_report_closeout::format_closeout_json() +
-            ",\"shardRoutePreviewVerificationReportArchive\":" +
-            shard_route_preview_verification_report_archive::format_archive_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseout\":" +
-            shard_route_preview_verification_report_archive_closeout::format_closeout_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
-            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
-            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+           ",\"shardRoutePreviewVerificationReport\":" +
+           shard_route_preview_verification_report::format_rollout_json() +
+           ",\"shardRoutePreviewVerificationReportCloseout\":" +
+           shard_route_preview_verification_report_closeout::format_closeout_json() +
+           ",\"shardRoutePreviewVerificationReportArchive\":" +
+           shard_route_preview_verification_report_archive::format_archive_json() +
+           ",\"shardRoutePreviewVerificationReportArchiveCloseout\":" +
+           shard_route_preview_verification_report_archive_closeout::format_closeout_json() +
+           ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+           shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
+           ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAudit\":" +
+           shard_route_preview_verification_report_archive_closeout_verification_audit::format_audit_json() +
            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +
