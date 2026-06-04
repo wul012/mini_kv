@@ -76,8 +76,9 @@ int main() {
         {"PING", "SET", "SETNXEX", "GET", "SAVE", "SIZE", "KEYS", "KEYSJSON", "COMPACT", "STATS", "STATSJSON",
          "RESETSTATS", "SMOKEJSON", "STORAGEJSON", "HELP", "HEALTH", "INFO", "INFOJSON", "SHARDJSON",
          "SHARDROUTE", "SHARDROUTEJSON", "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON",
-         "SHARDROUTEVERIFYREPORTCLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVEJSON", "COMMANDS",
-         "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON", "EXIT", "EXPIRE", ":history"}};
+         "SHARDROUTEVERIFYREPORTCLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVEJSON",
+         "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON", "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
+         "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
     assert(completion.complete("  pi", 4) == std::optional<std::string>{"  PING "});
@@ -110,7 +111,11 @@ int main() {
     assert(completion.complete("SHARDROUTEVERIFYREPORTC", 23) ==
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTCLOSEOUTJSON "});
     assert(completion.complete("SHARDROUTEVERIFYREPORTA", 23) ==
+           std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVE"});
+    assert(completion.complete("SHARDROUTEVERIFYREPORTARCHIVEJ", 30) ==
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVEJSON "});
+    assert(completion.complete("SHARDROUTEVERIFYREPORTARCHIVEC", 30) ==
+           std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

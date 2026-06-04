@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=36") != std::string::npos);
+    assert(result.response.find("command_count=37") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -294,6 +294,9 @@ int main() {
            std::string::npos);
     assert(result.response.find(
                "SHARDROUTEVERIFYREPORTARCHIVEJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -330,6 +333,9 @@ int main() {
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVEJSON\",\"category\":\"read\",\"mutates_store\":false,"
                "\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON\",\"category\":\"read\",\"mutates_store\":false,"
+               "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -342,7 +348,7 @@ int main() {
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
     assert_response_contains(result, "\"version\":\"" + std::string{minikv::version} +
-                                        "\",\"releaseVersion\":\"v360\"");
+                                        "\",\"releaseVersion\":\"v361\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -477,6 +483,34 @@ int main() {
     assert_response_contains(result, "\"archiveManifestPublished\":true");
     assert_response_contains(result, "\"filesystemReadPerformed\":false");
     assert_response_contains(result, "\"runtimeArchiveWalkAllowed\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"shardRoutePreviewVerificationReportArchiveCloseout\":{\"contract\":"
+                                     "\"shard-route-preview-verification-report-archive-closeout.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON\"");
+    assert_response_contains(result, "\"closeoutMode\":"
+                                     "\"read-only-route-preview-verification-report-archive-closeout-chain\"");
+    assert_response_contains(result, "\"sourceArchiveCommand\":\"SHARDROUTEVERIFYREPORTARCHIVEJSON\"");
+    assert_response_contains(result, "\"sourceArchiveReleaseVersion\":\"v360\"");
+    assert_response_contains(result, "\"sourceArchiveFixturePath\":\"fixtures/release/shard-readiness-v360.json\"");
+    assert_response_contains(result, "\"sourceArchivePublishedStageCount\":20");
+    assert_response_contains(result, "\"sourceArchiveChainComplete\":true");
+    assert_response_contains(result, "\"closeoutStage\":"
+                                     "\"route-preview-verification-report-archive-closeout-command-contract\"");
+    assert_response_contains(result, "\"closeoutStageSequence\":1");
+    assert_response_contains(result, "\"closeoutReleaseVersion\":\"v361\"");
+    assert_response_contains(result, "\"publishedStageCount\":1");
+    assert_response_contains(result, "\"plannedStageCount\":20");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v360\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v360.json\"");
+    assert_response_contains(result, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
+    assert_response_contains(result, "\"archivedArchiveReleaseRangeEnd\":\"v360\"");
+    assert_response_contains(result, "\"archivedArchiveReleaseCount\":20");
+    assert_response_contains(result, "\"archiveCloseoutCommandAvailable\":true");
+    assert_response_contains(result, "\"archiveCloseoutChainComplete\":false");
+    assert_response_contains(result, "\"filesystemReadPerformed\":false");
+    assert_response_contains(result, "\"runtimeArchiveWalkAllowed\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardReadinessReleaseCatalog\":{\"catalogMode\":"
                                      "\"versioned-shard-readiness-release-catalog-read-only\"");
@@ -1234,19 +1268,19 @@ int main() {
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"nodeRouteCatalogCleanupPostCloseoutContinuity\":{\"continuityMode\":"
                                      "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v359\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v359.json\"");
-    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:5dfc904fa37a1b23\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v360\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v360.json\"");
+    assert_response_contains(result, "\"sourceFrozenDigest\":\"fnv1a64:ce4589e8c5ffd352\"");
     assert_response_contains(
         result,
-        "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-audit\"");
-    assert_response_contains(result, "\"stageSequence\":160");
-    assert_response_contains(result, "\"stageReleaseVersion\":\"v360\"");
+        "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-command-contract\"");
+    assert_response_contains(result, "\"stageSequence\":161");
+    assert_response_contains(result, "\"stageReleaseVersion\":\"v361\"");
     assert_response_contains(result, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_response_contains(result, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_response_contains(result, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v360\"");
-    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":160");
+    assert_response_contains(result, "\"trackedPostCloseoutRangeEnd\":\"v361\"");
+    assert_response_contains(result, "\"trackedPostCloseoutReleaseCount\":161");
     assert_response_contains(result, "\"nodePlanStillLatestForMiniKv\":true");
     assert_response_contains(result, "\"sourceFixtureVersioned\":true");
     assert_response_contains(result, "\"rollingCurrentRejected\":true");
@@ -1943,6 +1977,7 @@ int main() {
     assert(result.response.find("SHARDROUTEVERIFYREPORTJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVERIFYREPORTCLOSEOUTJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVEJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
