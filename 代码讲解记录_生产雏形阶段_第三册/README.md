@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [444-version-384-report-archive-closeout-verification-checkjson-contract.md](444-version-384-report-archive-closeout-verification-checkjson-contract.md) - Archive Closeout Verification Checkjson Contract
 - [443-version-383-report-archive-closeout-verification-explain-contract.md](443-version-383-report-archive-closeout-verification-explain-contract.md) - Archive Closeout Verification Explain Contract
 - [442-version-382-report-archive-closeout-verification-catalog-alignment.md](442-version-382-report-archive-closeout-verification-catalog-alignment.md) - Archive Closeout Verification Catalog Alignment
 - [441-version-381-report-archive-closeout-verification-command-contract.md](441-version-381-report-archive-closeout-verification-command-contract.md) - Archive Closeout Verification Command Contract
