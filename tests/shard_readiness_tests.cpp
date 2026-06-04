@@ -42,7 +42,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v352\"");
+    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v353\"");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -187,13 +187,13 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"command\":\"SHARDROUTEVERIFYREPORTARCHIVEJSON\"");
     assert_contains(json, "\"archiveMode\":\"read-only-route-preview-verification-report-archive-chain\"");
     assert_contains(json, "\"sourceCloseoutReleaseVersion\":\"v340\"");
-    assert_contains(json, "\"archiveStage\":\"route-preview-verification-report-archive-java-echo-audit\"");
-    assert_contains(json, "\"archiveStageSequence\":12");
-    assert_contains(json, "\"archiveReleaseVersion\":\"v352\"");
-    assert_contains(json, "\"publishedStageCount\":12");
+    assert_contains(json, "\"archiveStage\":\"route-preview-verification-report-archive-fixture-freeze\"");
+    assert_contains(json, "\"archiveStageSequence\":13");
+    assert_contains(json, "\"archiveReleaseVersion\":\"v353\"");
+    assert_contains(json, "\"publishedStageCount\":13");
     assert_contains(json, "\"plannedStageCount\":20");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v351\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v351.json\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v352\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v352.json\"");
     assert_contains(json, "\"archiveManifestPublished\":true");
     assert_contains(json, "\"filesystemReadPerformed\":false");
     assert_contains(json, "\"runtimeArchiveWalkAllowed\":false");
@@ -284,7 +284,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"loadRestoreCompactExecuted\":false");
     assert_contains(
         json,
-        "\"nodeConsumer\":\"Node v550+ may consume v352 as read-only shard route preview verification report archive java echo audit evidence only\"");
+        "\"nodeConsumer\":\"Node v550+ may consume v353 as read-only shard route preview verification report archive fixture freeze evidence only\"");
     assert_contains(json, "\"nodeArchivedEvidencePreserved\":true");
     assert_contains(json, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_contains(json, "\"mutatesStore\":false");
@@ -372,11 +372,11 @@ void assert_shard_readiness_contract(const std::string& json) {
                            "\"Node v473\",\"Node v474\",\"Node v475\",\"Node v476\",\"Node v477\","
                            "\"Node v478\",\"Node v479\",\"Node v480\"]");
     assert_contains(json, "\"changesArchivedNodeEvidence\":false");
-    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v351\"");
-    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v351.json\"");
+    assert_contains(json, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v352\"");
+    assert_contains(json, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v352.json\"");
     assert_contains(
         json,
-        "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v352 as read-only shard route preview verification report archive java echo audit evidence only\"");
+        "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v353 as read-only shard route preview verification report archive fixture freeze evidence only\"");
     assert_contains(json, "\"rollingCurrentUsedForHistoricalBaseline\":false");
     assert_contains(json, "\"nodeV396ProgressIntakePreserved\":true");
     assert_contains(json, "\"nodeV397ContributionReviewPreserved\":true");
@@ -1321,19 +1321,19 @@ void assert_shard_readiness_contract(const std::string& json) {
                           "\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
     assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
                           "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v351\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v351.json\"");
-    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:85099e82c1bad69c\"");
-    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-java-echo-audit\"");
-    assert_contains(json, "\"stageSequence\":152");
-    assert_contains(json, "\"stageReleaseVersion\":\"v352\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v352\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v352.json\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:67bc128aadc1681f\"");
+    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-fixture-freeze\"");
+    assert_contains(json, "\"stageSequence\":153");
+    assert_contains(json, "\"stageReleaseVersion\":\"v353\"");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
     assert_contains(json, "\"previousCloseoutAuditReleaseVersion\":\"v200\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeStart\":\"v194\"");
     assert_contains(json, "\"trackedMiniKvCloseoutRangeEnd\":\"v200\"");
     assert_contains(json, "\"trackedPostCloseoutRangeStart\":\"v201\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v352\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":152");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v353\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":153");
     assert_contains(json, "\"nodePlanStillLatestForMiniKv\":true");
     assert_contains(json, "\"sourceFixtureVersioned\":true");
     assert_contains(json, "\"rollingCurrentRejected\":true");
@@ -2692,6 +2692,6 @@ int main() {
     result = processor.execute("SHARDROUTEVERIFYREPORTARCHIVEJSON");
     assert_contains(result.response, "\"contract\":\"shard-route-preview-verification-report-archive.v1\"");
     assert_contains(result.response, "\"command\":\"SHARDROUTEVERIFYREPORTARCHIVEJSON\"");
-    assert_contains(result.response, "\"archiveStage\":\"route-preview-verification-report-archive-java-echo-audit\"");
+    assert_contains(result.response, "\"archiveStage\":\"route-preview-verification-report-archive-fixture-freeze\"");
     assert_contains(result.response, "\"executionAllowed\":false");
 }

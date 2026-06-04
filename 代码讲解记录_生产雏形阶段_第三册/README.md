@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [413-version-353-report-archive-fixture-freeze.md](413-version-353-report-archive-fixture-freeze.md) - Route Preview Verification Report Archive Fixture Freeze
 - [412-version-352-report-archive-java-echo-audit.md](412-version-352-report-archive-java-echo-audit.md) - Route Preview Verification Report Archive Java Echo Audit
 - [411-version-351-report-archive-java-echo-handoff.md](411-version-351-report-archive-java-echo-handoff.md) - Route Preview Verification Report Archive Java Echo Handoff
 - [410-version-350-report-archive-consumer-handoff-audit.md](410-version-350-report-archive-consumer-handoff-audit.md) - Route Preview Verification Report Archive Consumer Handoff Audit
