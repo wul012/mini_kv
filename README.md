@@ -4,6 +4,7 @@ A C++20 practice project for building a small Redis-like key-value engine.
 
 ## Current version
 
+- v357: freezes v356 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYREPORTARCHIVEJSON` route preview verification report archive evidence to `route-preview-verification-report-archive-no-write-audit` while preserving no filesystem archive walk, no active router, no write routing, no WAL touch, and no execution authority.
 - v356: freezes v355 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYREPORTARCHIVEJSON` route preview verification report archive evidence to `route-preview-verification-report-archive-no-router-audit` while preserving no filesystem archive walk, no active router, no write routing, no WAL touch, and no execution authority.
 - v355: freezes v354 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYREPORTARCHIVEJSON` route preview verification report archive evidence to `route-preview-verification-report-archive-tcp-smoke-contract` while preserving no filesystem archive walk, no active router, no write routing, no WAL touch, and no execution authority.
 - v354: freezes v353 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYREPORTARCHIVEJSON` route preview verification report archive evidence to `route-preview-verification-report-archive-cli-smoke-contract` while preserving no filesystem archive walk, no active router, no write routing, no WAL touch, and no execution authority.

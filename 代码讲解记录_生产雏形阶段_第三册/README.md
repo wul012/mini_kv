@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [417-version-357-report-archive-no-write-audit.md](417-version-357-report-archive-no-write-audit.md) - Route Preview Verification Report Archive No Write Audit
 - [416-version-356-report-archive-no-router-audit.md](416-version-356-report-archive-no-router-audit.md) - Route Preview Verification Report Archive No Router Audit
 - [415-version-355-report-archive-tcp-smoke-contract.md](415-version-355-report-archive-tcp-smoke-contract.md) - Route Preview Verification Report Archive TCP Smoke Contract
 - [414-version-354-report-archive-cli-smoke-contract.md](414-version-354-report-archive-cli-smoke-contract.md) - Route Preview Verification Report Archive CLI Smoke Contract
