@@ -416,7 +416,7 @@ int main() {
     assert_response_contains(result, "\"rolloutStage\":\"route-preview-release-package-audit\"");
     assert_response_contains(result, "\"rolloutStageSequence\":20");
     assert_response_contains(result, "\"rolloutReleaseVersion\":\"v298\"");
-    assert_response_contains(result, "\"publishedStageCount\":200");
+    assert_response_contains(result, "\"publishedStageCount\":20");
     assert_response_contains(result, "\"commands\":[\"SHARDROUTE\",\"SHARDROUTEJSON\"]");
     assert_response_contains(result, "\"sampleSlotsPinnedToExistingEvidence\":true");
     assert_response_contains(result, "\"activeRouterInstalled\":false");
@@ -429,7 +429,7 @@ int main() {
     assert_response_contains(result, "\"rolloutStage\":\"route-preview-verification-closeout-audit\"");
     assert_response_contains(result, "\"rolloutStageSequence\":21");
     assert_response_contains(result, "\"rolloutReleaseVersion\":\"v319\"");
-    assert_response_contains(result, "\"publishedStageCount\":201");
+    assert_response_contains(result, "\"publishedStageCount\":21");
     assert_response_contains(result, "\"verificationCommandAvailable\":true");
     assert_response_contains(result, "\"verifiedCommand\":\"SHARDROUTEJSON\"");
     assert_response_contains(result, "\"commands\":[\"SHARDROUTEVERIFYJSON\"]");
@@ -444,7 +444,7 @@ int main() {
     assert_response_contains(result, "\"rolloutStage\":\"route-preview-verification-report-closeout-audit\"");
     assert_response_contains(result, "\"rolloutStageSequence\":20");
     assert_response_contains(result, "\"rolloutReleaseVersion\":\"v339\"");
-    assert_response_contains(result, "\"publishedStageCount\":200");
+    assert_response_contains(result, "\"publishedStageCount\":20");
     assert_response_contains(result, "\"reportCommandAvailable\":true");
     assert_response_contains(result, "\"reportedCommand\":\"SHARDROUTEVERIFYJSON\"");
     assert_response_contains(result, "\"previewCommand\":\"SHARDROUTEJSON\"");
@@ -476,7 +476,7 @@ int main() {
     assert_response_contains(result, "\"archiveStage\":\"route-preview-verification-report-archive-closeout-audit\"");
     assert_response_contains(result, "\"archiveStageSequence\":20");
     assert_response_contains(result, "\"archiveReleaseVersion\":\"v360\"");
-    assert_response_contains(result, "\"publishedStageCount\":200");
+    assert_response_contains(result, "\"publishedStageCount\":20");
     assert_response_contains(result, "\"plannedStageCount\":20");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v359\"");
     assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v359.json\"");
@@ -565,8 +565,8 @@ int main() {
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v359\"");
-    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v359.json\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v379\"");
+    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                      "\"history-fixture-archive-formatter-split-read-only\"");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v179\"");

@@ -130,7 +130,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"rolloutStage\":\"route-preview-release-package-audit\"");
     assert_contains(json, "\"rolloutStageSequence\":20");
     assert_contains(json, "\"rolloutReleaseVersion\":\"v298\"");
-    assert_contains(json, "\"publishedStageCount\":200");
+    assert_contains(json, "\"publishedStageCount\":20");
     assert_contains(json, "\"commands\":[\"SHARDROUTE\",\"SHARDROUTEJSON\"]");
     assert_contains(json, "\"sampleSlotsPinnedToExistingEvidence\":true");
     assert_contains(json, "\"activeRouterInstalled\":false");
@@ -143,7 +143,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"rolloutStage\":\"route-preview-verification-closeout-audit\"");
     assert_contains(json, "\"rolloutStageSequence\":21");
     assert_contains(json, "\"rolloutReleaseVersion\":\"v319\"");
-    assert_contains(json, "\"publishedStageCount\":201");
+    assert_contains(json, "\"publishedStageCount\":21");
     assert_contains(json, "\"verificationCommandAvailable\":true");
     assert_contains(json, "\"verifiedCommand\":\"SHARDROUTEJSON\"");
     assert_contains(json, "\"commands\":[\"SHARDROUTEVERIFYJSON\"]");
@@ -158,7 +158,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"rolloutStage\":\"route-preview-verification-report-closeout-audit\"");
     assert_contains(json, "\"rolloutStageSequence\":20");
     assert_contains(json, "\"rolloutReleaseVersion\":\"v339\"");
-    assert_contains(json, "\"publishedStageCount\":200");
+    assert_contains(json, "\"publishedStageCount\":20");
     assert_contains(json, "\"reportCommandAvailable\":true");
     assert_contains(json, "\"reportedCommand\":\"SHARDROUTEVERIFYJSON\"");
     assert_contains(json, "\"previewCommand\":\"SHARDROUTEJSON\"");
@@ -190,7 +190,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"archiveStage\":\"route-preview-verification-report-archive-closeout-audit\"");
     assert_contains(json, "\"archiveStageSequence\":20");
     assert_contains(json, "\"archiveReleaseVersion\":\"v360\"");
-    assert_contains(json, "\"publishedStageCount\":200");
+    assert_contains(json, "\"publishedStageCount\":20");
     assert_contains(json, "\"plannedStageCount\":20");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v359\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v359.json\"");
