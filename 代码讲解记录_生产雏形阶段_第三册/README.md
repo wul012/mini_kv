@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [442-version-382-report-archive-closeout-verification-catalog-alignment.md](442-version-382-report-archive-closeout-verification-catalog-alignment.md) - Archive Closeout Verification Catalog Alignment
 - [441-version-381-report-archive-closeout-verification-command-contract.md](441-version-381-report-archive-closeout-verification-command-contract.md) - Archive Closeout Verification Command Contract
 - [440-version-380-report-archive-closeout-release-package.md](440-version-380-report-archive-closeout-release-package.md) - Route Preview Verification Report Archive Closeout Release Package
 - [439-version-379-report-archive-closeout-no-execution-audit.md](439-version-379-report-archive-closeout-no-execution-audit.md) - Route Preview Verification Report Archive Closeout No Execution Audit
