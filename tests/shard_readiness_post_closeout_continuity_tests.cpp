@@ -17,20 +17,20 @@ using minikv::test_support::assert_not_contains;
 int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
-    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v361\"");
+    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v362\"");
     assert_contains(json,
                     "\"sourceNodePlan\":\"docs/plans3/"
                     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v360\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v360.json\"");
     assert_contains(json,
-                    "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-command-contract\"");
-    assert_contains(json, "\"stageSequence\":161");
-    assert_contains(json, "\"stageReleaseVersion\":\"v361\"");
-    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v361\"");
-    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":161");
+                    "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-catalog-alignment\"");
+    assert_contains(json, "\"stageSequence\":162");
+    assert_contains(json, "\"stageReleaseVersion\":\"v362\"");
+    assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v362\"");
+    assert_contains(json, "\"trackedPostCloseoutReleaseCount\":162");
     assert_contains(json, "\"nodeBatchCloseoutVersion\":\"Node v549\"");
-    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:ce4589e8c5ffd352\"");
+    assert_contains(json, "\"sourceFrozenDigest\":\"fnv1a64:de79bbc43b243f12\"");
     assert_contains(json, "\"archiveVerifierCheckCount\":3");
     assert_contains(json, "\"archiveVerifierChecksPassed\":3");
     assert_contains(json, "\"stage descriptor lifecycle preserves the JSON contract\"");
