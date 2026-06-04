@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [454-version-394-report-archive-closeout-verification-java-echo-handoff.md](454-version-394-report-archive-closeout-verification-java-echo-handoff.md) - Archive Closeout Verification Java Echo Handoff
 - [453-version-393-report-archive-closeout-verification-consumer-handoff-audit.md](453-version-393-report-archive-closeout-verification-consumer-handoff-audit.md) - Archive Closeout Verification Consumer Handoff Audit
 - [452-version-392-report-archive-closeout-verification-consumer-handoff.md](452-version-392-report-archive-closeout-verification-consumer-handoff.md) - Archive Closeout Verification Consumer Handoff
 - [451-version-391-report-archive-closeout-verification-retention-audit.md](451-version-391-report-archive-closeout-verification-retention-audit.md) - Archive Closeout Verification Retention Audit

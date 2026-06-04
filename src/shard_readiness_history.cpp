@@ -17,7 +17,7 @@ std::string json_string_array(const std::vector<std::string>& values) {
 std::string format_diagnostics_json() {
     return "{\"writeCommandsExecuted\":false,\"adminCommandsExecuted\":false,"
            "\"loadRestoreCompactExecuted\":false,"
-           "\"nodeConsumer\":\"Node v550+ may consume v393 as read-only shard route preview verification report archive closeout verification consumer-handoff-audit evidence only\","
+           "\"nodeConsumer\":\"Node v550+ may consume v394 as read-only shard route preview verification report archive closeout verification java-echo-handoff evidence only\","
            "\"javaEchoExpected\":\"Java shard-readiness echo may consume the same shard-readiness.v1 fields\","
            "\"nodeArchivedEvidencePreserved\":true}";
 }
@@ -255,9 +255,9 @@ std::string format_archive_compatibility_json() {
 }
 
 std::string format_historical_fallback_json() {
-    return "{\"previousConsumedReleaseVersion\":\"v392\","
-           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v392.json\","
-           "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v393 as read-only shard route preview verification report archive closeout verification consumer-handoff-audit evidence only\","
+    return "{\"previousConsumedReleaseVersion\":\"v393\","
+           "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v393.json\","
+           "\"previousConsumptionNodeVersion\":\"Node v550+ may consume v394 as read-only shard route preview verification report archive closeout verification java-echo-handoff evidence only\","
            "\"olderPrototypeFixturePath\":\"fixtures/release/shard-readiness-v144.json\","
            "\"rollingCurrentUsedForHistoricalBaseline\":false,"
            "\"nodeV396ProgressIntakePreserved\":true,"

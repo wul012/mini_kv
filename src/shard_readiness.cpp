@@ -32,7 +32,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v393";
+constexpr std::string_view release_version = "v394";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -54,7 +54,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v393",
+        "mini-kv-shard-readiness-v394",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -167,6 +167,8 @@ std::string format_json() {
             shard_route_preview_verification_report_archive::format_archive_json() +
             ",\"shardRoutePreviewVerificationReportArchiveCloseout\":" +
             shard_route_preview_verification_report_archive_closeout::format_closeout_json() +
+            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
+            shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
             ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
             shard_route_preview_verification_report_archive_closeout_verification::format_verification_json() +
             ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerification\":" +
