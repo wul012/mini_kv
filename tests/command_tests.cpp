@@ -354,7 +354,7 @@ int main() {
     assert_response_contains(result, "\"contract\":\"shard-readiness.v1\"");
     assert_response_contains(result, "\"project\":\"mini-kv\"");
     assert_response_contains(result, "\"version\":\"" + std::string{minikv::version} +
-                                        "\",\"releaseVersion\":\"v384\"");
+                                        "\",\"releaseVersion\":\"v385\"");
     assert_response_contains(result, "\"readOnly\":true");
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"shardEnabled\":false");
@@ -516,13 +516,13 @@ int main() {
     assert_response_contains(result, "\"sourceArchiveCloseoutFixturePath\":\"fixtures/release/shard-readiness-v380.json\"");
     assert_response_contains(result, "\"sourceArchiveCloseoutPublishedStageCount\":20");
     assert_response_contains(result, "\"sourceArchiveCloseoutChainComplete\":true");
-    assert_response_contains(result, "\"verificationStage\":\"route-preview-verification-report-archive-closeout-verification-checkjson-contract\"");
-    assert_response_contains(result, "\"verificationStageSequence\":4");
-    assert_response_contains(result, "\"verificationReleaseVersion\":\"v384\"");
-    assert_response_contains(result, "\"publishedStageCount\":4");
+    assert_response_contains(result, "\"verificationStage\":\"route-preview-verification-report-archive-closeout-verification-cli-smoke-contract\"");
+    assert_response_contains(result, "\"verificationStageSequence\":5");
+    assert_response_contains(result, "\"verificationReleaseVersion\":\"v385\"");
+    assert_response_contains(result, "\"publishedStageCount\":5");
     assert_response_contains(result, "\"plannedStageCount\":20");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v383\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v383.json\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v384\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v384.json\"");
     assert_response_contains(result, "\"verifiedCloseoutReleaseRangeStart\":\"v361\"");
     assert_response_contains(result, "\"verifiedCloseoutReleaseRangeEnd\":\"v380\"");
     assert_response_contains(result, "\"sourceCloseoutVersionedFixturePath\":\"fixtures/release/shard-readiness-v380.json\"");
@@ -600,8 +600,8 @@ int main() {
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
-    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v383\"");
-    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v383.json\"");
+    assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v384\"");
+    assert_response_contains(result, "\"previousConsumedFixturePath\":\"fixtures/release/shard-readiness-v384.json\"");
     assert_response_contains(result, "\"shardReadinessHistoryMaintenance\":{\"maintenanceMode\":"
                                      "\"history-fixture-archive-formatter-split-read-only\"");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v179\"");
