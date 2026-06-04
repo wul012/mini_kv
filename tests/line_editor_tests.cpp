@@ -76,7 +76,7 @@ int main() {
         {"PING", "SET", "SETNXEX", "GET", "SAVE", "SIZE", "KEYS", "KEYSJSON", "COMPACT", "STATS", "STATSJSON",
          "RESETSTATS", "SMOKEJSON", "STORAGEJSON", "HELP", "HEALTH", "INFO", "INFOJSON", "SHARDJSON",
          "SHARDROUTE", "SHARDROUTEJSON", "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON",
-         "SHARDROUTEVERIFYREPORTCLOSEOUTJSON", "COMMANDS",
+         "SHARDROUTEVERIFYREPORTCLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVEJSON", "COMMANDS",
          "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON", "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
@@ -109,6 +109,8 @@ int main() {
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTJSON "});
     assert(completion.complete("SHARDROUTEVERIFYREPORTC", 23) ==
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTCLOSEOUTJSON "});
+    assert(completion.complete("SHARDROUTEVERIFYREPORTA", 23) ==
+           std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVEJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

@@ -519,6 +519,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "INFOJSON",       "SHARDJSON", "SHARDROUTE",  "SHARDROUTEJSON",
                                   "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON",
                                   "SHARDROUTEVERIFYREPORTCLOSEOUTJSON",
+                                  "SHARDROUTEVERIFYREPORTARCHIVEJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }

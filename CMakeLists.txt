@@ -78,6 +78,7 @@ add_library(minikv
     src/shard_route_preview.cpp
     src/shard_route_preview_verification.cpp
     src/shard_route_preview_verification_report.cpp
+    src/shard_route_preview_verification_report_archive.cpp
     src/shard_route_preview_verification_report_closeout.cpp
     src/snapshot.cpp
     src/store.cpp
@@ -189,6 +190,12 @@ minikv_add_linked_test(
     minikv_shard_route_preview_verification_report_closeout_tests
     shard_route_preview_verification_report_closeout_tests
     tests/shard_route_preview_verification_report_closeout_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_verification_report_archive_tests
+    shard_route_preview_verification_report_archive_tests
+    tests/shard_route_preview_verification_report_archive_tests.cpp
 )
 
 minikv_add_linked_test(
