@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [507-version-447-audit-closeout-archive-verification-fixture-freeze.md](507-version-447-audit-closeout-archive-verification-fixture-freeze.md) - Audit Closeout Archive Verification Fixture Freeze
 - [506-version-446-audit-closeout-archive-verification-tcp-smoke-contract.md](506-version-446-audit-closeout-archive-verification-tcp-smoke-contract.md) - Audit Closeout Archive Verification TCP Smoke Contract
 - [505-version-445-audit-closeout-archive-verification-cli-smoke-contract.md](505-version-445-audit-closeout-archive-verification-cli-smoke-contract.md) - Audit Closeout Archive Verification CLI Smoke Contract
 - [504-version-444-audit-closeout-archive-verification-checkjson-contract.md](504-version-444-audit-closeout-archive-verification-checkjson-contract.md) - Audit Closeout Archive Verification CHECKJSON Contract

@@ -54,13 +54,13 @@ int main() {
         "\"sourceAuditCloseoutDigestMarker\":\"v440-route-preview-verification-report-archive-closeout-verification-audit-closeout-release-package-20-of-20-stages\"");
     assert_contains(
         archive_verification,
-        "\"archiveVerificationStage\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-tcp-smoke-contract\"");
-    assert_contains(archive_verification, "\"archiveVerificationStageSequence\":6");
-    assert_contains(archive_verification, "\"archiveVerificationReleaseVersion\":\"v446\"");
-    assert_contains(archive_verification, "\"publishedStageCount\":6");
+        "\"archiveVerificationStage\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-fixture-freeze\"");
+    assert_contains(archive_verification, "\"archiveVerificationStageSequence\":7");
+    assert_contains(archive_verification, "\"archiveVerificationReleaseVersion\":\"v447\"");
+    assert_contains(archive_verification, "\"publishedStageCount\":7");
     assert_contains(archive_verification, "\"plannedStageCount\":20");
-    assert_contains(archive_verification, "\"sourceFrozenReleaseVersion\":\"v445\"");
-    assert_contains(archive_verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v445.json\"");
+    assert_contains(archive_verification, "\"sourceFrozenReleaseVersion\":\"v446\"");
+    assert_contains(archive_verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v446.json\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseRangeStart\":\"v421\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseRangeEnd\":\"v440\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseCount\":20");
@@ -91,11 +91,11 @@ int main() {
                shard,
                "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseoutArchiveVerification\":") ==
            1);
-    assert_contains(shard, "\"releaseVersion\":\"v446\"");
+    assert_contains(shard, "\"releaseVersion\":\"v447\"");
     assert_contains(
         shard,
-        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-tcp-smoke-contract-read-only\"");
-    assert_contains(shard, "\"archiveVerificationReleaseVersion\":\"v446\"");
+        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-fixture-freeze-read-only\"");
+    assert_contains(shard, "\"archiveVerificationReleaseVersion\":\"v447\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
