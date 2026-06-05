@@ -13,7 +13,7 @@
 namespace minikv::shard_route_preview_audit_closeout_archive_verification {
 namespace {
 
-constexpr int current_audit_closeout_archive_verification_stage_count = 18;
+constexpr int current_audit_closeout_archive_verification_stage_count = 19;
 constexpr int planned_audit_closeout_archive_verification_stage_count = 20;
 
 constexpr std::string_view source_node_plan =
