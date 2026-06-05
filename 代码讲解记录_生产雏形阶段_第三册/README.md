@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [503-version-443-audit-closeout-archive-verification-explain-contract.md](503-version-443-audit-closeout-archive-verification-explain-contract.md) - Audit Closeout Archive Verification Explain Contract
 - [502-version-442-audit-closeout-archive-verification-catalog-alignment.md](502-version-442-audit-closeout-archive-verification-catalog-alignment.md) - Audit Closeout Archive Verification Catalog Alignment
 - [501-version-441-audit-closeout-archive-verification-intake.md](501-version-441-audit-closeout-archive-verification-intake.md) - Audit Closeout Archive Verification Intake
 - [500-version-440-report-archive-closeout-verification-audit-closeout-release-package.md](500-version-440-report-archive-closeout-verification-audit-closeout-release-package.md) - Archive Closeout Verification Audit Closeout Release Package
