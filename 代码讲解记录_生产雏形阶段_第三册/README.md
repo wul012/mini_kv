@@ -442,3 +442,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [580-version-520-route-preview-worksheet-verification-shardjson-embedding-audit.md](580-version-520-route-preview-worksheet-verification-shardjson-embedding-audit.md)
 - [581-version-521-route-preview-worksheet-verification-retention-map.md](581-version-521-route-preview-worksheet-verification-retention-map.md)
 - [582-version-522-route-preview-worksheet-verification-retention-audit.md](582-version-522-route-preview-worksheet-verification-retention-audit.md)
+- [583-version-523-route-preview-worksheet-verification-operator-slot-boundary.md](583-version-523-route-preview-worksheet-verification-operator-slot-boundary.md)
