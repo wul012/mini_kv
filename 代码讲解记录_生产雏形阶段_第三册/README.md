@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [533-version-473-route-preview-archive-maintenance-source-fixture-index-audit.md](533-version-473-route-preview-archive-maintenance-source-fixture-index-audit.md) - Route Preview Archive Maintenance Source Fixture Index Audit
 - [532-version-472-route-preview-archive-maintenance-source-fixture-index.md](532-version-472-route-preview-archive-maintenance-source-fixture-index.md) - Route Preview Archive Maintenance Source Fixture Index
 - [531-version-471-route-preview-archive-maintenance-fixture-freeze.md](531-version-471-route-preview-archive-maintenance-fixture-freeze.md) - Route Preview Archive Maintenance Fixture Freeze
 - [530-version-470-route-preview-archive-maintenance-tcp-smoke-contract.md](530-version-470-route-preview-archive-maintenance-tcp-smoke-contract.md) - Route Preview Archive Maintenance TCP Smoke Contract
