@@ -451,3 +451,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [589-version-529-route-preview-worksheet-verification-no-execution-audit.md](589-version-529-route-preview-worksheet-verification-no-execution-audit.md)
 - [590-version-530-route-preview-worksheet-verification-consumer-handoff.md](590-version-530-route-preview-worksheet-verification-consumer-handoff.md)
 - [591-version-531-route-preview-worksheet-verification-java-boundary-handoff.md](591-version-531-route-preview-worksheet-verification-java-boundary-handoff.md)
+- [592-version-532-route-preview-worksheet-verification-node-plan-handoff.md](592-version-532-route-preview-worksheet-verification-node-plan-handoff.md)
