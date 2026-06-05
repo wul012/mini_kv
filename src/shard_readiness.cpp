@@ -2,6 +2,7 @@
 
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/shard_route_preview.hpp"
+#include "minikv/shard_route_preview_audit_closeout_archive_verification.hpp"
 #include "minikv/shard_route_preview_verification.hpp"
 #include "minikv/shard_route_preview_verification_report.hpp"
 #include "minikv/shard_route_preview_verification_report_archive.hpp"
@@ -34,7 +35,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v440";
+constexpr std::string_view release_version = "v441";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -56,7 +57,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v440",
+        "mini-kv-shard-readiness-v441",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -114,6 +115,8 @@ std::string evidence_digest() {
             {"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseout=" +
              shard_route_preview_verification_report_archive_closeout_verification_audit_closeout::
                  closeout_digest_marker()},
+            {"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseoutArchiveVerification=" +
+             shard_route_preview_audit_closeout_archive_verification::archive_verification_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -157,7 +160,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"" +
+           ",\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-intake-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -180,6 +183,8 @@ std::string format_json() {
            shard_route_preview_verification_report_archive_closeout_verification_audit::format_audit_json() +
            ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseout\":" +
            shard_route_preview_verification_report_archive_closeout_verification_audit_closeout::format_closeout_json() +
+           ",\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseoutArchiveVerification\":" +
+           shard_route_preview_audit_closeout_archive_verification::format_archive_verification_json() +
            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

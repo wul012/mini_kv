@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=40") != std::string::npos);
+    assert(result.response.find("command_count=41") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -306,6 +306,9 @@ int main() {
            std::string::npos);
     assert(result.response.find(
                "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -354,6 +357,9 @@ int main() {
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\",\"category\":\"read\","
                "\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -374,7 +380,9 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(result, "\"status\":\"node-route-catalog-cleanup-post-closeout-continuity-read-only\"");
+    assert_response_contains(
+        result,
+        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-intake-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -599,6 +607,28 @@ int main() {
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
     // End archive closeout verification audit closeout assertions.
+    // Archive closeout verification audit closeout archive verification assertions updated per mini-kv release.
+    assert_response_contains(
+        result,
+        "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseoutArchiveVerification\":{\"contract\":"
+        "\"shard-route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification.v1\"");
+    assert_response_contains(
+        result,
+        "\"command\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON\"");
+    assert_response_contains(result, "\"sourceAuditCloseoutCommand\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\"");
+    assert_response_contains(result, "\"sourceAuditCloseoutReleaseVersion\":\"v440\"");
+    assert_response_contains(result, "\"sourceAuditCloseoutPublishedStageCount\":20");
+    assert_response_contains(result, "\"sourceAuditCloseoutChainComplete\":true");
+    assert_response_contains(result, "\"sharedStageCatalogFormatterApplied\":true");
+    assert_response_contains(result, "\"declaredArchiveVerificationOnly\":true");
+    assert_response_contains(result, "\"archiveRootHintUsedForHumanReviewOnly\":true");
+    assert_response_contains(result, "\"archiveCloseoutVerificationAuditCloseoutArchiveVerificationCommandAvailable\":true");
+    assert_response_contains(result, "\"filesystemReadPerformed\":false");
+    assert_response_contains(result, "\"runtimeArchiveWalkAllowed\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    // End archive closeout verification audit closeout archive verification assertions.
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v379\"");
     assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
@@ -2080,6 +2110,8 @@ int main() {
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON") !=
+           std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);

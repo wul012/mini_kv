@@ -2,6 +2,7 @@
 
 #include "minikv/command_contracts.hpp"
 #include "minikv/command_response_formatters.hpp"
+#include "minikv/shard_route_preview_audit_closeout_archive_verification.hpp"
 #include "minikv/shard_route_preview.hpp"
 #include "minikv/shard_route_preview_verification.hpp"
 #include "minikv/shard_route_preview_verification_report.hpp"
@@ -68,7 +69,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 40> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 41> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -102,6 +103,8 @@ constexpr std::array<CommandDispatchEntry, 40> command_dispatch_table = {{
     {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON",
+     CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -541,6 +544,13 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         return {shard_route_preview_verification_report_archive_closeout_verification_audit_closeout::
                     format_closeout_json()};
     }
+    if (command == "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON");
+        }
+
+        return {shard_route_preview_audit_closeout_archive_verification::format_archive_verification_json()};
+    }
 
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
@@ -906,6 +916,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON\n"
            "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\n"
            "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\n"
+           "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"
