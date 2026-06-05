@@ -387,7 +387,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-archive-maintenance-stage-catalog-refactor-read-only\"");
+        "\"status\":\"route-preview-archive-maintenance-boundary-helper-split-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -641,9 +641,9 @@ int main() {
     assert_response_contains(result, "\"sourceArchiveVerificationReleaseVersion\":\"v460\"");
     assert_response_contains(result, "\"sourceArchiveVerificationPublishedStageCount\":20");
     assert_response_contains(result, "\"sourceArchiveVerificationChainComplete\":true");
-    assert_response_contains(result, "\"maintenanceStage\":\"route-preview-archive-maintenance-stage-catalog-refactor\"");
-    assert_response_contains(result, "\"maintenanceStageSequence\":3");
-    assert_response_contains(result, "\"maintenanceReleaseVersion\":\"v463\"");
+    assert_response_contains(result, "\"maintenanceStage\":\"route-preview-archive-maintenance-boundary-helper-split\"");
+    assert_response_contains(result, "\"maintenanceStageSequence\":4");
+    assert_response_contains(result, "\"maintenanceReleaseVersion\":\"v464\"");
     assert_response_contains(result, "\"sharedStageCatalogFormatterApplied\":true");
     assert_response_contains(result, "\"focusedTestHelperApplied\":true");
     assert_response_contains(result, "\"archiveMaintenanceCommandAvailable\":true");
