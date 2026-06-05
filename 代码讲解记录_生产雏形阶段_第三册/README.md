@@ -427,3 +427,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [565-version-505-route-preview-archive-maintenance-verification-no-execution-audit.md](565-version-505-route-preview-archive-maintenance-verification-no-execution-audit.md)
 - [566-version-506-route-preview-archive-maintenance-verification-consumer-handoff.md](566-version-506-route-preview-archive-maintenance-verification-consumer-handoff.md)
 - [567-version-507-route-preview-archive-maintenance-verification-java-boundary-handoff.md](567-version-507-route-preview-archive-maintenance-verification-java-boundary-handoff.md)
+- [568-version-508-route-preview-archive-maintenance-verification-release-readiness.md](568-version-508-route-preview-archive-maintenance-verification-release-readiness.md)
