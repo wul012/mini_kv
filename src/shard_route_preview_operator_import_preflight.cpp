@@ -1,4 +1,4 @@
-#include "minikv/shard_route_preview_operator_import_preflight.hpp"
+﻿#include "minikv/shard_route_preview_operator_import_preflight.hpp"
 
 #include "minikv/route_preview_evidence_boundary.hpp"
 #include "minikv/runtime_evidence.hpp"
@@ -16,7 +16,7 @@ namespace minikv::shard_route_preview_operator_import_preflight {
 namespace {
 
 constexpr int first_import_preflight_release_number = 536;
-constexpr int current_import_preflight_stage_count = 24;
+constexpr int current_import_preflight_stage_count = 25;
 constexpr int planned_import_preflight_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
@@ -351,28 +351,3 @@ int published_stage_count() {
 }
 
 } // namespace minikv::shard_route_preview_operator_import_preflight
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
