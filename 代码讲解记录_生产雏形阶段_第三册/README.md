@@ -448,3 +448,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [586-version-526-route-preview-worksheet-verification-production-execution-blocked.md](586-version-526-route-preview-worksheet-verification-production-execution-blocked.md)
 - [587-version-527-route-preview-worksheet-verification-no-router-audit.md](587-version-527-route-preview-worksheet-verification-no-router-audit.md)
 - [588-version-528-route-preview-worksheet-verification-no-write-audit.md](588-version-528-route-preview-worksheet-verification-no-write-audit.md)
+- [589-version-529-route-preview-worksheet-verification-no-execution-audit.md](589-version-529-route-preview-worksheet-verification-no-execution-audit.md)
