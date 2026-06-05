@@ -50,13 +50,13 @@ int main() {
         "\"sourceAuditDigestMarker\":\"v420-route-preview-verification-report-archive-closeout-verification-audit-release-package-20-of-20-stages\"");
     assert_contains(
         closeout,
-        "\"closeoutStage\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-boundary-field-audit\"");
-    assert_contains(closeout, "\"closeoutStageSequence\":16");
-    assert_contains(closeout, "\"closeoutReleaseVersion\":\"v436\"");
-    assert_contains(closeout, "\"publishedStageCount\":16");
+        "\"closeoutStage\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-no-router-audit\"");
+    assert_contains(closeout, "\"closeoutStageSequence\":17");
+    assert_contains(closeout, "\"closeoutReleaseVersion\":\"v437\"");
+    assert_contains(closeout, "\"publishedStageCount\":17");
     assert_contains(closeout, "\"plannedStageCount\":20");
-    assert_contains(closeout, "\"sourceFrozenReleaseVersion\":\"v435\"");
-    assert_contains(closeout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v435.json\"");
+    assert_contains(closeout, "\"sourceFrozenReleaseVersion\":\"v436\"");
+    assert_contains(closeout, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v436.json\"");
     assert_contains(closeout, "\"closedAuditReleaseRangeStart\":\"v401\"");
     assert_contains(closeout, "\"closedAuditReleaseRangeEnd\":\"v420\"");
     assert_contains(closeout, "\"closedAuditReleaseCount\":20");
@@ -83,7 +83,7 @@ int main() {
     const std::string shard = minikv::shard_readiness::format_json();
     assert(occurrence_count(shard, "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseout\":") ==
            1);
-    assert_contains(shard, "\"closeoutReleaseVersion\":\"v436\"");
+    assert_contains(shard, "\"closeoutReleaseVersion\":\"v437\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
