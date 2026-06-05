@@ -80,8 +80,8 @@ int main() {
           "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON",
           "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON",
           "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON",
-          "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON", "COMMANDS", "COMMANDSJSON",
-          "EXPLAINJSON", "CHECKJSON",
+          "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON", "SHARDROUTEARCHIVEMAINTJSON",
+          "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
@@ -152,6 +152,9 @@ int main() {
     assert(completion.complete(archive_closeout_verify_audit_closeout_archive_prefix,
                                archive_closeout_verify_audit_closeout_archive_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON "});
+    const std::string archive_maintenance_prefix = "SHARDROUTEARCHIVEMAINTJ";
+    assert(completion.complete(archive_maintenance_prefix, archive_maintenance_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEARCHIVEMAINTJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

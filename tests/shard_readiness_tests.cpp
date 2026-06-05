@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-release-package-read-only\"");
+        "\"status\":\"route-preview-archive-maintenance-intake-read-only\"");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -314,6 +314,25 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"executionAllowed\":false");
     // End archive closeout verification audit closeout archive verification assertions.
+    assert_contains(json, "\"shardRoutePreviewArchiveMaintenance\":{\"contract\":"
+                          "\"shard-route-preview-archive-maintenance.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEARCHIVEMAINTJSON\"");
+    assert_contains(json, "\"maintenanceMode\":\"read-only-route-preview-archive-maintenance-ledger\"");
+    assert_contains(json, "\"sourceArchiveVerificationReleaseVersion\":\"v460\"");
+    assert_contains(json, "\"sourceArchiveVerificationPublishedStageCount\":20");
+    assert_contains(json, "\"sourceArchiveVerificationChainComplete\":true");
+    assert_contains(json, "\"maintenanceStage\":\"route-preview-archive-maintenance-intake\"");
+    assert_contains(json, "\"maintenanceStageSequence\":1");
+    assert_contains(json, "\"maintenanceReleaseVersion\":\"v461\"");
+    assert_contains(json, "\"sharedStageCatalogFormatterApplied\":true");
+    assert_contains(json, "\"focusedTestHelperApplied\":true");
+    assert_contains(json, "\"archiveMaintenanceCommandAvailable\":true");
+    assert_contains(json, "\"archiveMaintenanceChainComplete\":false");
+    assert_contains(json, "\"filesystemReadPerformed\":false");
+    assert_contains(json, "\"runtimeArchiveWalkAllowed\":false");
+    assert_contains(json, "\"activeRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v379\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_contains(json, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
@@ -2767,6 +2786,8 @@ int main() {
     assert_contains(
         result.response,
         "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(result.response,
+                    "SHARDROUTEARCHIVEMAINTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -2799,6 +2820,8 @@ int main() {
         result.response,
         "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON\","
         "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response, "\"name\":\"SHARDROUTEARCHIVEMAINTJSON\","
+                                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
 
     result = processor.execute("EXPLAINJSON SHARDJSON");
     assert_contains(result.response, "\"command\":\"SHARDJSON\"");

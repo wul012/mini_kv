@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=41") != std::string::npos);
+    assert(result.response.find("command_count=42") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -309,6 +309,8 @@ int main() {
            std::string::npos);
     assert(result.response.find(
                "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find("SHARDROUTEARCHIVEMAINTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -360,6 +362,9 @@ int main() {
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find("\"name\":\"SHARDROUTEARCHIVEMAINTJSON\","
+                                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
+           std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -382,7 +387,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-release-package-read-only\"");
+        "\"status\":\"route-preview-archive-maintenance-intake-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -629,6 +634,25 @@ int main() {
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
     // End archive closeout verification audit closeout archive verification assertions.
+    assert_response_contains(result, "\"shardRoutePreviewArchiveMaintenance\":{\"contract\":"
+                                     "\"shard-route-preview-archive-maintenance.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEARCHIVEMAINTJSON\"");
+    assert_response_contains(result, "\"maintenanceMode\":\"read-only-route-preview-archive-maintenance-ledger\"");
+    assert_response_contains(result, "\"sourceArchiveVerificationReleaseVersion\":\"v460\"");
+    assert_response_contains(result, "\"sourceArchiveVerificationPublishedStageCount\":20");
+    assert_response_contains(result, "\"sourceArchiveVerificationChainComplete\":true");
+    assert_response_contains(result, "\"maintenanceStage\":\"route-preview-archive-maintenance-intake\"");
+    assert_response_contains(result, "\"maintenanceStageSequence\":1");
+    assert_response_contains(result, "\"maintenanceReleaseVersion\":\"v461\"");
+    assert_response_contains(result, "\"sharedStageCatalogFormatterApplied\":true");
+    assert_response_contains(result, "\"focusedTestHelperApplied\":true");
+    assert_response_contains(result, "\"archiveMaintenanceCommandAvailable\":true");
+    assert_response_contains(result, "\"archiveMaintenanceChainComplete\":false");
+    assert_response_contains(result, "\"filesystemReadPerformed\":false");
+    assert_response_contains(result, "\"runtimeArchiveWalkAllowed\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v379\"");
     assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
@@ -2112,6 +2136,7 @@ int main() {
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON") !=
            std::string::npos);
+    assert(result.response.find("SHARDROUTEARCHIVEMAINTJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
