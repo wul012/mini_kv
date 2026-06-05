@@ -13,7 +13,7 @@
 namespace minikv::shard_route_preview_archive_maintenance {
 namespace {
 
-constexpr int current_archive_maintenance_stage_count = 15;
+constexpr int current_archive_maintenance_stage_count = 16;
 constexpr int planned_archive_maintenance_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
