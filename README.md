@@ -1,4 +1,5 @@
 ﻿# mini-kv
+- v557: freezes v556 as a versioned source fixture and advances read-only `SHARDROUTEIMPORTPREFLIGHTJSON` operator evidence import preflight to `route-preview-import-preflight-no-execution-audit` while preserving Node v886 import-preflight alignment, no operator evidence import, no manual entry, no runtime payload, no synthetic evidence, no active router, no write routing, no WAL touch, and no execution authority.
 - v556: freezes v555 as a versioned source fixture and advances read-only `SHARDROUTEIMPORTPREFLIGHTJSON` operator evidence import preflight to `route-preview-import-preflight-no-write-audit` while preserving Node v886 import-preflight alignment, no operator evidence import, no manual entry, no runtime payload, no synthetic evidence, no active router, no write routing, no WAL touch, and no execution authority.
 - v555: freezes v554 as a versioned source fixture and advances read-only `SHARDROUTEIMPORTPREFLIGHTJSON` operator evidence import preflight to `route-preview-import-preflight-no-router-audit` while preserving Node v886 import-preflight alignment, no operator evidence import, no manual entry, no runtime payload, no synthetic evidence, no active router, no write routing, no WAL touch, and no execution authority.
 - v554: freezes v553 as a versioned source fixture and advances read-only `SHARDROUTEIMPORTPREFLIGHTJSON` operator evidence import preflight to `route-preview-import-preflight-no-synthetic-evidence-audit` while preserving Node v886 import-preflight alignment, no operator evidence import, no manual entry, no runtime payload, no synthetic evidence, no active router, no write routing, no WAL touch, and no execution authority.
@@ -1207,6 +1208,7 @@ Oversized RESP requests return a RESP error instead of waiting indefinitely for 
 10. Java v71 and mini-kv v80 prepare read-only CI/evidence hints before Node v201 verifies the CI artifact manifest.
 11. Java v72 and mini-kv v81 prepare read-only artifact retention evidence before Node v203 checks cross-project CI artifact retention.
 12. Java v73 and mini-kv v82 prepare live-read friendly runtime fields before Node v205 runs the three-project real-read execution packet.
+
 
 
 

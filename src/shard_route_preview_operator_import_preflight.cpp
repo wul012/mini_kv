@@ -16,7 +16,7 @@ namespace minikv::shard_route_preview_operator_import_preflight {
 namespace {
 
 constexpr int first_import_preflight_release_number = 536;
-constexpr int current_import_preflight_stage_count = 21;
+constexpr int current_import_preflight_stage_count = 22;
 constexpr int planned_import_preflight_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
@@ -351,6 +351,7 @@ int published_stage_count() {
 }
 
 } // namespace minikv::shard_route_preview_operator_import_preflight
+
 
 
 
