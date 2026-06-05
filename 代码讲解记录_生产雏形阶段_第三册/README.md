@@ -432,3 +432,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [570-version-510-route-preview-archive-maintenance-verification-release-package.md](570-version-510-route-preview-archive-maintenance-verification-release-package.md)
 - [571-version-511-route-preview-worksheet-verification-intake.md](571-version-511-route-preview-worksheet-verification-intake.md)
 - [572-version-512-route-preview-worksheet-verification-source-verifier-contract.md](572-version-512-route-preview-worksheet-verification-source-verifier-contract.md)
+- [573-version-513-route-preview-worksheet-verification-source-release-freeze.md](573-version-513-route-preview-worksheet-verification-source-release-freeze.md)
