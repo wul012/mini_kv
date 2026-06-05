@@ -387,7 +387,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-archive-maintenance-java-echo-boundary-handoff-read-only\"");
+        "\"status\":\"route-preview-archive-maintenance-no-router-audit-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -641,9 +641,9 @@ int main() {
     assert_response_contains(result, "\"sourceArchiveVerificationReleaseVersion\":\"v460\"");
     assert_response_contains(result, "\"sourceArchiveVerificationPublishedStageCount\":20");
     assert_response_contains(result, "\"sourceArchiveVerificationChainComplete\":true");
-    assert_response_contains(result, "\"maintenanceStage\":\"route-preview-archive-maintenance-java-echo-boundary-handoff\"");
-    assert_response_contains(result, "\"maintenanceStageSequence\":21");
-    assert_response_contains(result, "\"maintenanceReleaseVersion\":\"v481\"");
+    assert_response_contains(result, "\"maintenanceStage\":\"route-preview-archive-maintenance-no-router-audit\"");
+    assert_response_contains(result, "\"maintenanceStageSequence\":22");
+    assert_response_contains(result, "\"maintenanceReleaseVersion\":\"v482\"");
     assert_response_contains(result, "\"sharedStageCatalogFormatterApplied\":true");
     assert_response_contains(result, "\"focusedTestHelperApplied\":true");
     assert_response_contains(result, "\"archiveMaintenanceCommandAvailable\":true");
