@@ -15,7 +15,7 @@ namespace minikv::shard_route_preview_archive_maintenance_verification {
 namespace {
 
 constexpr int first_verification_release_number = 486;
-constexpr int current_verification_stage_count = 1;
+constexpr int current_verification_stage_count = 2;
 constexpr int planned_verification_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
