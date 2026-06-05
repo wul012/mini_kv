@@ -54,13 +54,13 @@ int main() {
         "\"sourceAuditCloseoutDigestMarker\":\"v440-route-preview-verification-report-archive-closeout-verification-audit-closeout-release-package-20-of-20-stages\"");
     assert_contains(
         archive_verification,
-        "\"archiveVerificationStage\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-intake\"");
-    assert_contains(archive_verification, "\"archiveVerificationStageSequence\":1");
-    assert_contains(archive_verification, "\"archiveVerificationReleaseVersion\":\"v441\"");
-    assert_contains(archive_verification, "\"publishedStageCount\":1");
+        "\"archiveVerificationStage\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-catalog-alignment\"");
+    assert_contains(archive_verification, "\"archiveVerificationStageSequence\":2");
+    assert_contains(archive_verification, "\"archiveVerificationReleaseVersion\":\"v442\"");
+    assert_contains(archive_verification, "\"publishedStageCount\":2");
     assert_contains(archive_verification, "\"plannedStageCount\":20");
-    assert_contains(archive_verification, "\"sourceFrozenReleaseVersion\":\"v440\"");
-    assert_contains(archive_verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v440.json\"");
+    assert_contains(archive_verification, "\"sourceFrozenReleaseVersion\":\"v441\"");
+    assert_contains(archive_verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v441.json\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseRangeStart\":\"v421\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseRangeEnd\":\"v440\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseCount\":20");
@@ -91,11 +91,11 @@ int main() {
                shard,
                "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseoutArchiveVerification\":") ==
            1);
-    assert_contains(shard, "\"releaseVersion\":\"v441\"");
+    assert_contains(shard, "\"releaseVersion\":\"v442\"");
     assert_contains(
         shard,
-        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-intake-read-only\"");
-    assert_contains(shard, "\"archiveVerificationReleaseVersion\":\"v441\"");
+        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-catalog-alignment-read-only\"");
+    assert_contains(shard, "\"archiveVerificationReleaseVersion\":\"v442\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
