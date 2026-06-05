@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [528-version-468-route-preview-archive-maintenance-checkjson-contract.md](528-version-468-route-preview-archive-maintenance-checkjson-contract.md) - Route Preview Archive Maintenance CHECKJSON Contract
 - [527-version-467-route-preview-archive-maintenance-explain-contract.md](527-version-467-route-preview-archive-maintenance-explain-contract.md) - Route Preview Archive Maintenance Explain Contract
 - [526-version-466-route-preview-archive-maintenance-command-catalog-contract.md](526-version-466-route-preview-archive-maintenance-command-catalog-contract.md) - Route Preview Archive Maintenance Command Catalog Contract
 - [525-version-465-route-preview-archive-maintenance-focused-test-helper.md](525-version-465-route-preview-archive-maintenance-focused-test-helper.md) - Route Preview Archive Maintenance Focused Test Helper
