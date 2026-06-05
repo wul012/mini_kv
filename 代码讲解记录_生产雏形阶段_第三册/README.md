@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [538-version-478-route-preview-archive-maintenance-command-dispatch-audit.md](538-version-478-route-preview-archive-maintenance-command-dispatch-audit.md) - Route Preview Archive Maintenance Command Dispatch Audit
 - [537-version-477-route-preview-archive-maintenance-walkthrough-index-audit.md](537-version-477-route-preview-archive-maintenance-walkthrough-index-audit.md) - Route Preview Archive Maintenance Walkthrough Index Audit
 - [536-version-476-route-preview-archive-maintenance-walkthrough-index.md](536-version-476-route-preview-archive-maintenance-walkthrough-index.md) - Route Preview Archive Maintenance Walkthrough Index
 - [535-version-475-route-preview-archive-maintenance-retention-audit.md](535-version-475-route-preview-archive-maintenance-retention-audit.md) - Route Preview Archive Maintenance Retention Audit
