@@ -467,3 +467,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [605-version-545-route-preview-import-preflight-shardjson-embedding-audit.md](605-version-545-route-preview-import-preflight-shardjson-embedding-audit.md)
 - [606-version-546-route-preview-import-preflight-normalizer-contract.md](606-version-546-route-preview-import-preflight-normalizer-contract.md)
 - [607-version-547-route-preview-import-preflight-blocker-catalog.md](607-version-547-route-preview-import-preflight-blocker-catalog.md)
+- [608-version-548-route-preview-import-preflight-missing-value-policy.md](608-version-548-route-preview-import-preflight-missing-value-policy.md)
