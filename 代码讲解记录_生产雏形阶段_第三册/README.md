@@ -423,3 +423,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [561-version-501-route-preview-archive-maintenance-verification-walkthrough-index.md](561-version-501-route-preview-archive-maintenance-verification-walkthrough-index.md)
 - [562-version-502-route-preview-archive-maintenance-verification-walkthrough-index-audit.md](562-version-502-route-preview-archive-maintenance-verification-walkthrough-index-audit.md)
 - [563-version-503-route-preview-archive-maintenance-verification-no-router-audit.md](563-version-503-route-preview-archive-maintenance-verification-no-router-audit.md)
+- [564-version-504-route-preview-archive-maintenance-verification-no-write-audit.md](564-version-504-route-preview-archive-maintenance-verification-no-write-audit.md)
