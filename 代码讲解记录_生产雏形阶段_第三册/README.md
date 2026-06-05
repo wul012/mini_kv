@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [526-version-466-route-preview-archive-maintenance-command-catalog-contract.md](526-version-466-route-preview-archive-maintenance-command-catalog-contract.md) - Route Preview Archive Maintenance Command Catalog Contract
 - [525-version-465-route-preview-archive-maintenance-focused-test-helper.md](525-version-465-route-preview-archive-maintenance-focused-test-helper.md) - Route Preview Archive Maintenance Focused Test Helper
 - [524-version-464-route-preview-archive-maintenance-boundary-helper-split.md](524-version-464-route-preview-archive-maintenance-boundary-helper-split.md) - Route Preview Archive Maintenance Boundary Helper Split
 - [523-version-463-route-preview-archive-maintenance-stage-catalog-refactor.md](523-version-463-route-preview-archive-maintenance-stage-catalog-refactor.md) - Route Preview Archive Maintenance Stage Catalog Refactor
