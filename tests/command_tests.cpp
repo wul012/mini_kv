@@ -382,7 +382,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-source-closeout-index-read-only\"");
+        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-source-closeout-index-audit-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
