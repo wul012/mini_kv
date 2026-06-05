@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [493-version-433-report-archive-closeout-verification-audit-closeout-consumer-handoff-audit.md](493-version-433-report-archive-closeout-verification-audit-closeout-consumer-handoff-audit.md) - Archive Closeout Verification Audit Closeout Consumer Handoff Audit
 - [492-version-432-report-archive-closeout-verification-audit-closeout-consumer-handoff.md](492-version-432-report-archive-closeout-verification-audit-closeout-consumer-handoff.md) - Archive Closeout Verification Audit Closeout Consumer Handoff
 - [491-version-431-report-archive-closeout-verification-audit-closeout-retention-audit.md](491-version-431-report-archive-closeout-verification-audit-closeout-retention-audit.md) - Archive Closeout Verification Audit Closeout Retention Audit
 - [490-version-430-report-archive-closeout-verification-audit-closeout-retention-map.md](490-version-430-report-archive-closeout-verification-audit-closeout-retention-map.md) - Archive Closeout Verification Audit Closeout Retention Map
