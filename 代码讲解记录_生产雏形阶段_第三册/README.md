@@ -408,3 +408,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [546-version-486-route-preview-archive-maintenance-verification-intake.md](546-version-486-route-preview-archive-maintenance-verification-intake.md)
 - [547-version-487-route-preview-archive-maintenance-verification-stage-chain-helper.md](547-version-487-route-preview-archive-maintenance-verification-stage-chain-helper.md)
 - [548-version-488-route-preview-archive-maintenance-verification-source-ledger-contract.md](548-version-488-route-preview-archive-maintenance-verification-source-ledger-contract.md)
+- [549-version-489-route-preview-archive-maintenance-verification-source-digest-audit.md](549-version-489-route-preview-archive-maintenance-verification-source-digest-audit.md)
