@@ -419,3 +419,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [557-version-497-route-preview-archive-maintenance-verification-shardjson-embedding.md](557-version-497-route-preview-archive-maintenance-verification-shardjson-embedding.md)
 - [558-version-498-route-preview-archive-maintenance-verification-shardjson-embedding-audit.md](558-version-498-route-preview-archive-maintenance-verification-shardjson-embedding-audit.md)
 - [559-version-499-route-preview-archive-maintenance-verification-retention-map.md](559-version-499-route-preview-archive-maintenance-verification-retention-map.md)
+- [560-version-500-route-preview-archive-maintenance-verification-retention-audit.md](560-version-500-route-preview-archive-maintenance-verification-retention-audit.md)
