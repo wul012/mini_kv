@@ -469,3 +469,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [607-version-547-route-preview-import-preflight-blocker-catalog.md](607-version-547-route-preview-import-preflight-blocker-catalog.md)
 - [608-version-548-route-preview-import-preflight-missing-value-policy.md](608-version-548-route-preview-import-preflight-missing-value-policy.md)
 - [609-version-549-route-preview-import-preflight-redaction-preservation.md](609-version-549-route-preview-import-preflight-redaction-preservation.md)
+- [610-version-550-route-preview-import-preflight-operator-slot-draft-boundary.md](610-version-550-route-preview-import-preflight-operator-slot-draft-boundary.md)
