@@ -75,9 +75,12 @@ int main() {
     minikv::LineEditorCompletion completion{
         {"PING", "SET", "SETNXEX", "GET", "SAVE", "SIZE", "KEYS", "KEYSJSON", "COMPACT", "STATS", "STATSJSON",
          "RESETSTATS", "SMOKEJSON", "STORAGEJSON", "HELP", "HEALTH", "INFO", "INFOJSON", "SHARDJSON",
-         "SHARDROUTE", "SHARDROUTEJSON", "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON",
-         "SHARDROUTEVERIFYREPORTCLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVEJSON",
-         "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON", "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON", "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
+          "SHARDROUTE", "SHARDROUTEJSON", "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON",
+          "SHARDROUTEVERIFYREPORTCLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVEJSON",
+          "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON", "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON",
+          "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON",
+          "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON", "COMMANDS", "COMMANDSJSON",
+          "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
     assert(completion.complete("PI", 2) == std::optional<std::string>{"PING "});
@@ -128,7 +131,16 @@ int main() {
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON "});
     const std::string archive_closeout_verify_audit_prefix = "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYA";
     assert(completion.complete(archive_closeout_verify_audit_prefix, archive_closeout_verify_audit_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDIT"});
+    const std::string archive_closeout_verify_audit_json_prefix = "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJ";
+    assert(completion.complete(archive_closeout_verify_audit_json_prefix,
+                               archive_closeout_verify_audit_json_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON "});
+    const std::string archive_closeout_verify_audit_closeout_prefix =
+        "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITC";
+    assert(completion.complete(archive_closeout_verify_audit_closeout_prefix,
+                               archive_closeout_verify_audit_closeout_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

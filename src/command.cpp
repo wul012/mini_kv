@@ -9,6 +9,7 @@
 #include "minikv/shard_route_preview_verification_report_archive_closeout.hpp"
 #include "minikv/shard_route_preview_verification_report_archive_closeout_verification.hpp"
 #include "minikv/shard_route_preview_verification_report_archive_closeout_verification_audit.hpp"
+#include "minikv/shard_route_preview_verification_report_archive_closeout_verification_audit_closeout.hpp"
 #include "minikv/shard_route_preview_verification_report_closeout.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/string_utils.hpp"
@@ -67,7 +68,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 39> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 40> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -100,6 +101,7 @@ constexpr std::array<CommandDispatchEntry, 39> command_dispatch_table = {{
     {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -531,6 +533,14 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         return {shard_route_preview_verification_report_archive_closeout_verification_audit::format_audit_json()};
     }
+    if (command == "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON");
+        }
+
+        return {shard_route_preview_verification_report_archive_closeout_verification_audit_closeout::
+                    format_closeout_json()};
+    }
 
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
@@ -895,6 +905,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON\n"
            "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON\n"
            "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\n"
+           "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

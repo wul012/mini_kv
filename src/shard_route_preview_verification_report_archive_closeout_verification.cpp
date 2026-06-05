@@ -2,6 +2,7 @@
 
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/shard_route_preview_verification_report_archive_closeout.hpp"
+#include "minikv/shard_route_preview_stage_catalog.hpp"
 
 #include <array>
 #include <cstddef>
@@ -19,16 +20,9 @@ constexpr std::string_view source_node_plan =
     "docs/plans3/"
     "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md";
 
-struct ArchiveCloseoutVerificationStage {
-    int sequence;
-    std::string_view release_version;
-    std::string_view stage;
-    std::string_view source_frozen_release_version;
-    std::string_view source_frozen_fixture_path;
-    std::string_view scope;
-};
+using shard_route_preview_stage_catalog::StageRecord;
 
-constexpr std::array<ArchiveCloseoutVerificationStage, planned_archive_closeout_verification_stage_count>
+constexpr std::array<StageRecord, planned_archive_closeout_verification_stage_count>
     archive_closeout_verification_stages = {{
     {1,
      "v381",
@@ -164,38 +158,16 @@ std::string json_string_array(const std::vector<std::string>& values) {
     return runtime_evidence::json_string_array(values);
 }
 
-const ArchiveCloseoutVerificationStage& current_stage() {
+const StageRecord& current_stage() {
     return archive_closeout_verification_stages.at(
         static_cast<std::size_t>(current_archive_closeout_verification_stage_count - 1));
-}
-
-std::string format_stage_json(const ArchiveCloseoutVerificationStage& stage) {
-    return "{\"sequence\":" + std::to_string(stage.sequence) +
-           ",\"releaseVersion\":" + json_string(stage.release_version) +
-           ",\"stage\":" + json_string(stage.stage) +
-           ",\"sourceFrozenReleaseVersion\":" + json_string(stage.source_frozen_release_version) +
-           ",\"sourceFrozenFixturePath\":" + json_string(stage.source_frozen_fixture_path) +
-           ",\"scope\":" + json_string(stage.scope) +
-           ",\"readOnly\":true"
-           ",\"filesystemReadPerformed\":false"
-           ",\"runtimeArchiveWalkAllowed\":false"
-           ",\"activeRouterInstalled\":false"
-           ",\"writeRoutingAllowed\":false"
-           ",\"executionAllowed\":false}";
 }
 
 } // namespace
 
 std::string format_verification_stage_catalog_json() {
-    std::string result = "[";
-    for (int index = 0; index < current_archive_closeout_verification_stage_count; ++index) {
-        if (index != 0) {
-            result += ",";
-        }
-        result += format_stage_json(archive_closeout_verification_stages.at(static_cast<std::size_t>(index)));
-    }
-    result += "]";
-    return result;
+    return shard_route_preview_stage_catalog::format_stage_catalog_json(
+        archive_closeout_verification_stages, current_archive_closeout_verification_stage_count);
 }
 
 std::string format_verification_json() {
@@ -294,10 +266,10 @@ std::string format_verification_json() {
 }
 
 std::string verification_digest_marker() {
-    const auto& stage = current_stage();
-    return std::string{stage.release_version} + "-" + std::string{stage.stage} + "-" +
-           std::to_string(current_archive_closeout_verification_stage_count) + "-of-" +
-           std::to_string(planned_archive_closeout_verification_stage_count) + "-stages";
+    return shard_route_preview_stage_catalog::format_digest_marker(
+        current_stage(),
+        current_archive_closeout_verification_stage_count,
+        planned_archive_closeout_verification_stage_count);
 }
 
 int published_stage_count() {

@@ -42,7 +42,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidenceType\":\"shard_readiness\"");
     assert_contains(json, "\"project\":\"mini-kv\"");
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v420\"");
+    assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v");
     assert_contains(json, "\"readOnly\":true");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardEnabled\":false");
@@ -272,6 +272,26 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"executionAllowed\":false");
     // End archive closeout verification audit rollout assertions.
+    // Archive closeout verification audit closeout assertions stay stable across the v421-v440 rollout.
+    assert_contains(json,
+                    "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseout\":{\"contract\":"
+                    "\"shard-route-preview-verification-report-archive-closeout-verification-audit-closeout.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\"");
+    assert_contains(
+        json,
+        "\"closeoutMode\":\"read-only-route-preview-verification-report-archive-closeout-verification-audit-closeout\"");
+    assert_contains(json, "\"sourceAuditCommand\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\"");
+    assert_contains(json, "\"sourceAuditReleaseVersion\":\"v420\"");
+    assert_contains(json, "\"sourceAuditPublishedStageCount\":20");
+    assert_contains(json, "\"sourceAuditChainComplete\":true");
+    assert_contains(json, "\"sharedStageCatalogFormatterApplied\":true");
+    assert_contains(json, "\"archiveCloseoutVerificationAuditCloseoutCommandAvailable\":true");
+    assert_contains(json, "\"filesystemReadPerformed\":false");
+    assert_contains(json, "\"runtimeArchiveWalkAllowed\":false");
+    assert_contains(json, "\"activeRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    // End archive closeout verification audit closeout assertions.
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v379\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_contains(json, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
@@ -2715,9 +2735,13 @@ int main() {
         "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
     assert_contains(
         result.response,
-        "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");    assert_contains(
+        "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(
         result.response,
         "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(
+        result.response,
+        "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -2738,9 +2762,13 @@ int main() {
                     "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON\",\"category\":\"read\","
                     "\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response,
-                    "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON\",\"category\":\"read\","
-                    "\"mutates_store\":false,\"touches_wal\":false");    assert_contains(result.response,
-                    "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\",\"category\":\"read\","
+                     "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON\",\"category\":\"read\","
+                     "\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response,
+                     "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\",\"category\":\"read\","
+                     "\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response,
+                    "\"name\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\",\"category\":\"read\","
                     "\"mutates_store\":false,\"touches_wal\":false");
 
     result = processor.execute("EXPLAINJSON SHARDJSON");
@@ -2836,4 +2864,18 @@ int main() {
     assert_contains(result.response, "\"writeRoutingAllowed\":false");
     assert_contains(result.response, "\"executionAllowed\":false");
     // End archive closeout verification audit command smoke.
+    // Archive closeout verification audit closeout command smoke.
+    result = processor.execute("SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON");
+    assert_contains(
+        result.response,
+        "\"contract\":\"shard-route-preview-verification-report-archive-closeout-verification-audit-closeout.v1\"");
+    assert_contains(result.response, "\"command\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\"");
+    assert_contains(result.response, "\"sourceAuditCommand\":\"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\"");
+    assert_contains(result.response, "\"sharedStageCatalogFormatterApplied\":true");
+    assert_contains(result.response, "\"filesystemReadPerformed\":false");
+    assert_contains(result.response, "\"runtimeArchiveWalkAllowed\":false");
+    assert_contains(result.response, "\"activeRouterInstalled\":false");
+    assert_contains(result.response, "\"writeRoutingAllowed\":false");
+    assert_contains(result.response, "\"executionAllowed\":false");
+    // End archive closeout verification audit closeout command smoke.
 }

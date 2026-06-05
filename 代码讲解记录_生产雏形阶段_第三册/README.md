@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [481-version-421-report-archive-closeout-verification-audit-closeout-command-and-stage-catalog-refactor.md](481-version-421-report-archive-closeout-verification-audit-closeout-command-and-stage-catalog-refactor.md) - Archive Closeout Verification Audit Closeout Command And Stage Catalog Refactor
 - [480-version-420-report-archive-closeout-verification-audit-release-package.md](480-version-420-report-archive-closeout-verification-audit-release-package.md) - Archive Closeout Verification Audit Release Package
 - [479-version-419-report-archive-closeout-verification-audit-no-execution-audit.md](479-version-419-report-archive-closeout-verification-audit-no-execution-audit.md) - Archive Closeout Verification Audit No Execution Audit
 - [478-version-418-report-archive-closeout-verification-audit-no-write-audit.md](478-version-418-report-archive-closeout-verification-audit-no-write-audit.md) - Archive Closeout Verification Audit No Write Audit
