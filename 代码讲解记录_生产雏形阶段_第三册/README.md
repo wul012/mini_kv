@@ -458,3 +458,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [596-version-536-route-preview-import-preflight-boundary-helper-split.md](596-version-536-route-preview-import-preflight-boundary-helper-split.md)
 - [597-version-537-route-preview-import-preflight-source-worksheet-contract.md](597-version-537-route-preview-import-preflight-source-worksheet-contract.md)
 - [598-version-538-route-preview-import-preflight-source-release-freeze.md](598-version-538-route-preview-import-preflight-source-release-freeze.md)
+- [599-version-539-route-preview-import-preflight-stage-chain-audit.md](599-version-539-route-preview-import-preflight-stage-chain-audit.md)
