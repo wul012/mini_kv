@@ -1,4 +1,5 @@
 # mini-kv
+- v422: freezes v421 as a versioned source fixture and advances read-only `SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON` audit closeout evidence to `route-preview-verification-report-archive-closeout-verification-audit-closeout-catalog-alignment` while preserving shared stage catalog formatting, no filesystem archive walk, no active router, no write routing, no WAL touch, and no execution authority.
 
 A C++20 practice project for building a small Redis-like key-value engine.
 
