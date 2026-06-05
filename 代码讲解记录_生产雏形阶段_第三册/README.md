@@ -468,3 +468,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [606-version-546-route-preview-import-preflight-normalizer-contract.md](606-version-546-route-preview-import-preflight-normalizer-contract.md)
 - [607-version-547-route-preview-import-preflight-blocker-catalog.md](607-version-547-route-preview-import-preflight-blocker-catalog.md)
 - [608-version-548-route-preview-import-preflight-missing-value-policy.md](608-version-548-route-preview-import-preflight-missing-value-policy.md)
+- [609-version-549-route-preview-import-preflight-redaction-preservation.md](609-version-549-route-preview-import-preflight-redaction-preservation.md)
