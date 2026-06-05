@@ -54,13 +54,13 @@ int main() {
         "\"sourceAuditCloseoutDigestMarker\":\"v440-route-preview-verification-report-archive-closeout-verification-audit-closeout-release-package-20-of-20-stages\"");
     assert_contains(
         archive_verification,
-        "\"archiveVerificationStage\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-no-execution-audit\"");
-    assert_contains(archive_verification, "\"archiveVerificationStageSequence\":19");
-    assert_contains(archive_verification, "\"archiveVerificationReleaseVersion\":\"v459\"");
-    assert_contains(archive_verification, "\"publishedStageCount\":19");
+        "\"archiveVerificationStage\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-release-package\"");
+    assert_contains(archive_verification, "\"archiveVerificationStageSequence\":20");
+    assert_contains(archive_verification, "\"archiveVerificationReleaseVersion\":\"v460\"");
+    assert_contains(archive_verification, "\"publishedStageCount\":20");
     assert_contains(archive_verification, "\"plannedStageCount\":20");
-    assert_contains(archive_verification, "\"sourceFrozenReleaseVersion\":\"v458\"");
-    assert_contains(archive_verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v458.json\"");
+    assert_contains(archive_verification, "\"sourceFrozenReleaseVersion\":\"v459\"");
+    assert_contains(archive_verification, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v459.json\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseRangeStart\":\"v421\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseRangeEnd\":\"v440\"");
     assert_contains(archive_verification, "\"verifiedAuditCloseoutReleaseCount\":20");
@@ -71,7 +71,7 @@ int main() {
     assert_contains(archive_verification, "\"declaredArchiveVerificationOnly\":true");
     assert_contains(archive_verification, "\"archiveRootHintUsedForHumanReviewOnly\":true");
     assert_contains(archive_verification, "\"archiveCloseoutVerificationAuditCloseoutArchiveVerificationCommandAvailable\":true");
-    assert_contains(archive_verification, "\"archiveCloseoutVerificationAuditCloseoutArchiveVerificationChainComplete\":false");
+    assert_contains(archive_verification, "\"archiveCloseoutVerificationAuditCloseoutArchiveVerificationChainComplete\":true");
     assert_contains(archive_verification, "\"filesystemReadPerformed\":false");
     assert_contains(archive_verification, "\"runtimeArchiveWalkAllowed\":false");
     assert_contains(archive_verification, "\"readOnly\":true");
@@ -91,11 +91,11 @@ int main() {
                shard,
                "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseoutArchiveVerification\":") ==
            1);
-    assert_contains(shard, "\"releaseVersion\":\"v459\"");
+    assert_contains(shard, "\"releaseVersion\":\"v460\"");
     assert_contains(
         shard,
-        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-no-execution-audit-read-only\"");
-    assert_contains(shard, "\"archiveVerificationReleaseVersion\":\"v459\"");
+        "\"status\":\"route-preview-verification-report-archive-closeout-verification-audit-closeout-archive-verification-release-package-read-only\"");
+    assert_contains(shard, "\"archiveVerificationReleaseVersion\":\"v460\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
