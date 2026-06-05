@@ -30,14 +30,14 @@ int main() {
     minikv::test_support::assert_contains(maintenance, "\"sourceArchiveVerificationPublishedStageCount\":20");
     minikv::test_support::assert_contains(maintenance, "\"sourceArchiveVerificationChainComplete\":true");
     minikv::test_support::assert_contains(maintenance,
-                                          "\"maintenanceStage\":\"route-preview-archive-maintenance-source-release-freeze\"");
-    minikv::test_support::assert_contains(maintenance, "\"maintenanceStageSequence\":2");
-    minikv::test_support::assert_contains(maintenance, "\"maintenanceReleaseVersion\":\"v462\"");
-    minikv::test_support::assert_contains(maintenance, "\"publishedStageCount\":2");
+                                          "\"maintenanceStage\":\"route-preview-archive-maintenance-stage-catalog-refactor\"");
+    minikv::test_support::assert_contains(maintenance, "\"maintenanceStageSequence\":3");
+    minikv::test_support::assert_contains(maintenance, "\"maintenanceReleaseVersion\":\"v463\"");
+    minikv::test_support::assert_contains(maintenance, "\"publishedStageCount\":3");
     minikv::test_support::assert_contains(maintenance, "\"plannedStageCount\":25");
-    minikv::test_support::assert_contains(maintenance, "\"sourceFrozenReleaseVersion\":\"v461\"");
+    minikv::test_support::assert_contains(maintenance, "\"sourceFrozenReleaseVersion\":\"v462\"");
     minikv::test_support::assert_contains(maintenance,
-                                          "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v461.json\"");
+                                          "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v462.json\"");
     minikv::test_support::assert_contains(maintenance, "\"maintainedReleaseRangeStart\":\"v441\"");
     minikv::test_support::assert_contains(maintenance, "\"maintainedReleaseRangeEnd\":\"v460\"");
     minikv::test_support::assert_contains(maintenance, "\"sharedStageCatalogFormatterApplied\":true");
@@ -50,9 +50,9 @@ int main() {
 
     const std::string shard = minikv::shard_readiness::format_json();
     assert(minikv::test_support::occurrence_count(shard, "\"shardRoutePreviewArchiveMaintenance\":") == 1);
-    minikv::test_support::assert_contains(shard, "\"releaseVersion\":\"v462\"");
-    minikv::test_support::assert_contains(shard, "\"status\":\"route-preview-archive-maintenance-source-release-freeze-read-only\"");
-    minikv::test_support::assert_contains(shard, "\"maintenanceReleaseVersion\":\"v462\"");
+    minikv::test_support::assert_contains(shard, "\"releaseVersion\":\"v463\"");
+    minikv::test_support::assert_contains(shard, "\"status\":\"route-preview-archive-maintenance-stage-catalog-refactor-read-only\"");
+    minikv::test_support::assert_contains(shard, "\"maintenanceReleaseVersion\":\"v463\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};

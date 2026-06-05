@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-archive-maintenance-source-release-freeze-read-only\"");
+        "\"status\":\"route-preview-archive-maintenance-stage-catalog-refactor-read-only\"");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -321,9 +321,9 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"sourceArchiveVerificationReleaseVersion\":\"v460\"");
     assert_contains(json, "\"sourceArchiveVerificationPublishedStageCount\":20");
     assert_contains(json, "\"sourceArchiveVerificationChainComplete\":true");
-    assert_contains(json, "\"maintenanceStage\":\"route-preview-archive-maintenance-source-release-freeze\"");
-    assert_contains(json, "\"maintenanceStageSequence\":2");
-    assert_contains(json, "\"maintenanceReleaseVersion\":\"v462\"");
+    assert_contains(json, "\"maintenanceStage\":\"route-preview-archive-maintenance-stage-catalog-refactor\"");
+    assert_contains(json, "\"maintenanceStageSequence\":3");
+    assert_contains(json, "\"maintenanceReleaseVersion\":\"v463\"");
     assert_contains(json, "\"sharedStageCatalogFormatterApplied\":true");
     assert_contains(json, "\"focusedTestHelperApplied\":true");
     assert_contains(json, "\"archiveMaintenanceCommandAvailable\":true");

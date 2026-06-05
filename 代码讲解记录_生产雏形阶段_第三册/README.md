@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [523-version-463-route-preview-archive-maintenance-stage-catalog-refactor.md](523-version-463-route-preview-archive-maintenance-stage-catalog-refactor.md) - Route Preview Archive Maintenance Stage Catalog Refactor
 - [522-version-462-route-preview-archive-maintenance-source-release-freeze.md](522-version-462-route-preview-archive-maintenance-source-release-freeze.md) - Route Preview Archive Maintenance Source Release Freeze
 - [521-version-461-route-preview-archive-maintenance-intake.md](521-version-461-route-preview-archive-maintenance-intake.md) - Route Preview Archive Maintenance Intake
 - [520-version-460-audit-closeout-archive-verification-release-package.md](520-version-460-audit-closeout-archive-verification-release-package.md) - Audit Closeout Archive Verification Release Package
