@@ -444,3 +444,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [582-version-522-route-preview-worksheet-verification-retention-audit.md](582-version-522-route-preview-worksheet-verification-retention-audit.md)
 - [583-version-523-route-preview-worksheet-verification-operator-slot-boundary.md](583-version-523-route-preview-worksheet-verification-operator-slot-boundary.md)
 - [584-version-524-route-preview-worksheet-verification-manual-entry-blocked.md](584-version-524-route-preview-worksheet-verification-manual-entry-blocked.md)
+- [585-version-525-route-preview-worksheet-verification-live-execution-blocked.md](585-version-525-route-preview-worksheet-verification-live-execution-blocked.md)
