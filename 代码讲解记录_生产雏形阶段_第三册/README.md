@@ -465,3 +465,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [603-version-543-route-preview-import-preflight-checkjson-contract.md](603-version-543-route-preview-import-preflight-checkjson-contract.md)
 - [604-version-544-route-preview-import-preflight-shardjson-embedding.md](604-version-544-route-preview-import-preflight-shardjson-embedding.md)
 - [605-version-545-route-preview-import-preflight-shardjson-embedding-audit.md](605-version-545-route-preview-import-preflight-shardjson-embedding-audit.md)
+- [606-version-546-route-preview-import-preflight-normalizer-contract.md](606-version-546-route-preview-import-preflight-normalizer-contract.md)
