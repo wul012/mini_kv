@@ -1,7 +1,7 @@
 #include "minikv/command_contracts.hpp"
 
-#include "minikv/string_utils.hpp"
 #include "minikv/runtime_evidence.hpp"
+#include "minikv/string_utils.hpp"
 
 #include <cstdint>
 #include <iomanip>
@@ -155,6 +155,12 @@ constexpr CommandCatalogEntry command_catalog[] = {
      false,
      true,
      "Read route preview archive maintenance ledger evidence without enabling active routing"},
+    {"SHARDROUTEARCHIVEMAINTVERIFYJSON",
+     "read",
+     false,
+     false,
+     true,
+     "Read route preview archive maintenance verification evidence without enabling active routing"},
     {"COMMANDS", "meta", false, false, true, "Read command catalog as text"},
     {"COMMANDSJSON", "meta", false, false, true, "Read command catalog as JSON"},
     {"EXPLAINJSON", "meta", false, false, true, "Explain a command risk profile as JSON without executing it"},

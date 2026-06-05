@@ -3,6 +3,7 @@
 #include "minikv/command_contracts.hpp"
 #include "minikv/command_response_formatters.hpp"
 #include "minikv/shard_route_preview_archive_maintenance.hpp"
+#include "minikv/shard_route_preview_archive_maintenance_verification.hpp"
 #include "minikv/shard_route_preview_audit_closeout_archive_verification.hpp"
 #include "minikv/shard_route_preview.hpp"
 #include "minikv/shard_route_preview_verification.hpp"
@@ -70,7 +71,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 42> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 43> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -107,6 +108,7 @@ constexpr std::array<CommandDispatchEntry, 42> command_dispatch_table = {{
     {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEARCHIVEMAINTJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEARCHIVEMAINTVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -560,6 +562,13 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         return {shard_route_preview_archive_maintenance::format_maintenance_json()};
     }
+    if (command == "SHARDROUTEARCHIVEMAINTVERIFYJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEARCHIVEMAINTVERIFYJSON");
+        }
+
+        return {shard_route_preview_archive_maintenance_verification::format_verification_json()};
+    }
 
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
@@ -927,6 +936,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\n"
            "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON\n"
            "  SHARDROUTEARCHIVEMAINTJSON\n"
+           "  SHARDROUTEARCHIVEMAINTVERIFYJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

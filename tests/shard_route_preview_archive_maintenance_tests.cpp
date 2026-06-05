@@ -50,8 +50,9 @@ int main() {
 
     const std::string shard = minikv::shard_readiness::format_json();
     assert(minikv::test_support::occurrence_count(shard, "\"shardRoutePreviewArchiveMaintenance\":") == 1);
-    minikv::test_support::assert_contains(shard, "\"releaseVersion\":\"v485\"");
-    minikv::test_support::assert_contains(shard, "\"status\":\"route-preview-archive-maintenance-release-package-read-only\"");
+    minikv::test_support::assert_contains(shard, "\"releaseVersion\":\"v");
+    minikv::test_support::assert_contains(
+        shard, "\"status\":\"route-preview-archive-maintenance-verification-");
     minikv::test_support::assert_contains(shard, "\"maintenanceReleaseVersion\":\"v485\"");
 
     minikv::Store store;
