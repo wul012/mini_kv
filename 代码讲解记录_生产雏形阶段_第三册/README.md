@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [541-version-481-route-preview-archive-maintenance-java-echo-boundary-handoff.md](541-version-481-route-preview-archive-maintenance-java-echo-boundary-handoff.md) - Route Preview Archive Maintenance Java Echo Boundary Handoff
 - [540-version-480-route-preview-archive-maintenance-consumer-handoff.md](540-version-480-route-preview-archive-maintenance-consumer-handoff.md) - Route Preview Archive Maintenance Consumer Handoff
 - [539-version-479-route-preview-archive-maintenance-shardjson-embedding-audit.md](539-version-479-route-preview-archive-maintenance-shardjson-embedding-audit.md) - Route Preview Archive Maintenance SHARDJSON Embedding Audit
 - [538-version-478-route-preview-archive-maintenance-command-dispatch-audit.md](538-version-478-route-preview-archive-maintenance-command-dispatch-audit.md) - Route Preview Archive Maintenance Command Dispatch Audit
