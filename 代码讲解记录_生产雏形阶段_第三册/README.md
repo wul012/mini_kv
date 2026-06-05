@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [485-version-425-report-archive-closeout-verification-audit-closeout-cli-smoke-contract.md](485-version-425-report-archive-closeout-verification-audit-closeout-cli-smoke-contract.md) - Archive Closeout Verification Audit Closeout CLI Smoke Contract
 - [484-version-424-report-archive-closeout-verification-audit-closeout-checkjson-contract.md](484-version-424-report-archive-closeout-verification-audit-closeout-checkjson-contract.md) - Archive Closeout Verification Audit Closeout CHECKJSON Contract
 - [483-version-423-report-archive-closeout-verification-audit-closeout-explain-contract.md](483-version-423-report-archive-closeout-verification-audit-closeout-explain-contract.md) - Archive Closeout Verification Audit Closeout Explain Contract
 - [482-version-422-report-archive-closeout-verification-audit-closeout-catalog-alignment.md](482-version-422-report-archive-closeout-verification-audit-closeout-catalog-alignment.md) - Archive Closeout Verification Audit Closeout Catalog Alignment
