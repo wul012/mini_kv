@@ -461,3 +461,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [599-version-539-route-preview-import-preflight-stage-chain-audit.md](599-version-539-route-preview-import-preflight-stage-chain-audit.md)
 - [600-version-540-route-preview-import-preflight-fixture-chain-audit.md](600-version-540-route-preview-import-preflight-fixture-chain-audit.md)
 - [601-version-541-route-preview-import-preflight-command-catalog-contract.md](601-version-541-route-preview-import-preflight-command-catalog-contract.md)
+- [602-version-542-route-preview-import-preflight-explain-contract.md](602-version-542-route-preview-import-preflight-explain-contract.md)
