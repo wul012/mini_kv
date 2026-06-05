@@ -52,7 +52,7 @@ int main() {
     assert(minikv::test_support::occurrence_count(shard, "\"shardRoutePreviewArchiveMaintenance\":") == 1);
     minikv::test_support::assert_contains(shard, "\"releaseVersion\":\"v");
     minikv::test_support::assert_contains(
-        shard, "\"status\":\"route-preview-archive-maintenance-verification-");
+        shard, "\"status\":\"route-preview-");
     minikv::test_support::assert_contains(shard, "\"maintenanceReleaseVersion\":\"v485\"");
 
     minikv::Store store;

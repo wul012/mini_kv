@@ -82,6 +82,7 @@ int main() {
           "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON",
           "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON", "SHARDROUTEARCHIVEMAINTJSON",
           "SHARDROUTEARCHIVEMAINTVERIFYJSON",
+          "SHARDROUTEWORKSHEETVERIFYJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -159,6 +160,9 @@ int main() {
     const std::string archive_maintenance_verify_prefix = "SHARDROUTEARCHIVEMAINTV";
     assert(completion.complete(archive_maintenance_verify_prefix, archive_maintenance_verify_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEARCHIVEMAINTVERIFYJSON "});
+    const std::string worksheet_verify_prefix = "SHARDROUTEWORKSHEETV";
+    assert(completion.complete(worksheet_verify_prefix, worksheet_verify_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEWORKSHEETVERIFYJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

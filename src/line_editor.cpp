@@ -527,6 +527,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON",
                                   "SHARDROUTEARCHIVEMAINTJSON",
                                   "SHARDROUTEARCHIVEMAINTVERIFYJSON",
+                                  "SHARDROUTEWORKSHEETVERIFYJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }

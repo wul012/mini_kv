@@ -94,7 +94,7 @@ int main() {
     assert_contains(shard, "\"releaseVersion\":\"v");
     assert_contains(
         shard,
-        "\"status\":\"route-preview-archive-maintenance-verification-");
+        "\"status\":\"route-preview-");
     assert_contains(shard, "\"archiveVerificationReleaseVersion\":\"v460\"");
 
     minikv::Store store;
