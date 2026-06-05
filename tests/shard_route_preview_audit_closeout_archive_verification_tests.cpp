@@ -91,10 +91,10 @@ int main() {
                shard,
                "\"shardRoutePreviewVerificationReportArchiveCloseoutVerificationAuditCloseoutArchiveVerification\":") ==
            1);
-    assert_contains(shard, "\"releaseVersion\":\"v473\"");
+    assert_contains(shard, "\"releaseVersion\":\"v474\"");
     assert_contains(
         shard,
-        "\"status\":\"route-preview-archive-maintenance-source-fixture-index-audit-read-only\"");
+        "\"status\":\"route-preview-archive-maintenance-retention-map-read-only\"");
     assert_contains(shard, "\"archiveVerificationReleaseVersion\":\"v460\"");
 
     minikv::Store store;
