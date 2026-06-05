@@ -387,7 +387,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-archive-maintenance-cli-smoke-contract-read-only\"");
+        "\"status\":\"route-preview-archive-maintenance-tcp-smoke-contract-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -641,9 +641,9 @@ int main() {
     assert_response_contains(result, "\"sourceArchiveVerificationReleaseVersion\":\"v460\"");
     assert_response_contains(result, "\"sourceArchiveVerificationPublishedStageCount\":20");
     assert_response_contains(result, "\"sourceArchiveVerificationChainComplete\":true");
-    assert_response_contains(result, "\"maintenanceStage\":\"route-preview-archive-maintenance-cli-smoke-contract\"");
-    assert_response_contains(result, "\"maintenanceStageSequence\":9");
-    assert_response_contains(result, "\"maintenanceReleaseVersion\":\"v469\"");
+    assert_response_contains(result, "\"maintenanceStage\":\"route-preview-archive-maintenance-tcp-smoke-contract\"");
+    assert_response_contains(result, "\"maintenanceStageSequence\":10");
+    assert_response_contains(result, "\"maintenanceReleaseVersion\":\"v470\"");
     assert_response_contains(result, "\"sharedStageCatalogFormatterApplied\":true");
     assert_response_contains(result, "\"focusedTestHelperApplied\":true");
     assert_response_contains(result, "\"archiveMaintenanceCommandAvailable\":true");

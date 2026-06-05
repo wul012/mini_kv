@@ -1,4 +1,5 @@
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
+- [530-version-470-route-preview-archive-maintenance-tcp-smoke-contract.md](530-version-470-route-preview-archive-maintenance-tcp-smoke-contract.md) - Route Preview Archive Maintenance TCP Smoke Contract
 - [529-version-469-route-preview-archive-maintenance-cli-smoke-contract.md](529-version-469-route-preview-archive-maintenance-cli-smoke-contract.md) - Route Preview Archive Maintenance CLI Smoke Contract
 - [528-version-468-route-preview-archive-maintenance-checkjson-contract.md](528-version-468-route-preview-archive-maintenance-checkjson-contract.md) - Route Preview Archive Maintenance CHECKJSON Contract
 - [527-version-467-route-preview-archive-maintenance-explain-contract.md](527-version-467-route-preview-archive-maintenance-explain-contract.md) - Route Preview Archive Maintenance Explain Contract
