@@ -30,14 +30,14 @@ int main() {
     minikv::test_support::assert_contains(verification, "\"sourceMaintenanceChainComplete\":true");
     minikv::test_support::assert_contains(
         verification,
-        "\"verificationStage\":\"route-preview-archive-maintenance-verification-cli-smoke-contract\"");
-    minikv::test_support::assert_contains(verification, "\"verificationStageSequence\":10");
-    minikv::test_support::assert_contains(verification, "\"verificationReleaseVersion\":\"v495\"");
-    minikv::test_support::assert_contains(verification, "\"publishedStageCount\":10");
+        "\"verificationStage\":\"route-preview-archive-maintenance-verification-tcp-smoke-contract\"");
+    minikv::test_support::assert_contains(verification, "\"verificationStageSequence\":11");
+    minikv::test_support::assert_contains(verification, "\"verificationReleaseVersion\":\"v496\"");
+    minikv::test_support::assert_contains(verification, "\"publishedStageCount\":11");
     minikv::test_support::assert_contains(verification, "\"plannedStageCount\":25");
-    minikv::test_support::assert_contains(verification, "\"sourceFrozenReleaseVersion\":\"v494\"");
+    minikv::test_support::assert_contains(verification, "\"sourceFrozenReleaseVersion\":\"v495\"");
     minikv::test_support::assert_contains(verification,
-                                          "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v494.json\"");
+                                          "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v495.json\"");
     minikv::test_support::assert_contains(verification, "\"verifiedMaintenanceReleaseRangeStart\":\"v461\"");
     minikv::test_support::assert_contains(verification, "\"verifiedMaintenanceReleaseRangeEnd\":\"v485\"");
     minikv::test_support::assert_contains(verification, "\"stageChainHelperApplied\":true");
@@ -53,10 +53,10 @@ int main() {
     const std::string shard = minikv::shard_readiness::format_json();
     assert(minikv::test_support::occurrence_count(shard, "\"shardRoutePreviewArchiveMaintenanceVerification\":") ==
            1);
-    minikv::test_support::assert_contains(shard, "\"releaseVersion\":\"v495\"");
+    minikv::test_support::assert_contains(shard, "\"releaseVersion\":\"v496\"");
     minikv::test_support::assert_contains(
-        shard, "\"status\":\"route-preview-archive-maintenance-verification-cli-smoke-contract-read-only\"");
-    minikv::test_support::assert_contains(shard, "\"verificationReleaseVersion\":\"v495\"");
+        shard, "\"status\":\"route-preview-archive-maintenance-verification-tcp-smoke-contract-read-only\"");
+    minikv::test_support::assert_contains(shard, "\"verificationReleaseVersion\":\"v496\"");
 
     minikv::Store store;
     minikv::CommandProcessor processor{store};
