@@ -477,3 +477,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [615-version-555-route-preview-import-preflight-no-router-audit.md](615-version-555-route-preview-import-preflight-no-router-audit.md)
 - [616-version-556-route-preview-import-preflight-no-write-audit.md](616-version-556-route-preview-import-preflight-no-write-audit.md)
 - [617-version-557-route-preview-import-preflight-no-execution-audit.md](617-version-557-route-preview-import-preflight-no-execution-audit.md)
+- [618-version-558-route-preview-import-preflight-consumer-handoff.md](618-version-558-route-preview-import-preflight-consumer-handoff.md)
