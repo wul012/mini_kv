@@ -414,3 +414,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [552-version-492-route-preview-archive-maintenance-verification-command-catalog-contract.md](552-version-492-route-preview-archive-maintenance-verification-command-catalog-contract.md)
 - [553-version-493-route-preview-archive-maintenance-verification-explain-contract.md](553-version-493-route-preview-archive-maintenance-verification-explain-contract.md)
 - [554-version-494-route-preview-archive-maintenance-verification-checkjson-contract.md](554-version-494-route-preview-archive-maintenance-verification-checkjson-contract.md)
+- [555-version-495-route-preview-archive-maintenance-verification-cli-smoke-contract.md](555-version-495-route-preview-archive-maintenance-verification-cli-smoke-contract.md)
