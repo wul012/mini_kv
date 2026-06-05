@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=44") != std::string::npos);
+    assert(result.response.find("command_count=45") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -317,6 +317,9 @@ int main() {
            std::string::npos);
     assert(result.response.find(
                "SHARDROUTEWORKSHEETVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEIMPORTPREFLIGHTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -377,6 +380,9 @@ int main() {
     assert(result.response.find("\"name\":\"SHARDROUTEWORKSHEETVERIFYJSON\","
                                 "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
            std::string::npos);
+    assert(result.response.find("\"name\":\"SHARDROUTEIMPORTPREFLIGHTJSON\","
+                                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
+           std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -399,7 +405,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-worksheet-verification-");
+        "\"status\":\"route-preview-import-preflight-");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -696,6 +702,29 @@ int main() {
     assert_response_contains(result, "\"syntheticEvidenceAccepted\":false");
     assert_response_contains(result, "\"singleWorksheetVerifierSectionExpected\":true");
     assert_response_contains(result, "\"worksheetVerificationChainComplete\":");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"shardRoutePreviewOperatorImportPreflight\":{\"contract\":"
+                                     "\"shard-route-preview-operator-import-preflight.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEIMPORTPREFLIGHTJSON\"");
+    assert_response_contains(result,
+                             "\"preflightMode\":\"controlled-read-only-operator-evidence-import-preflight\"");
+    assert_response_contains(result, "\"sourceWorksheetCommand\":\"SHARDROUTEWORKSHEETVERIFYJSON\"");
+    assert_response_contains(result, "\"sourceWorksheetReleaseVersion\":\"v535\"");
+    assert_response_contains(result, "\"sourceWorksheetChainComplete\":true");
+    assert_response_contains(result, "\"readyForOperatorEvidenceImportPreflight\":true");
+    assert_response_contains(result, "\"readyForEvidenceImport\":false");
+    assert_response_contains(result, "\"operatorEvidenceValuesAccepted\":false");
+    assert_response_contains(result, "\"evidenceImportAllowed\":false");
+    assert_response_contains(result, "\"runtimePayloadAccepted\":false");
+    assert_response_contains(result, "\"syntheticEvidenceAccepted\":false");
+    assert_response_contains(result, "\"normalizerExecutes\":false");
+    assert_response_contains(result, "\"normalizationExecutionAllowed\":false");
+    assert_response_contains(result, "\"missingValuePolicyBlocksImport\":true");
+    assert_response_contains(result, "\"importBlockersEnforcedAsMetadata\":true");
+    assert_response_contains(result, "\"singleImportPreflightSectionExpected\":true");
+    assert_response_contains(result, "\"declaredImportPreflightOnly\":true");
     assert_response_contains(result, "\"activeRouterInstalled\":false");
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
@@ -2184,6 +2213,7 @@ int main() {
            std::string::npos);
     assert(result.response.find("SHARDROUTEARCHIVEMAINTJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEWORKSHEETVERIFYJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTEIMPORTPREFLIGHTJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);

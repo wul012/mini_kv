@@ -1,5 +1,6 @@
 #include "minikv/shard_route_preview_worksheet_verification.hpp"
 
+#include "minikv/route_preview_evidence_boundary.hpp"
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/shard_route_preview_archive_maintenance_verification.hpp"
 #include "minikv/shard_route_preview_stage_catalog.hpp"
@@ -311,24 +312,7 @@ std::string format_worksheet_verification_json() {
                               "do not route writes",
                               "do not run restore, load, compact, or service startup",
                               "do not treat mini-kv as Java order authority"}) +
-           ",\"readOnly\":true"
-           ",\"mutatesStore\":false"
-           ",\"touchesWal\":false"
-           ",\"filesystemReadPerformed\":false"
-           ",\"runtimeArchiveWalkAllowed\":false"
-           ",\"executesRoute\":false"
-           ",\"storageDirectoriesCreated\":false"
-           ",\"activeRouterInstalled\":false"
-           ",\"routerActivationAllowed\":false"
-           ",\"writeRoutingAllowed\":false"
-           ",\"writeCommandsAllowed\":false"
-           ",\"adminCommandsAllowed\":false"
-           ",\"loadRestoreCompactAllowed\":false"
-           ",\"startsMiniKvService\":false"
-           ",\"startsServices\":false"
-           ",\"runtimeProbeAllowed\":false"
-           ",\"liveReadAllowed\":false"
-           ",\"executionAllowed\":false}";
+           route_preview_evidence_boundary::format_no_execution_boundary_fields() + "}";
 }
 
 std::string worksheet_verification_digest_marker() {

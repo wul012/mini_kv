@@ -6,6 +6,7 @@
 #include "minikv/shard_route_preview_archive_maintenance_verification.hpp"
 #include "minikv/shard_route_preview_audit_closeout_archive_verification.hpp"
 #include "minikv/shard_route_preview.hpp"
+#include "minikv/shard_route_preview_operator_import_preflight.hpp"
 #include "minikv/shard_route_preview_worksheet_verification.hpp"
 #include "minikv/shard_route_preview_verification.hpp"
 #include "minikv/shard_route_preview_verification_report.hpp"
@@ -72,7 +73,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 44> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 45> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -111,6 +112,7 @@ constexpr std::array<CommandDispatchEntry, 44> command_dispatch_table = {{
     {"SHARDROUTEARCHIVEMAINTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEARCHIVEMAINTVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEWORKSHEETVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEIMPORTPREFLIGHTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -578,6 +580,13 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         return {shard_route_preview_worksheet_verification::format_worksheet_verification_json()};
     }
+    if (command == "SHARDROUTEIMPORTPREFLIGHTJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEIMPORTPREFLIGHTJSON");
+        }
+
+        return {shard_route_preview_operator_import_preflight::format_import_preflight_json()};
+    }
 
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
@@ -947,6 +956,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEARCHIVEMAINTJSON\n"
            "  SHARDROUTEARCHIVEMAINTVERIFYJSON\n"
            "  SHARDROUTEWORKSHEETVERIFYJSON\n"
+           "  SHARDROUTEIMPORTPREFLIGHTJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

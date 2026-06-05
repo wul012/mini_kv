@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-worksheet-verification-");
+        "\"status\":\"route-preview-import-preflight-");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -370,6 +370,43 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"syntheticEvidenceAccepted\":false");
     assert_contains(json, "\"singleWorksheetVerifierSectionExpected\":true");
     assert_contains(json, "\"declaredWorksheetVerificationOnly\":true");
+    assert_contains(json, "\"filesystemReadPerformed\":false");
+    assert_contains(json, "\"runtimeArchiveWalkAllowed\":false");
+    assert_contains(json, "\"activeRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardRoutePreviewOperatorImportPreflight\":{\"contract\":"
+                          "\"shard-route-preview-operator-import-preflight.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEIMPORTPREFLIGHTJSON\"");
+    assert_contains(json,
+                    "\"preflightMode\":\"controlled-read-only-operator-evidence-import-preflight\"");
+    assert_contains(json, "\"sourceWorksheetCommand\":\"SHARDROUTEWORKSHEETVERIFYJSON\"");
+    assert_contains(json, "\"sourceWorksheetReleaseVersion\":\"v535\"");
+    assert_contains(json, "\"sourceWorksheetPublishedStageCount\":25");
+    assert_contains(json, "\"sourceWorksheetChainComplete\":true");
+    assert_contains(json, "\"sourceWorksheetReleaseRangeStart\":\"v511\"");
+    assert_contains(json, "\"sourceWorksheetReleaseRangeEnd\":\"v535\"");
+    assert_contains(json, "\"operatorPreflightSlotCount\":25");
+    assert_contains(json, "\"acceptedOperatorEvidenceSlotCount\":0");
+    assert_contains(json, "\"readyForOperatorEvidenceImportPreflight\":true");
+    assert_contains(json, "\"readyForEvidenceImport\":false");
+    assert_contains(json, "\"readyForManualEvidenceEntry\":false");
+    assert_contains(json, "\"readyForLiveExecution\":false");
+    assert_contains(json, "\"readyForProductionExecution\":false");
+    assert_contains(json, "\"operatorEvidenceValuesAccepted\":false");
+    assert_contains(json, "\"evidenceImportAllowed\":false");
+    assert_contains(json, "\"manualEvidenceImportAllowed\":false");
+    assert_contains(json, "\"runtimePayloadAccepted\":false");
+    assert_contains(json, "\"syntheticEvidenceAccepted\":false");
+    assert_contains(json, "\"secretValueStored\":false");
+    assert_contains(json, "\"credentialValueStored\":false");
+    assert_contains(json, "\"rawEndpointStored\":false");
+    assert_contains(json, "\"normalizerExecutes\":false");
+    assert_contains(json, "\"normalizationExecutionAllowed\":false");
+    assert_contains(json, "\"missingValuePolicyBlocksImport\":true");
+    assert_contains(json, "\"importBlockersEnforcedAsMetadata\":true");
+    assert_contains(json, "\"redactionPreserved\":true");
+    assert_contains(json, "\"declaredImportPreflightOnly\":true");
     assert_contains(json, "\"filesystemReadPerformed\":false");
     assert_contains(json, "\"runtimeArchiveWalkAllowed\":false");
     assert_contains(json, "\"activeRouterInstalled\":false");
@@ -2834,6 +2871,8 @@ int main() {
                     "SHARDROUTEARCHIVEMAINTVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
     assert_contains(result.response,
                     "SHARDROUTEWORKSHEETVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(result.response,
+                    "SHARDROUTEIMPORTPREFLIGHTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -2871,6 +2910,8 @@ int main() {
     assert_contains(result.response, "\"name\":\"SHARDROUTEARCHIVEMAINTVERIFYJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response, "\"name\":\"SHARDROUTEWORKSHEETVERIFYJSON\","
+                                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response, "\"name\":\"SHARDROUTEIMPORTPREFLIGHTJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
 
     result = processor.execute("EXPLAINJSON SHARDJSON");
