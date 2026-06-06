@@ -498,3 +498,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [636-version-576-route-preview-value-draft-no-evidence-import-audit.md](636-version-576-route-preview-value-draft-no-evidence-import-audit.md)
 - [637-version-577-route-preview-value-draft-no-manual-entry-audit.md](637-version-577-route-preview-value-draft-no-manual-entry-audit.md)
 - [638-version-578-route-preview-value-draft-no-runtime-payload-audit.md](638-version-578-route-preview-value-draft-no-runtime-payload-audit.md)
+- [639-version-579-route-preview-value-draft-no-synthetic-evidence-audit.md](639-version-579-route-preview-value-draft-no-synthetic-evidence-audit.md)
