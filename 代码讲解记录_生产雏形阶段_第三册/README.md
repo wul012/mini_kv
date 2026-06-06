@@ -490,3 +490,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [628-version-568-route-preview-value-draft-checkjson-contract.md](628-version-568-route-preview-value-draft-checkjson-contract.md)
 - [629-version-569-route-preview-value-draft-shardjson-embedding.md](629-version-569-route-preview-value-draft-shardjson-embedding.md)
 - [630-version-570-route-preview-value-draft-shardjson-embedding-audit.md](630-version-570-route-preview-value-draft-shardjson-embedding-audit.md)
+- [631-version-571-route-preview-value-draft-slot-builder-contract.md](631-version-571-route-preview-value-draft-slot-builder-contract.md)
