@@ -1,3 +1,4 @@
+- [656-version-596-route-preview-value-supply-envelope-slot-policy-contract.md](656-version-596-route-preview-value-supply-envelope-slot-policy-contract.md) - mini-kv v596 route-preview-value-supply-envelope-slot-policy-contract
 - [655-version-595-route-preview-value-supply-envelope-shardjson-embedding-audit.md](655-version-595-route-preview-value-supply-envelope-shardjson-embedding-audit.md) - mini-kv v595 route-preview-value-supply-envelope-shardjson-embedding-audit
 - [654-version-594-route-preview-value-supply-envelope-shardjson-embedding.md](654-version-594-route-preview-value-supply-envelope-shardjson-embedding.md) - mini-kv v594 route-preview-value-supply-envelope-shardjson-embedding
 - [653-version-593-route-preview-value-supply-envelope-checkjson-contract.md](653-version-593-route-preview-value-supply-envelope-checkjson-contract.md) - mini-kv v593 route-preview-value-supply-envelope-checkjson-contract
