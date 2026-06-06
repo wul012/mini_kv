@@ -1,3 +1,4 @@
+- 682: v622 route-preview-value-supply-precheck-slot-count-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 681: v621 route-preview-value-supply-precheck-slot-requirement-contract - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 680: v620 route-preview-value-supply-precheck-shardjson-embedding-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 679: v619 route-preview-value-supply-precheck-shardjson-embedding - disabled operator value-supply precheck evidence, read-only/no-execution.
