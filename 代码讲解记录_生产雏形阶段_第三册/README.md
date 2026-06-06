@@ -1,3 +1,4 @@
+- 680: v620 route-preview-value-supply-precheck-shardjson-embedding-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 679: v619 route-preview-value-supply-precheck-shardjson-embedding - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 678: v618 route-preview-value-supply-precheck-checkjson-contract - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 677: v617 route-preview-value-supply-precheck-explain-contract - disabled operator value-supply precheck evidence, read-only/no-execution.
