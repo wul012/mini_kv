@@ -1,3 +1,4 @@
+- 691: v631 route-preview-value-supply-precheck-no-router-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 690: v630 route-preview-value-supply-precheck-no-secret-storage-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 689: v629 route-preview-value-supply-precheck-no-runtime-payload-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 688: v628 route-preview-value-supply-precheck-no-automatic-import-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
