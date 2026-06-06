@@ -19,7 +19,7 @@ namespace minikv::shard_route_preview_operator_value_supply_precheck {
 namespace {
 
 constexpr int first_value_supply_precheck_release_number = 611;
-constexpr int current_value_supply_precheck_stage_count = 10;
+constexpr int current_value_supply_precheck_stage_count = 11;
 constexpr int planned_value_supply_precheck_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
