@@ -1,3 +1,4 @@
+- 689: v629 route-preview-value-supply-precheck-no-runtime-payload-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 688: v628 route-preview-value-supply-precheck-no-automatic-import-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 687: v627 route-preview-value-supply-precheck-approval-timestamp-fields - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 686: v626 route-preview-value-supply-precheck-approval-identity-fields - disabled operator value-supply precheck evidence, read-only/no-execution.
