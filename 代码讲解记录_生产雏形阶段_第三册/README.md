@@ -1,3 +1,4 @@
+- 694: v634 route-preview-value-supply-precheck-release-readiness-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 693: v633 route-preview-value-supply-precheck-no-execution-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 692: v632 route-preview-value-supply-precheck-no-write-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 691: v631 route-preview-value-supply-precheck-no-router-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
