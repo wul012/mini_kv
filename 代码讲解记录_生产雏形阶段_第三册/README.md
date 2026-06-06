@@ -1,3 +1,4 @@
+- 673: v613 route-preview-value-supply-precheck-source-release-freeze - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 672: v612 route-preview-value-supply-precheck-source-envelope-contract - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 671: v611 route-preview-value-supply-precheck-requirement-catalog-split - disabled operator value-supply precheck evidence, read-only/no-execution.
 - [670-version-610-route-preview-value-supply-envelope-release-package.md](670-version-610-route-preview-value-supply-envelope-release-package.md) - mini-kv v610 route-preview-value-supply-envelope-release-package
