@@ -1,3 +1,4 @@
+- 674: v614 route-preview-value-supply-precheck-stage-chain-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 673: v613 route-preview-value-supply-precheck-source-release-freeze - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 672: v612 route-preview-value-supply-precheck-source-envelope-contract - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 671: v611 route-preview-value-supply-precheck-requirement-catalog-split - disabled operator value-supply precheck evidence, read-only/no-execution.
