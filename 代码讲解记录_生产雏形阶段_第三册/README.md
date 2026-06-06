@@ -484,3 +484,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [622-version-562-route-preview-value-draft-source-preflight-contract.md](622-version-562-route-preview-value-draft-source-preflight-contract.md)
 - [623-version-563-route-preview-value-draft-source-release-freeze.md](623-version-563-route-preview-value-draft-source-release-freeze.md)
 - [624-version-564-route-preview-value-draft-stage-chain-audit.md](624-version-564-route-preview-value-draft-stage-chain-audit.md)
+- [625-version-565-route-preview-value-draft-fixture-chain-audit.md](625-version-565-route-preview-value-draft-fixture-chain-audit.md)
