@@ -1,3 +1,4 @@
+- [666-version-606-route-preview-value-supply-envelope-no-router-audit.md](666-version-606-route-preview-value-supply-envelope-no-router-audit.md) - mini-kv v606 route-preview-value-supply-envelope-no-router-audit
 - [665-version-605-route-preview-value-supply-envelope-no-secret-storage-audit.md](665-version-605-route-preview-value-supply-envelope-no-secret-storage-audit.md) - mini-kv v605 route-preview-value-supply-envelope-no-secret-storage-audit
 - [664-version-604-route-preview-value-supply-envelope-no-synthetic-evidence-audit.md](664-version-604-route-preview-value-supply-envelope-no-synthetic-evidence-audit.md) - mini-kv v604 route-preview-value-supply-envelope-no-synthetic-evidence-audit
 - [663-version-603-route-preview-value-supply-envelope-no-runtime-payload-audit.md](663-version-603-route-preview-value-supply-envelope-no-runtime-payload-audit.md) - mini-kv v603 route-preview-value-supply-envelope-no-runtime-payload-audit
