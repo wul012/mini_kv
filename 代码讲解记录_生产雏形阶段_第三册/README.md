@@ -1,3 +1,4 @@
+- [647-version-587-route-preview-value-supply-envelope-source-value-draft-contract.md](647-version-587-route-preview-value-supply-envelope-source-value-draft-contract.md) - mini-kv v587 route-preview-value-supply-envelope-source-value-draft-contract
 - [646-version-586-route-preview-value-supply-envelope-policy-split.md](646-version-586-route-preview-value-supply-envelope-policy-split.md) - mini-kv v586 route-preview-value-supply-envelope-policy-split
 # mini-kv Code Walkthroughs - Production Prototype Stage, Volume 3
 - [545-version-485-route-preview-archive-maintenance-release-package.md](545-version-485-route-preview-archive-maintenance-release-package.md) - Route Preview Archive Maintenance Release Package
