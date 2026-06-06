@@ -1,3 +1,4 @@
+- [653-version-593-route-preview-value-supply-envelope-checkjson-contract.md](653-version-593-route-preview-value-supply-envelope-checkjson-contract.md) - mini-kv v593 route-preview-value-supply-envelope-checkjson-contract
 - [652-version-592-route-preview-value-supply-envelope-explain-contract.md](652-version-592-route-preview-value-supply-envelope-explain-contract.md) - mini-kv v592 route-preview-value-supply-envelope-explain-contract
 - [651-version-591-route-preview-value-supply-envelope-command-catalog-contract.md](651-version-591-route-preview-value-supply-envelope-command-catalog-contract.md) - mini-kv v591 route-preview-value-supply-envelope-command-catalog-contract
 - [650-version-590-route-preview-value-supply-envelope-fixture-chain-audit.md](650-version-590-route-preview-value-supply-envelope-fixture-chain-audit.md) - mini-kv v590 route-preview-value-supply-envelope-fixture-chain-audit
