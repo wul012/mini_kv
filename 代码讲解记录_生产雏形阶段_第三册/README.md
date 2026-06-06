@@ -1,3 +1,4 @@
+- [660-version-600-route-preview-value-supply-envelope-source-provenance-contract.md](660-version-600-route-preview-value-supply-envelope-source-provenance-contract.md) - mini-kv v600 route-preview-value-supply-envelope-source-provenance-contract
 - [659-version-599-route-preview-value-supply-envelope-missing-value-policy.md](659-version-599-route-preview-value-supply-envelope-missing-value-policy.md) - mini-kv v599 route-preview-value-supply-envelope-missing-value-policy
 - [658-version-598-route-preview-value-supply-envelope-redaction-policy.md](658-version-598-route-preview-value-supply-envelope-redaction-policy.md) - mini-kv v598 route-preview-value-supply-envelope-redaction-policy
 - [657-version-597-route-preview-value-supply-envelope-slot-count-audit.md](657-version-597-route-preview-value-supply-envelope-slot-count-audit.md) - mini-kv v597 route-preview-value-supply-envelope-slot-count-audit
