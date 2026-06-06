@@ -494,3 +494,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [632-version-572-route-preview-value-draft-slot-count-audit.md](632-version-572-route-preview-value-draft-slot-count-audit.md)
 - [633-version-573-route-preview-value-draft-actual-value-state.md](633-version-573-route-preview-value-draft-actual-value-state.md)
 - [634-version-574-route-preview-value-draft-import-state-blocked.md](634-version-574-route-preview-value-draft-import-state-blocked.md)
+- [635-version-575-route-preview-value-draft-redaction-boundary.md](635-version-575-route-preview-value-draft-redaction-boundary.md)
