@@ -1,3 +1,4 @@
+- 685: v625 route-preview-value-supply-precheck-missing-malformed-policy - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 684: v624 route-preview-value-supply-precheck-redaction-policy - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 683: v623 route-preview-value-supply-precheck-provenance-policy - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 682: v622 route-preview-value-supply-precheck-slot-count-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
