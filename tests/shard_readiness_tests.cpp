@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-value-draft-");
+        "\"status\":\"route-preview-value-supply-envelope-");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -439,6 +439,26 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"valueDraftPackageOnly\":true");
     assert_contains(json, "\"valueDraftSlotHelperApplied\":true");
     assert_contains(json, "\"singleValueDraftSectionExpected\":true");
+    assert_contains(json, "\"shardRoutePreviewOperatorValueSupplyEnvelope\":{\"contract\":"
+                          "\"shard-route-preview-operator-value-supply-envelope.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYJSON\"");
+    assert_contains(json,
+                    "\"envelopeMode\":\"controlled-read-only-disabled-operator-value-supply-envelope\"");
+    assert_contains(json, "\"sourceValueDraftCommand\":\"SHARDROUTEVALUEDRAFTJSON\"");
+    assert_contains(json, "\"sourceValueDraftReleaseVersion\":\"v585\"");
+    assert_contains(json, "\"sourceValueDraftFixturePath\":\"fixtures/release/shard-readiness-v585.json\"");
+    assert_contains(json, "\"sourceValueDraftChainComplete\":true");
+    assert_contains(json, "\"valueSupplyReleaseRangeStart\":\"v586\"");
+    assert_contains(json, "\"valueSupplyReleaseRangeEnd\":\"v610\"");
+    assert_contains(json, "\"operatorValueEnvelopeState\":\"disabled-by-default\"");
+    assert_contains(json, "\"missingValuePolicy\":\"fail-closed\"");
+    assert_contains(json, "\"redactionPolicy\":\"redact-before-persist\"");
+    assert_contains(json, "\"readyForDisabledValueSupplyEnvelope\":true");
+    assert_contains(json, "\"readyForOperatorValueSupply\":false");
+    assert_contains(json, "\"automaticSiblingImportAllowed\":false");
+    assert_contains(json, "\"sourceEvidenceProvenanceSupplied\":false");
+    assert_contains(json, "\"valueSupplySlotHelperApplied\":true");
+    assert_contains(json, "\"singleValueSupplyEnvelopeSectionExpected\":true");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v379\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_contains(json, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
@@ -2902,6 +2922,8 @@ int main() {
                     "SHARDROUTEIMPORTPREFLIGHTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
     assert_contains(result.response,
                     "SHARDROUTEVALUEDRAFTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(result.response,
+                    "SHARDROUTEVALUESUPPLYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -2943,6 +2965,8 @@ int main() {
     assert_contains(result.response, "\"name\":\"SHARDROUTEIMPORTPREFLIGHTJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response, "\"name\":\"SHARDROUTEVALUEDRAFTJSON\","
+                                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response, "\"name\":\"SHARDROUTEVALUESUPPLYJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
 
     result = processor.execute("EXPLAINJSON SHARDJSON");

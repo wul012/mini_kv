@@ -84,6 +84,8 @@ add_library(minikv
     src/shard_route_preview_operator_import_preflight.cpp
     src/shard_route_preview_operator_value_draft.cpp
     src/shard_route_preview_operator_value_draft_slots.cpp
+    src/shard_route_preview_operator_value_supply_envelope.cpp
+    src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_worksheet_verification.cpp
     src/shard_route_preview_verification.cpp
     src/shard_route_preview_verification_report.cpp
@@ -269,6 +271,18 @@ minikv_add_linked_test(
     minikv_shard_route_preview_operator_value_draft_tests
     shard_route_preview_operator_value_draft_tests
     tests/shard_route_preview_operator_value_draft_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_envelope_slots_tests
+    shard_route_preview_operator_value_supply_envelope_slots_tests
+    tests/shard_route_preview_operator_value_supply_envelope_slots_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_envelope_tests
+    shard_route_preview_operator_value_supply_envelope_tests
+    tests/shard_route_preview_operator_value_supply_envelope_tests.cpp
 )
 
 minikv_add_linked_test(

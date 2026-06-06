@@ -85,6 +85,7 @@ int main() {
           "SHARDROUTEWORKSHEETVERIFYJSON",
           "SHARDROUTEIMPORTPREFLIGHTJSON",
           "SHARDROUTEVALUEDRAFTJSON",
+          "SHARDROUTEVALUESUPPLYJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -172,6 +173,9 @@ int main() {
     const std::string value_draft_prefix = "SHARDROUTEVALUED";
     assert(completion.complete(value_draft_prefix, value_draft_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVALUEDRAFTJSON "});
+    const std::string value_supply_prefix = "SHARDROUTEVALUES";
+    assert(completion.complete(value_supply_prefix, value_supply_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());
