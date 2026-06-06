@@ -8,6 +8,7 @@
 #include "minikv/shard_route_preview_operator_import_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_draft.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_envelope.hpp"
+#include "minikv/shard_route_preview_operator_value_supply_precheck.hpp"
 #include "minikv/shard_route_preview_verification.hpp"
 #include "minikv/shard_route_preview_verification_report.hpp"
 #include "minikv/shard_route_preview_worksheet_verification.hpp"
@@ -41,7 +42,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v610";
+constexpr std::string_view release_version = "v611";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -63,7 +64,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v610",
+        "mini-kv-shard-readiness-v611",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -135,6 +136,8 @@ std::string evidence_digest() {
              shard_route_preview_operator_value_draft::value_draft_digest_marker()},
             {"shardRoutePreviewOperatorValueSupplyEnvelope=" +
              shard_route_preview_operator_value_supply_envelope::value_supply_envelope_digest_marker()},
+            {"shardRoutePreviewOperatorValueSupplyPrecheck=" +
+             shard_route_preview_operator_value_supply_precheck::value_supply_precheck_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -178,7 +181,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-                                                                                                                                                                                                                                                                                                         ",\"status\":\"route-preview-value-supply-envelope-release-package-read-only\"" +
+           ",\"status\":\"route-preview-value-supply-precheck-requirement-catalog-split-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -215,6 +218,8 @@ std::string format_json() {
            shard_route_preview_operator_value_draft::format_value_draft_json() +
            ",\"shardRoutePreviewOperatorValueSupplyEnvelope\":" +
            shard_route_preview_operator_value_supply_envelope::format_value_supply_envelope_json() +
+           ",\"shardRoutePreviewOperatorValueSupplyPrecheck\":" +
+           shard_route_preview_operator_value_supply_precheck::format_value_supply_precheck_json() +
            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

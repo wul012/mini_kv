@@ -86,6 +86,9 @@ add_library(minikv
     src/shard_route_preview_operator_value_draft_slots.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
+    src/shard_route_preview_operator_value_supply_precheck.cpp
+    src/shard_route_preview_operator_value_supply_precheck_requirements.cpp
+    src/shard_route_preview_operator_value_supply_precheck_slots.cpp
     src/shard_route_preview_worksheet_verification.cpp
     src/shard_route_preview_verification.cpp
     src/shard_route_preview_verification_report.cpp
@@ -283,6 +286,24 @@ minikv_add_linked_test(
     minikv_shard_route_preview_operator_value_supply_envelope_tests
     shard_route_preview_operator_value_supply_envelope_tests
     tests/shard_route_preview_operator_value_supply_envelope_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_precheck_requirements_tests
+    shard_route_preview_operator_value_supply_precheck_requirements_tests
+    tests/shard_route_preview_operator_value_supply_precheck_requirements_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_precheck_slots_tests
+    shard_route_preview_operator_value_supply_precheck_slots_tests
+    tests/shard_route_preview_operator_value_supply_precheck_slots_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_precheck_tests
+    shard_route_preview_operator_value_supply_precheck_tests
+    tests/shard_route_preview_operator_value_supply_precheck_tests.cpp
 )
 
 minikv_add_linked_test(

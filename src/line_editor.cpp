@@ -531,6 +531,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "SHARDROUTEIMPORTPREFLIGHTJSON",
                                   "SHARDROUTEVALUEDRAFTJSON",
                                   "SHARDROUTEVALUESUPPLYJSON",
+                                  "SHARDROUTEVALUESUPPLYPRECHECKJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }

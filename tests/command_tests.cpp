@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=47") != std::string::npos);
+    assert(result.response.find("command_count=48") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -326,6 +326,9 @@ int main() {
            std::string::npos);
     assert(result.response.find(
                "SHARDROUTEVALUESUPPLYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVALUESUPPLYPRECHECKJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -395,6 +398,9 @@ int main() {
     assert(result.response.find("\"name\":\"SHARDROUTEVALUESUPPLYJSON\","
                                 "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
            std::string::npos);
+    assert(result.response.find("\"name\":\"SHARDROUTEVALUESUPPLYPRECHECKJSON\","
+                                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
+           std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -417,7 +423,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-value-supply-envelope-");
+        "\"status\":\"route-preview-value-supply-precheck-");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -767,6 +773,12 @@ int main() {
     assert_response_contains(result, "\"shardRoutePreviewOperatorValueSupplyEnvelope\":{\"contract\":"
                                      "\"shard-route-preview-operator-value-supply-envelope.v1\"");
     assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYJSON\"");
+    assert_response_contains(result, "\"shardRoutePreviewOperatorValueSupplyPrecheck\":{\"contract\":"
+                                     "\"shard-route-preview-operator-value-supply-precheck.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYPRECHECKJSON\"");
+    assert_response_contains(result, "\"approvalPacketRequired\":true");
+    assert_response_contains(result, "\"approvalPacketPresent\":false");
+    assert_response_contains(result, "\"readyForOperatorValueSupplyApproval\":false");
     assert_response_contains(result,
                              "\"envelopeMode\":\"controlled-read-only-disabled-operator-value-supply-envelope\"");
     assert_response_contains(result, "\"sourceValueDraftCommand\":\"SHARDROUTEVALUEDRAFTJSON\"");
@@ -2267,6 +2279,7 @@ int main() {
     assert(result.response.find("SHARDROUTEIMPORTPREFLIGHTJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVALUEDRAFTJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVALUESUPPLYJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTEVALUESUPPLYPRECHECKJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);

@@ -9,6 +9,7 @@
 #include "minikv/shard_route_preview_operator_import_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_draft.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_envelope.hpp"
+#include "minikv/shard_route_preview_operator_value_supply_precheck.hpp"
 #include "minikv/shard_route_preview_worksheet_verification.hpp"
 #include "minikv/shard_route_preview_verification.hpp"
 #include "minikv/shard_route_preview_verification_report.hpp"
@@ -75,7 +76,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 47> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 48> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -117,6 +118,7 @@ constexpr std::array<CommandDispatchEntry, 47> command_dispatch_table = {{
     {"SHARDROUTEIMPORTPREFLIGHTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUEDRAFTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUESUPPLYJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVALUESUPPLYPRECHECKJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -605,6 +607,13 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         return {shard_route_preview_operator_value_supply_envelope::format_value_supply_envelope_json()};
     }
+    if (command == "SHARDROUTEVALUESUPPLYPRECHECKJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEVALUESUPPLYPRECHECKJSON");
+        }
+
+        return {shard_route_preview_operator_value_supply_precheck::format_value_supply_precheck_json()};
+    }
 
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
@@ -977,6 +986,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEIMPORTPREFLIGHTJSON\n"
            "  SHARDROUTEVALUEDRAFTJSON\n"
            "  SHARDROUTEVALUESUPPLYJSON\n"
+           "  SHARDROUTEVALUESUPPLYPRECHECKJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"
