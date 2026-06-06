@@ -1,3 +1,4 @@
+- 678: v618 route-preview-value-supply-precheck-checkjson-contract - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 677: v617 route-preview-value-supply-precheck-explain-contract - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 676: v616 route-preview-value-supply-precheck-command-catalog-contract - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 675: v615 route-preview-value-supply-precheck-fixture-chain-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
