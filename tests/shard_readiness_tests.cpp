@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-import-preflight-");
+        "\"status\":\"route-preview-value-draft-");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -412,6 +412,33 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"activeRouterInstalled\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardRoutePreviewOperatorValueDraft\":{\"contract\":"
+                          "\"shard-route-preview-operator-value-draft.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUEDRAFTJSON\"");
+    assert_contains(json,
+                    "\"draftMode\":\"controlled-read-only-operator-evidence-value-draft\"");
+    assert_contains(json, "\"sourceImportPreflightCommand\":\"SHARDROUTEIMPORTPREFLIGHTJSON\"");
+    assert_contains(json, "\"sourceImportPreflightReleaseVersion\":\"v560\"");
+    assert_contains(json, "\"sourceImportPreflightFixturePath\":\"fixtures/release/shard-readiness-v560.json\"");
+    assert_contains(json, "\"sourceImportPreflightPublishedStageCount\":25");
+    assert_contains(json, "\"sourceImportPreflightChainComplete\":true");
+    assert_contains(json, "\"sourceImportPreflightReleaseRangeStart\":\"v536\"");
+    assert_contains(json, "\"sourceImportPreflightReleaseRangeEnd\":\"v560\"");
+    assert_contains(json, "\"operatorValueDraftSlotCount\":25");
+    assert_contains(json, "\"expectedOperatorEvidenceSlotCount\":25");
+    assert_contains(json, "\"draftSlotCount\":25");
+    assert_contains(json, "\"actualValueState\":\"not-supplied\"");
+    assert_contains(json, "\"draftValueState\":\"awaiting-operator-value\"");
+    assert_contains(json, "\"readyForOperatorEvidenceValueDraft\":true");
+    assert_contains(json, "\"operatorValueSupplied\":false");
+    assert_contains(json, "\"operatorValueAccepted\":false");
+    assert_contains(json, "\"operatorValueImported\":false");
+    assert_contains(json, "\"valueSupplyAdapterInstalled\":false");
+    assert_contains(json, "\"valueSupplyAdapterEnabled\":false");
+    assert_contains(json, "\"draftValuesPersisted\":false");
+    assert_contains(json, "\"valueDraftPackageOnly\":true");
+    assert_contains(json, "\"valueDraftSlotHelperApplied\":true");
+    assert_contains(json, "\"singleValueDraftSectionExpected\":true");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v379\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_contains(json, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
@@ -2873,6 +2900,8 @@ int main() {
                     "SHARDROUTEWORKSHEETVERIFYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
     assert_contains(result.response,
                     "SHARDROUTEIMPORTPREFLIGHTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(result.response,
+                    "SHARDROUTEVALUEDRAFTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -2912,6 +2941,8 @@ int main() {
     assert_contains(result.response, "\"name\":\"SHARDROUTEWORKSHEETVERIFYJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response, "\"name\":\"SHARDROUTEIMPORTPREFLIGHTJSON\","
+                                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response, "\"name\":\"SHARDROUTEVALUEDRAFTJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
 
     result = processor.execute("EXPLAINJSON SHARDJSON");

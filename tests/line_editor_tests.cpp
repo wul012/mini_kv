@@ -84,6 +84,7 @@ int main() {
           "SHARDROUTEARCHIVEMAINTVERIFYJSON",
           "SHARDROUTEWORKSHEETVERIFYJSON",
           "SHARDROUTEIMPORTPREFLIGHTJSON",
+          "SHARDROUTEVALUEDRAFTJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -110,7 +111,8 @@ int main() {
     assert(completion.complete("STOR", 4) == std::optional<std::string>{"STORAGEJSON "});
     assert(completion.complete("SHARDR", 6) == std::optional<std::string>{"SHARDROUTE"});
     assert(completion.complete("SHARDROUTEJ", 11) == std::optional<std::string>{"SHARDROUTEJSON "});
-    assert(completion.complete("SHARDROUTEV", 11) == std::optional<std::string>{"SHARDROUTEVERIFY"});
+    assert(!completion.complete("SHARDROUTEV", 11).has_value());
+    assert(completion.complete("SHARDROUTEVE", 12) == std::optional<std::string>{"SHARDROUTEVERIFY"});
     assert(completion.complete("SHARDROUTEVERIFYJ", 17) == std::optional<std::string>{"SHARDROUTEVERIFYJSON "});
     assert(completion.complete("SHARDROUTEVERIFYR", 17) == std::optional<std::string>{"SHARDROUTEVERIFYREPORT"});
     assert(completion.complete("SHARDROUTEVERIFYREPORTJ", 23) ==
@@ -167,6 +169,9 @@ int main() {
     const std::string import_preflight_prefix = "SHARDROUTEIMPORTP";
     assert(completion.complete(import_preflight_prefix, import_preflight_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEIMPORTPREFLIGHTJSON "});
+    const std::string value_draft_prefix = "SHARDROUTEVALUED";
+    assert(completion.complete(value_draft_prefix, value_draft_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUEDRAFTJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

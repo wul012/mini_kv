@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=45") != std::string::npos);
+    assert(result.response.find("command_count=46") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -320,6 +320,9 @@ int main() {
            std::string::npos);
     assert(result.response.find(
                "SHARDROUTEIMPORTPREFLIGHTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVALUEDRAFTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -383,6 +386,9 @@ int main() {
     assert(result.response.find("\"name\":\"SHARDROUTEIMPORTPREFLIGHTJSON\","
                                 "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
            std::string::npos);
+    assert(result.response.find("\"name\":\"SHARDROUTEVALUEDRAFTJSON\","
+                                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
+           std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -405,7 +411,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-import-preflight-");
+        "\"status\":\"route-preview-value-draft-");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -728,6 +734,30 @@ int main() {
     assert_response_contains(result, "\"activeRouterInstalled\":false");
     assert_response_contains(result, "\"writeRoutingAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"shardRoutePreviewOperatorValueDraft\":{\"contract\":"
+                                     "\"shard-route-preview-operator-value-draft.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUEDRAFTJSON\"");
+    assert_response_contains(result,
+                             "\"draftMode\":\"controlled-read-only-operator-evidence-value-draft\"");
+    assert_response_contains(result, "\"sourceImportPreflightCommand\":\"SHARDROUTEIMPORTPREFLIGHTJSON\"");
+    assert_response_contains(result, "\"sourceImportPreflightReleaseVersion\":\"v560\"");
+    assert_response_contains(result, "\"sourceImportPreflightPublishedStageCount\":25");
+    assert_response_contains(result, "\"sourceImportPreflightChainComplete\":true");
+    assert_response_contains(result, "\"sourceImportPreflightReleaseRangeStart\":\"v536\"");
+    assert_response_contains(result, "\"sourceImportPreflightReleaseRangeEnd\":\"v560\"");
+    assert_response_contains(result, "\"operatorValueDraftSlotCount\":25");
+    assert_response_contains(result, "\"actualValueState\":\"not-supplied\"");
+    assert_response_contains(result, "\"draftValueState\":\"awaiting-operator-value\"");
+    assert_response_contains(result, "\"readyForOperatorEvidenceValueDraft\":true");
+    assert_response_contains(result, "\"operatorValueSupplied\":false");
+    assert_response_contains(result, "\"operatorValueAccepted\":false");
+    assert_response_contains(result, "\"operatorValueImported\":false");
+    assert_response_contains(result, "\"valueSupplyAdapterInstalled\":false");
+    assert_response_contains(result, "\"valueSupplyAdapterEnabled\":false");
+    assert_response_contains(result, "\"draftValuesPersisted\":false");
+    assert_response_contains(result, "\"valueDraftPackageOnly\":true");
+    assert_response_contains(result, "\"valueDraftSlotHelperApplied\":true");
+    assert_response_contains(result, "\"singleValueDraftSectionExpected\":true");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v379\"");
     assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v379.json\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
@@ -2214,6 +2244,7 @@ int main() {
     assert(result.response.find("SHARDROUTEARCHIVEMAINTJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEWORKSHEETVERIFYJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEIMPORTPREFLIGHTJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTEVALUEDRAFTJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);

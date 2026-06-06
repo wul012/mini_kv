@@ -63,7 +63,7 @@ int main() {
 
     const std::string shard = minikv::shard_readiness::format_json();
     assert(minikv::test_support::occurrence_count(shard, "\"shardRoutePreviewOperatorImportPreflight\":") == 1);
-    minikv::test_support::assert_contains(shard, "\"status\":\"route-preview-import-preflight-");
+    minikv::test_support::assert_contains(shard, "\"status\":\"route-preview-");
     minikv::test_support::assert_contains(shard, "\"sourceWorksheetReleaseVersion\":\"v535\"");
     minikv::test_support::assert_contains(shard, "\"readyForOperatorEvidenceImportPreflight\":true");
     minikv::test_support::assert_contains(shard, "\"readyForEvidenceImport\":false");
