@@ -17,7 +17,7 @@ namespace minikv::shard_route_preview_operator_value_draft {
 namespace {
 
 constexpr int first_value_draft_release_number = 561;
-constexpr int current_value_draft_stage_count = 1;
+constexpr int current_value_draft_stage_count = 2;
 constexpr int planned_value_draft_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
