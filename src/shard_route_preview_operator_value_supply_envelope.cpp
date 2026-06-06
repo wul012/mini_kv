@@ -17,7 +17,7 @@ namespace minikv::shard_route_preview_operator_value_supply_envelope {
 namespace {
 
 constexpr int first_value_supply_release_number = 586;
-constexpr int current_value_supply_stage_count = 9;
+constexpr int current_value_supply_stage_count = 10;
 constexpr int planned_value_supply_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
