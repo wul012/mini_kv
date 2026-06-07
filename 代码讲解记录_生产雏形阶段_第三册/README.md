@@ -1,3 +1,4 @@
+- 711: v651 route-preview-value-supply-approval-template-redaction-policy - approval packet template evidence, read-only/no-execution.
 - 710: v650 route-preview-value-supply-approval-template-correlation-id-policy - approval packet template evidence, read-only/no-execution.
 - 709: v649 route-preview-value-supply-approval-template-timestamp-field-policy - approval packet template evidence, read-only/no-execution.
 - 708: v648 route-preview-value-supply-approval-template-identity-field-policy - approval packet template evidence, read-only/no-execution.
