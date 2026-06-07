@@ -20,7 +20,7 @@ namespace minikv::shard_route_preview_operator_value_supply_signed_approval_capt
 namespace {
 
 constexpr int first_capture_preflight_release_number = 686;
-constexpr int current_capture_preflight_stage_count = 10;
+constexpr int current_capture_preflight_stage_count = 11;
 constexpr int planned_capture_preflight_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
