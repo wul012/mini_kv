@@ -1,3 +1,4 @@
+- [774-version-714-route-preview-value-supply-signed-approval-capture-artifact-preflight-review-digest.md](774-version-714-route-preview-value-supply-signed-approval-capture-artifact-preflight-review-digest.md) - v714 review digest binding
 - [773-version-713-route-preview-value-supply-signed-approval-capture-artifact-preflight-template-digest.md](773-version-713-route-preview-value-supply-signed-approval-capture-artifact-preflight-template-digest.md) - v713 template digest binding
 - [772-version-712-route-preview-value-supply-signed-approval-capture-artifact-preflight-capture-digest.md](772-version-712-route-preview-value-supply-signed-approval-capture-artifact-preflight-capture-digest.md) - v712 capture preflight digest binding
 - [771-version-711-route-preview-value-supply-signed-approval-capture-artifact-preflight-request-id.md](771-version-711-route-preview-value-supply-signed-approval-capture-artifact-preflight-request-id.md) - v711 request id fragment
