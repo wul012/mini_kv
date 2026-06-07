@@ -1,3 +1,4 @@
+- 706: v646 route-preview-value-supply-approval-template-slot-field-contract - approval packet template evidence, read-only/no-execution.
 - 705: v645 route-preview-value-supply-approval-template-shardjson-embedding-audit - approval packet template evidence, read-only/no-execution.
 - 704: v644 route-preview-value-supply-approval-template-shardjson-embedding - approval packet template evidence, read-only/no-execution.
 - 703: v643 route-preview-value-supply-approval-template-checkjson-contract - approval packet template evidence, read-only/no-execution.
