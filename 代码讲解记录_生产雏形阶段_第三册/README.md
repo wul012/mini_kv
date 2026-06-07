@@ -1,3 +1,4 @@
+- 752: v692 route-preview-value-supply-signed-approval-capture-preflight-capture-window - capture preflight evidence, read-only/no-execution.
 - 751: v691 route-preview-value-supply-signed-approval-capture-preflight-approval-timestamp - capture preflight evidence, read-only/no-execution.
 - 750: v690 route-preview-value-supply-signed-approval-capture-preflight-operator-role - capture preflight evidence, read-only/no-execution.
 - 749: v689 route-preview-value-supply-signed-approval-capture-preflight-operator-identity - capture preflight evidence, read-only/no-execution.
