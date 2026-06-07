@@ -101,6 +101,7 @@ add_library(minikv
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight_fragments.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight_gates.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight_seals.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight_stages.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
@@ -418,6 +419,12 @@ minikv_add_linked_test(
     minikv_artifact_preflight_seals_tests
     artifact_preflight_seals_tests
     tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight_seals_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_artifact_preflight_stages_tests
+    artifact_preflight_stages_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight_stages_tests.cpp
 )
 
 minikv_add_linked_test(

@@ -126,6 +126,8 @@ int main() {
                                           "\"signedApprovalCaptureArtifactPreflightGateHelperApplied\":true");
     minikv::test_support::assert_contains(artifact_preflight,
                                           "\"signedApprovalCaptureArtifactPreflightValidationHelperApplied\":true");
+    minikv::test_support::assert_contains(artifact_preflight,
+                                          "\"moduleSplit\":[\"artifact_preflight_core\",\"artifact_preflight_stages\"");
     minikv::test_support::assert_contains(
         artifact_preflight,
         "\"fragmentCode\":\"SIGNED_APPROVAL_CAPTURE_ARTIFACT_PREFLIGHT_REQUEST_ID\"");
