@@ -43,7 +43,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v639";
+constexpr std::string_view release_version = "v640";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -65,7 +65,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v639",
+        "mini-kv-shard-readiness-v640",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -185,7 +185,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"route-preview-value-supply-approval-template-stage-chain-audit-read-only\"" +
+           ",\"status\":\"route-preview-value-supply-approval-template-fixture-chain-audit-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +

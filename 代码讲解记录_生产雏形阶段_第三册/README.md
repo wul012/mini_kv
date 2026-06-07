@@ -1,3 +1,4 @@
+- 700: v640 route-preview-value-supply-approval-template-fixture-chain-audit - approval packet template evidence, read-only/no-execution.
 - 699: v639 route-preview-value-supply-approval-template-stage-chain-audit - approval packet template evidence, read-only/no-execution.
 - 698: v638 route-preview-value-supply-approval-template-source-release-freeze - approval packet template evidence, read-only/no-execution.
 - 697: v637 route-preview-value-supply-approval-template-source-precheck-contract - approval packet template evidence, read-only/no-execution.
