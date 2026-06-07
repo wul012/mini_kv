@@ -20,7 +20,7 @@ namespace minikv::shard_route_preview_operator_value_supply_signed_approval_temp
 namespace {
 
 constexpr int first_signed_approval_template_release_number = 661;
-constexpr int current_signed_approval_template_stage_count = 6;
+constexpr int current_signed_approval_template_stage_count = 7;
 constexpr int planned_signed_approval_template_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
