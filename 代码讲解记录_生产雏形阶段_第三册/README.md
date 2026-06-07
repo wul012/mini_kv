@@ -1,3 +1,4 @@
+- [793-version-733-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-write-route.md](793-version-733-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-write-route.md) - v733 no write route lock
 - [792-version-732-route-preview-value-supply-signed-approval-capture-artifact-preflight-zero-value-import.md](792-version-732-route-preview-value-supply-signed-approval-capture-artifact-preflight-zero-value-import.md) - v732 zero value import lock
 - [791-version-731-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-grant.md](791-version-731-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-grant.md) - v731 no approval grant lock
 - [790-version-730-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-raw-secret.md](790-version-730-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-raw-secret.md) - v730 no raw secret lock
