@@ -1,3 +1,4 @@
+- 734: v674 route-preview-value-supply-signed-approval-template-missing-value-policy - signed approval template evidence, read-only/no-execution.
 - 733: v673 route-preview-value-supply-signed-approval-template-provenance-binding - signed approval template evidence, read-only/no-execution.
 - 732: v672 route-preview-value-supply-signed-approval-template-redaction-policy-ack - signed approval template evidence, read-only/no-execution.
 - 731: v671 route-preview-value-supply-signed-approval-template-redacted-value-digest-field - signed approval template evidence, read-only/no-execution.
