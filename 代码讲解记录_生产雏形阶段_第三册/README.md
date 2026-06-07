@@ -1,3 +1,4 @@
+- [790-version-730-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-raw-secret.md](790-version-730-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-raw-secret.md) - v730 no raw secret lock
 - [789-version-729-route-preview-value-supply-signed-approval-capture-artifact-preflight-provenance-policy.md](789-version-729-route-preview-value-supply-signed-approval-capture-artifact-preflight-provenance-policy.md) - v729 provenance policy fragment
 - [788-version-728-route-preview-value-supply-signed-approval-capture-artifact-preflight-redaction-policy.md](788-version-728-route-preview-value-supply-signed-approval-capture-artifact-preflight-redaction-policy.md) - v728 redaction policy fragment
 - [787-version-727-route-preview-value-supply-signed-approval-capture-artifact-preflight-value-shape.md](787-version-727-route-preview-value-supply-signed-approval-capture-artifact-preflight-value-shape.md) - v727 value shape fragment
