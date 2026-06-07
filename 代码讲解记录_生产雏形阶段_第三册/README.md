@@ -1,3 +1,4 @@
+- 723: v663 route-preview-value-supply-signed-approval-template-operator-role-field - signed approval template evidence, read-only/no-execution.
 - 722: v662 route-preview-value-supply-signed-approval-template-operator-identity-field - signed approval template evidence, read-only/no-execution.
 - 721: v661 route-preview-value-supply-signed-approval-template-packet-id-field - signed approval template evidence, read-only/no-execution.
 - 720: v660 route-preview-value-supply-approval-template-release-package - approval packet template evidence, read-only/no-execution.
