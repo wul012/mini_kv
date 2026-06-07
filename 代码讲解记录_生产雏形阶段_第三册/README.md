@@ -1,3 +1,4 @@
+- 763: v703 route-preview-value-supply-signed-approval-capture-preflight-redaction-policy - capture preflight evidence, read-only/no-execution.
 - 762: v702 route-preview-value-supply-signed-approval-capture-preflight-value-shape-binding - capture preflight evidence, read-only/no-execution.
 - 761: v701 route-preview-value-supply-signed-approval-capture-preflight-redacted-value-digest - capture preflight evidence, read-only/no-execution.
 - 760: v700 route-preview-value-supply-signed-approval-capture-preflight-source-snippet-id - capture preflight evidence, read-only/no-execution.
