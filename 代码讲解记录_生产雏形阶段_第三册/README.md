@@ -1,3 +1,4 @@
+- 754: v694 route-preview-value-supply-signed-approval-capture-preflight-signature-algorithm - capture preflight evidence, read-only/no-execution.
 - 753: v693 route-preview-value-supply-signed-approval-capture-preflight-channel-policy - capture preflight evidence, read-only/no-execution.
 - 752: v692 route-preview-value-supply-signed-approval-capture-preflight-capture-window - capture preflight evidence, read-only/no-execution.
 - 751: v691 route-preview-value-supply-signed-approval-capture-preflight-approval-timestamp - capture preflight evidence, read-only/no-execution.
