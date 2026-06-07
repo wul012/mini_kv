@@ -1,3 +1,4 @@
+- 757: v697 route-preview-value-supply-signed-approval-capture-preflight-operator-justification - capture preflight evidence, read-only/no-execution.
 - 756: v696 route-preview-value-supply-signed-approval-capture-preflight-approval-statement - capture preflight evidence, read-only/no-execution.
 - 755: v695 route-preview-value-supply-signed-approval-capture-preflight-signature-redaction - capture preflight evidence, read-only/no-execution.
 - 754: v694 route-preview-value-supply-signed-approval-capture-preflight-signature-algorithm - capture preflight evidence, read-only/no-execution.
