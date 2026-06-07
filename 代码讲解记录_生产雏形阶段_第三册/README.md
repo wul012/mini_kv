@@ -1,3 +1,4 @@
+- 732: v672 route-preview-value-supply-signed-approval-template-redaction-policy-ack - signed approval template evidence, read-only/no-execution.
 - 731: v671 route-preview-value-supply-signed-approval-template-redacted-value-digest-field - signed approval template evidence, read-only/no-execution.
 - 730: v670 route-preview-value-supply-signed-approval-template-typed-value-envelope-field - signed approval template evidence, read-only/no-execution.
 - 729: v669 route-preview-value-supply-signed-approval-template-source-snippet-field - signed approval template evidence, read-only/no-execution.
