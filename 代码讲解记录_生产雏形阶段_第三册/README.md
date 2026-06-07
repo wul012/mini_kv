@@ -1,3 +1,4 @@
+- 750: v690 route-preview-value-supply-signed-approval-capture-preflight-operator-role - capture preflight evidence, read-only/no-execution.
 - 749: v689 route-preview-value-supply-signed-approval-capture-preflight-operator-identity - capture preflight evidence, read-only/no-execution.
 - 748: v688 route-preview-value-supply-signed-approval-capture-preflight-source-review-digest - capture preflight evidence, read-only/no-execution.
 - 747: v687 route-preview-value-supply-signed-approval-capture-preflight-source-template-digest - capture preflight evidence, read-only/no-execution.
