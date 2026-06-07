@@ -1,3 +1,4 @@
+- 726: v666 route-preview-value-supply-signed-approval-template-source-draft-digest-field - signed approval template evidence, read-only/no-execution.
 - 725: v665 route-preview-value-supply-signed-approval-template-source-review-digest-field - signed approval template evidence, read-only/no-execution.
 - 724: v664 route-preview-value-supply-signed-approval-template-approval-timestamp-field - signed approval template evidence, read-only/no-execution.
 - 723: v663 route-preview-value-supply-signed-approval-template-operator-role-field - signed approval template evidence, read-only/no-execution.
