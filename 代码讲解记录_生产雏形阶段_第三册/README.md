@@ -1,3 +1,4 @@
+- 747: v687 route-preview-value-supply-signed-approval-capture-preflight-source-template-digest - capture preflight evidence, read-only/no-execution.
 - 746: v686 route-preview-value-supply-signed-approval-capture-preflight-request-id-input - capture preflight evidence, read-only/no-execution.
 - 745: v685 route-preview-value-supply-signed-approval-template-release-package - signed approval template evidence, read-only/no-execution.
 - 744: v684 route-preview-value-supply-signed-approval-template-mutation-block-audit - signed approval template evidence, read-only/no-execution.
