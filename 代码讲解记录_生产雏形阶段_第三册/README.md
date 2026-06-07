@@ -1,3 +1,4 @@
+- 708: v648 route-preview-value-supply-approval-template-identity-field-policy - approval packet template evidence, read-only/no-execution.
 - 707: v647 route-preview-value-supply-approval-template-slot-count-audit - approval packet template evidence, read-only/no-execution.
 - 706: v646 route-preview-value-supply-approval-template-slot-field-contract - approval packet template evidence, read-only/no-execution.
 - 705: v645 route-preview-value-supply-approval-template-shardjson-embedding-audit - approval packet template evidence, read-only/no-execution.
