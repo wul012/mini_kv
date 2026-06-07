@@ -1,3 +1,4 @@
+- 698: v638 route-preview-value-supply-approval-template-source-release-freeze - approval packet template evidence, read-only/no-execution.
 - 697: v637 route-preview-value-supply-approval-template-source-precheck-contract - approval packet template evidence, read-only/no-execution.
 - 696: v636 route-preview-value-supply-approval-template-field-catalog-split - approval packet template evidence, read-only/no-execution.
 - 695: v635 route-preview-value-supply-precheck-release-package - disabled operator value-supply precheck evidence, read-only/no-execution.
