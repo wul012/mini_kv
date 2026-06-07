@@ -1,3 +1,4 @@
+- 759: v699 route-preview-value-supply-signed-approval-capture-preflight-source-file-id - capture preflight evidence, read-only/no-execution.
 - 758: v698 route-preview-value-supply-signed-approval-capture-preflight-source-evidence-version - capture preflight evidence, read-only/no-execution.
 - 757: v697 route-preview-value-supply-signed-approval-capture-preflight-operator-justification - capture preflight evidence, read-only/no-execution.
 - 756: v696 route-preview-value-supply-signed-approval-capture-preflight-approval-statement - capture preflight evidence, read-only/no-execution.
