@@ -1,3 +1,4 @@
+- 742: v682 route-preview-value-supply-signed-approval-template-no-prior-approval-audit - signed approval template evidence, read-only/no-execution.
 - 741: v681 route-preview-value-supply-signed-approval-template-review-control-checklist - signed approval template evidence, read-only/no-execution.
 - 740: v680 route-preview-value-supply-signed-approval-template-evidence-coverage - signed approval template evidence, read-only/no-execution.
 - 739: v679 route-preview-value-supply-signed-approval-template-risk-acknowledgement - signed approval template evidence, read-only/no-execution.
