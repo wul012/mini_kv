@@ -1,3 +1,4 @@
+- 740: v680 route-preview-value-supply-signed-approval-template-evidence-coverage - signed approval template evidence, read-only/no-execution.
 - 739: v679 route-preview-value-supply-signed-approval-template-risk-acknowledgement - signed approval template evidence, read-only/no-execution.
 - 738: v678 route-preview-value-supply-signed-approval-template-justification-field - signed approval template evidence, read-only/no-execution.
 - 737: v677 route-preview-value-supply-signed-approval-template-draft-only-policy - signed approval template evidence, read-only/no-execution.
