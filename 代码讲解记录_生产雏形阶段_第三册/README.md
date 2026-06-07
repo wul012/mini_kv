@@ -1,3 +1,4 @@
+- 736: v676 route-preview-value-supply-signed-approval-template-signed-approval-policy - signed approval template evidence, read-only/no-execution.
 - 735: v675 route-preview-value-supply-signed-approval-template-malformed-value-policy - signed approval template evidence, read-only/no-execution.
 - 734: v674 route-preview-value-supply-signed-approval-template-missing-value-policy - signed approval template evidence, read-only/no-execution.
 - 733: v673 route-preview-value-supply-signed-approval-template-provenance-binding - signed approval template evidence, read-only/no-execution.
