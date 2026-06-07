@@ -1,3 +1,4 @@
+- 703: v643 route-preview-value-supply-approval-template-checkjson-contract - approval packet template evidence, read-only/no-execution.
 - 702: v642 route-preview-value-supply-approval-template-explain-contract - approval packet template evidence, read-only/no-execution.
 - 701: v641 route-preview-value-supply-approval-template-command-catalog-contract - approval packet template evidence, read-only/no-execution.
 - 700: v640 route-preview-value-supply-approval-template-fixture-chain-audit - approval packet template evidence, read-only/no-execution.
