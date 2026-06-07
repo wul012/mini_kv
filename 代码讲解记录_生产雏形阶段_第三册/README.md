@@ -1,3 +1,4 @@
+- 715: v655 route-preview-value-supply-approval-template-no-secret-storage-audit - approval packet template evidence, read-only/no-execution.
 - 714: v654 route-preview-value-supply-approval-template-no-runtime-payload-audit - approval packet template evidence, read-only/no-execution.
 - 713: v653 route-preview-value-supply-approval-template-no-automatic-import-audit - approval packet template evidence, read-only/no-execution.
 - 712: v652 route-preview-value-supply-approval-template-no-value-ingest-audit - approval packet template evidence, read-only/no-execution.
