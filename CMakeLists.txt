@@ -92,6 +92,11 @@ add_library(minikv
     src/shard_route_preview_operator_value_supply_signed_approval_template_controls.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_template_fields.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_template_validation.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_preflight.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_attestations.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_inputs.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_policies.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -360,6 +365,36 @@ minikv_add_linked_test(
     minikv_shard_route_preview_operator_value_supply_signed_approval_template_tests
     shard_route_preview_operator_value_supply_signed_approval_template_tests
     tests/shard_route_preview_operator_value_supply_signed_approval_template_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_capture_preflight_inputs_tests
+    capture_preflight_inputs_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_inputs_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_capture_preflight_policies_tests
+    capture_preflight_policies_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_policies_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_capture_preflight_attestations_tests
+    capture_preflight_attestations_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_attestations_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_capture_preflight_validation_tests
+    capture_preflight_validation_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_capture_preflight_tests
+    capture_preflight_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_preflight_tests.cpp
 )
 
 minikv_add_linked_test(

@@ -89,6 +89,7 @@ int main() {
           "SHARDROUTEVALUESUPPLYPRECHECKJSON",
           "SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON",
+          "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -189,7 +190,15 @@ int main() {
     const std::string value_supply_signed_approval_template_prefix = "SHARDROUTEVALUESUPPLYSI";
     assert(completion.complete(value_supply_signed_approval_template_prefix,
                                value_supply_signed_approval_template_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVAL"});
+    const std::string value_supply_signed_approval_template_exact_prefix = "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALT";
+    assert(completion.complete(value_supply_signed_approval_template_exact_prefix,
+                               value_supply_signed_approval_template_exact_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON "});
+    const std::string value_supply_signed_approval_capture_prefix = "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALC";
+    assert(completion.complete(value_supply_signed_approval_capture_prefix,
+                               value_supply_signed_approval_capture_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

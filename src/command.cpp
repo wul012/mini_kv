@@ -11,6 +11,7 @@
 #include "minikv/shard_route_preview_operator_value_supply_approval_template.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_envelope.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_precheck.hpp"
+#include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_template.hpp"
 #include "minikv/shard_route_preview_worksheet_verification.hpp"
 #include "minikv/shard_route_preview_verification.hpp"
@@ -78,7 +79,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 50> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 51> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -123,6 +124,7 @@ constexpr std::array<CommandDispatchEntry, 50> command_dispatch_table = {{
     {"SHARDROUTEVALUESUPPLYPRECHECKJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -634,6 +636,14 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         return {shard_route_preview_operator_value_supply_signed_approval_template::
                     format_signed_approval_template_json()};
     }
+    if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON");
+        }
+
+        return {shard_route_preview_operator_value_supply_signed_approval_capture_preflight::
+                    format_signed_approval_capture_preflight_json()};
+    }
 
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
@@ -1009,6 +1019,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVALUESUPPLYPRECHECKJSON\n"
            "  SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\n"
+           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

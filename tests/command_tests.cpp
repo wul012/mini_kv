@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=50") != std::string::npos);
+    assert(result.response.find("command_count=51") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -336,6 +336,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON(category=read,mutates_store=no,touches_wal=no,"
                "stable=yes)") != std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON(category=read,mutates_store=no,"
+               "touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -413,6 +416,9 @@ int main() {
     assert(result.response.find("\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\","
                                 "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
            std::string::npos);
+    assert(result.response.find("\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON\","
+                                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
+           std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -435,7 +441,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-value-supply-signed-approval-template-");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-preflight-");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -798,6 +804,13 @@ int main() {
     assert_response_contains(result, "\"signedApprovalTemplateOnly\":true");
     assert_response_contains(result, "\"signedApprovalPresent\":false");
     assert_response_contains(result, "\"signatureCaptured\":false");
+    assert_response_contains(result, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCapturePreflight\":{\"contract\":"
+                                     "\"shard-route-preview-operator-value-supply-signed-approval-capture-preflight.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON\"");
+    assert_response_contains(result, "\"signedApprovalCapturePreflightDeclared\":true");
+    assert_response_contains(result, "\"signedApprovalCapturePreflightOnly\":true");
+    assert_response_contains(result, "\"capturePreflightOnly\":true");
+    assert_response_contains(result, "\"approvalGrantEmitted\":false");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
     assert_response_contains(result, "\"approvalPacketPresent\":false");
     assert_response_contains(result, "\"readyForOperatorValueSupplyApproval\":false");
