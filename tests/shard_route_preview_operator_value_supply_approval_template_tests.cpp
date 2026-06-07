@@ -105,7 +105,8 @@ int main() {
     assert(minikv::test_support::occurrence_count(
                shard,
                "\"shardRoutePreviewOperatorValueSupplyApprovalTemplate\":") == 1);
-    minikv::test_support::assert_contains(shard, "\"status\":\"route-preview-value-supply-approval-template-");
+    minikv::test_support::assert_contains(shard,
+                                          "\"status\":\"route-preview-value-supply-signed-approval-template-");
     minikv::test_support::assert_contains(shard, "\"sourceValueSupplyPrecheckReleaseVersion\":\"v635\"");
     minikv::test_support::assert_contains(shard, "\"readyForOperatorValueSupplyApproval\":false");
     minikv::test_support::assert_contains(shard, "\"approvalPacketRequired\":true");

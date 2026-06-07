@@ -87,6 +87,11 @@ add_library(minikv
     src/shard_route_preview_operator_value_supply_approval_template.cpp
     src/shard_route_preview_operator_value_supply_approval_template_fields.cpp
     src/shard_route_preview_operator_value_supply_approval_template_slots.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_template.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_template_clauses.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_template_controls.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_template_fields.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_template_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -325,6 +330,36 @@ minikv_add_linked_test(
     minikv_shard_route_preview_operator_value_supply_approval_template_tests
     shard_route_preview_operator_value_supply_approval_template_tests
     tests/shard_route_preview_operator_value_supply_approval_template_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_signed_approval_template_fields_tests
+    shard_route_preview_operator_value_supply_signed_approval_template_fields_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_template_fields_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_signed_approval_template_clauses_tests
+    shard_route_preview_operator_value_supply_signed_approval_template_clauses_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_template_clauses_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_signed_approval_template_controls_tests
+    shard_route_preview_operator_value_supply_signed_approval_template_controls_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_template_controls_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_signed_approval_template_validation_tests
+    shard_route_preview_operator_value_supply_signed_approval_template_validation_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_template_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_shard_route_preview_operator_value_supply_signed_approval_template_tests
+    shard_route_preview_operator_value_supply_signed_approval_template_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_template_tests.cpp
 )
 
 minikv_add_linked_test(

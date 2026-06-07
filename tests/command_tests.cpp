@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=49") != std::string::npos);
+    assert(result.response.find("command_count=50") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -332,6 +332,9 @@ int main() {
            std::string::npos);
     assert(result.response.find(
                "SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON(category=read,mutates_store=no,touches_wal=no,"
+               "stable=yes)") != std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON(category=read,mutates_store=no,touches_wal=no,"
                "stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
@@ -407,6 +410,9 @@ int main() {
     assert(result.response.find("\"name\":\"SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON\","
                                 "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
            std::string::npos);
+    assert(result.response.find("\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\","
+                                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
+           std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -429,7 +435,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-value-supply-approval-template-");
+        "\"status\":\"route-preview-value-supply-signed-approval-template-");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -785,6 +791,13 @@ int main() {
     assert_response_contains(result, "\"shardRoutePreviewOperatorValueSupplyApprovalTemplate\":{\"contract\":"
                                      "\"shard-route-preview-operator-value-supply-approval-template.v1\"");
     assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON\"");
+    assert_response_contains(result, "\"shardRoutePreviewOperatorValueSupplySignedApprovalTemplate\":{\"contract\":"
+                                     "\"shard-route-preview-operator-value-supply-signed-approval-template.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\"");
+    assert_response_contains(result, "\"signedApprovalTemplateDeclared\":true");
+    assert_response_contains(result, "\"signedApprovalTemplateOnly\":true");
+    assert_response_contains(result, "\"signedApprovalPresent\":false");
+    assert_response_contains(result, "\"signatureCaptured\":false");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
     assert_response_contains(result, "\"approvalPacketPresent\":false");
     assert_response_contains(result, "\"readyForOperatorValueSupplyApproval\":false");
@@ -2290,6 +2303,7 @@ int main() {
     assert(result.response.find("SHARDROUTEVALUESUPPLYJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVALUESUPPLYPRECHECKJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);

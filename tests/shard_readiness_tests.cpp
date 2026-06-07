@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-value-supply-approval-template-");
+        "\"status\":\"route-preview-value-supply-signed-approval-template-");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -487,6 +487,22 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"perValueProvenanceSupplied\":false");
     assert_contains(json, "\"missingValueRejected\":true");
     assert_contains(json, "\"malformedValueRejected\":true");
+    assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalTemplate\":{\"contract\":"
+                          "\"shard-route-preview-operator-value-supply-signed-approval-template.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\"");
+    assert_contains(json,
+                    "\"signedApprovalTemplateMode\":\"controlled-read-only-disabled-operator-value-supply-signed-approval-template\"");
+    assert_contains(json, "\"sourceApprovalTemplateCommand\":\"SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON\"");
+    assert_contains(json, "\"sourceApprovalTemplateReleaseVersion\":\"v660\"");
+    assert_contains(json, "\"sourceApprovalTemplateFixturePath\":\"fixtures/release/shard-readiness-v660.json\"");
+    assert_contains(json, "\"signedApprovalTemplateReleaseRangeStart\":\"v661\"");
+    assert_contains(json, "\"signedApprovalTemplateDeclared\":true");
+    assert_contains(json, "\"signedApprovalTemplateOnly\":true");
+    assert_contains(json, "\"signedApprovalRequired\":true");
+    assert_contains(json, "\"signedApprovalPresent\":false");
+    assert_contains(json, "\"signatureCaptured\":false");
+    assert_contains(json, "\"readyForSignedApprovalCapturePreflight\":false");
+    assert_contains(json, "\"readyForSignedApprovalCapture\":false");
     assert_contains(json, "\"readyForDisabledValueSupplyPrecheck\":true");
     assert_contains(json, "\"readyForOperatorValueSupplyApproval\":false");
     assert_contains(json, "\"readyForOperatorValueSupply\":false");
@@ -2964,6 +2980,9 @@ int main() {
     assert_contains(result.response,
                     "SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON(category=read,mutates_store=no,touches_wal=no,"
                     "stable=yes)");
+    assert_contains(result.response,
+                    "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON(category=read,mutates_store=no,touches_wal=no,"
+                    "stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -3011,6 +3030,8 @@ int main() {
     assert_contains(result.response, "\"name\":\"SHARDROUTEVALUESUPPLYPRECHECKJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response, "\"name\":\"SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON\","
+                                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response, "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
 
     result = processor.execute("EXPLAINJSON SHARDJSON");
