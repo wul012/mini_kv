@@ -1,0 +1,12 @@
+#pragma once
+
+#include <string>
+
+namespace minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness {
+
+std::string format_signed_approval_capture_artifact_draft_authoring_readiness_json();
+std::string format_signed_approval_capture_artifact_draft_authoring_readiness_stage_catalog_json();
+std::string signed_approval_capture_artifact_draft_authoring_readiness_digest_marker();
+int published_stage_count();
+
+} // namespace minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness

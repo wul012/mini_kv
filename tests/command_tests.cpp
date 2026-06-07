@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=52") != std::string::npos);
+    assert(result.response.find("command_count=53") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -342,6 +342,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON(category=read,mutates_store=no,"
                "touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON(category=read,"
+               "mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -425,6 +428,9 @@ int main() {
     assert(result.response.find("\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON\","
                                 "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") !=
            std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"EXPLAINJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"CHECKJSON\",\"category\":\"meta\"") != std::string::npos);
     assert(result.response.find("\"name\":\"SMOKEJSON\",\"category\":\"meta\",\"mutates_store\":false,"
@@ -447,7 +453,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-preflight-");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-authoring-readiness-");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -825,6 +831,14 @@ int main() {
     assert_response_contains(result, "\"captureArtifactPreflightOnly\":true");
     assert_response_contains(result, "\"signedApprovalArtifactDraftPresent\":false");
     assert_response_contains(result, "\"signedApprovalArtifactMaterialized\":false");
+    assert_response_contains(result, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftAuthoringReadiness\":{\"contract\":"
+                                     "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-authoring-readiness.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON\"");
+    assert_response_contains(result, "\"signedApprovalCaptureArtifactDraftAuthoringReadinessDeclared\":true");
+    assert_response_contains(result, "\"signedApprovalCaptureArtifactDraftAuthoringReadinessOnly\":true");
+    assert_response_contains(result, "\"authoringReadinessOnly\":true");
+    assert_response_contains(result, "\"signedApprovalArtifactDraftTextGenerated\":false");
+    assert_response_contains(result, "\"approvalStatementTextGenerated\":false");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
     assert_response_contains(result, "\"approvalPacketPresent\":false");
     assert_response_contains(result, "\"readyForOperatorValueSupplyApproval\":false");

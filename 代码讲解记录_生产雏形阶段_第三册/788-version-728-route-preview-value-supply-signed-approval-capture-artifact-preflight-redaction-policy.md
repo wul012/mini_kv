@@ -4,10 +4,10 @@ This version advances the read-only signed approval capture artifact preflight c
 
 ## Role
 
-- Command: $command
+- Command: SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON
 - Source plan: docs/plans3/v1086-controlled-read-only-shard-preview-operator-evidence-value-supply-signed-approval-capture-artifact-preflight-closeout-roadmap.md
-- Source fixture: ixtures/release/shard-readiness-v727.json
-- Stage: $slug
+- Source fixture: fixtures/release/shard-readiness-v727.json
+- Stage: route-preview-value-supply-signed-approval-capture-artifact-preflight-redaction-policy
 
 ## Implementation Notes
 
@@ -15,7 +15,8 @@ The artifact preflight implementation is split into core, fragments, seals, gate
 
 ## Boundary Reading
 
-Control-plane consumers should read this as preflight-only evidence. eadOnly=true, executionAllowed=false, rtifactMaterializationAllowed=false, pprovalGrantAllowed=false, alueImportAllowed=false, writeRouteAllowed=false, and siblingMutationAllowed=false mean mini-kv is only publishing review evidence. It does not read credential values, raw endpoints, raw signatures, operator value payloads, or sibling project state.
+Control-plane consumers should read this as preflight-only evidence.
+readOnly=true, executionAllowed=false, artifactMaterializationAllowed=false, approvalGrantAllowed=false, valueImportAllowed=false, writeRouteAllowed=false, and siblingMutationAllowed=false mean mini-kv is only publishing review evidence. It does not read credential values, raw endpoints, raw signatures, operator value payloads, or sibling project state.
 
 ## Tests and Evidence
 

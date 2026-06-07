@@ -1,0 +1,14 @@
+#pragma once
+
+#include "minikv/shard_route_preview_stage_catalog.hpp"
+
+#include <span>
+
+namespace minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness_stages {
+
+std::span<const shard_route_preview_stage_catalog::StageRecord>
+signed_approval_capture_artifact_draft_authoring_readiness_stages();
+int first_signed_approval_capture_artifact_draft_authoring_readiness_release_number();
+int planned_signed_approval_capture_artifact_draft_authoring_readiness_stage_count();
+
+} // namespace minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness_stages
