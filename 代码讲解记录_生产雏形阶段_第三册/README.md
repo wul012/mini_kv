@@ -1,3 +1,4 @@
+- 768: v708 route-preview-value-supply-signed-approval-capture-preflight-write-route-lock - capture preflight evidence, read-only/no-execution.
 - 767: v707 route-preview-value-supply-signed-approval-capture-preflight-value-submission-lock - capture preflight evidence, read-only/no-execution.
 - 766: v706 route-preview-value-supply-signed-approval-capture-preflight-grant-lock - capture preflight evidence, read-only/no-execution.
 - 765: v705 route-preview-value-supply-signed-approval-capture-preflight-raw-material-lock - capture preflight evidence, read-only/no-execution.
