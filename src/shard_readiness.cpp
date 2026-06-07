@@ -45,7 +45,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v699";
+constexpr std::string_view release_version = "v700";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -67,7 +67,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v699",
+        "mini-kv-shard-readiness-v700",
         {
             {std::string{contract_version}},
             {std::string{version}},
