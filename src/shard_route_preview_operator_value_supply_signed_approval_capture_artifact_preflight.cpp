@@ -26,7 +26,7 @@ constexpr std::string_view source_node_plan =
     "docs/plans3/"
     "v1086-controlled-read-only-shard-preview-operator-evidence-value-supply-signed-approval-capture-artifact-"
     "preflight-closeout-roadmap.md";
-constexpr int current_artifact_preflight_stage_count = 8;
+constexpr int current_artifact_preflight_stage_count = 9;
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
