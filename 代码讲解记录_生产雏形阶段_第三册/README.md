@@ -1,3 +1,4 @@
+- [794-version-734-route-preview-value-supply-signed-approval-capture-artifact-preflight-sibling-non-mutation.md](794-version-734-route-preview-value-supply-signed-approval-capture-artifact-preflight-sibling-non-mutation.md) - v734 sibling non-mutation lock
 - [793-version-733-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-write-route.md](793-version-733-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-write-route.md) - v733 no write route lock
 - [792-version-732-route-preview-value-supply-signed-approval-capture-artifact-preflight-zero-value-import.md](792-version-732-route-preview-value-supply-signed-approval-capture-artifact-preflight-zero-value-import.md) - v732 zero value import lock
 - [791-version-731-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-grant.md](791-version-731-route-preview-value-supply-signed-approval-capture-artifact-preflight-no-grant.md) - v731 no approval grant lock
