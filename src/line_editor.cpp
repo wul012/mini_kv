@@ -535,6 +535,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON",
                                   "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON",
                                   "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON",
+                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }

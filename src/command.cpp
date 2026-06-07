@@ -11,6 +11,7 @@
 #include "minikv/shard_route_preview_operator_value_supply_approval_template.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_envelope.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_precheck.hpp"
+#include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_template.hpp"
 #include "minikv/shard_route_preview_worksheet_verification.hpp"
@@ -79,7 +80,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 51> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 52> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -125,6 +126,7 @@ constexpr std::array<CommandDispatchEntry, 51> command_dispatch_table = {{
     {"SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -644,6 +646,14 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         return {shard_route_preview_operator_value_supply_signed_approval_capture_preflight::
                     format_signed_approval_capture_preflight_json()};
     }
+    if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON");
+        }
+
+        return {shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight::
+                    format_signed_approval_capture_artifact_preflight_json()};
+    }
 
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
@@ -1020,6 +1030,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON\n"
+           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"
