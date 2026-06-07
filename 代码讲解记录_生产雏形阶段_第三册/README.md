@@ -1,3 +1,4 @@
+- 766: v706 route-preview-value-supply-signed-approval-capture-preflight-grant-lock - capture preflight evidence, read-only/no-execution.
 - 765: v705 route-preview-value-supply-signed-approval-capture-preflight-raw-material-lock - capture preflight evidence, read-only/no-execution.
 - 764: v704 route-preview-value-supply-signed-approval-capture-preflight-provenance-policy - capture preflight evidence, read-only/no-execution.
 - 763: v703 route-preview-value-supply-signed-approval-capture-preflight-redaction-policy - capture preflight evidence, read-only/no-execution.
