@@ -19,7 +19,7 @@ namespace minikv::shard_route_preview_operator_value_supply_approval_template {
 namespace {
 
 constexpr int first_value_supply_approval_template_release_number = 636;
-constexpr int current_value_supply_approval_template_stage_count = 21;
+constexpr int current_value_supply_approval_template_stage_count = 22;
 constexpr int planned_value_supply_approval_template_stage_count = 25;
 
 constexpr std::string_view source_node_plan =
