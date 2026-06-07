@@ -1,3 +1,4 @@
+- [778-version-718-route-preview-value-supply-signed-approval-capture-artifact-preflight-channel-policy.md](778-version-718-route-preview-value-supply-signed-approval-capture-artifact-preflight-channel-policy.md) - v718 channel policy fragment
 - [777-version-717-route-preview-value-supply-signed-approval-capture-artifact-preflight-window-id.md](777-version-717-route-preview-value-supply-signed-approval-capture-artifact-preflight-window-id.md) - v717 capture window id fragment
 - [776-version-716-route-preview-value-supply-signed-approval-capture-artifact-preflight-operator-role.md](776-version-716-route-preview-value-supply-signed-approval-capture-artifact-preflight-operator-role.md) - v716 operator role fragment
 - [775-version-715-route-preview-value-supply-signed-approval-capture-artifact-preflight-operator-identity.md](775-version-715-route-preview-value-supply-signed-approval-capture-artifact-preflight-operator-identity.md) - v715 operator identity fragment
