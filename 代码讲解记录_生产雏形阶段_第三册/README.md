@@ -1,3 +1,4 @@
+- 696: v636 route-preview-value-supply-approval-template-field-catalog-split - approval packet template evidence, read-only/no-execution.
 - 695: v635 route-preview-value-supply-precheck-release-package - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 694: v634 route-preview-value-supply-precheck-release-readiness-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
 - 693: v633 route-preview-value-supply-precheck-no-execution-audit - disabled operator value-supply precheck evidence, read-only/no-execution.
