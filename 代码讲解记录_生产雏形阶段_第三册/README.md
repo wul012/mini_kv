@@ -1,3 +1,4 @@
+- [772-version-712-route-preview-value-supply-signed-approval-capture-artifact-preflight-capture-digest.md](772-version-712-route-preview-value-supply-signed-approval-capture-artifact-preflight-capture-digest.md) - v712 capture preflight digest binding
 - [771-version-711-route-preview-value-supply-signed-approval-capture-artifact-preflight-request-id.md](771-version-711-route-preview-value-supply-signed-approval-capture-artifact-preflight-request-id.md) - v711 request id fragment
 - 770: v710 route-preview-value-supply-signed-approval-capture-preflight-closeout - capture preflight evidence, read-only/no-execution.
 - 769: v709 route-preview-value-supply-signed-approval-capture-preflight-sibling-non-mutation - capture preflight evidence, read-only/no-execution.

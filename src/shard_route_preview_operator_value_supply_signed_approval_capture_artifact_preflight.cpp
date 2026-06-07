@@ -25,7 +25,7 @@ constexpr std::string_view source_node_plan =
     "v1086-controlled-read-only-shard-preview-operator-evidence-value-supply-signed-approval-capture-artifact-"
     "preflight-closeout-roadmap.md";
 constexpr int first_artifact_preflight_release_number = 711;
-constexpr int current_artifact_preflight_stage_count = 1;
+constexpr int current_artifact_preflight_stage_count = 2;
 constexpr int planned_artifact_preflight_stage_count = 25;
 
 constexpr std::array<StageRecord, planned_artifact_preflight_stage_count> artifact_preflight_stages = {{
