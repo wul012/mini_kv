@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-candidate-document-request-package-archive-closeout-final-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-request-package-integrity-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -142,6 +142,35 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"candidateSignedApprovalEmitted\":false");
     assert_contains(json, "\"runtimePayloadImported\":false");
     assert_contains(json, "\"candidateDocumentRequestPackageValidationPassed\":true");
+    assert_contains(json, "\"documentRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewCandidateRequestPackageIntegrity\":{\"contract\":"
+                          "\"shard-route-preview-candidate-request-package-fixture-integrity.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON\"");
+    assert_contains(json, "\"sourceCandidateDocumentRequestPackageReleaseVersion\":\"v895\"");
+    assert_contains(json,
+                    "\"sourceCandidateDocumentRequestPackageFixturePath\":\"fixtures/release/shard-readiness-v895.json\"");
+    assert_contains(json, "\"sourceCandidateDocumentRequestPackagePublishedStageCount\":15");
+    assert_contains(json, "\"sourceCandidateDocumentRequestPackageChainComplete\":true");
+    assert_contains(json, "\"sourceCandidateDocumentRequestPackageRequestItemCount\":15");
+    assert_contains(json, "\"sourceCandidateDocumentRequestPackageAcceptanceCheckCount\":15");
+    assert_contains(json, "\"sourceCandidateDocumentRequestPackageGateCount\":38");
+    assert_contains(json, "\"sourceCandidateDocumentRequestPackageRequestedFieldCount\":20");
+    assert_contains(json, "\"candidateRequestPackageIntegrityReleaseVersion\":\"v920\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v919\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v919.json\"");
+    assert_contains(json, "\"candidateRequestPackageIntegrityOnly\":true");
+    assert_contains(json, "\"plannedIntegrityCheckCount\":25");
+    assert_contains(json, "\"completedIntegrityCheckCount\":25");
+    assert_contains(json, "\"candidateRequestPackageIntegrityValidationPassed\":true");
+    assert_contains(json, "\"additionalRequestEchoCreated\":false");
+    assert_contains(json, "\"documentIntakeOpened\":false");
+    assert_contains(json, "\"realCandidateDocumentRead\":false");
+    assert_contains(json, "\"candidatePayloadImported\":false");
+    assert_contains(json, "\"approvalGrantCaptured\":false");
+    assert_contains(json, "\"signedApprovalEmitted\":false");
     assert_contains(json, "\"documentRouterInstalled\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
@@ -3089,6 +3118,8 @@ int main() {
         "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
     assert_contains(result.response,
         "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(result.response,
+        "SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -3105,6 +3136,9 @@ int main() {
     assert_contains(result.response,
                     "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\","
                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response,
+                    "\"name\":\"SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON\",\"category\":\"read\","
+                    "\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response,
                     "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
                     "\"touches_wal\":false");
