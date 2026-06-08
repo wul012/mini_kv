@@ -143,7 +143,7 @@ int main() {
                "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactPreflight\":") == 1);
     minikv::test_support::assert_contains(
         shard,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-signature-redaction-criterion-read-only\"");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-source-release-handle-criterion-read-only\"");
     minikv::test_support::assert_contains(
         shard,
         "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":");
