@@ -109,6 +109,12 @@ add_library(minikv
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness_requirements.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness_stages.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness_validation.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_stages.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_slots.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_guards.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_profiles.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -481,6 +487,41 @@ minikv_add_linked_test(
     tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness_tests.cpp
 )
 
+minikv_add_linked_test(
+    minikv_instruction_preflight_stages_tests
+    instruction_preflight_stages_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_instruction_preflight_slots_tests
+    instruction_preflight_slots_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_slots_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_instruction_preflight_guards_tests
+    instruction_preflight_guards_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_guards_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_instruction_preflight_profiles_tests
+    instruction_preflight_profiles_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_profiles_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_instruction_preflight_validation_tests
+    instruction_preflight_validation_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_instruction_preflight_tests
+    instruction_preflight_tests
+    tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_tests.cpp
+)
 minikv_add_linked_test(
     minikv_shard_route_preview_worksheet_verification_tests
     shard_route_preview_worksheet_verification_tests

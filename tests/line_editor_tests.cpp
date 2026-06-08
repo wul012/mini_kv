@@ -92,6 +92,7 @@ int main() {
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON",
+          "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -216,11 +217,21 @@ int main() {
     assert(completion.complete(value_supply_signed_approval_capture_artifact_preflight_prefix,
                                value_supply_signed_approval_capture_artifact_preflight_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON "});
-    const std::string value_supply_signed_approval_capture_artifact_authoring_prefix =
+    const std::string value_supply_signed_approval_capture_artifact_draft_prefix =
         "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTD";
+    assert(completion.complete(value_supply_signed_approval_capture_artifact_draft_prefix,
+                               value_supply_signed_approval_capture_artifact_draft_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFT"});
+    const std::string value_supply_signed_approval_capture_artifact_authoring_prefix =
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTA";
     assert(completion.complete(value_supply_signed_approval_capture_artifact_authoring_prefix,
                                value_supply_signed_approval_capture_artifact_authoring_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON "});
+    const std::string value_supply_signed_approval_capture_artifact_instruction_prefix =
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTI";
+    assert(completion.complete(value_supply_signed_approval_capture_artifact_instruction_prefix,
+                               value_supply_signed_approval_capture_artifact_instruction_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

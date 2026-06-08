@@ -11,6 +11,7 @@
 #include "minikv/shard_route_preview_operator_value_supply_envelope.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_precheck.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness.hpp"
+#include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_template.hpp"
@@ -47,7 +48,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v760";
+constexpr std::string_view release_version = "v761";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -69,7 +70,7 @@ std::string format_command_catalog_json() {
 
 std::string evidence_digest() {
     return runtime_evidence::digest(
-        "mini-kv-shard-readiness-v760",
+        "mini-kv-shard-readiness-v761",
         {
             {std::string{contract_version}},
             {std::string{version}},
@@ -158,6 +159,9 @@ std::string evidence_digest() {
             {"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftAuthoringReadiness=" +
              shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness::
                  signed_approval_capture_artifact_draft_authoring_readiness_digest_marker()},
+            {"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight=" +
+             shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight::
+                 signed_approval_capture_artifact_draft_instruction_preflight_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -201,7 +205,7 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-authoring-readiness-request-manifest-read-only\"" +
+           ",\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-request-manifest-slot-read-only\"" +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -254,6 +258,9 @@ std::string format_json() {
            ",\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftAuthoringReadiness\":" +
            shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness::
                format_signed_approval_capture_artifact_draft_authoring_readiness_json() +
+           ",\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":" +
+           shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight::
+               format_signed_approval_capture_artifact_draft_instruction_preflight_json() +
            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

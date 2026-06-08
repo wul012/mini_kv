@@ -52,7 +52,22 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-authoring-readiness-");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-");
+    assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
+                          "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
+    assert_contains(json, "\"sourceDraftAuthoringReadinessReleaseVersion\":\"v760\"");
+    assert_contains(json, "\"sourceDraftAuthoringReadinessPublishedStageCount\":25");
+    assert_contains(json, "\"sourceDraftAuthoringReadinessChainComplete\":true");
+    assert_contains(json, "\"instructionPreflightReleaseVersion\":\"v761\"");
+    assert_contains(json, "\"instructionSlotCount\":25");
+    assert_contains(json, "\"instructionGuardCount\":25");
+    assert_contains(json, "\"instructionProfileCount\":25");
+    assert_contains(json, "\"signedApprovalCaptureArtifactDraftInstructionPreflightDeclared\":true");
+    assert_contains(json, "\"draftInstructionPreflightOnly\":true");
+    assert_contains(json, "\"draftInstructionTextGenerated\":false");
+    assert_contains(json, "\"draftInstructionTextMaterialized\":false");
+    assert_contains(json, "\"materializedInstructionTextCount\":0");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -2983,6 +2998,9 @@ int main() {
     assert_contains(result.response,
                     "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON(category=read,mutates_store=no,touches_wal=no,"
                     "stable=yes)");
+    assert_contains(
+        result.response,
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -3033,6 +3051,9 @@ int main() {
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response, "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\","
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response,
+                    "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\","
+                    "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
 
     result = processor.execute("EXPLAINJSON SHARDJSON");
     assert_contains(result.response, "\"command\":\"SHARDJSON\"");
