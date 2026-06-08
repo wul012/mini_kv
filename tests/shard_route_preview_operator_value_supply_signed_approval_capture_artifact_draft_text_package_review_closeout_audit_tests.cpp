@@ -26,17 +26,17 @@ int main() {
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightFixturePath\":\"fixtures/release/shard-readiness-v810.json\"");
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightChainComplete\":true");
-    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-active-router-rejection\"");
-    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditReleaseVersion\":\"v827\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v826\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v826.json\"");
-    assert_contains(json, "\"publishedStageCount\":17");
+    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-write-route-rejection\"");
+    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditReleaseVersion\":\"v828\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v827\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v827.json\"");
+    assert_contains(json, "\"publishedStageCount\":18");
     assert_contains(json, "\"plannedStageCount\":25");
     assert_contains(json, "\"auditCheckCount\":25");
     assert_contains(json, "\"auditBlockerCount\":25");
     assert_contains(json, "\"auditProfileCount\":25");
     assert_contains(json, "\"auditCatalogsAligned\":true");
-    assert_contains(json, "\"completedAuditCheckCount\":17");
+    assert_contains(json, "\"completedAuditCheckCount\":18");
     assert_contains(json, "\"draftTextPackageReviewCloseoutAuditDeclared\":true");
     assert_contains(json, "\"draftTextPackageReviewCloseoutAuditOnly\":true");
     assert_contains(json, "\"preflightPackageReopened\":false");
@@ -62,6 +62,6 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = audit::signed_approval_capture_artifact_draft_text_package_review_closeout_audit_digest_marker();
-    assert(digest.find("v827-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-active-router-rejection") != std::string::npos);
-    assert(audit::published_stage_count() == 17);
+    assert(digest.find("v828-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-write-route-rejection") != std::string::npos);
+    assert(audit::published_stage_count() == 18);
 }
