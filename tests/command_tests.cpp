@@ -851,7 +851,7 @@ int main() {
     assert_response_contains(result, "\"sourceDraftAuthoringReadinessReleaseVersion\":\"v760\"");
     assert_response_contains(result, "\"sourceDraftAuthoringReadinessPublishedStageCount\":25");
     assert_response_contains(result, "\"sourceDraftAuthoringReadinessChainComplete\":true");
-    assert_response_contains(result, "\"instructionPreflightReleaseVersion\":\"v776\"");
+    assert_response_contains(result, "\"instructionPreflightReleaseVersion\":\"v777\"");
     assert_response_contains(result, "\"instructionSlotCount\":25");
     assert_response_contains(result, "\"instructionGuardCount\":25");
     assert_response_contains(result, "\"instructionProfileCount\":25");
