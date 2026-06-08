@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-policy-and-execution-lock-slot-read-only\"");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-policy-and-execution-lock-guard-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -108,9 +108,9 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\"");
     assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v860\"");
     assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditFixturePath\":\"fixtures/release/shard-readiness-v860.json\"");
-    assert_contains(json, "\"draftTextPackageComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v875\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v874\"");
-    assert_contains(json, "\"publishedStageCount\":15");
+    assert_contains(json, "\"draftTextPackageComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v876\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v875\"");
+    assert_contains(json, "\"publishedStageCount\":16");
     assert_contains(json, "\"comparedPackageEvidenceIntakeAuditOnly\":true");
     assert_contains(json, "\"comparedPackageEvidencePresent\":false");
     assert_contains(json, "\"syntheticComparedPackageEvidenceAccepted\":false");
@@ -126,7 +126,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
                           "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v161\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v874.json\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v875.json\"");
     assert_contains(json, "\"slotTableMaterializedForEvidence\":true");
     assert_contains(json, "\"slotTablePreviewOnly\":true");
     assert_contains(json, "\"readOnlyShardMapPreview\":true");
