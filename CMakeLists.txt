@@ -133,6 +133,11 @@ add_library(minikv
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_blockers.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_profiles.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_validation.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_stages.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_slots.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_guards.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -649,6 +654,35 @@ minikv_add_linked_test(
     tests/text_package_comparison_closeout_audit_tests.cpp
 )
 
+minikv_add_linked_test(
+    minikv_comp_pkg_intake_stages_tests
+    comp_pkg_intake_stages_tests
+    tests/compared_package_evidence_intake_audit_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_comp_pkg_intake_slots_tests
+    comp_pkg_intake_slots_tests
+    tests/compared_package_evidence_intake_audit_slots_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_comp_pkg_intake_guards_tests
+    comp_pkg_intake_guards_tests
+    tests/compared_package_evidence_intake_audit_guards_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_comp_pkg_intake_validation_tests
+    comp_pkg_intake_validation_tests
+    tests/compared_package_evidence_intake_audit_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_comp_pkg_intake_tests
+    comp_pkg_intake_tests
+    tests/compared_package_evidence_intake_audit_tests.cpp
+)
 minikv_add_linked_test(
     minikv_shard_route_preview_worksheet_verification_tests
     shard_route_preview_worksheet_verification_tests

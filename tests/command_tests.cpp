@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=57") != std::string::npos);
+    assert(result.response.find("command_count=58") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -354,6 +354,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON(category=read,"
                "mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON(category=read,"
+               "mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -380,6 +383,9 @@ int main() {
                                 "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find("\"name\":\"SHARDROUTEVERIFYJSON\",\"category\":\"read\",\"mutates_store\":false,"
                                 "\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
                "\"touches_wal\":false") != std::string::npos);
@@ -471,7 +477,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-closeout-audit-summary-read-only\"");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-source-acceptance-precheck-slot-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -531,7 +537,7 @@ int main() {
     assert_response_contains(result, "\"rolloutStage\":\"route-preview-release-package-audit\"");
     assert_response_contains(result, "\"rolloutStageSequence\":20");
     assert_response_contains(result, "\"rolloutReleaseVersion\":\"v298\"");
-    assert_response_contains(result, "\"publishedStageCount\":20");
+    assert_response_contains(result, "\"publishedStageCount\":1");
     assert_response_contains(result, "\"commands\":[\"SHARDROUTE\",\"SHARDROUTEJSON\"]");
     assert_response_contains(result, "\"sampleSlotsPinnedToExistingEvidence\":true");
     assert_response_contains(result, "\"activeRouterInstalled\":false");
@@ -906,6 +912,20 @@ int main() {
     assert_response_contains(result, "\"auditReadsRuntimeArchive\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
 
+    result = processor.execute("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON");
+    assert_response_contains(result, "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-audit.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\"");
+    assert_response_contains(result, "\"sourceDraftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v860\"");
+    assert_response_contains(result, "\"draftTextPackageComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v861\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v860\"");
+    assert_response_contains(result, "\"publishedStageCount\":1");
+    assert_response_contains(result, "\"comparedPackageEvidenceIntakeAuditOnly\":true");
+    assert_response_contains(result, "\"comparedPackageEvidencePresent\":false");
+    assert_response_contains(result, "\"syntheticComparedPackageEvidenceAccepted\":false");
+    assert_response_contains(result, "\"approvalGrantCaptured\":false");
+    assert_response_contains(result, "\"runtimePayloadImported\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
     assert_response_contains(result, "\"approvalPacketPresent\":false");
@@ -923,7 +943,7 @@ int main() {
     assert_response_contains(result, "\"valueSupplySlotHelperApplied\":true");
     assert_response_contains(result, "\"singleValueSupplyEnvelopeSectionExpected\":true");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v379\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v859.json\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v860.json\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeEnd\":\"v360\"");
     assert_response_contains(result, "\"archivedArchiveReleaseCount\":20");
