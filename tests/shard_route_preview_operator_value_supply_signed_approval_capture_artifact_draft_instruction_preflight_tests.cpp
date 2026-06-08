@@ -27,17 +27,17 @@ int main() {
     assert_contains(json, "\"sourceDraftAuthoringReadinessPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftAuthoringReadinessChainComplete\":true");
     assert_contains(json,
-                    "\"instructionPreflightStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-sibling-non-mutation-slot\"");
-    assert_contains(json, "\"instructionPreflightReleaseVersion\":\"v784\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v783\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v783.json\"");
-    assert_contains(json, "\"publishedStageCount\":24");
+                    "\"instructionPreflightStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-closeout\"");
+    assert_contains(json, "\"instructionPreflightReleaseVersion\":\"v785\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v784\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v784.json\"");
+    assert_contains(json, "\"publishedStageCount\":25");
     assert_contains(json, "\"plannedStageCount\":25");
     assert_contains(json, "\"instructionSlotCount\":25");
     assert_contains(json, "\"instructionGuardCount\":25");
     assert_contains(json, "\"instructionProfileCount\":25");
     assert_contains(json, "\"instructionCatalogsAligned\":true");
-    assert_contains(json, "\"draftInstructionSlotPreparedCount\":24");
+    assert_contains(json, "\"draftInstructionSlotPreparedCount\":25");
     assert_contains(json, "\"materializedInstructionTextCount\":0");
     assert_contains(json, "\"signedApprovalCaptureArtifactDraftInstructionPreflightDeclared\":true");
     assert_contains(json, "\"signedApprovalCaptureArtifactDraftInstructionPreflightOnly\":true");
@@ -69,7 +69,7 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = preflight::signed_approval_capture_artifact_draft_instruction_preflight_digest_marker();
-    assert(digest.find("v784-route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-sibling-non-mutation-slot") !=
+    assert(digest.find("v785-route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-closeout") !=
            std::string::npos);
-    assert(preflight::published_stage_count() == 24);
+    assert(preflight::published_stage_count() == 25);
 }
