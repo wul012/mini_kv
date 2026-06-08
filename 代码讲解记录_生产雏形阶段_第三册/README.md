@@ -754,3 +754,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [892-version-832-draft-text-package-review-closeout-audit-shardjson-embedding.md](892-version-832-draft-text-package-review-closeout-audit-shardjson-embedding.md)
 - [893-version-833-draft-text-package-review-closeout-audit-versioned-fixture-catalog.md](893-version-833-draft-text-package-review-closeout-audit-versioned-fixture-catalog.md)
 - [894-version-834-draft-text-package-review-closeout-audit-archive-explanation-presence.md](894-version-834-draft-text-package-review-closeout-audit-archive-explanation-presence.md)
+- [895-version-835-draft-text-package-review-closeout-audit-closeout-audit-summary.md](895-version-835-draft-text-package-review-closeout-audit-closeout-audit-summary.md)
