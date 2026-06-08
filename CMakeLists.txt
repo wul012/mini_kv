@@ -127,6 +127,12 @@ add_library(minikv
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_blockers.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_profiles.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_validation.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_stages.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_checks.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_blockers.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_profiles.cpp
+    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -606,6 +612,43 @@ minikv_add_linked_test(
     text_package_review_closeout_audit_tests
     tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_tests.cpp
 )
+
+minikv_add_linked_test(
+    minikv_tp_comp_audit_stages_tests
+    tp_comp_audit_stages_tests
+    tests/text_package_comparison_closeout_audit_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_tp_comp_audit_checks_tests
+    tp_comp_audit_checks_tests
+    tests/text_package_comparison_closeout_audit_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_tp_comp_audit_blockers_tests
+    tp_comp_audit_blockers_tests
+    tests/text_package_comparison_closeout_audit_blockers_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_tp_comp_audit_profiles_tests
+    tp_comp_audit_profiles_tests
+    tests/text_package_comparison_closeout_audit_profiles_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_tp_comp_audit_validation_tests
+    tp_comp_audit_validation_tests
+    tests/text_package_comparison_closeout_audit_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_tp_comp_audit_tests
+    tp_comp_audit_tests
+    tests/text_package_comparison_closeout_audit_tests.cpp
+)
+
 minikv_add_linked_test(
     minikv_shard_route_preview_worksheet_verification_tests
     shard_route_preview_worksheet_verification_tests

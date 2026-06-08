@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=56") != std::string::npos);
+    assert(result.response.find("command_count=57") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -471,7 +471,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-summary-read-only\"");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-closeout-audit-source-freeze-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -888,8 +888,25 @@ int main() {
     assert_response_contains(result, "\"sourceDraftTextPackageReviewPreflightChainComplete\":true");
     assert_response_contains(result, "\"draftTextPackageReviewCloseoutAuditReleaseVersion\":\"v835\"");
     assert_response_contains(result, "\"draftTextPackageReviewCloseoutAuditOnly\":true");
-    assert_response_contains(result, "\"preflightPackageParsedByAudit\":false");
+
+    result = processor.execute("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON");
+    assert_response_contains(result, "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-closeout-audit.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON\"");
+    assert_response_contains(result, "\"sourceDraftTextPackageReviewCloseoutAuditReleaseVersion\":\"v835\"");
+    assert_response_contains(result, "\"sourceDraftTextPackageReviewCloseoutAuditFixturePath\":\"fixtures/release/shard-readiness-v835.json\"");
+    assert_response_contains(result, "\"draftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v836\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v835\"");
+    assert_response_contains(result, "\"publishedStageCount\":1");
+    assert_response_contains(result, "\"draftTextPackageComparisonCloseoutAuditOnly\":true");
+    assert_response_contains(result, "\"submittedDraftTextPackageParsed\":false");
+    assert_response_contains(result, "\"detachedSignaturePayloadParsed\":false");
+    assert_response_contains(result, "\"uncomparedPackageAccepted\":false");
+    assert_response_contains(result, "\"unacceptablePackageAccepted\":false");
+    assert_response_contains(result, "\"readyForDraftTextPackageComparison\":false");
     assert_response_contains(result, "\"auditReadsRuntimeArchive\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
     assert_response_contains(result, "\"approvalPacketPresent\":false");
     assert_response_contains(result, "\"readyForOperatorValueSupplyApproval\":false");

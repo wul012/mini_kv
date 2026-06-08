@@ -1,0 +1,12 @@
+#pragma once
+
+#include <string>
+
+namespace minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit {
+
+std::string format_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_json();
+std::string format_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_stage_catalog_json();
+std::string signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_digest_marker();
+int published_stage_count();
+
+} // namespace minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit
