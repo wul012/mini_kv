@@ -59,7 +59,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"sourceDraftAuthoringReadinessReleaseVersion\":\"v760\"");
     assert_contains(json, "\"sourceDraftAuthoringReadinessPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftAuthoringReadinessChainComplete\":true");
-    assert_contains(json, "\"instructionPreflightReleaseVersion\":\"v763\"");
+    assert_contains(json, "\"instructionPreflightReleaseVersion\":\"v764\"");
     assert_contains(json, "\"instructionSlotCount\":25");
     assert_contains(json, "\"instructionGuardCount\":25");
     assert_contains(json, "\"instructionProfileCount\":25");
