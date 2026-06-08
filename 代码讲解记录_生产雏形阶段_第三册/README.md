@@ -749,3 +749,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [887-version-827-draft-text-package-review-closeout-audit-active-router-rejection.md](887-version-827-draft-text-package-review-closeout-audit-active-router-rejection.md)
 - [888-version-828-draft-text-package-review-closeout-audit-write-route-rejection.md](888-version-828-draft-text-package-review-closeout-audit-write-route-rejection.md)
 - [889-version-829-draft-text-package-review-closeout-audit-wal-touch-rejection.md](889-version-829-draft-text-package-review-closeout-audit-wal-touch-rejection.md)
+- [890-version-830-draft-text-package-review-closeout-audit-load-restore-compact-rejection.md](890-version-830-draft-text-package-review-closeout-audit-load-restore-compact-rejection.md)
