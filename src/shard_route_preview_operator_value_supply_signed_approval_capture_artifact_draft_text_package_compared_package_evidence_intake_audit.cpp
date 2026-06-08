@@ -29,7 +29,7 @@ constexpr std::string_view source_node_plan =
     "docs/plans3/"
     "v1331-controlled-read-only-shard-preview-operator-evidence-value-supply-signed-approval-capture-artifact-"
     "draft-text-package-compared-package-evidence-intake-closeout-roadmap.md";
-constexpr int current_compared_package_evidence_intake_audit_stage_count = 10;
+constexpr int current_compared_package_evidence_intake_audit_stage_count = 11;
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);

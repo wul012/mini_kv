@@ -16,10 +16,10 @@ int main() {
     assert(records.back().stage == std::string{"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-archive-closeout-final-guard-summary"});
     const auto report = minikv::shard_route_preview_stage_chain::inspect_stage_chain(
         records,
-        10,
+        11,
         stages::planned_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_stage_count(),
         stages::first_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_release_number());
-    assert(report.published_stage_count == 10);
+    assert(report.published_stage_count == 11);
     assert(report.sequences_contiguous);
     assert(report.release_versions_contiguous);
     assert(report.source_frozen_release_versions_contiguous);
