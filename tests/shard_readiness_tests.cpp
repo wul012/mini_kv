@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-package-manifest-criterion-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -68,6 +68,16 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"draftInstructionTextGenerated\":false");
     assert_contains(json, "\"draftInstructionTextMaterialized\":false");
     assert_contains(json, "\"materializedInstructionTextCount\":0");
+    assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftTextPackageReviewPreflight\":{\"contract\":"
+                          "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON\"");
+    assert_contains(json, "\"sourceDraftInstructionPreflightReleaseVersion\":\"v785\"");
+    assert_contains(json, "\"sourceDraftInstructionPreflightPublishedStageCount\":25");
+    assert_contains(json, "\"sourceDraftInstructionPreflightChainComplete\":true");
+    assert_contains(json, "\"draftTextPackageReviewPreflightReleaseVersion\":\"v786\"");
+    assert_contains(json, "\"draftTextPackageReviewPreflightOnly\":true");
+    assert_contains(json, "\"draftTextPackageParsed\":false");
+    assert_contains(json, "\"draftTextPackageAccepted\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -3001,6 +3011,8 @@ int main() {
     assert_contains(
         result.response,
         "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(result.response,
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -3053,6 +3065,9 @@ int main() {
                                      "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response,
                     "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\","
+                    "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response,
+                    "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON\","
                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
 
     result = processor.execute("EXPLAINJSON SHARDJSON");

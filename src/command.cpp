@@ -13,6 +13,7 @@
 #include "minikv/shard_route_preview_operator_value_supply_precheck.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight.hpp"
+#include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_preflight.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_template.hpp"
@@ -82,7 +83,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 54> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 55> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -132,6 +133,8 @@ constexpr std::array<CommandDispatchEntry, 54> command_dispatch_table = {{
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON",
+     CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
@@ -677,6 +680,15 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
                     format_signed_approval_capture_artifact_draft_instruction_preflight_json()};
     }
 
+    if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON");
+        }
+
+        return {shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_preflight::
+                    format_signed_approval_capture_artifact_draft_text_package_review_preflight_json()};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -1055,6 +1067,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\n"
+           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"
