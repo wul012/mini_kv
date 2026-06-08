@@ -22,10 +22,10 @@ int main() {
 
     const auto report = minikv::shard_route_preview_stage_chain::inspect_stage_chain(
         records,
-        13,
+        14,
         stages::planned_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_stage_count(),
         stages::first_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_release_number());
-    assert(report.published_stage_count == 13);
+    assert(report.published_stage_count == 14);
     assert(report.sequences_contiguous);
     assert(report.release_versions_contiguous);
     assert(report.source_frozen_release_versions_contiguous);
