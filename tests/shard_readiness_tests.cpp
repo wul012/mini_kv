@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-signature-algorithm-criterion-read-only\"");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-signature-redaction-criterion-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -74,7 +74,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"sourceDraftInstructionPreflightReleaseVersion\":\"v785\"");
     assert_contains(json, "\"sourceDraftInstructionPreflightPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftInstructionPreflightChainComplete\":true");
-    assert_contains(json, "\"draftTextPackageReviewPreflightReleaseVersion\":\"v794\"");
+    assert_contains(json, "\"draftTextPackageReviewPreflightReleaseVersion\":\"v795\"");
     assert_contains(json, "\"draftTextPackageReviewPreflightOnly\":true");
     assert_contains(json, "\"draftTextPackageParsed\":false");
     assert_contains(json, "\"draftTextPackageAccepted\":false");
