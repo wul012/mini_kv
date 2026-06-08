@@ -29,6 +29,7 @@
 #include "minikv/shard_route_preview_verification_report_archive_closeout_verification_audit.hpp"
 #include "minikv/shard_route_preview_verification_report_archive_closeout_verification_audit_closeout.hpp"
 #include "minikv/shard_route_preview_verification_report_closeout.hpp"
+#include "minikv/shard_preview_candidate_request_package.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/string_utils.hpp"
 #include "minikv/snapshot.hpp"
@@ -86,7 +87,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 58> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 59> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -144,6 +145,8 @@ constexpr std::array<CommandDispatchEntry, 58> command_dispatch_table = {{
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON",
+     CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -723,6 +726,15 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         return {shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit::
                     format_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_json()};
     }
+
+    if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON");
+        }
+
+        return {shard_preview_candidate_request_package::format_candidate_document_request_package_closeout_json()};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -1105,6 +1117,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\n"
+           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

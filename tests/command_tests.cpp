@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=58") != std::string::npos);
+    assert(result.response.find("command_count=59") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -357,6 +357,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON(category=read,"
                "mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON(category=read,"
+               "mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -385,6 +388,9 @@ int main() {
                                 "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -924,6 +930,33 @@ int main() {
     assert_response_contains(result, "\"syntheticComparedPackageEvidenceAccepted\":false");
     assert_response_contains(result, "\"approvalGrantCaptured\":false");
     assert_response_contains(result, "\"runtimePayloadImported\":false");
+
+    result = processor.execute(
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON");
+    assert_response_contains(result, "\"contract\":\"shard-route-preview-candidate-document-request-package-closeout.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\"");
+    assert_response_contains(result, "\"sourceComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v880\"");
+    assert_response_contains(result, "\"sourceComparedPackageEvidenceIntakeAuditFixturePath\":\"fixtures/release/shard-readiness-v880.json\"");
+    assert_response_contains(result, "\"candidateDocumentRequestPackageReleaseVersion\":\"v895\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v894\"");
+    assert_response_contains(result, "\"publishedStageCount\":15");
+    assert_response_contains(result, "\"plannedRequestItemCount\":15");
+    assert_response_contains(result, "\"plannedAcceptanceCheckCount\":15");
+    assert_response_contains(result, "\"plannedRequestGateCount\":38");
+    assert_response_contains(result, "\"requestedCandidateFieldCount\":20");
+    assert_response_contains(result, "\"candidateDocumentRequestPackageCloseoutOnly\":true");
+    assert_response_contains(result, "\"realCandidateDocumentPresent\":false");
+    assert_response_contains(result, "\"syntheticCandidateDocumentAccepted\":false");
+    assert_response_contains(result, "\"stagedCandidatePayloadImported\":false");
+    assert_response_contains(result, "\"candidateDocumentEvaluated\":false");
+    assert_response_contains(result, "\"candidateDocumentAccepted\":false");
+    assert_response_contains(result, "\"candidateApprovalGrantCaptured\":false");
+    assert_response_contains(result, "\"candidateSignedApprovalEmitted\":false");
+    assert_response_contains(result, "\"runtimePayloadImported\":false");
+    assert_response_contains(result, "\"candidateDocumentRequestPackageValidationPassed\":true");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"executionAllowed\":false");
 
     result = processor.execute("SHARDJSON");
@@ -2438,6 +2471,8 @@ int main() {
     assert(result.response.find("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON") !=
            std::string::npos);
     assert(result.response.find("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON") !=
+           std::string::npos);
+    assert(result.response.find("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON") !=
            std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);

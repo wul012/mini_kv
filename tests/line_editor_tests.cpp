@@ -97,6 +97,7 @@ int main() {
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON",
+          "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -247,6 +248,12 @@ int main() {
                                value_supply_signed_approval_capture_artifact_text_package_closeout_prefix.size()) ==
            std::optional<std::string>{
                "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON "});
+    const std::string candidate_request_package_prefix =
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATE";
+    assert(completion.complete(candidate_request_package_prefix,
+                               candidate_request_package_prefix.size()) ==
+           std::optional<std::string>{
+               "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

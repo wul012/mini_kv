@@ -138,6 +138,12 @@ add_library(minikv
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_slots.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_guards.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_validation.cpp
+    src/shard_preview_candidate_request_package.cpp
+    src/shard_preview_candidate_request_package_stages.cpp
+    src/shard_preview_candidate_request_package_items.cpp
+    src/shard_preview_candidate_request_package_checks.cpp
+    src/shard_preview_candidate_request_package_gates.cpp
+    src/shard_preview_candidate_request_package_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -683,6 +689,43 @@ minikv_add_linked_test(
     comp_pkg_intake_tests
     tests/compared_package_evidence_intake_audit_tests.cpp
 )
+
+minikv_add_linked_test(
+    minikv_candidate_request_package_stages_tests
+    candidate_request_package_stages_tests
+    tests/candidate_request_package_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_request_package_items_tests
+    candidate_request_package_items_tests
+    tests/candidate_request_package_items_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_request_package_checks_tests
+    candidate_request_package_checks_tests
+    tests/candidate_request_package_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_request_package_gates_tests
+    candidate_request_package_gates_tests
+    tests/candidate_request_package_gates_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_request_package_validation_tests
+    candidate_request_package_validation_tests
+    tests/candidate_request_package_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_request_package_tests
+    candidate_request_package_tests
+    tests/candidate_request_package_tests.cpp
+)
+
 minikv_add_linked_test(
     minikv_shard_route_preview_worksheet_verification_tests
     shard_route_preview_worksheet_verification_tests

@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-archive-closeout-final-guard-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-document-request-package-archive-closeout-final-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -116,6 +116,35 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"syntheticComparedPackageEvidenceAccepted\":false");
     assert_contains(json, "\"approvalGrantCaptured\":false");
     assert_contains(json, "\"runtimePayloadImported\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewCandidateDocumentRequestPackageCloseout\":{\"contract\":"
+                          "\"shard-route-preview-candidate-document-request-package-closeout.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\"");
+    assert_contains(json, "\"sourceComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v880\"");
+    assert_contains(json, "\"sourceComparedPackageEvidenceIntakeAuditFixturePath\":\"fixtures/release/shard-readiness-v880.json\"");
+    assert_contains(json, "\"candidateDocumentRequestPackageReleaseVersion\":\"v895\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v894\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v894.json\"");
+    assert_contains(json, "\"publishedStageCount\":15");
+    assert_contains(json, "\"plannedRequestItemCount\":15");
+    assert_contains(json, "\"plannedAcceptanceCheckCount\":15");
+    assert_contains(json, "\"plannedRequestGateCount\":38");
+    assert_contains(json, "\"completedRequestGateCount\":38");
+    assert_contains(json, "\"requestedCandidateFieldCount\":20");
+    assert_contains(json, "\"candidateDocumentRequestPackageCloseoutOnly\":true");
+    assert_contains(json, "\"realCandidateDocumentPresent\":false");
+    assert_contains(json, "\"candidateDocumentImported\":false");
+    assert_contains(json, "\"syntheticCandidateDocumentAccepted\":false");
+    assert_contains(json, "\"stagedCandidatePayloadImported\":false");
+    assert_contains(json, "\"candidateDocumentEvaluated\":false");
+    assert_contains(json, "\"candidateDocumentAccepted\":false");
+    assert_contains(json, "\"candidateApprovalGrantCaptured\":false");
+    assert_contains(json, "\"candidateSignedApprovalEmitted\":false");
+    assert_contains(json, "\"runtimePayloadImported\":false");
+    assert_contains(json, "\"candidateDocumentRequestPackageValidationPassed\":true");
+    assert_contains(json, "\"documentRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
@@ -3058,6 +3087,8 @@ int main() {
         "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
     assert_contains(result.response,
         "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(result.response,
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -3070,6 +3101,9 @@ int main() {
                                      "\"touches_wal\":false");
     assert_contains(result.response,
                     "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\","
+                    "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response,
+                    "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\","
                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response,
                     "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
