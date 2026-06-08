@@ -26,17 +26,17 @@ int main() {
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightFixturePath\":\"fixtures/release/shard-readiness-v810.json\"");
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightChainComplete\":true");
-    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-criterion-slot-count\"");
-    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditReleaseVersion\":\"v814\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v813\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v813.json\"");
-    assert_contains(json, "\"publishedStageCount\":4");
+    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-rejection-control-count\"");
+    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditReleaseVersion\":\"v815\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v814\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v814.json\"");
+    assert_contains(json, "\"publishedStageCount\":5");
     assert_contains(json, "\"plannedStageCount\":25");
     assert_contains(json, "\"auditCheckCount\":25");
     assert_contains(json, "\"auditBlockerCount\":25");
     assert_contains(json, "\"auditProfileCount\":25");
     assert_contains(json, "\"auditCatalogsAligned\":true");
-    assert_contains(json, "\"completedAuditCheckCount\":4");
+    assert_contains(json, "\"completedAuditCheckCount\":5");
     assert_contains(json, "\"draftTextPackageReviewCloseoutAuditDeclared\":true");
     assert_contains(json, "\"draftTextPackageReviewCloseoutAuditOnly\":true");
     assert_contains(json, "\"preflightPackageReopened\":false");
@@ -62,6 +62,6 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = audit::signed_approval_capture_artifact_draft_text_package_review_closeout_audit_digest_marker();
-    assert(digest.find("v814-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-criterion-slot-count") != std::string::npos);
-    assert(audit::published_stage_count() == 4);
+    assert(digest.find("v815-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-rejection-control-count") != std::string::npos);
+    assert(audit::published_stage_count() == 5);
 }

@@ -734,3 +734,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [872-version-812-draft-text-package-review-closeout-audit-release-range.md](872-version-812-draft-text-package-review-closeout-audit-release-range.md)
 - [873-version-813-draft-text-package-review-closeout-audit-stage-sequence.md](873-version-813-draft-text-package-review-closeout-audit-stage-sequence.md)
 - [874-version-814-draft-text-package-review-closeout-audit-criterion-slot-count.md](874-version-814-draft-text-package-review-closeout-audit-criterion-slot-count.md)
+- [875-version-815-draft-text-package-review-closeout-audit-rejection-control-count.md](875-version-815-draft-text-package-review-closeout-audit-rejection-control-count.md)
