@@ -477,7 +477,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-identity-binding-guard-read-only\"");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-digest-match-summary-slot-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -916,9 +916,9 @@ int main() {
     assert_response_contains(result, "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-audit.v1\"");
     assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\"");
     assert_response_contains(result, "\"sourceDraftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v860\"");
-    assert_response_contains(result, "\"draftTextPackageComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v868\"");
-    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v867\"");
-    assert_response_contains(result, "\"publishedStageCount\":8");
+    assert_response_contains(result, "\"draftTextPackageComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v869\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v868\"");
+    assert_response_contains(result, "\"publishedStageCount\":9");
     assert_response_contains(result, "\"comparedPackageEvidenceIntakeAuditOnly\":true");
     assert_response_contains(result, "\"comparedPackageEvidencePresent\":false");
     assert_response_contains(result, "\"syntheticComparedPackageEvidenceAccepted\":false");
@@ -943,7 +943,7 @@ int main() {
     assert_response_contains(result, "\"valueSupplySlotHelperApplied\":true");
     assert_response_contains(result, "\"singleValueSupplyEnvelopeSectionExpected\":true");
     assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v379\"");
-    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v867.json\"");
+    assert_response_contains(result, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v868.json\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeStart\":\"v341\"");
     assert_response_contains(result, "\"archivedArchiveReleaseRangeEnd\":\"v360\"");
     assert_response_contains(result, "\"archivedArchiveReleaseCount\":20");
