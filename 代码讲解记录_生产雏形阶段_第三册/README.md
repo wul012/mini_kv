@@ -751,3 +751,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [889-version-829-draft-text-package-review-closeout-audit-wal-touch-rejection.md](889-version-829-draft-text-package-review-closeout-audit-wal-touch-rejection.md)
 - [890-version-830-draft-text-package-review-closeout-audit-load-restore-compact-rejection.md](890-version-830-draft-text-package-review-closeout-audit-load-restore-compact-rejection.md)
 - [891-version-831-draft-text-package-review-closeout-audit-command-catalog-read-only.md](891-version-831-draft-text-package-review-closeout-audit-command-catalog-read-only.md)
+- [892-version-832-draft-text-package-review-closeout-audit-shardjson-embedding.md](892-version-832-draft-text-package-review-closeout-audit-shardjson-embedding.md)
