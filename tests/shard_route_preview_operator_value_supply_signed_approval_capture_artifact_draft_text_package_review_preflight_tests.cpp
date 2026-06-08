@@ -26,17 +26,17 @@ int main() {
     assert_contains(json, "\"sourceDraftInstructionPreflightFixturePath\":\"fixtures/release/shard-readiness-v785.json\"");
     assert_contains(json, "\"sourceDraftInstructionPreflightPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftInstructionPreflightChainComplete\":true");
-    assert_contains(json, "\"draftTextPackageReviewPreflightStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-sibling-non-mutation-control\"");
-    assert_contains(json, "\"draftTextPackageReviewPreflightReleaseVersion\":\"v809\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v808\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v808.json\"");
-    assert_contains(json, "\"publishedStageCount\":24");
+    assert_contains(json, "\"draftTextPackageReviewPreflightStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-closeout\"");
+    assert_contains(json, "\"draftTextPackageReviewPreflightReleaseVersion\":\"v810\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v809\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v809.json\"");
+    assert_contains(json, "\"publishedStageCount\":25");
     assert_contains(json, "\"plannedStageCount\":25");
     assert_contains(json, "\"reviewCriterionCount\":25");
     assert_contains(json, "\"rejectionControlCount\":25");
     assert_contains(json, "\"reviewProfileCount\":25");
     assert_contains(json, "\"reviewCatalogsAligned\":true");
-    assert_contains(json, "\"preparedReviewCriterionCount\":24");
+    assert_contains(json, "\"preparedReviewCriterionCount\":25");
     assert_contains(json, "\"parsedDraftTextPackageCount\":0");
     assert_contains(json, "\"acceptedDraftTextPackageCount\":0");
     assert_contains(json, "\"draftTextPackageReviewPreflightDeclared\":true");
@@ -59,15 +59,15 @@ int main() {
     assert_contains(json, "\"draftTextPackageReviewProfileHelperApplied\":true");
     assert_contains(json, "\"draftTextPackageReviewValidationHelperApplied\":true");
     assert_contains(json, "\"criterionCode\":\"package_manifest_criterion\"");
-    assert_contains(json, "\"criterionCode\":\"sibling_non_mutation_control\"");
-    assert_contains(json, "\"controlCode\":\"sibling_non_mutation_control_control\"");
-    assert_contains(json, "\"profileCode\":\"draft_text_package_review_preflight_sibling_non_mutation_control_profile\"");
+    assert_contains(json, "\"criterionCode\":\"closeout\"");
+    assert_contains(json, "\"controlCode\":\"closeout_control\"");
+    assert_contains(json, "\"profileCode\":\"draft_text_package_review_preflight_closeout_profile\"");
     assert_contains(json, "\"draftTextPackageReviewPreflightValidationPassed\":true");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = preflight::signed_approval_capture_artifact_draft_text_package_review_preflight_digest_marker();
-    assert(digest.find("v809-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-sibling-non-mutation-control") != std::string::npos);
-    assert(preflight::published_stage_count() == 24);
+    assert(digest.find("v810-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-closeout") != std::string::npos);
+    assert(preflight::published_stage_count() == 25);
 }
