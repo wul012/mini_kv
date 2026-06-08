@@ -742,3 +742,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [880-version-820-draft-text-package-review-closeout-audit-draft-text-absence.md](880-version-820-draft-text-package-review-closeout-audit-draft-text-absence.md)
 - [881-version-821-draft-text-package-review-closeout-audit-parse-rejection.md](881-version-821-draft-text-package-review-closeout-audit-parse-rejection.md)
 - [882-version-822-draft-text-package-review-closeout-audit-acceptance-rejection.md](882-version-822-draft-text-package-review-closeout-audit-acceptance-rejection.md)
+- [883-version-823-draft-text-package-review-closeout-audit-approval-grant-rejection.md](883-version-823-draft-text-package-review-closeout-audit-approval-grant-rejection.md)
