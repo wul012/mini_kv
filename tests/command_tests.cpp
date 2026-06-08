@@ -465,7 +465,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-package-schema-version-criterion-read-only\"");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-request-correlation-criterion-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -870,7 +870,7 @@ int main() {
                                      "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight.v1\"");
     assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON\"");
     assert_response_contains(result, "\"sourceDraftInstructionPreflightReleaseVersion\":\"v785\"");
-    assert_response_contains(result, "\"draftTextPackageReviewPreflightReleaseVersion\":\"v788\"");
+    assert_response_contains(result, "\"draftTextPackageReviewPreflightReleaseVersion\":\"v789\"");
     assert_response_contains(result, "\"draftTextPackageReviewPreflightOnly\":true");
     assert_response_contains(result, "\"draftTextPackageParsed\":false");
     assert_response_contains(result, "\"draftTextPackageAccepted\":false");
