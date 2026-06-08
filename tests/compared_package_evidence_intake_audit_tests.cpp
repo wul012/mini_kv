@@ -19,16 +19,16 @@ int main() {
     assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditFixturePath\":\"fixtures/release/shard-readiness-v860.json\"");
     assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditChainComplete\":true");
-    assert_contains(json, "\"draftTextPackageComparedPackageEvidenceIntakeAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-detached-signature-envelope-observation-slot\"");
-    assert_contains(json, "\"draftTextPackageComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v871\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v870\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v870.json\"");
-    assert_contains(json, "\"publishedStageCount\":11");
+    assert_contains(json, "\"draftTextPackageComparedPackageEvidenceIntakeAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-detached-signature-envelope-observation-guard\"");
+    assert_contains(json, "\"draftTextPackageComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v872\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v871\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v871.json\"");
+    assert_contains(json, "\"publishedStageCount\":12");
     assert_contains(json, "\"plannedStageCount\":20");
     assert_contains(json, "\"plannedEvidenceSlotCount\":10");
     assert_contains(json, "\"plannedIntakeGuardCount\":10");
     assert_contains(json, "\"completedEvidenceSlotCount\":6");
-    assert_contains(json, "\"completedIntakeGuardCount\":5");
+    assert_contains(json, "\"completedIntakeGuardCount\":6");
     assert_contains(json, "\"comparedPackageEvidenceIntakeAuditDeclared\":true");
     assert_contains(json, "\"comparedPackageEvidenceIntakeAuditOnly\":true");
     assert_contains(json, "\"comparedPackageEvidencePresent\":false");
@@ -46,6 +46,6 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = audit::signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_digest_marker();
-    assert(digest.find("v871-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-detached-signature-envelope-observation-slot") != std::string::npos);
-    assert(audit::published_stage_count() == 11);
+    assert(digest.find("v872-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-detached-signature-envelope-observation-guard") != std::string::npos);
+    assert(audit::published_stage_count() == 12);
 }
