@@ -733,3 +733,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [871-version-811-draft-text-package-review-closeout-audit-source-freeze.md](871-version-811-draft-text-package-review-closeout-audit-source-freeze.md)
 - [872-version-812-draft-text-package-review-closeout-audit-release-range.md](872-version-812-draft-text-package-review-closeout-audit-release-range.md)
 - [873-version-813-draft-text-package-review-closeout-audit-stage-sequence.md](873-version-813-draft-text-package-review-closeout-audit-stage-sequence.md)
+- [874-version-814-draft-text-package-review-closeout-audit-criterion-slot-count.md](874-version-814-draft-text-package-review-closeout-audit-criterion-slot-count.md)
