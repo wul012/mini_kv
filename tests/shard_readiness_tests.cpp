@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-closeout-audit-signature-metadata-lane-read-only\"");
+        "\"status\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-closeout-audit-signature-payload-parse-rejection-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -93,9 +93,9 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON\"");
     assert_contains(json, "\"sourceDraftTextPackageReviewCloseoutAuditReleaseVersion\":\"v835\"");
     assert_contains(json, "\"sourceDraftTextPackageReviewCloseoutAuditFixturePath\":\"fixtures/release/shard-readiness-v835.json\"");
-    assert_contains(json, "\"draftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v845\"");
-    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v844\"");
-    assert_contains(json, "\"publishedStageCount\":10");
+    assert_contains(json, "\"draftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v846\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v845\"");
+    assert_contains(json, "\"publishedStageCount\":11");
     assert_contains(json, "\"draftTextPackageComparisonCloseoutAuditOnly\":true");
     assert_contains(json, "\"submittedDraftTextPackageParsed\":false");
     assert_contains(json, "\"detachedSignaturePayloadParsed\":false");
@@ -112,7 +112,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
                           "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v161\"");
-    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v844.json\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v845.json\"");
     assert_contains(json, "\"slotTableMaterializedForEvidence\":true");
     assert_contains(json, "\"slotTablePreviewOnly\":true");
     assert_contains(json, "\"readOnlyShardMapPreview\":true");
