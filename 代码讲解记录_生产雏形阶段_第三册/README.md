@@ -738,3 +738,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [876-version-816-draft-text-package-review-closeout-audit-profile-count.md](876-version-816-draft-text-package-review-closeout-audit-profile-count.md)
 - [877-version-817-draft-text-package-review-closeout-audit-validation-pass.md](877-version-817-draft-text-package-review-closeout-audit-validation-pass.md)
 - [878-version-818-draft-text-package-review-closeout-audit-digest-marker.md](878-version-818-draft-text-package-review-closeout-audit-digest-marker.md)
+- [879-version-819-draft-text-package-review-closeout-audit-source-fixture-path.md](879-version-819-draft-text-package-review-closeout-audit-source-fixture-path.md)
