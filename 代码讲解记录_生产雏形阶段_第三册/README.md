@@ -730,3 +730,4 @@ This sibling folder continues the mini-kv production-prototype walkthrough serie
 - [643-version-583-route-preview-value-draft-no-execution-audit.md](643-version-583-route-preview-value-draft-no-execution-audit.md)
 - [644-version-584-route-preview-value-draft-release-readiness-audit.md](644-version-584-route-preview-value-draft-release-readiness-audit.md)
 - [645-version-585-route-preview-value-draft-release-package.md](645-version-585-route-preview-value-draft-release-package.md)
+- [871-version-811-draft-text-package-review-closeout-audit-source-freeze.md](871-version-811-draft-text-package-review-closeout-audit-source-freeze.md)

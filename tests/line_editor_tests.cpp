@@ -94,6 +94,7 @@ int main() {
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON",
+          "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -237,7 +238,13 @@ int main() {
         "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTT";
     assert(completion.complete(value_supply_signed_approval_capture_artifact_text_package_prefix,
                                value_supply_signed_approval_capture_artifact_text_package_prefix.size()) ==
-           std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON "});
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEW"});
+    const std::string value_supply_signed_approval_capture_artifact_text_package_closeout_prefix =
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWC";
+    assert(completion.complete(value_supply_signed_approval_capture_artifact_text_package_closeout_prefix,
+                               value_supply_signed_approval_capture_artifact_text_package_closeout_prefix.size()) ==
+           std::optional<std::string>{
+               "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());
