@@ -1,3 +1,28 @@
+- v1010: freezes v1009 as the final candidate-material-submission-precheck integrity fixture and closes SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON at route-preview-candidate-material-submission-precheck-integrity-closeout-summary while preserving v985 source precheck evidence, Node v1456 stop-condition alignment, 25 integrity checks, no additional submission echo, no reviewed material consumption, no document intake, no router, no write routing, no WAL touch, and no execution authority.
+- v1009: freezes v1008 as a versioned candidate-material-submission-precheck integrity fixture and verifies CLI/TCP smoke parity for the read-only integrity command without starting sibling services.
+- v1008: freezes v1007 as a versioned candidate-material-submission-precheck integrity fixture and verifies command catalog parity for the integrity command as read-only, mutatesStore=false, touchesWal=false, and stable.
+- v1007: freezes v1006 as a versioned candidate-material-submission-precheck integrity fixture and keeps Node, Java, and archive sibling mutation disabled.
+- v1006: freezes v1005 as a versioned candidate-material-submission-precheck integrity fixture and keeps write routing, store mutation, WAL touch, load, restore, and compact outside the audit.
+- v1005: freezes v1004 as a versioned candidate-material-submission-precheck integrity fixture and keeps active document router installation disabled.
+- v1004: freezes v1003 as a versioned candidate-material-submission-precheck integrity fixture and keeps runtime payload import plus live runtime probes disabled.
+- v1003: freezes v1002 as a versioned candidate-material-submission-precheck integrity fixture and keeps signature emission, parsing, and verification disabled.
+- v1002: freezes v1001 as a versioned candidate-material-submission-precheck integrity fixture and keeps approval grant capture disabled.
+- v1001: freezes v1000 as a versioned candidate-material-submission-precheck integrity fixture and keeps candidate material evaluation, acceptance, and rejection disabled.
+- v1000: freezes v999 as a versioned candidate-material-submission-precheck integrity fixture and keeps material/candidate payload import disabled.
+- v999: freezes v998 as a versioned candidate-material-submission-precheck integrity fixture and keeps reviewed real material absent, unread, and unconsumed.
+- v998: freezes v997 as a versioned candidate-material-submission-precheck integrity fixture and keeps the forty-one material submission gate expectation frozen.
+- v997: freezes v996 as a versioned candidate-material-submission-precheck integrity fixture and keeps the twenty submission material fields frozen as metadata.
+- v996: freezes v995 as a versioned candidate-material-submission-precheck integrity fixture and keeps the twenty required material fields frozen as metadata.
+- v995: freezes v994 as a versioned candidate-material-submission-precheck integrity fixture and keeps the twenty-five material acceptance checks frozen through v975 lineage.
+- v994: freezes v993 as a versioned candidate-material-submission-precheck integrity fixture and keeps the twenty-five material request items frozen through v975 lineage.
+- v993: freezes v992 as a versioned candidate-material-submission-precheck integrity fixture and keeps the ten validator count frozen from v985.
+- v992: freezes v991 as a versioned candidate-material-submission-precheck integrity fixture and keeps the ten checkpoint count frozen from v985.
+- v991: freezes v990 as a versioned candidate-material-submission-precheck integrity fixture and preserves v985 closeout status while adding no material intake.
+- v990: freezes v989 as a versioned candidate-material-submission-precheck integrity fixture and pins v985 as the only material submission precheck source for this audit.
+- v989: freezes v988 as a versioned candidate-material-submission-precheck integrity fixture and checks release label plus source fixture continuity.
+- v988: freezes v987 as a versioned candidate-material-submission-precheck integrity fixture and catalogs the v986-v1010 fixture range without runtime archive walks.
+- v987: freezes v986 as a versioned candidate-material-submission-precheck integrity fixture and pins the Node v1456 stop condition so mini-kv does not create another submission echo.
+- v986: freezes v985 as the source candidate-material-submission-precheck fixture and starts read-only SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON without opening material submission or intake.
 - v985: freezes v984 as the final candidate-material-submission-precheck fixture and closes SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON at route-preview-candidate-material-submission-precheck-closeout-archive-checkpoint while preserving v975 material request integrity lineage, Node v1456 stop-condition alignment, 10 checkpoints, 10 validators, 41 gates, no additional request/precheck echo, no reviewed material consumption, no document intake, no router, no write routing, no WAL touch, and no execution authority.
 - v984: freezes v983 as a versioned candidate-material-submission-precheck fixture and keeps runtime payload import, material intake, router activation, write routing, WAL touch, and execution disabled.
 - v983: freezes v982 as a versioned candidate-material-submission-precheck fixture and keeps redaction, secret, credential, and raw value material absent from mini-kv evidence.

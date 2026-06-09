@@ -170,6 +170,10 @@ add_library(minikv
     src/shard_preview_candidate_material_submission_precheck_checkpoints.cpp
     src/shard_preview_candidate_material_submission_precheck_validators.cpp
     src/shard_preview_candidate_material_submission_precheck_validation.cpp
+    src/shard_preview_candidate_material_submission_precheck_integrity.cpp
+    src/shard_preview_candidate_material_submission_precheck_integrity_stages.cpp
+    src/shard_preview_candidate_material_submission_precheck_integrity_checks.cpp
+    src/shard_preview_candidate_material_submission_precheck_integrity_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -942,6 +946,36 @@ minikv_add_source_dir_test(
     minikv_candidate_material_submission_precheck_fixture_tests
     candidate_material_submission_precheck_fixture_tests
     tests/candidate_material_submission_precheck_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_material_submission_precheck_integrity_stages_tests
+    candidate_material_submission_precheck_integrity_stages_tests
+    tests/candidate_material_submission_precheck_integrity_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_material_submission_precheck_integrity_checks_tests
+    candidate_material_submission_precheck_integrity_checks_tests
+    tests/candidate_material_submission_precheck_integrity_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_material_submission_precheck_integrity_validation_tests
+    candidate_material_submission_precheck_integrity_validation_tests
+    tests/candidate_material_submission_precheck_integrity_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_material_submission_precheck_integrity_tests
+    candidate_material_submission_precheck_integrity_tests
+    tests/candidate_material_submission_precheck_integrity_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_candidate_material_submission_precheck_integrity_fixture_tests
+    candidate_material_submission_precheck_integrity_fixture_tests
+    tests/candidate_material_submission_precheck_integrity_fixture_tests.cpp
 )
 
 minikv_add_linked_test(
