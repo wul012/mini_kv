@@ -32,6 +32,7 @@
 #include "minikv/shard_preview_candidate_intake_packet.hpp"
 #include "minikv/shard_preview_candidate_material_request.hpp"
 #include "minikv/shard_preview_candidate_material_request_integrity.hpp"
+#include "minikv/shard_preview_candidate_material_submission_precheck.hpp"
 #include "minikv/shard_preview_candidate_request_package.hpp"
 #include "minikv/shard_preview_candidate_request_package_integrity.hpp"
 #include "minikv/shard_preview_candidate_submission_precheck.hpp"
@@ -92,7 +93,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 64> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 65> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -157,6 +158,7 @@ constexpr std::array<CommandDispatchEntry, 64> command_dispatch_table = {{
     {"SHARDROUTECANDIDATEINTAKEPACKETJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTECANDIDATEMATERIALREQUESTJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -785,6 +787,14 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         return {shard_preview_candidate_material_request_integrity::format_candidate_material_request_integrity_json()};
     }
 
+    if (command == "SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON");
+        }
+
+        return {shard_preview_candidate_material_submission_precheck::format_candidate_material_submission_precheck_json()};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -1173,6 +1183,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTECANDIDATEINTAKEPACKETJSON\n"
            "  SHARDROUTECANDIDATEMATERIALREQUESTJSON\n"
            "  SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON\n"
+           "  SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

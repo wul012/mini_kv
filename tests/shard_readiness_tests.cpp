@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-candidate-material-request-integrity-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-material-submission-precheck-closeout-archive-checkpoint-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -308,6 +308,42 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"candidatePayloadImported\":false");
     assert_contains(json, "\"approvalGrantCaptured\":false");
     assert_contains(json, "\"signedApprovalEmitted\":false");
+    assert_contains(json, "\"documentRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewCandidateMaterialSubmissionPrecheck\":{\"contract\":"
+                          "\"shard-route-preview-candidate-document-material-submission-precheck.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON\"");
+    assert_contains(json, "\"sourceNodeMaterialSubmissionPrecheckReleaseVersion\":\"Node v1456\"");
+    assert_contains(json, "\"sourceNodeMaterialRequestReleaseVersion\":\"Node v1446\"");
+    assert_contains(json, "\"sourceCandidateMaterialRequestIntegrityReleaseVersion\":\"v975\"");
+    assert_contains(json,
+                    "\"sourceCandidateMaterialRequestIntegrityFixturePath\":\"fixtures/release/shard-readiness-v975.json\"");
+    assert_contains(json, "\"sourceCandidateMaterialRequestIntegrityPublishedStageCount\":10");
+    assert_contains(json, "\"sourceCandidateMaterialRequestIntegrityComplete\":true");
+    assert_contains(json, "\"sourceNodeMaterialRequestItemCount\":25");
+    assert_contains(json, "\"sourceNodeMaterialAcceptanceCheckCount\":25");
+    assert_contains(json, "\"requiredMaterialFieldCount\":20");
+    assert_contains(json, "\"submissionMaterialFieldCount\":20");
+    assert_contains(json, "\"materialSubmissionGateCount\":41");
+    assert_contains(json, "\"candidateMaterialSubmissionPrecheckReleaseVersion\":\"v985\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v984\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v984.json\"");
+    assert_contains(json, "\"candidateMaterialSubmissionPrecheckOnly\":true");
+    assert_contains(json, "\"plannedMaterialSubmissionPrecheckCheckpointCount\":10");
+    assert_contains(json, "\"completedMaterialSubmissionPrecheckCheckpointCount\":10");
+    assert_contains(json, "\"plannedMaterialSubmissionPrecheckValidatorCount\":10");
+    assert_contains(json, "\"completedMaterialSubmissionPrecheckValidatorCount\":10");
+    assert_contains(json, "\"candidateMaterialSubmissionPrecheckValidationPassed\":true");
+    assert_contains(json, "\"nodeStopConditionRespected\":true");
+    assert_contains(json, "\"additionalMaterialSubmissionPrecheckEchoCreated\":false");
+    assert_contains(json, "\"externalReviewedMaterialConsumed\":false");
+    assert_contains(json, "\"materialSubmissionOpened\":false");
+    assert_contains(json, "\"materialPayloadImported\":false");
+    assert_contains(json, "\"documentIntakeOpened\":false");
+    assert_contains(json, "\"candidatePayloadImported\":false");
+    assert_contains(json, "\"candidateDocumentEvaluated\":false");
     assert_contains(json, "\"documentRouterInstalled\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");

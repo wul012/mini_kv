@@ -145,7 +145,7 @@ int main() {
                "\"shardRoutePreviewOperatorValueSupplySignedApprovalCapturePreflight\":") == 1);
     minikv::test_support::assert_contains(
         shard,
-        "\"status\":\"route-preview-candidate-material-request-integrity-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-material-submission-precheck-closeout-archive-checkpoint-read-only\"");
     minikv::test_support::assert_contains(shard,
                                           "\"sourceSignedApprovalTemplateReleaseVersion\":\"v685\"");
     minikv::test_support::assert_contains(shard,

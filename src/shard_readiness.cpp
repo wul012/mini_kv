@@ -45,6 +45,7 @@
 #include "minikv/shard_preview_candidate_intake_packet.hpp"
 #include "minikv/shard_preview_candidate_material_request.hpp"
 #include "minikv/shard_preview_candidate_material_request_integrity.hpp"
+#include "minikv/shard_preview_candidate_material_submission_precheck.hpp"
 #include "minikv/version.hpp"
 
 #include "shard_readiness_lifecycle_sections.hpp"
@@ -58,7 +59,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v975";
+constexpr std::string_view release_version = "v985";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -197,6 +198,8 @@ std::string evidence_digest() {
              shard_preview_candidate_material_request::candidate_material_request_digest_marker()},
             {"shardPreviewCandidateMaterialRequestIntegrity=" +
              shard_preview_candidate_material_request_integrity::candidate_material_request_integrity_digest_marker()},
+            {"shardPreviewCandidateMaterialSubmissionPrecheck=" +
+             shard_preview_candidate_material_submission_precheck::candidate_material_submission_precheck_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -241,7 +244,7 @@ std::string format_json() {
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
            ",\"status\":" +
-           json_string(shard_preview_candidate_material_request_integrity::candidate_material_request_integrity_status()) +
+           json_string(shard_preview_candidate_material_submission_precheck::candidate_material_submission_precheck_status()) +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -321,6 +324,8 @@ std::string format_json() {
            shard_preview_candidate_material_request::format_candidate_material_request_json() +
            ",\"shardPreviewCandidateMaterialRequestIntegrity\":" +
            shard_preview_candidate_material_request_integrity::format_candidate_material_request_integrity_json() +
+           ",\"shardPreviewCandidateMaterialSubmissionPrecheck\":" +
+           shard_preview_candidate_material_submission_precheck::format_candidate_material_submission_precheck_json() +
            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +
