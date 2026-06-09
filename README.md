@@ -1,3 +1,28 @@
+- v1035: freezes v1034 as the final candidate-profile-section fixture and closes SHARDROUTECANDIDATEPROFILESECTIONJSON at route-preview-candidate-profile-section-closeout-summary while preserving Node v1481 renderer-split context, v1010 source integrity, five candidate profile sections, no fresh mini-kv evidence dependency, no document intake, no router, no write routing, no WAL touch, and no execution authority.
+- v1034: freezes v1033 as a versioned candidate-profile-section fixture and verifies CLI/TCP smoke parity for the read-only profile section command without starting sibling services.
+- v1033: freezes v1032 as a versioned candidate-profile-section fixture and keeps validation split from the evidence formatter so scope checks stay maintainable.
+- v1032: freezes v1031 as a versioned candidate-profile-section fixture and embeds exactly one candidate profile section evidence block in SHARDJSON.
+- v1031: freezes v1030 as a versioned candidate-profile-section fixture and exposes SHARDROUTECANDIDATEPROFILESECTIONJSON through COMMANDS, COMMANDSJSON, HELP, and line-editor completion as read-only metadata.
+- v1030: freezes v1029 as a versioned candidate-profile-section fixture and keeps profile section evidence non-executable.
+- v1029: freezes v1028 as a versioned candidate-profile-section fixture and keeps write routing, store mutation, WAL touch, LOAD, RESTORE, and COMPACT disabled.
+- v1028: freezes v1027 as a versioned candidate-profile-section fixture and keeps active candidate document routing disabled.
+- v1027: freezes v1026 as a versioned candidate-profile-section fixture and keeps runtime probes plus live reads disabled.
+- v1026: freezes v1025 as a versioned candidate-profile-section fixture and keeps archive review declarative without runtime screenshot-folder walks.
+- v1025: freezes v1024 as a versioned candidate-profile-section fixture and keeps Node, Java, and mini-kv service startup outside the profile section evidence.
+- v1024: freezes v1023 as a versioned candidate-profile-section fixture and records Node v1481 type catalog compatibility without importing or executing the Node catalog.
+- v1023: freezes v1022 as a versioned candidate-profile-section fixture and keeps disabled upstream probe behavior as fail-closed metadata.
+- v1022: freezes v1021 as a versioned candidate-profile-section fixture and records that Node v1481 does not require fresh Java or mini-kv evidence.
+- v1021: freezes v1020 as a versioned candidate-profile-section fixture and preserves route Markdown parity as a read-only contract statement.
+- v1020: freezes v1019 as a versioned candidate-profile-section fixture and records that renderer ownership changed while route-facing output stays stable.
+- v1019: freezes v1018 as a versioned candidate-profile-section fixture and carries the candidate material submission precheck section as metadata only.
+- v1018: freezes v1017 as a versioned candidate-profile-section fixture and carries the candidate material request section as metadata only.
+- v1017: freezes v1016 as a versioned candidate-profile-section fixture and carries the candidate intake packet section as metadata only.
+- v1016: freezes v1015 as a versioned candidate-profile-section fixture and carries the candidate submission precheck section as metadata only.
+- v1015: freezes v1014 as a versioned candidate-profile-section fixture and carries the candidate request package section as metadata only.
+- v1014: freezes v1013 as a versioned candidate-profile-section fixture and catalogs candidate profile section headings without changing route-facing Markdown.
+- v1013: freezes v1012 as a versioned candidate-profile-section fixture and declares the five candidate document profile sections as a read-only group.
+- v1012: freezes v1011 as a versioned candidate-profile-section fixture and pins Node v1481 renderer ownership context without requiring fresh mini-kv evidence.
+- v1011: freezes v1010 as the source candidate-material-submission-precheck integrity fixture and starts read-only SHARDROUTECANDIDATEPROFILESECTIONJSON from Node v1481 profile section renderer split scope without opening document intake or material submission.
 - v1010: freezes v1009 as the final candidate-material-submission-precheck integrity fixture and closes SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON at route-preview-candidate-material-submission-precheck-integrity-closeout-summary while preserving v985 source precheck evidence, Node v1456 stop-condition alignment, 25 integrity checks, no additional submission echo, no reviewed material consumption, no document intake, no router, no write routing, no WAL touch, and no execution authority.
 - v1009: freezes v1008 as a versioned candidate-material-submission-precheck integrity fixture and verifies CLI/TCP smoke parity for the read-only integrity command without starting sibling services.
 - v1008: freezes v1007 as a versioned candidate-material-submission-precheck integrity fixture and verifies command catalog parity for the integrity command as read-only, mutatesStore=false, touchesWal=false, and stable.

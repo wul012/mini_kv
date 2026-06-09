@@ -50,9 +50,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(
-        json,
-        "\"status\":\"route-preview-candidate-material-submission-precheck-integrity-closeout-summary-read-only\"");
+    assert_contains(json, "\"status\":\"route-preview-candidate-profile-section-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -388,6 +386,41 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"approvalGrantCaptured\":false");
     assert_contains(json, "\"signedApprovalEmitted\":false");
     assert_contains(json, "\"runtimePayloadImported\":false");
+    assert_contains(json, "\"documentRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewCandidateProfileSection\":{\"contract\":"
+                          "\"shard-route-preview-candidate-document-profile-section-renderer-split.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTECANDIDATEPROFILESECTIONJSON\"");
+    assert_contains(json, "\"sourceNodeProfileSectionReleaseVersion\":\"Node v1481\"");
+    assert_contains(json,
+                    "\"sourceNodeCandidateProfileSectionRendererModule\":\"controlledReadOnlyShardPreviewCandidateDocumentProfileSectionRenderer.ts\"");
+    assert_contains(json, "\"sourceNodeProfileSectionGroupCount\":5");
+    assert_contains(json, "\"sourceNodeMigratedCandidateProfileSectionCount\":5");
+    assert_contains(json, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_contains(json, "\"sourceNodeRouteMarkdownChanged\":false");
+    assert_contains(json, "\"sourceNodeRuntimeBehaviorAdded\":false");
+    assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityReleaseVersion\":\"v1010\"");
+    assert_contains(
+        json,
+        "\"sourceCandidateMaterialSubmissionPrecheckIntegrityFixturePath\":\"fixtures/release/shard-readiness-v1010.json\"");
+    assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityPublishedStageCount\":25");
+    assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityComplete\":true");
+    assert_contains(json, "\"candidateProfileSectionReleaseVersion\":\"v1035\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v1034\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v1034.json\"");
+    assert_contains(json, "\"candidateProfileSectionOnly\":true");
+    assert_contains(json, "\"plannedProfileSectionCheckCount\":25");
+    assert_contains(json, "\"completedProfileSectionCheckCount\":25");
+    assert_contains(json, "\"candidateProfileSectionValidationPassed\":true");
+    assert_contains(json, "\"routeFacingMarkdownStable\":true");
+    assert_contains(json, "\"freshMiniKvEvidenceRequiredByNode\":false");
+    assert_contains(json, "\"nodeRendererExecuted\":false");
+    assert_contains(json, "\"miniKvConsumesProfileMaterial\":false");
+    assert_contains(json, "\"documentIntakeOpened\":false");
+    assert_contains(json, "\"materialSubmissionOpened\":false");
+    assert_contains(json, "\"materialPayloadImported\":false");
     assert_contains(json, "\"documentRouterInstalled\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");

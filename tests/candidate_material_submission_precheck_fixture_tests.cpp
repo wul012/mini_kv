@@ -15,7 +15,7 @@ int main() {
     assert(source_fixture.find("\"shardPreviewCandidateMaterialSubmissionPrecheck\"") == std::string::npos);
 
     const auto current_fixture = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
-    assert_contains(current_fixture, "\"releaseVersion\":\"v1010\"");
+    assert_contains(current_fixture, "\"releaseVersion\":\"v1035\"");
     assert_contains(current_fixture, "\"shardPreviewCandidateMaterialSubmissionPrecheck\":{\"contract\":"
                                      "\"shard-route-preview-candidate-document-material-submission-precheck.v1\"");
     assert_contains(current_fixture, "\"sourceCandidateMaterialRequestIntegrityReleaseVersion\":\"v975\"");

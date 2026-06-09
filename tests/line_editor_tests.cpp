@@ -105,6 +105,7 @@ int main() {
           "SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON",
           "SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON",
           "SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON",
+          "SHARDROUTECANDIDATEPROFILESECTIONJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -303,6 +304,10 @@ int main() {
     assert(completion.complete(candidate_material_submission_precheck_integrity_prefix,
                                candidate_material_submission_precheck_integrity_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON "});
+    const std::string candidate_profile_section_prefix = "SHARDROUTECANDIDATEP";
+    assert(completion.complete(candidate_profile_section_prefix,
+                               candidate_profile_section_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTECANDIDATEPROFILESECTIONJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=66") != std::string::npos);
+    assert(result.response.find("command_count=67") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -381,6 +381,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTECANDIDATEPROFILESECTIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -433,6 +436,9 @@ int main() {
                "\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON\",\"category\":\"read\","
+               "\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTECANDIDATEPROFILESECTIONJSON\",\"category\":\"read\","
                "\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -523,9 +529,7 @@ int main() {
     assert_response_contains(result, "\"slotCount\":16");
     assert_response_contains(result, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_response_contains(
-        result,
-        "\"status\":\"route-preview-candidate-material-submission-precheck-integrity-closeout-summary-read-only\"");
+    assert_response_contains(result, "\"status\":\"route-preview-candidate-profile-section-closeout-summary-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1161,6 +1165,35 @@ int main() {
 
     result = processor.execute("SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON extra");
     assert(result.response == "ERR usage: SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON");
+
+    result = processor.execute("SHARDROUTECANDIDATEPROFILESECTIONJSON");
+    assert_response_contains(result,
+                             "\"contract\":\"shard-route-preview-candidate-document-profile-section-renderer-split.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTECANDIDATEPROFILESECTIONJSON\"");
+    assert_response_contains(result, "\"sourceNodeProfileSectionReleaseVersion\":\"Node v1481\"");
+    assert_response_contains(result, "\"sourceNodeProfileSectionGroupCount\":5");
+    assert_response_contains(result, "\"sourceNodeMigratedCandidateProfileSectionCount\":5");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_response_contains(result, "\"sourceNodeRouteMarkdownChanged\":false");
+    assert_response_contains(result, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityReleaseVersion\":\"v1010\"");
+    assert_response_contains(
+        result,
+        "\"sourceCandidateMaterialSubmissionPrecheckIntegrityFixturePath\":\"fixtures/release/shard-readiness-v1010.json\"");
+    assert_response_contains(result, "\"candidateProfileSectionReleaseVersion\":\"v1035\"");
+    assert_response_contains(result, "\"plannedProfileSectionCheckCount\":25");
+    assert_response_contains(result, "\"candidateProfileSectionOnly\":true");
+    assert_response_contains(result, "\"routeFacingMarkdownStable\":true");
+    assert_response_contains(result, "\"freshMiniKvEvidenceRequiredByNode\":false");
+    assert_response_contains(result, "\"nodeRendererExecuted\":false");
+    assert_response_contains(result, "\"miniKvConsumesProfileMaterial\":false");
+    assert_response_contains(result, "\"documentIntakeOpened\":false");
+    assert_response_contains(result, "\"materialSubmissionOpened\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTECANDIDATEPROFILESECTIONJSON extra");
+    assert(result.response == "ERR usage: SHARDROUTECANDIDATEPROFILESECTIONJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
@@ -2684,6 +2717,7 @@ int main() {
     assert(result.response.find("SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTECANDIDATEPROFILESECTIONJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
