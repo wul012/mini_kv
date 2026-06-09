@@ -1,3 +1,13 @@
+- v965: freezes v964 as the final candidate-material-request source fixture and closes SHARDROUTECANDIDATEMATERIALREQUESTJSON at route-preview-candidate-material-request-closeout-summary while preserving v955 intake packet lineage, Node v1446 material request metadata, 25 request items, 25 acceptance checks, 40 gates, no material read, no router, no write routing, no WAL touch, and no execution authority.
+- v964: freezes v963 as a versioned candidate-material-request fixture and verifies CLI/TCP smoke parity for the short read-only material request command without starting sibling services.
+- v963: freezes v962 as a versioned candidate-material-request fixture and keeps document router, write routing, store mutation, and WAL touch disabled.
+- v962: freezes v961 as a versioned candidate-material-request fixture and keeps payload import, staging, evaluation, acceptance, and rejection disabled.
+- v961: freezes v960 as a versioned candidate-material-request fixture and keeps external reviewed real material absent, unread, and unaccepted.
+- v960: freezes v959 as a versioned candidate-material-request fixture and carries twenty requested material fields as metadata only.
+- v959: freezes v958 as a versioned candidate-material-request fixture and declares twenty-five material acceptance checks without accepting candidate documents.
+- v958: freezes v957 as a versioned candidate-material-request fixture and declares twenty-five external material request items without reading material.
+- v957: freezes v956 as a versioned candidate-material-request fixture and pins Node v1446 material request package as read-only planning context.
+- v956: freezes v955 as a versioned candidate-intake-packet source fixture and starts read-only SHARDROUTECANDIDATEMATERIALREQUESTJSON from Node v1446 material request package scope without consuming reviewed material.
 - v955: freezes v954 as the final candidate-intake-packet source fixture and closes SHARDROUTECANDIDATEINTAKEPACKETJSON at route-preview-candidate-intake-packet-closeout-summary while preserving v930 submission precheck lineage, Node v1421 intake packet metadata, 10 slots, 10 guards, no material intake, no router, no write routing, no WAL touch, and no execution authority.
 - v954: freezes v953 as a versioned candidate-intake-packet fixture and verifies CLI/TCP smoke parity for the short read-only intake packet command without starting sibling services.
 - v953: freezes v952 as a versioned candidate-intake-packet fixture and verifies current fixture parity so shard-readiness.json carries the intake packet section.

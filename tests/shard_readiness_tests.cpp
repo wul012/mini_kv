@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-candidate-intake-packet-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-material-request-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -243,6 +243,45 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"reviewedRealCandidateDocumentRead\":false");
     assert_contains(json, "\"candidatePayloadImported\":false");
     assert_contains(json, "\"approvalGrantCaptured\":false");
+    assert_contains(json, "\"shardPreviewCandidateMaterialRequest\":{\"contract\":"
+                          "\"shard-route-preview-candidate-document-material-request.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTECANDIDATEMATERIALREQUESTJSON\"");
+    assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
+                          "v1446-controlled-read-only-shard-preview-candidate-document-material-request-closeout-roadmap.md\"");
+    assert_contains(json, "\"sourceNodeMaterialRequestReleaseVersion\":\"Node v1446\"");
+    assert_contains(json, "\"sourceNodeIntakePacketReleaseVersion\":\"Node v1421\"");
+    assert_contains(json, "\"sourceNodeMaterialRequestItemCount\":25");
+    assert_contains(json, "\"sourceNodeAcceptanceCheckCount\":25");
+    assert_contains(json, "\"sourceNodeIntakeSlotCount\":10");
+    assert_contains(json, "\"sourceNodeIntakeGuardCount\":10");
+    assert_contains(json, "\"sourceNodeRequestedMaterialFieldCount\":20");
+    assert_contains(json, "\"sourceNodeMaterialRequestGateCount\":40");
+    assert_contains(json, "\"sourceCandidateIntakePacketReleaseVersion\":\"v955\"");
+    assert_contains(json,
+                    "\"sourceCandidateIntakePacketFixturePath\":\"fixtures/release/shard-readiness-v955.json\"");
+    assert_contains(json, "\"sourceCandidateIntakePacketPublishedStageCount\":25");
+    assert_contains(json, "\"sourceCandidateIntakePacketComplete\":true");
+    assert_contains(json, "\"candidateMaterialRequestReleaseVersion\":\"v965\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v964\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v964.json\"");
+    assert_contains(json, "\"candidateMaterialRequestOnly\":true");
+    assert_contains(json, "\"plannedMaterialRequestItemCount\":25");
+    assert_contains(json, "\"completedMaterialRequestItemCount\":25");
+    assert_contains(json, "\"plannedAcceptanceCheckCount\":25");
+    assert_contains(json, "\"completedAcceptanceCheckCount\":25");
+    assert_contains(json, "\"candidateMaterialRequestValidationPassed\":true");
+    assert_contains(json, "\"additionalMaterialRequestEchoCreated\":false");
+    assert_contains(json, "\"externalReviewedMaterialRequested\":true");
+    assert_contains(json, "\"reviewedMaterialPresent\":false");
+    assert_contains(json, "\"reviewedRealCandidateDocumentRead\":false");
+    assert_contains(json, "\"materialRequestSatisfied\":false");
+    assert_contains(json, "\"candidatePayloadImported\":false");
+    assert_contains(json, "\"approvalGrantCaptured\":false");
+    assert_contains(json, "\"signedApprovalEmitted\":false");
+    assert_contains(json, "\"documentRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"signedApprovalEmitted\":false");
     assert_contains(json, "\"documentRouterInstalled\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
