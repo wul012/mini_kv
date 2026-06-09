@@ -50,7 +50,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"route-preview-operator-value-supply-profile-section-integrity-closeout-summary-read-only\"");
+    assert_contains(json, "\"status\":\"route-preview-production-live-capture-non-participation-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -580,6 +580,30 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"Node-v936-fresh-sibling-intake-plan\"");
     assert_contains(json, "\"credentialValueRead\":false");
     assert_contains(json, "\"rawEndpointStored\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewProductionLiveCaptureNonParticipation\":{\"contract\":"
+                          "\"shard-route-preview-production-live-capture-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceNodeProductionLiveProbeReadOnlyWindowLiveCaptureCloseoutReleaseVersion\":\"Node v1631\"");
+    assert_contains(json, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_contains(json, "\"sourceNodeRequiresFreshJavaEvidence\":false");
+    assert_contains(json, "\"sourceIntegrityCommand\":\"SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON\"");
+    assert_contains(json, "\"sourceIntegrityReleaseVersion\":\"v1170\"");
+    assert_contains(json, "\"sourceIntegrityPublishedStageCount\":10");
+    assert_contains(json, "\"productionLiveCaptureNonParticipationReleaseVersion\":\"v1195\"");
+    assert_contains(json, "\"plannedProductionLiveCaptureNonParticipationCheckCount\":25");
+    assert_contains(json, "\"completedProductionLiveCaptureNonParticipationCheckCount\":25");
+    assert_contains(json, "\"productionLiveCaptureNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"nodeLiveCaptureExecuted\":false");
+    assert_contains(json, "\"miniKvStartsLiveCapture\":false");
+    assert_contains(json, "\"miniKvReadsRawEndpoint\":false");
+    assert_contains(json, "\"liveEndpointRead\":false");
+    assert_contains(json, "\"rawEndpointParsed\":false");
+    assert_contains(json, "\"rawEndpointStored\":false");
+    assert_contains(json, "\"credentialValueRead\":false");
+    assert_contains(json, "\"productionLiveReadAllowed\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
