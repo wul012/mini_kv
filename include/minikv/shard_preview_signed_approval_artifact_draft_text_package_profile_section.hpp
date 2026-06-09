@@ -1,0 +1,13 @@
+#pragma once
+
+#include <string>
+
+namespace minikv::shard_preview_signed_approval_artifact_draft_text_package_profile_section {
+
+std::string format_signed_approval_artifact_draft_text_package_profile_section_json();
+std::string format_signed_approval_artifact_draft_text_package_profile_section_stage_catalog_json();
+std::string signed_approval_artifact_draft_text_package_profile_section_digest_marker();
+std::string signed_approval_artifact_draft_text_package_profile_section_status();
+int published_stage_count();
+
+} // namespace minikv::shard_preview_signed_approval_artifact_draft_text_package_profile_section

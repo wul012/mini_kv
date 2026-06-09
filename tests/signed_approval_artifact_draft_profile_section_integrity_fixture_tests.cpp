@@ -16,7 +16,7 @@ int main() {
            std::string::npos);
 
     const auto current_fixture = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
-    assert_contains(current_fixture, "\"releaseVersion\":\"v1085\"");
+    assert_contains(current_fixture, "\"releaseVersion\":\"v1110\"");
     assert_contains(current_fixture,
                     "\"shardPreviewSignedApprovalArtifactDraftProfileSectionIntegrity\":{\"contract\":"
                     "\"shard-route-preview-signed-approval-artifact-draft-profile-section-integrity.v1\"");

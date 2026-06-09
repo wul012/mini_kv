@@ -553,6 +553,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "SHARDROUTECANDIDATEPROFILESECTIONJSON",
                                   "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON",
                                   "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON",
+                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }

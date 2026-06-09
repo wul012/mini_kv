@@ -40,6 +40,7 @@
 #include "minikv/shard_preview_candidate_submission_precheck.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section_integrity.hpp"
+#include "minikv/shard_preview_signed_approval_artifact_draft_text_package_profile_section.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/string_utils.hpp"
 #include "minikv/snapshot.hpp"
@@ -97,7 +98,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 69> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 70> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -168,6 +169,8 @@ constexpr std::array<CommandDispatchEntry, 69> command_dispatch_table = {{
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON",
+     CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
@@ -841,6 +844,15 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
                     format_signed_approval_artifact_draft_profile_section_integrity_json()};
     }
 
+    if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON");
+        }
+
+        return {shard_preview_signed_approval_artifact_draft_text_package_profile_section::
+                    format_signed_approval_artifact_draft_text_package_profile_section_json()};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -1234,6 +1246,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTECANDIDATEPROFILESECTIONJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON\n"
+           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

@@ -50,7 +50,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"route-preview-signed-approval-artifact-draft-profile-section-integrity-closeout-summary-read-only\"");
+    assert_contains(json, "\"status\":\"route-preview-signed-approval-artifact-draft-text-package-profile-section-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -482,6 +482,35 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"signedApprovalCreated\":false");
     assert_contains(json, "\"materialIntakeOpened\":false");
     assert_contains(json, "\"loadRestoreCompactAllowed\":false");
+    assert_contains(json, "\"shardPreviewSignedApprovalArtifactDraftTextPackageProfileSection\":{\"contract\":"
+                          "\"shard-route-preview-signed-approval-artifact-draft-text-package-profile-section-renderer-split.v1\"");
+    assert_contains(
+        json,
+        "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON\"");
+    assert_contains(json, "\"sourceNodeSignedApprovalArtifactDraftTextPackageProfileSectionReleaseVersion\":\"Node v1531\"");
+    assert_contains(json, "\"sourceCurrentShardReadinessReleaseVersion\":\"v1085\"");
+    assert_contains(json, "\"sourceSignedApprovalDraftProfileSectionIntegrityReleaseVersion\":\"v1085\"");
+    assert_contains(json, "\"sourceDraftTextPackageReviewPreflightReleaseVersion\":\"v810\"");
+    assert_contains(json, "\"sourceDraftTextPackageReviewCloseoutAuditReleaseVersion\":\"v835\"");
+    assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v860\"");
+    assert_contains(json, "\"sourceComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v880\"");
+    assert_contains(json, "\"signedApprovalArtifactDraftTextPackageProfileSectionReleaseVersion\":\"v1110\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v1109\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v1109.json\"");
+    assert_contains(json, "\"signedApprovalArtifactDraftTextPackageProfileSectionOnly\":true");
+    assert_contains(json, "\"plannedSignedApprovalArtifactDraftTextPackageProfileSectionCheckCount\":25");
+    assert_contains(json, "\"completedSignedApprovalArtifactDraftTextPackageProfileSectionCheckCount\":25");
+    assert_contains(json, "\"signedApprovalArtifactDraftTextPackageProfileSectionValidationPassed\":true");
+    assert_contains(json, "\"signedApprovalArtifactDraftTextPackageProfileSectionCount\":9");
+    assert_contains(json, "\"nodeMigratedSignedApprovalArtifactDraftTextPackageProfileSectionCount\":9");
+    assert_contains(json, "\"textPackageMaterialImported\":false");
+    assert_contains(json, "\"textPackageMaterialAccepted\":false");
+    assert_contains(json, "\"secretValueRead\":false");
+    assert_contains(json, "\"nodeRendererExecuted\":false");
+    assert_contains(json, "\"nodeCatalogImported\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
