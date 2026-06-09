@@ -190,6 +190,10 @@ add_library(minikv
     src/shard_preview_signed_approval_artifact_draft_text_package_profile_section_stages.cpp
     src/shard_preview_signed_approval_artifact_draft_text_package_profile_section_checks.cpp
     src/shard_preview_signed_approval_artifact_draft_text_package_profile_section_validation.cpp
+    src/shard_preview_operator_value_supply_approval_profile_section.cpp
+    src/shard_preview_operator_value_supply_approval_profile_section_stages.cpp
+    src/shard_preview_operator_value_supply_approval_profile_section_checks.cpp
+    src/shard_preview_operator_value_supply_approval_profile_section_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -1112,6 +1116,36 @@ minikv_add_source_dir_test(
     minikv_signed_approval_artifact_draft_text_package_profile_section_fixture_tests
     signed_approval_artifact_draft_text_package_profile_section_fixture_tests
     tests/signed_approval_artifact_draft_text_package_profile_section_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_operator_value_supply_approval_profile_section_stages_tests
+    operator_value_supply_approval_profile_section_stages_tests
+    tests/operator_value_supply_approval_profile_section_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_operator_value_supply_approval_profile_section_checks_tests
+    operator_value_supply_approval_profile_section_checks_tests
+    tests/operator_value_supply_approval_profile_section_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_operator_value_supply_approval_profile_section_validation_tests
+    operator_value_supply_approval_profile_section_validation_tests
+    tests/operator_value_supply_approval_profile_section_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_operator_value_supply_approval_profile_section_tests
+    operator_value_supply_approval_profile_section_tests
+    tests/operator_value_supply_approval_profile_section_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_operator_value_supply_approval_profile_section_fixture_tests
+    operator_value_supply_approval_profile_section_fixture_tests
+    tests/operator_value_supply_approval_profile_section_fixture_tests.cpp
 )
 
 minikv_add_linked_test(

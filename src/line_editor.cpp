@@ -554,6 +554,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON",
                                   "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON",
                                   "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON",
+                                  "SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }

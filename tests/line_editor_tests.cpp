@@ -109,6 +109,7 @@ int main() {
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON",
+          "SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -205,6 +206,10 @@ int main() {
     const std::string value_supply_approval_template_prefix = "SHARDROUTEVALUESUPPLYA";
     assert(completion.complete(value_supply_approval_template_prefix,
                                value_supply_approval_template_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYAPPROVAL"});
+    const std::string value_supply_approval_template_exact_prefix = "SHARDROUTEVALUESUPPLYAPPROVALT";
+    assert(completion.complete(value_supply_approval_template_exact_prefix,
+                               value_supply_approval_template_exact_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON "});
     const std::string value_supply_signed_approval_template_prefix = "SHARDROUTEVALUESUPPLYSI";
     assert(completion.complete(value_supply_signed_approval_template_prefix,
@@ -328,6 +333,10 @@ int main() {
                                signed_approval_draft_text_package_profile_section_prefix.size()) ==
            std::optional<std::string>{
                "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON "});
+    const std::string operator_value_supply_approval_profile_section_prefix = "SHARDROUTEVALUESUPPLYAPPROVALP";
+    assert(completion.complete(operator_value_supply_approval_profile_section_prefix,
+                               operator_value_supply_approval_profile_section_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

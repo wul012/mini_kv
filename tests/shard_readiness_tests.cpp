@@ -50,7 +50,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"route-preview-signed-approval-artifact-draft-text-package-profile-section-closeout-summary-read-only\"");
+    assert_contains(json, "\"status\":\"route-preview-operator-value-supply-approval-profile-section-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -505,6 +505,32 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"nodeMigratedSignedApprovalArtifactDraftTextPackageProfileSectionCount\":9");
     assert_contains(json, "\"textPackageMaterialImported\":false");
     assert_contains(json, "\"textPackageMaterialAccepted\":false");
+    assert_contains(json, "\"secretValueRead\":false");
+    assert_contains(json, "\"nodeRendererExecuted\":false");
+    assert_contains(json, "\"nodeCatalogImported\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewOperatorValueSupplyApprovalProfileSection\":{\"contract\":"
+                          "\"shard-route-preview-operator-value-supply-approval-profile-section-renderer-split.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON\"");
+    assert_contains(json, "\"sourceNodeOperatorValueSupplyApprovalProfileSectionReleaseVersion\":\"Node v1556\"");
+    assert_contains(json, "\"sourceCurrentShardReadinessReleaseVersion\":\"v1110\"");
+    assert_contains(json, "\"sourceApprovalPacketDraftReleaseVersion\":\"v660\"");
+    assert_contains(json, "\"sourceSignedApprovalTemplateReleaseVersion\":\"v685\"");
+    assert_contains(json, "\"sourceSignedApprovalCapturePreflightReleaseVersion\":\"v710\"");
+    assert_contains(json, "\"sourceSignedApprovalCaptureArtifactPreflightReleaseVersion\":\"v735\"");
+    assert_contains(json, "\"operatorValueSupplyApprovalProfileSectionReleaseVersion\":\"v1135\"");
+    assert_contains(json, "\"operatorValueSupplyApprovalProfileSectionOnly\":true");
+    assert_contains(json, "\"plannedOperatorValueSupplyApprovalProfileSectionCheckCount\":25");
+    assert_contains(json, "\"completedOperatorValueSupplyApprovalProfileSectionCheckCount\":25");
+    assert_contains(json, "\"operatorValueSupplyApprovalProfileSectionValidationPassed\":true");
+    assert_contains(json, "\"operatorValueSupplyApprovalProfileSectionCount\":5");
+    assert_contains(json, "\"nodeMigratedOperatorValueSupplyApprovalProfileSectionCount\":5");
+    assert_contains(json, "\"approval-packet-review\"");
+    assert_contains(json, "\"signed-approval-capture-artifact-preflight\"");
+    assert_contains(json, "\"approvalMaterialImported\":false");
+    assert_contains(json, "\"signedApprovalCaptured\":false");
     assert_contains(json, "\"secretValueRead\":false");
     assert_contains(json, "\"nodeRendererExecuted\":false");
     assert_contains(json, "\"nodeCatalogImported\":false");

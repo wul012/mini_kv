@@ -48,6 +48,7 @@
 #include "minikv/shard_preview_candidate_material_submission_precheck.hpp"
 #include "minikv/shard_preview_candidate_material_submission_precheck_integrity.hpp"
 #include "minikv/shard_preview_candidate_profile_section.hpp"
+#include "minikv/shard_preview_operator_value_supply_approval_profile_section.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section_integrity.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_text_package_profile_section.hpp"
@@ -64,7 +65,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v1110";
+constexpr std::string_view release_version = "v1135";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -219,6 +220,9 @@ std::string evidence_digest() {
             {"shardPreviewSignedApprovalArtifactDraftTextPackageProfileSection=" +
              shard_preview_signed_approval_artifact_draft_text_package_profile_section::
                  signed_approval_artifact_draft_text_package_profile_section_digest_marker()},
+            {"shardPreviewOperatorValueSupplyApprovalProfileSection=" +
+             shard_preview_operator_value_supply_approval_profile_section::
+                 operator_value_supply_approval_profile_section_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -263,8 +267,8 @@ std::string format_json() {
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
            ",\"status\":" +
-           json_string(shard_preview_signed_approval_artifact_draft_text_package_profile_section::
-                           signed_approval_artifact_draft_text_package_profile_section_status()) +
+           json_string(shard_preview_operator_value_supply_approval_profile_section::
+                           operator_value_supply_approval_profile_section_status()) +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -360,6 +364,9 @@ std::string format_json() {
            ",\"shardPreviewSignedApprovalArtifactDraftTextPackageProfileSection\":" +
            shard_preview_signed_approval_artifact_draft_text_package_profile_section::
                format_signed_approval_artifact_draft_text_package_profile_section_json() +
+           ",\"shardPreviewOperatorValueSupplyApprovalProfileSection\":" +
+           shard_preview_operator_value_supply_approval_profile_section::
+               format_operator_value_supply_approval_profile_section_json() +
            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

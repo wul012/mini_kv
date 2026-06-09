@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=70") != std::string::npos);
+    assert(result.response.find("command_count=71") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -393,6 +393,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -457,6 +460,9 @@ int main() {
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -549,7 +555,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-signed-approval-artifact-draft-text-package-profile-section-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-operator-value-supply-approval-profile-section-closeout-summary-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1309,6 +1315,37 @@ int main() {
     result = processor.execute("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON extra");
     assert(result.response ==
            "ERR usage: SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON");
+
+    result = processor.execute("SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON");
+    assert_response_contains(
+        result,
+        "\"contract\":\"shard-route-preview-operator-value-supply-approval-profile-section-renderer-split.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON\"");
+    assert_response_contains(
+        result,
+        "\"sourceNodeOperatorValueSupplyApprovalProfileSectionReleaseVersion\":\"Node v1556\"");
+    assert_response_contains(result, "\"sourceCurrentShardReadinessReleaseVersion\":\"v1110\"");
+    assert_response_contains(result, "\"sourceApprovalPacketDraftReleaseVersion\":\"v660\"");
+    assert_response_contains(result, "\"sourceSignedApprovalTemplateReleaseVersion\":\"v685\"");
+    assert_response_contains(result, "\"sourceSignedApprovalCapturePreflightReleaseVersion\":\"v710\"");
+    assert_response_contains(result, "\"sourceSignedApprovalCaptureArtifactPreflightReleaseVersion\":\"v735\"");
+    assert_response_contains(result, "\"operatorValueSupplyApprovalProfileSectionReleaseVersion\":\"v1135\"");
+    assert_response_contains(result, "\"plannedOperatorValueSupplyApprovalProfileSectionCheckCount\":25");
+    assert_response_contains(result, "\"operatorValueSupplyApprovalProfileSectionOnly\":true");
+    assert_response_contains(result, "\"operatorValueSupplyApprovalProfileSectionCount\":5");
+    assert_response_contains(result, "\"approval-packet-review\"");
+    assert_response_contains(result, "\"signed-approval-capture-artifact-preflight\"");
+    assert_response_contains(result, "\"nodeRendererExecuted\":false");
+    assert_response_contains(result, "\"nodeCatalogImported\":false");
+    assert_response_contains(result, "\"approvalMaterialImported\":false");
+    assert_response_contains(result, "\"signedApprovalCaptured\":false");
+    assert_response_contains(result, "\"secretValueRead\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON extra");
+    assert(result.response == "ERR usage: SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
@@ -2839,6 +2876,7 @@ int main() {
            std::string::npos);
     assert(result.response.find("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON") !=
            std::string::npos);
+    assert(result.response.find("SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
