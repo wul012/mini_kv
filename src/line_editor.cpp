@@ -552,6 +552,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON",
                                   "SHARDROUTECANDIDATEPROFILESECTIONJSON",
                                   "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON",
+                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }
