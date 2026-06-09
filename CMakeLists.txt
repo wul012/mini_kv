@@ -152,6 +152,11 @@ add_library(minikv
     src/shard_preview_candidate_submission_precheck_checkpoints.cpp
     src/shard_preview_candidate_submission_precheck_validators.cpp
     src/shard_preview_candidate_submission_precheck_validation.cpp
+    src/shard_preview_candidate_intake_packet.cpp
+    src/shard_preview_candidate_intake_packet_stages.cpp
+    src/shard_preview_candidate_intake_packet_slots.cpp
+    src/shard_preview_candidate_intake_packet_guards.cpp
+    src/shard_preview_candidate_intake_packet_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -792,6 +797,42 @@ minikv_add_source_dir_test(
     minikv_candidate_submission_precheck_fixture_tests
     candidate_submission_precheck_fixture_tests
     tests/candidate_submission_precheck_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_intake_packet_stages_tests
+    candidate_intake_packet_stages_tests
+    tests/candidate_intake_packet_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_intake_packet_slots_tests
+    candidate_intake_packet_slots_tests
+    tests/candidate_intake_packet_slots_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_intake_packet_guards_tests
+    candidate_intake_packet_guards_tests
+    tests/candidate_intake_packet_guards_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_intake_packet_validation_tests
+    candidate_intake_packet_validation_tests
+    tests/candidate_intake_packet_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_candidate_intake_packet_tests
+    candidate_intake_packet_tests
+    tests/candidate_intake_packet_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_candidate_intake_packet_fixture_tests
+    candidate_intake_packet_fixture_tests
+    tests/candidate_intake_packet_fixture_tests.cpp
 )
 
 minikv_add_linked_test(

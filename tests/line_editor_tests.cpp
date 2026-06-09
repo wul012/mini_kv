@@ -100,6 +100,7 @@ int main() {
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON",
           "SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON",
           "SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON",
+          "SHARDROUTECANDIDATEINTAKEPACKETJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -264,6 +265,10 @@ int main() {
     assert(completion.complete(candidate_submission_precheck_prefix,
                                candidate_submission_precheck_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON "});
+    const std::string candidate_intake_packet_prefix = "SHARDROUTECANDIDATEI";
+    assert(completion.complete(candidate_intake_packet_prefix,
+                               candidate_intake_packet_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTECANDIDATEINTAKEPACKETJSON "});
     assert(!completion.complete("S", 1).has_value());
     assert(!completion.complete("BAD", 3).has_value());
     assert(!completion.complete("PING name", 6).has_value());

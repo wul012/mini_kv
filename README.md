@@ -1,3 +1,28 @@
+- v955: freezes v954 as the final candidate-intake-packet source fixture and closes SHARDROUTECANDIDATEINTAKEPACKETJSON at route-preview-candidate-intake-packet-closeout-summary while preserving v930 submission precheck lineage, Node v1421 intake packet metadata, 10 slots, 10 guards, no material intake, no router, no write routing, no WAL touch, and no execution authority.
+- v954: freezes v953 as a versioned candidate-intake-packet fixture and verifies CLI/TCP smoke parity for the short read-only intake packet command without starting sibling services.
+- v953: freezes v952 as a versioned candidate-intake-packet fixture and verifies current fixture parity so shard-readiness.json carries the intake packet section.
+- v952: freezes v951 as a versioned candidate-intake-packet fixture and keeps Node, Java, and archive sibling mutation disabled.
+- v951: freezes v950 as a versioned candidate-intake-packet fixture and keeps WAL touch, load, restore, and compaction outside packet review.
+- v950: freezes v949 as a versioned candidate-intake-packet fixture and keeps write routing and store mutation disabled.
+- v949: freezes v948 as a versioned candidate-intake-packet fixture and keeps document router installation disabled.
+- v948: freezes v947 as a versioned candidate-intake-packet fixture and keeps runtime payload import and execution disabled.
+- v947: freezes v946 as a versioned candidate-intake-packet fixture and keeps signature emission, parsing, and verification disabled.
+- v946: freezes v945 as a versioned candidate-intake-packet fixture and keeps approval grant capture disabled.
+- v945: freezes v944 as a versioned candidate-intake-packet fixture and keeps candidate evaluation, acceptance, and rejection disabled.
+- v944: freezes v943 as a versioned candidate-intake-packet fixture and keeps candidate staging and materialization disabled.
+- v943: freezes v942 as a versioned candidate-intake-packet fixture and keeps payload import and staging disabled.
+- v942: freezes v941 as a versioned candidate-intake-packet fixture and keeps synthetic candidate material rejected.
+- v941: freezes v940 as a versioned candidate-intake-packet fixture and keeps reviewed real candidate material absent and unread.
+- v940: freezes v939 as a versioned candidate-intake-packet fixture and declares document envelope placeholders without materializing a document.
+- v939: freezes v938 as a versioned candidate-intake-packet fixture and records the Node v1421 thirty-five-gate expectation as read-only metadata only.
+- v938: freezes v937 as a versioned candidate-intake-packet fixture and carries forward twenty requested candidate fields without parsing values.
+- v937: freezes v936 as a versioned candidate-intake-packet fixture and carries twenty-five source submission validators as metadata.
+- v936: freezes v935 as a versioned candidate-intake-packet fixture and carries twenty-five source submission checkpoints as metadata.
+- v935: freezes v934 as a versioned candidate-intake-packet fixture and declares ten intake guards without accepting documents.
+- v934: freezes v933 as a versioned candidate-intake-packet fixture and declares ten intake slots without opening material intake.
+- v933: freezes v932 as a versioned candidate-intake-packet fixture and keeps v930 precheck lineage visible before intake packet preparation.
+- v932: freezes v931 as a versioned candidate-intake-packet fixture and pins Node v1421 as read-only planning context.
+- v931: freezes v930 as a versioned candidate-submission-precheck source fixture and starts read-only SHARDROUTECANDIDATEINTAKEPACKETJSON from Node v1421 intake packet scope without consuming reviewed material.
 - v930: freezes v929 as a versioned candidate-submission-precheck source fixture and closes SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON at route-preview-candidate-submission-precheck-closeout-summary while preserving v920 integrity lineage, Node v1411 submission precheck metadata, 10 mini-kv checkpoints, 10 validators, no document intake, no router, no write routing, no WAL touch, and no execution authority.
 - v929: freezes v928 as a versioned candidate-submission-precheck fixture and verifies CLI/TCP smoke parity for the short read-only submission precheck command without starting sibling services.
 - v928: freezes v927 as a versioned candidate-submission-precheck fixture and keeps approval capture, detached signature parsing, runtime payload import, and execution disabled.
