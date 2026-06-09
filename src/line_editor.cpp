@@ -547,6 +547,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON",
                                   "SHARDROUTECANDIDATEINTAKEPACKETJSON",
                                   "SHARDROUTECANDIDATEMATERIALREQUESTJSON",
+                                  "SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }

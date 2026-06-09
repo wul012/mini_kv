@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=63") != std::string::npos);
+    assert(result.response.find("command_count=64") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -372,6 +372,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTECANDIDATEMATERIALREQUESTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -416,6 +419,9 @@ int main() {
     assert(result.response.find(
                "\"name\":\"SHARDROUTECANDIDATEMATERIALREQUESTJSON\",\"category\":\"read\",\"mutates_store\":false,"
                "\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON\",\"category\":\"read\","
+               "\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
                "\"touches_wal\":false") != std::string::npos);
@@ -507,7 +513,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-candidate-material-request-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-material-request-integrity-closeout-summary-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1069,6 +1075,25 @@ int main() {
 
     result = processor.execute("SHARDROUTECANDIDATEMATERIALREQUESTJSON extra");
     assert(result.response == "ERR usage: SHARDROUTECANDIDATEMATERIALREQUESTJSON");
+
+    result = processor.execute("SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON");
+    assert_response_contains(result, "\"contract\":\"shard-route-preview-candidate-material-request-fixture-integrity.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON\"");
+    assert_response_contains(result, "\"sourceCandidateMaterialRequestReleaseVersion\":\"v965\"");
+    assert_response_contains(result, "\"sourceCandidateMaterialRequestFixturePath\":\"fixtures/release/shard-readiness-v965.json\"");
+    assert_response_contains(result, "\"candidateMaterialRequestIntegrityReleaseVersion\":\"v975\"");
+    assert_response_contains(result, "\"plannedIntegrityCheckCount\":15");
+    assert_response_contains(result, "\"candidateMaterialRequestIntegrityOnly\":true");
+    assert_response_contains(result, "\"nodeStopConditionRespected\":true");
+    assert_response_contains(result, "\"additionalMaterialRequestEchoCreated\":false");
+    assert_response_contains(result, "\"externalReviewedMaterialConsumed\":false");
+    assert_response_contains(result, "\"documentIntakeOpened\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON extra");
+    assert(result.response == "ERR usage: SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
@@ -2589,6 +2614,7 @@ int main() {
     assert(result.response.find("SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTECANDIDATEINTAKEPACKETJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTECANDIDATEMATERIALREQUESTJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);

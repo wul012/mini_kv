@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-candidate-material-request-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-material-request-integrity-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -275,6 +275,36 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"reviewedMaterialPresent\":false");
     assert_contains(json, "\"reviewedRealCandidateDocumentRead\":false");
     assert_contains(json, "\"materialRequestSatisfied\":false");
+    assert_contains(json, "\"candidatePayloadImported\":false");
+    assert_contains(json, "\"approvalGrantCaptured\":false");
+    assert_contains(json, "\"signedApprovalEmitted\":false");
+    assert_contains(json, "\"documentRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewCandidateMaterialRequestIntegrity\":{\"contract\":"
+                          "\"shard-route-preview-candidate-material-request-fixture-integrity.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON\"");
+    assert_contains(json, "\"sourceCandidateMaterialRequestReleaseVersion\":\"v965\"");
+    assert_contains(json,
+                    "\"sourceCandidateMaterialRequestFixturePath\":\"fixtures/release/shard-readiness-v965.json\"");
+    assert_contains(json, "\"sourceCandidateMaterialRequestPublishedStageCount\":10");
+    assert_contains(json, "\"sourceCandidateMaterialRequestComplete\":true");
+    assert_contains(json, "\"sourceMaterialRequestItemCount\":25");
+    assert_contains(json, "\"sourceAcceptanceCheckCount\":25");
+    assert_contains(json, "\"sourceRequestedMaterialFieldCount\":20");
+    assert_contains(json, "\"sourceMaterialRequestGateCount\":40");
+    assert_contains(json, "\"candidateMaterialRequestIntegrityReleaseVersion\":\"v975\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v974\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v974.json\"");
+    assert_contains(json, "\"candidateMaterialRequestIntegrityOnly\":true");
+    assert_contains(json, "\"plannedIntegrityCheckCount\":15");
+    assert_contains(json, "\"completedIntegrityCheckCount\":15");
+    assert_contains(json, "\"candidateMaterialRequestIntegrityValidationPassed\":true");
+    assert_contains(json, "\"nodeStopConditionRespected\":true");
+    assert_contains(json, "\"externalReviewedMaterialConsumed\":false");
+    assert_contains(json, "\"materialRequestReopened\":false");
+    assert_contains(json, "\"documentIntakeOpened\":false");
     assert_contains(json, "\"candidatePayloadImported\":false");
     assert_contains(json, "\"approvalGrantCaptured\":false");
     assert_contains(json, "\"signedApprovalEmitted\":false");
