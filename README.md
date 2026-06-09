@@ -1,3 +1,28 @@
+- v1060: freezes v1059 as the final signed-approval-artifact-draft-profile-section fixture and closes SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON at route-preview-signed-approval-artifact-draft-profile-section-closeout-summary while preserving Node v1506 renderer-split context, v1035 current fixture lineage, v785 instruction preflight lineage, five signed approval draft profile sections, no fresh mini-kv evidence dependency, no signed approval creation, no material intake, no router, no write routing, no WAL touch, and no execution authority.
+- v1059: freezes v1058 as a versioned signed-approval-artifact-draft-profile-section fixture and verifies CLI/TCP smoke parity for the read-only profile section command without starting sibling services.
+- v1058: freezes v1057 as a versioned signed-approval-artifact-draft-profile-section fixture and keeps validation split from the evidence formatter so scope checks stay maintainable.
+- v1057: freezes v1056 as a versioned signed-approval-artifact-draft-profile-section fixture and embeds exactly one signed approval draft profile section evidence block in SHARDJSON.
+- v1056: freezes v1055 as a versioned signed-approval-artifact-draft-profile-section fixture and exposes SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON through COMMANDS, COMMANDSJSON, HELP, and line-editor completion as read-only metadata.
+- v1055: freezes v1054 as a versioned signed-approval-artifact-draft-profile-section fixture and keeps the profile section evidence non-executable.
+- v1054: freezes v1053 as a versioned signed-approval-artifact-draft-profile-section fixture and keeps write routing, store mutation, WAL touch, LOAD, RESTORE, and COMPACT disabled.
+- v1053: freezes v1052 as a versioned signed-approval-artifact-draft-profile-section fixture and keeps active signed approval draft routing disabled.
+- v1052: freezes v1051 as a versioned signed-approval-artifact-draft-profile-section fixture and keeps runtime probes plus live reads disabled.
+- v1051: freezes v1050 as a versioned signed-approval-artifact-draft-profile-section fixture and keeps Node, Java, and mini-kv service startup outside the profile section evidence.
+- v1050: freezes v1049 as a versioned signed-approval-artifact-draft-profile-section fixture and records Node type catalog compatibility without importing or executing the Node catalog.
+- v1049: freezes v1048 as a versioned signed-approval-artifact-draft-profile-section fixture and locks false draft artifact, signed approval, approval grant, governance echo, and runtime payload flags.
+- v1048: freezes v1047 as a versioned signed-approval-artifact-draft-profile-section fixture and records that Node v1506 does not require fresh Java or mini-kv evidence.
+- v1047: freezes v1046 as a versioned signed-approval-artifact-draft-profile-section fixture and preserves route Markdown parity as a read-only contract statement.
+- v1046: freezes v1045 as a versioned signed-approval-artifact-draft-profile-section fixture and records that renderer ownership changed while route-facing output stays stable.
+- v1045: freezes v1044 as a versioned signed-approval-artifact-draft-profile-section fixture and locks Node v1111, v1136, v1161, v1186, and v1211 markers as metadata only.
+- v1044: freezes v1043 as a versioned signed-approval-artifact-draft-profile-section fixture and carries the instruction preflight section as metadata only.
+- v1043: freezes v1042 as a versioned signed-approval-artifact-draft-profile-section fixture and carries the authoring readiness section as metadata only.
+- v1042: freezes v1041 as a versioned signed-approval-artifact-draft-profile-section fixture and carries the review package preflight section as metadata only.
+- v1041: freezes v1040 as a versioned signed-approval-artifact-draft-profile-section fixture and carries the draft readiness section as metadata only.
+- v1040: freezes v1039 as a versioned signed-approval-artifact-draft-profile-section fixture and carries the draft preflight section as metadata only.
+- v1039: freezes v1038 as a versioned signed-approval-artifact-draft-profile-section fixture and catalogs signed approval draft profile headings without changing route Markdown.
+- v1038: freezes v1037 as a versioned signed-approval-artifact-draft-profile-section fixture and declares the five signed approval artifact draft profile sections as a read-only group.
+- v1037: freezes v1036 as a versioned signed-approval-artifact-draft-profile-section fixture and pins Node v1506 renderer ownership context without requiring fresh mini-kv evidence.
+- v1036: freezes v1035 as the source current shard readiness fixture and starts read-only SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON from Node v1506 profile section renderer split scope without creating signed approval artifacts, opening material intake, or executing runtime behavior.
 - v1035: freezes v1034 as the final candidate-profile-section fixture and closes SHARDROUTECANDIDATEPROFILESECTIONJSON at route-preview-candidate-profile-section-closeout-summary while preserving Node v1481 renderer-split context, v1010 source integrity, five candidate profile sections, no fresh mini-kv evidence dependency, no document intake, no router, no write routing, no WAL touch, and no execution authority.
 - v1034: freezes v1033 as a versioned candidate-profile-section fixture and verifies CLI/TCP smoke parity for the read-only profile section command without starting sibling services.
 - v1033: freezes v1032 as a versioned candidate-profile-section fixture and keeps validation split from the evidence formatter so scope checks stay maintainable.

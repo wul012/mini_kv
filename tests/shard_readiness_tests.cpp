@@ -50,7 +50,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"route-preview-candidate-profile-section-closeout-summary-read-only\"");
+    assert_contains(json, "\"status\":\"route-preview-signed-approval-artifact-draft-profile-section-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -422,6 +422,40 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"materialSubmissionOpened\":false");
     assert_contains(json, "\"materialPayloadImported\":false");
     assert_contains(json, "\"documentRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewSignedApprovalArtifactDraftProfileSection\":{\"contract\":"
+                          "\"shard-route-preview-signed-approval-artifact-draft-profile-section-renderer-split.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON\"");
+    assert_contains(json, "\"sourceNodeSignedApprovalArtifactDraftProfileSectionReleaseVersion\":\"Node v1506\"");
+    assert_contains(json,
+                    "\"sourceNodeSignedApprovalArtifactDraftProfileSectionRendererModule\":\"controlledReadOnlyShardPreviewSignedApprovalArtifactDraftProfileSectionRenderer.ts\"");
+    assert_contains(json, "\"sourceNodeSignedApprovalArtifactDraftProfileSectionGroupCount\":5");
+    assert_contains(json, "\"sourceNodeMigratedSignedApprovalArtifactDraftProfileSectionCount\":5");
+    assert_contains(json, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_contains(json, "\"sourceNodeRouteMarkdownChanged\":false");
+    assert_contains(json, "\"sourceNodeRuntimeBehaviorAdded\":false");
+    assert_contains(json, "\"sourceCurrentShardReadinessReleaseVersion\":\"v1035\"");
+    assert_contains(json, "\"sourceCandidateProfileSectionReleaseVersion\":\"v1035\"");
+    assert_contains(json, "\"sourceCandidateProfileSectionPublishedStageCount\":25");
+    assert_contains(json, "\"sourceDraftInstructionPreflightReleaseVersion\":\"v785\"");
+    assert_contains(json, "\"sourceDraftInstructionPreflightPublishedStageCount\":25");
+    assert_contains(json, "\"signedApprovalArtifactDraftProfileSectionReleaseVersion\":\"v1060\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v1059\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v1059.json\"");
+    assert_contains(json, "\"signedApprovalArtifactDraftProfileSectionOnly\":true");
+    assert_contains(json, "\"plannedSignedApprovalArtifactDraftProfileSectionCheckCount\":25");
+    assert_contains(json, "\"completedSignedApprovalArtifactDraftProfileSectionCheckCount\":25");
+    assert_contains(json, "\"signedApprovalArtifactDraftProfileSectionValidationPassed\":true");
+    assert_contains(json, "\"routeFacingMarkdownStable\":true");
+    assert_contains(json, "\"freshMiniKvEvidenceRequiredByNode\":false");
+    assert_contains(json, "\"nodeRendererExecuted\":false");
+    assert_contains(json, "\"miniKvConsumesSignedApprovalMaterial\":false");
+    assert_contains(json, "\"draftArtifactCreated\":false");
+    assert_contains(json, "\"signedApprovalCreated\":false");
+    assert_contains(json, "\"runtimePayloadImported\":false");
+    assert_contains(json, "\"materialIntakeOpened\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
