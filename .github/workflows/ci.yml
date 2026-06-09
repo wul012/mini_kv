@@ -16,10 +16,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+        include:
+          - os: ubuntu-latest
+            build_parallel: 4
+          - os: macos-latest
+            build_parallel: 2
+          - os: windows-latest
+            build_parallel: 4
 
     steps:
       - name: Check out repository
@@ -29,7 +32,8 @@ jobs:
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 
       - name: Build
-        run: cmake --build build --config Debug --parallel
+        timeout-minutes: 45
+        run: cmake --build build --config Debug --parallel ${{ matrix.build_parallel }} --verbose
 
       - name: Test
         run: ctest --test-dir build -C Debug --output-on-failure
