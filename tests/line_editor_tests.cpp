@@ -110,6 +110,7 @@ int main() {
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON",
           "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON",
           "SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON",
+          "SHARDROUTEVALUESUPPLYPROFILESECTIONJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -200,9 +201,16 @@ int main() {
     const std::string value_supply_prefix = "SHARDROUTEVALUESUPPLYJ";
     assert(completion.complete(value_supply_prefix, value_supply_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVALUESUPPLYJSON "});
-    const std::string value_supply_precheck_prefix = "SHARDROUTEVALUESUPPLYP";
+    const std::string value_supply_profile_or_precheck_prefix = "SHARDROUTEVALUESUPPLYP";
+    assert(completion.complete(value_supply_profile_or_precheck_prefix,
+                               value_supply_profile_or_precheck_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYPR"});
+    const std::string value_supply_precheck_prefix = "SHARDROUTEVALUESUPPLYPRE";
     assert(completion.complete(value_supply_precheck_prefix, value_supply_precheck_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEVALUESUPPLYPRECHECKJSON "});
+    const std::string value_supply_profile_section_prefix = "SHARDROUTEVALUESUPPLYPRO";
+    assert(completion.complete(value_supply_profile_section_prefix, value_supply_profile_section_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEVALUESUPPLYPROFILESECTIONJSON "});
     const std::string value_supply_approval_template_prefix = "SHARDROUTEVALUESUPPLYA";
     assert(completion.complete(value_supply_approval_template_prefix,
                                value_supply_approval_template_prefix.size()) ==

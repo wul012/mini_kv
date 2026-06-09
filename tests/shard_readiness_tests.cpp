@@ -50,7 +50,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"route-preview-operator-value-supply-approval-profile-section-closeout-summary-read-only\"");
+    assert_contains(json, "\"status\":\"route-preview-operator-value-supply-profile-section-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -532,6 +532,33 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"approvalMaterialImported\":false");
     assert_contains(json, "\"signedApprovalCaptured\":false");
     assert_contains(json, "\"secretValueRead\":false");
+    assert_contains(json, "\"nodeRendererExecuted\":false");
+    assert_contains(json, "\"nodeCatalogImported\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewOperatorValueSupplyProfileSection\":{\"contract\":"
+                          "\"shard-route-preview-operator-value-supply-profile-section-renderer-split.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYPROFILESECTIONJSON\"");
+    assert_contains(json, "\"sourceNodeOperatorValueSupplyProfileSectionReleaseVersion\":\"Node v1581\"");
+    assert_contains(json, "\"sourceCurrentShardReadinessReleaseVersion\":\"v1135\"");
+    assert_contains(json, "\"sourceImportPreflightReleaseVersion\":\"v560\"");
+    assert_contains(json, "\"sourceValueDraftReleaseVersion\":\"v585\"");
+    assert_contains(json, "\"sourceFreshSiblingIntakeReleaseVersion\":\"Node v936\"");
+    assert_contains(json, "\"sourceValueSupplyEnvelopeReleaseVersion\":\"v610\"");
+    assert_contains(json, "\"operatorValueSupplyProfileSectionReleaseVersion\":\"v1160\"");
+    assert_contains(json, "\"operatorValueSupplyProfileSectionOnly\":true");
+    assert_contains(json, "\"plannedOperatorValueSupplyProfileSectionCheckCount\":25");
+    assert_contains(json, "\"completedOperatorValueSupplyProfileSectionCheckCount\":25");
+    assert_contains(json, "\"operatorValueSupplyProfileSectionValidationPassed\":true");
+    assert_contains(json, "\"operatorValueSupplyProfileSectionCount\":4");
+    assert_contains(json, "\"nodeMigratedOperatorValueSupplyProfileSectionCount\":4");
+    assert_contains(json, "\"operator-evidence-fresh-sibling-intake\"");
+    assert_contains(json, "\"operator-evidence-value-supply-envelope\"");
+    assert_contains(json, "\"operatorValueImported\":false");
+    assert_contains(json, "\"freshSiblingEvidenceImported\":false");
+    assert_contains(json, "\"syntheticEvidenceAccepted\":false");
+    assert_contains(json, "\"rawEndpointParsed\":false");
     assert_contains(json, "\"nodeRendererExecuted\":false");
     assert_contains(json, "\"nodeCatalogImported\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
