@@ -52,7 +52,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(
         json,
-        "\"status\":\"route-preview-candidate-request-package-integrity-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-submission-precheck-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -168,6 +168,43 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"additionalRequestEchoCreated\":false");
     assert_contains(json, "\"documentIntakeOpened\":false");
     assert_contains(json, "\"realCandidateDocumentRead\":false");
+    assert_contains(json, "\"candidatePayloadImported\":false");
+    assert_contains(json, "\"approvalGrantCaptured\":false");
+    assert_contains(json, "\"signedApprovalEmitted\":false");
+    assert_contains(json, "\"documentRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewCandidateSubmissionPrecheck\":{\"contract\":"
+                          "\"shard-route-preview-candidate-document-submission-precheck.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON\"");
+    assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
+                          "v1411-controlled-read-only-shard-preview-candidate-document-submission-precheck-closeout-roadmap.md\"");
+    assert_contains(json, "\"sourceNodeSubmissionPrecheckReleaseVersion\":\"Node v1411\"");
+    assert_contains(json, "\"sourceNodeSubmissionCheckpointCount\":25");
+    assert_contains(json, "\"sourceNodeSubmissionValidatorCount\":25");
+    assert_contains(json, "\"sourceNodeSubmissionGateCount\":40");
+    assert_contains(json, "\"sourceCandidateDocumentRequestPackageReleaseVersion\":\"v895\"");
+    assert_contains(json, "\"sourceCandidateRequestPackageIntegrityReleaseVersion\":\"v920\"");
+    assert_contains(json,
+                    "\"sourceCandidateRequestPackageIntegrityFixturePath\":\"fixtures/release/shard-readiness-v920.json\"");
+    assert_contains(json, "\"sourceCandidateRequestPackageIntegrityPublishedStageCount\":25");
+    assert_contains(json, "\"sourceCandidateRequestPackageIntegrityComplete\":true");
+    assert_contains(json, "\"requestedCandidateFieldCount\":20");
+    assert_contains(json, "\"submissionGateCount\":40");
+    assert_contains(json, "\"candidateSubmissionPrecheckReleaseVersion\":\"v930\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v929\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v929.json\"");
+    assert_contains(json, "\"candidateSubmissionPrecheckOnly\":true");
+    assert_contains(json, "\"plannedSubmissionPrecheckCheckpointCount\":10");
+    assert_contains(json, "\"completedSubmissionPrecheckCheckpointCount\":10");
+    assert_contains(json, "\"plannedSubmissionPrecheckValidatorCount\":10");
+    assert_contains(json, "\"completedSubmissionPrecheckValidatorCount\":10");
+    assert_contains(json, "\"candidateSubmissionPrecheckValidationPassed\":true");
+    assert_contains(json, "\"additionalSubmissionPrecheckEchoCreated\":false");
+    assert_contains(json, "\"reviewedRealCandidateDocumentRead\":false");
+    assert_contains(json, "\"candidateSubmissionAccepted\":false");
+    assert_contains(json, "\"candidateSubmissionImported\":false");
     assert_contains(json, "\"candidatePayloadImported\":false");
     assert_contains(json, "\"approvalGrantCaptured\":false");
     assert_contains(json, "\"signedApprovalEmitted\":false");
@@ -3120,6 +3157,8 @@ int main() {
         "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
     assert_contains(result.response,
         "SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(result.response,
+        "SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     result = processor.execute("COMMANDSJSON");
     assert_contains(result.response, "\"name\":\"SHARDJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -3138,6 +3177,9 @@ int main() {
                     "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response,
                     "\"name\":\"SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON\",\"category\":\"read\","
+                    "\"mutates_store\":false,\"touches_wal\":false");
+    assert_contains(result.response,
+                    "\"name\":\"SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON\",\"category\":\"read\","
                     "\"mutates_store\":false,\"touches_wal\":false");
     assert_contains(result.response,
                     "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"

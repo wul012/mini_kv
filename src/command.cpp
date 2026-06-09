@@ -31,6 +31,7 @@
 #include "minikv/shard_route_preview_verification_report_closeout.hpp"
 #include "minikv/shard_preview_candidate_request_package.hpp"
 #include "minikv/shard_preview_candidate_request_package_integrity.hpp"
+#include "minikv/shard_preview_candidate_submission_precheck.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/string_utils.hpp"
 #include "minikv/snapshot.hpp"
@@ -88,7 +89,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 60> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 61> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -149,6 +150,7 @@ constexpr std::array<CommandDispatchEntry, 60> command_dispatch_table = {{
     {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -745,6 +747,14 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         return {shard_preview_candidate_request_package_integrity::format_candidate_request_package_integrity_json()};
     }
 
+    if (command == "SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON");
+        }
+
+        return {shard_preview_candidate_submission_precheck::format_candidate_submission_precheck_json()};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -1129,6 +1139,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\n"
            "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\n"
            "  SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON\n"
+           "  SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"

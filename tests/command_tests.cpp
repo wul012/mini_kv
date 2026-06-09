@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=60") != std::string::npos);
+    assert(result.response.find("command_count=61") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -363,6 +363,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -397,6 +400,9 @@ int main() {
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON\",\"category\":\"read\",\"mutates_store\":false,"
+               "\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON\",\"category\":\"read\",\"mutates_store\":false,"
                "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -489,7 +495,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-candidate-request-package-integrity-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-candidate-submission-precheck-closeout-summary-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -983,6 +989,28 @@ int main() {
 
     result = processor.execute("SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON extra");
     assert(result.response == "ERR usage: SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON");
+
+    result = processor.execute("SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON");
+    assert_response_contains(result, "\"contract\":\"shard-route-preview-candidate-document-submission-precheck.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON\"");
+    assert_response_contains(result, "\"sourceNodeSubmissionPrecheckReleaseVersion\":\"Node v1411\"");
+    assert_response_contains(result, "\"sourceCandidateRequestPackageIntegrityReleaseVersion\":\"v920\"");
+    assert_response_contains(result,
+                             "\"sourceCandidateRequestPackageIntegrityFixturePath\":\"fixtures/release/shard-readiness-v920.json\"");
+    assert_response_contains(result, "\"candidateSubmissionPrecheckReleaseVersion\":\"v930\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v929\"");
+    assert_response_contains(result, "\"publishedStageCount\":10");
+    assert_response_contains(result, "\"plannedSubmissionPrecheckCheckpointCount\":10");
+    assert_response_contains(result, "\"plannedSubmissionPrecheckValidatorCount\":10");
+    assert_response_contains(result, "\"candidateSubmissionPrecheckOnly\":true");
+    assert_response_contains(result, "\"additionalSubmissionPrecheckEchoCreated\":false");
+    assert_response_contains(result, "\"documentIntakeOpened\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON extra");
+    assert(result.response == "ERR usage: SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
@@ -2500,6 +2528,7 @@ int main() {
     assert(result.response.find("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON") !=
            std::string::npos);
     assert(result.response.find("SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON") != std::string::npos);
+    assert(result.response.find("SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON") != std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);
     assert(result.response.find("EXPLAINJSON") != std::string::npos);
