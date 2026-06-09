@@ -50,7 +50,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"route-preview-operator-value-supply-profile-section-closeout-summary-read-only\"");
+    assert_contains(json, "\"status\":\"route-preview-operator-value-supply-profile-section-integrity-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -561,6 +561,25 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"rawEndpointParsed\":false");
     assert_contains(json, "\"nodeRendererExecuted\":false");
     assert_contains(json, "\"nodeCatalogImported\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewOperatorValueSupplyProfileSectionIntegrity\":{\"contract\":"
+                          "\"shard-route-preview-operator-value-supply-profile-section-integrity.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON\"");
+    assert_contains(json, "\"sourceNodeProductionLiveProbeReadOnlyWindowReadinessPacketReleaseVersion\":\"Node v1606\"");
+    assert_contains(json, "\"sourceProfileSectionCommand\":\"SHARDROUTEVALUESUPPLYPROFILESECTIONJSON\"");
+    assert_contains(json, "\"sourceProfileSectionReleaseVersion\":\"v1160\"");
+    assert_contains(json, "\"sourceProfileSectionPublishedStageCount\":25");
+    assert_contains(json, "\"operatorValueSupplyProfileSectionIntegrityReleaseVersion\":\"v1170\"");
+    assert_contains(json, "\"operatorValueSupplyProfileSectionIntegrityOnly\":true");
+    assert_contains(json, "\"plannedOperatorValueSupplyProfileSectionIntegrityCheckCount\":10");
+    assert_contains(json, "\"completedOperatorValueSupplyProfileSectionIntegrityCheckCount\":10");
+    assert_contains(json, "\"operatorValueSupplyProfileSectionIntegrityValidationPassed\":true");
+    assert_contains(json, "\"operatorValueSupplyProfileSectionCount\":4");
+    assert_contains(json, "\"Node-v936-fresh-sibling-intake-plan\"");
+    assert_contains(json, "\"credentialValueRead\":false");
+    assert_contains(json, "\"rawEndpointStored\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");

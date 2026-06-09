@@ -29,7 +29,7 @@ int main() {
     }
 
     const auto current = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
-    assert_contains(current, "\"releaseVersion\":\"v1160\"");
+    assert_contains(current, "\"releaseVersion\":\"v1170\"");
     assert_contains(current, "\"operatorValueSupplyApprovalProfileSectionReleaseVersion\":\"v1135\"");
 
     return 0;

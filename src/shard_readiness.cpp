@@ -50,6 +50,7 @@
 #include "minikv/shard_preview_candidate_profile_section.hpp"
 #include "minikv/shard_preview_operator_value_supply_approval_profile_section.hpp"
 #include "minikv/shard_preview_operator_value_supply_profile_section.hpp"
+#include "minikv/shard_preview_operator_value_supply_profile_section_integrity.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section_integrity.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_text_package_profile_section.hpp"
@@ -66,7 +67,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v1160";
+constexpr std::string_view release_version = "v1170";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -226,6 +227,9 @@ std::string evidence_digest() {
                  operator_value_supply_approval_profile_section_digest_marker()},
             {"shardPreviewOperatorValueSupplyProfileSection=" +
              shard_preview_operator_value_supply_profile_section::operator_value_supply_profile_section_digest_marker()},
+            {"shardPreviewOperatorValueSupplyProfileSectionIntegrity=" +
+             shard_preview_operator_value_supply_profile_section_integrity::
+                 operator_value_supply_profile_section_integrity_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -269,9 +273,10 @@ std::string format_json() {
            ",\"slotCount\":" + std::to_string(slot_preview::slot_count()) +
            ",\"routingMode\":\"single-shard-readiness-prototype\"" +
            ",\"evidencePath\":" + json_string(fixture_path()) +
-           ",\"status\":" +
-           json_string(
-               shard_preview_operator_value_supply_profile_section::operator_value_supply_profile_section_status()) +
+            ",\"status\":" +
+            json_string(
+                shard_preview_operator_value_supply_profile_section_integrity::
+                    operator_value_supply_profile_section_integrity_status()) +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -370,9 +375,12 @@ std::string format_json() {
            ",\"shardPreviewOperatorValueSupplyApprovalProfileSection\":" +
            shard_preview_operator_value_supply_approval_profile_section::
                format_operator_value_supply_approval_profile_section_json() +
-           ",\"shardPreviewOperatorValueSupplyProfileSection\":" +
-           shard_preview_operator_value_supply_profile_section::format_operator_value_supply_profile_section_json() +
-           ",\"shardReadinessReleaseCatalog\":" +
+            ",\"shardPreviewOperatorValueSupplyProfileSection\":" +
+            shard_preview_operator_value_supply_profile_section::format_operator_value_supply_profile_section_json() +
+            ",\"shardPreviewOperatorValueSupplyProfileSectionIntegrity\":" +
+            shard_preview_operator_value_supply_profile_section_integrity::
+                format_operator_value_supply_profile_section_integrity_json() +
+            ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +
            release_catalog::format_release_catalog_audit_json() +

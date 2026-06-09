@@ -106,7 +106,7 @@ int main() {
                shard,
                "\"shardRoutePreviewOperatorValueSupplyApprovalTemplate\":") == 1);
     minikv::test_support::assert_contains(shard,
-                                          "\"status\":\"route-preview-operator-value-supply-profile-section-closeout-summary-read-only\"");
+                                          "\"status\":\"route-preview-operator-value-supply-profile-section-integrity-closeout-summary-read-only\"");
     minikv::test_support::assert_contains(shard, "\"sourceValueSupplyPrecheckReleaseVersion\":\"v635\"");
     minikv::test_support::assert_contains(shard, "\"readyForOperatorValueSupplyApproval\":false");
     minikv::test_support::assert_contains(shard, "\"approvalPacketRequired\":true");
