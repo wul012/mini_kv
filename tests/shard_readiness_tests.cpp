@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-type-barrel-split-follow-up-fixture-audit-clean-workspace-ci-closeout-read-only\"");
+                    "\"status\":\"route-preview-disabled-precheck-upstream-echo-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -764,6 +764,30 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"nodeTestOnlyShellModulesImportedByMiniKv\":false");
     assert_contains(json, "\"nodeCredentialResolverShellExecutedByMiniKv\":false");
     assert_contains(json, "\"miniKvRuntimeReadsSourceFixturePayload\":false");
+    assert_contains(json, "\"shardPreviewDisabledPrecheckUpstreamEchoNonParticipation\":{\"contract\":"
+                          "\"shard-route-disabled-precheck-upstream-echo-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceNodeDisabledPrecheckUpstreamEchoCloseoutReleaseVersion\":\"Node v1878\"");
+    assert_contains(json, "\"sourceFixtureAuditReleaseVersion\":\"v1417\"");
+    assert_contains(json, "\"sourceFixtureAuditPublishedStageCount\":12");
+    assert_contains(json, "\"disabledPrecheckUpstreamEchoNonParticipationReleaseVersion\":\"v1442\"");
+    assert_contains(json, "\"disabledPrecheckUpstreamEchoNonParticipationReleaseRangeStart\":\"v1418\"");
+    assert_contains(json, "\"plannedDisabledPrecheckUpstreamEchoNonParticipationCheckCount\":25");
+    assert_contains(json, "\"completedDisabledPrecheckUpstreamEchoNonParticipationCheckCount\":25");
+    assert_contains(json, "\"disabledPrecheckUpstreamEchoNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"sourceFixtureAuditFrozen\":true");
+    assert_contains(json, "\"nodeDisabledPrecheckStableBarrelImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeDisabledPrecheckCoreLoaderExecutedByMiniKv\":false");
+    assert_contains(json, "\"miniKvImportsNodeModules\":false");
+    assert_contains(json, "\"miniKvExecutesNodeChecks\":false");
+    assert_contains(json, "\"miniKvReadsEndpoints\":false");
+    assert_contains(json, "\"miniKvReadsCredentials\":false");
+    assert_contains(json, "\"rawEndpointParsed\":false");
+    assert_contains(json, "\"credentialValueRead\":false");
+    assert_contains(json, "\"managedAuditConnectionOpened\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"miniKvImportsNodeModules\":false");
     assert_contains(json, "\"miniKvExecutesNodeChecks\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");

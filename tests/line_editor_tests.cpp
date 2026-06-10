@@ -117,6 +117,7 @@ int main() {
           "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON",
           "SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON",
           "SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON",
+          "SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
@@ -260,6 +261,10 @@ int main() {
     assert(completion.complete(type_barrel_split_follow_up_fixture_prefix,
                                type_barrel_split_follow_up_fixture_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON "});
+    const std::string disabled_precheck_upstream_echo_prefix = "SHARDROUTEDISABLEDP";
+    assert(completion.complete(disabled_precheck_upstream_echo_prefix,
+                               disabled_precheck_upstream_echo_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON "});
     const std::string type_barrel_split_follow_up_non_participation_prefix =
         "SHARDROUTETYPEBARRELSPLITFOLLOWUPN";
     assert(completion.complete(type_barrel_split_follow_up_non_participation_prefix,

@@ -46,6 +46,7 @@
 #include "minikv/shard_preview_production_live_capture_non_participation.hpp"
 #include "minikv/shard_preview_production_live_capture_release_evidence_review_non_participation.hpp"
 #include "minikv/shard_preview_catalog_entry_group_split_non_participation.hpp"
+#include "minikv/shard_preview_disabled_precheck_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_type_barrel_split_follow_up_fixture_audit.hpp"
 #include "minikv/shard_preview_type_barrel_split_follow_up_non_participation.hpp"
 #include "minikv/shard_preview_type_barrel_split_non_participation.hpp"
@@ -109,7 +110,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 81> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 82> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -192,6 +193,7 @@ constexpr std::array<CommandDispatchEntry, 81> command_dispatch_table = {{
     {"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
@@ -949,6 +951,16 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
                 format_catalog_entry_group_split_non_participation_json()};
     }
 
+    if (command == "SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON");
+        }
+
+        return {
+            shard_preview_disabled_precheck_upstream_echo_non_participation::
+                format_disabled_precheck_upstream_echo_non_participation_json()};
+    }
+
     if (command == "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON") {
         if (has_extra_token(input)) {
             return usage("SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON");
@@ -1381,6 +1393,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON\n"
            "  SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\n"
            "  SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON\n"
+           "  SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON\n"
            "  SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON\n"
            "  SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON\n"
            "  SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\n"
