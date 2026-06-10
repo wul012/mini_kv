@@ -145,7 +145,7 @@ int main() {
                "\"shardRoutePreviewOperatorValueSupplySignedApprovalCapturePreflight\":") == 1);
     minikv::test_support::assert_contains(
         shard,
-        "\"status\":\"route-preview-type-barrel-split-follow-up-non-participation-clean-workspace-ci-closeout-read-only\"");
+        "\"status\":\"route-preview-type-barrel-split-follow-up-fixture-audit-clean-workspace-ci-closeout-read-only\"");
     minikv::test_support::assert_contains(shard,
                                           "\"sourceSignedApprovalTemplateReleaseVersion\":\"v685\"");
     minikv::test_support::assert_contains(shard,

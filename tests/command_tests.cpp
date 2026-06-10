@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=80") != std::string::npos);
+    assert(result.response.find("command_count=81") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -423,6 +423,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -519,6 +522,9 @@ int main() {
                "\"name\":\"SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
+               "\"name\":\"SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
                "\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
@@ -609,7 +615,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-type-barrel-split-follow-up-non-participation-clean-workspace-ci-closeout-read-only\"");
+        "\"status\":\"route-preview-type-barrel-split-follow-up-fixture-audit-clean-workspace-ci-closeout-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1712,6 +1718,39 @@ int main() {
 
     result = processor.execute("SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON extra");
     assert(result.response == "ERR usage: SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON");
+
+    result = processor.execute("SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON");
+    assert_response_contains(result,
+                             "\"contract\":\"shard-route-preview-type-barrel-split-follow-up-fixture-audit.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON\"");
+    assert_response_contains(result, "\"sourceNodeTestOnlyShellSplitCloseoutReleaseVersion\":\"Node v1866\"");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshJavaEvidence\":false");
+    assert_response_contains(result,
+                             "\"sourceFollowUpCommand\":\"SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON\"");
+    assert_response_contains(result, "\"sourceFollowUpReleaseVersion\":\"v1405\"");
+    assert_response_contains(result, "\"sourceFollowUpPublishedStageCount\":20");
+    assert_response_contains(result, "\"typeBarrelSplitFollowUpFixtureAuditReleaseVersion\":\"v1417\"");
+    assert_response_contains(result, "\"typeBarrelSplitFollowUpFixtureAuditReleaseRangeStart\":\"v1406\"");
+    assert_response_contains(result, "\"plannedTypeBarrelSplitFollowUpFixtureAuditCheckCount\":12");
+    assert_response_contains(result, "\"completedTypeBarrelSplitFollowUpFixtureAuditCheckCount\":12");
+    assert_response_contains(result, "\"typeBarrelSplitFollowUpFixtureAuditOnly\":true");
+    assert_response_contains(result, "\"sourceFollowUpNonParticipationFixtureFrozen\":true");
+    assert_response_contains(result, "\"nodeStableBarrelImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeTestOnlyShellModulesImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeCredentialResolverShellExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"miniKvRuntimeReadsSourceFixturePayload\":false");
+    assert_response_contains(result, "\"miniKvImportsNodeModules\":false");
+    assert_response_contains(result, "\"miniKvExecutesNodeChecks\":false");
+    assert_response_contains(result, "\"profileBoundaryEndpointRead\":false");
+    assert_response_contains(result, "\"evidenceEndpointRead\":false");
+    assert_response_contains(result, "\"typeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON extra");
+    assert(result.response == "ERR usage: SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");

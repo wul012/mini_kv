@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-type-barrel-split-follow-up-non-participation-clean-workspace-ci-closeout-read-only\"");
+                    "\"status\":\"route-preview-type-barrel-split-follow-up-fixture-audit-clean-workspace-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -749,6 +749,23 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"sourceTypeBarrelSplitNonParticipationFixtureFrozen\":true");
     assert_contains(json, "\"miniKvStartsTypeBarrelFollowUp\":false");
     assert_contains(json, "\"miniKvReadsProfileEndpoint\":false");
+    assert_contains(json, "\"shardPreviewTypeBarrelSplitFollowUpFixtureAudit\":{\"contract\":"
+                          "\"shard-route-preview-type-barrel-split-follow-up-fixture-audit.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON\"");
+    assert_contains(json, "\"sourceNodeTestOnlyShellSplitCloseoutReleaseVersion\":\"Node v1866\"");
+    assert_contains(json, "\"sourceFollowUpReleaseVersion\":\"v1405\"");
+    assert_contains(json, "\"sourceFollowUpPublishedStageCount\":20");
+    assert_contains(json, "\"typeBarrelSplitFollowUpFixtureAuditReleaseVersion\":\"v1417\"");
+    assert_contains(json, "\"typeBarrelSplitFollowUpFixtureAuditReleaseRangeStart\":\"v1406\"");
+    assert_contains(json, "\"plannedTypeBarrelSplitFollowUpFixtureAuditCheckCount\":12");
+    assert_contains(json, "\"completedTypeBarrelSplitFollowUpFixtureAuditCheckCount\":12");
+    assert_contains(json, "\"typeBarrelSplitFollowUpFixtureAuditValidationPassed\":true");
+    assert_contains(json, "\"sourceFollowUpNonParticipationFixtureFrozen\":true");
+    assert_contains(json, "\"nodeTestOnlyShellModulesImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeCredentialResolverShellExecutedByMiniKv\":false");
+    assert_contains(json, "\"miniKvRuntimeReadsSourceFixturePayload\":false");
+    assert_contains(json, "\"miniKvImportsNodeModules\":false");
+    assert_contains(json, "\"miniKvExecutesNodeChecks\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
