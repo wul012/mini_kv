@@ -1,4 +1,4 @@
-#include "minikv/command.hpp"
+﻿#include "minikv/command.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_precheck.hpp"
 #include "minikv/store.hpp"
@@ -76,7 +76,7 @@ int main() {
     const std::string shard = minikv::shard_readiness::format_json();
     assert(minikv::test_support::occurrence_count(shard, "\"shardRoutePreviewOperatorValueSupplyPrecheck\":") == 1);
     minikv::test_support::assert_contains(shard,
-                                          "\"status\":\"route-preview-production-live-capture-non-participation-closeout-summary-read-only\"");
+                                          "\"status\":\"route-preview-production-live-capture-archive-non-participation-closeout-summary-read-only\"");
     minikv::test_support::assert_contains(shard, "\"sourceValueSupplyEnvelopeReleaseVersion\":\"v610\"");
     minikv::test_support::assert_contains(shard, "\"readyForDisabledValueSupplyPrecheck\":true");
     minikv::test_support::assert_contains(shard, "\"readyForOperatorValueSupplyApproval\":false");

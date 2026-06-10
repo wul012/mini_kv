@@ -1,4 +1,4 @@
-#include "minikv/command.hpp"
+﻿#include "minikv/command.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_authoring_readiness.hpp"
 #include "minikv/store.hpp"
@@ -71,7 +71,7 @@ int main() {
                "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftAuthoringReadiness\":") == 1);
     minikv::test_support::assert_contains(
         shard,
-        "\"status\":\"route-preview-production-live-capture-non-participation-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-production-live-capture-archive-non-participation-closeout-summary-read-only\"");
     minikv::test_support::assert_contains(
         shard,
         "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":");

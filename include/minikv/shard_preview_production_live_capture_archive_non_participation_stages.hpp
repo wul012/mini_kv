@@ -1,0 +1,14 @@
+#pragma once
+
+#include "minikv/shard_route_preview_stage_catalog.hpp"
+
+#include <span>
+
+namespace minikv::shard_preview_production_live_capture_archive_non_participation_stages {
+
+std::span<const shard_route_preview_stage_catalog::StageRecord>
+production_live_capture_archive_non_participation_stages();
+int first_production_live_capture_archive_non_participation_release_number();
+int planned_production_live_capture_archive_non_participation_stage_count();
+
+} // namespace minikv::shard_preview_production_live_capture_archive_non_participation_stages

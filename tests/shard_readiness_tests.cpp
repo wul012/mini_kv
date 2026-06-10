@@ -50,7 +50,8 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"slotCount\":16");
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
-    assert_contains(json, "\"status\":\"route-preview-production-live-capture-non-participation-closeout-summary-read-only\"");
+    assert_contains(json,
+                    "\"status\":\"route-preview-production-live-capture-archive-non-participation-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -604,6 +605,30 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"rawEndpointStored\":false");
     assert_contains(json, "\"credentialValueRead\":false");
     assert_contains(json, "\"productionLiveReadAllowed\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewProductionLiveCaptureArchiveNonParticipation\":{\"contract\":"
+                          "\"shard-route-preview-production-live-capture-archive-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON\"");
+    assert_contains(json,
+                    "\"sourceNodeProductionLiveProbeReadOnlyWindowCaptureArchiveCloseoutReleaseVersion\":\"Node v1656\"");
+    assert_contains(json, "\"sourceNodeArchiveModuleSplitOnly\":true");
+    assert_contains(json, "\"sourceIntegrityCommand\":\"SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceIntegrityReleaseVersion\":\"v1195\"");
+    assert_contains(json, "\"sourceIntegrityPublishedStageCount\":25");
+    assert_contains(json, "\"productionLiveCaptureArchiveNonParticipationReleaseVersion\":\"v1225\"");
+    assert_contains(json, "\"plannedProductionLiveCaptureArchiveNonParticipationCheckCount\":30");
+    assert_contains(json, "\"completedProductionLiveCaptureArchiveNonParticipationCheckCount\":30");
+    assert_contains(json, "\"productionLiveCaptureArchiveNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"nodeCaptureArchiveExecuted\":false");
+    assert_contains(json, "\"nodeArchiveLoaderExecuted\":false");
+    assert_contains(json, "\"miniKvStartsCaptureArchive\":false");
+    assert_contains(json, "\"miniKvReadsArchiveEndpoint\":false");
+    assert_contains(json, "\"archiveEndpointRead\":false");
+    assert_contains(json, "\"archivePayloadImported\":false");
+    assert_contains(json, "\"archiveFixtureImported\":false");
+    assert_contains(json, "\"archiveRouterInstalled\":false");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
