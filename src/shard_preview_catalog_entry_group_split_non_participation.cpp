@@ -24,7 +24,7 @@ namespace validation = shard_preview_catalog_entry_group_split_non_participation
 
 constexpr std::string_view command_name = "SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON";
 constexpr std::string_view source_node_plan = "docs/plans3/v1756-controlled-read-only-shard-preview-type-module-catalog-entry-group-split-roadmap.md";
-constexpr int current_stage_count = 35;
+constexpr int current_stage_count = 30;
 constexpr int source_integrity_planned_stage_count = 35;
 constexpr bool node_requires_fresh_minikv_evidence = false;
 constexpr bool mini_kv_starts_catalog_split = false;
@@ -113,7 +113,7 @@ std::string format_catalog_entry_group_split_non_participation_json() {
            ",\"catalogEntryGroupSplitNonParticipationReleaseVersion\":" + json_string(stage.release_version) +
            ",\"sourceFrozenReleaseVersion\":" + json_string(stage.source_frozen_release_version) +
            ",\"sourceFrozenFixturePath\":" + json_string(stage.source_frozen_fixture_path) +
-           ",\"catalogEntryGroupSplitNonParticipationReleaseRangeStart\":\"v1296\""
+           ",\"catalogEntryGroupSplitNonParticipationReleaseRangeStart\":\"v1331\""
            ",\"catalogEntryGroupSplitNonParticipationReleaseRangeEnd\":" + json_string(stage.release_version) +
            ",\"publishedStageCount\":" + std::to_string(current_stage_count) +
            ",\"plannedStageCount\":" + std::to_string(stages::planned_catalog_entry_group_split_non_participation_stage_count()) +
@@ -211,7 +211,7 @@ std::string format_catalog_entry_group_split_non_participation_json() {
                                                      current_stage_count,
                                                      stages::planned_catalog_entry_group_split_non_participation_stage_count()) +
            ",\"diagnostics\":" +
-           json_string_array({"v1295 remains the frozen source release evidence review non-participation fixture before v1296-v1330 catalog entry group split non-participation evidence",
+           json_string_array({"v1295 remains the frozen source release evidence review non-participation fixture before v1331-v1360 catalog entry group split non-participation evidence",
                               "Node v1722-v1756 is treated as controlled read-only shard preview type module catalog entry group split maintenance context only",
                               "mini-kv does not import Node catalog entries registries Markdown renderers routes typecheck build or Vitest behavior",
                               "catalog endpoints raw endpoints credentials payload fixtures routers writes WAL and execution remain disabled"}) +

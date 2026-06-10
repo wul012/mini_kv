@@ -16,19 +16,19 @@ int main() {
     namespace checks = minikv::shard_preview_catalog_entry_group_split_non_participation_checks;
 
     const auto records = checks::catalog_entry_group_split_non_participation_checks();
-    assert(checks::planned_catalog_entry_group_split_non_participation_check_count() == 35);
-    assert(records.size() == 35);
+    assert(checks::planned_catalog_entry_group_split_non_participation_check_count() == 30);
+    assert(records.size() == 30);
     assert(records.front().check_code == std::string{"source-release-evidence-review-fixture-frozen"});
-    assert(records.back().check_code == std::string{"no-catalog-entry-group-split-chain-created"});
+    assert(records.back().check_code == std::string{"github-actions-closeout-summary"});
 
     const auto empty = checks::format_catalog_entry_group_split_non_participation_checks_json(0);
     assert(empty == "[]");
 
-    const auto json = checks::format_catalog_entry_group_split_non_participation_checks_json(35);
+    const auto json = checks::format_catalog_entry_group_split_non_participation_checks_json(30);
     assert_contains(json, "\"checkCode\":\"node-catalog-types-module-context\"");
     assert_contains(json, "\"checkCode\":\"node-aggregate-registry-context\"");
     assert_contains(json, "\"checkCode\":\"node-no-service-startup-context\"");
-    assert_contains(json, "\"checkCode\":\"no-catalog-entry-group-split-chain-created\"");
+    assert_contains(json, "\"checkCode\":\"github-actions-closeout-summary\"");
     assert_contains(json, "\"catalogEntryGroupSplitNonParticipationOnly\":true");
     assert_contains(json, "\"nodeCatalogEntryRecordsImportedByMiniKv\":false");
     assert_contains(json, "\"nodeCatalogRegistryExecutedByMiniKv\":false");
@@ -44,7 +44,7 @@ int main() {
 
     bool threw = false;
     try {
-        (void)checks::format_catalog_entry_group_split_non_participation_checks_json(36);
+        (void)checks::format_catalog_entry_group_split_non_participation_checks_json(31);
     } catch (const std::out_of_range&) {
         threw = true;
     }

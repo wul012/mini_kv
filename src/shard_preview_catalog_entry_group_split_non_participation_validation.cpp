@@ -27,8 +27,8 @@ std::string format_catalog_entry_group_split_non_participation_validation_json(
                                       !mini_kv_starts_catalog_split &&
                                       !mini_kv_reads_catalog_endpoint &&
                                       !mini_kv_consumes_catalog_records;
-    const bool counts_aligned = planned_check_count == 35 && completed_check_count == 35 &&
-                                published_stage_count == planned_stage_count && planned_stage_count == 35;
+    const bool counts_aligned = planned_check_count == 30 && completed_check_count == 30 &&
+                                published_stage_count == planned_stage_count && planned_stage_count == 30;
     const bool validation_passed = source_locked && catalog_split_closed && counts_aligned;
 
     return "{\"catalogEntryGroupSplitNonParticipationValidationPassed\":" + json_bool(validation_passed) +

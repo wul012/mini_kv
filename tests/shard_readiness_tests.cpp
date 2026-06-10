@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-catalog-entry-group-split-non-participation-github-actions-closeout-read-only\"");
+                    "\"status\":\"route-preview-catalog-entry-group-split-non-participation-follow-up-github-actions-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -692,9 +692,10 @@ void assert_shard_readiness_contract(const std::string& json) {
         "\"sourceIntegrityCommand\":\"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\"");
     assert_contains(json, "\"sourceIntegrityReleaseVersion\":\"v1295\"");
     assert_contains(json, "\"sourceIntegrityPublishedStageCount\":35");
-    assert_contains(json, "\"catalogEntryGroupSplitNonParticipationReleaseVersion\":\"v1330\"");
-    assert_contains(json, "\"plannedCatalogEntryGroupSplitNonParticipationCheckCount\":35");
-    assert_contains(json, "\"completedCatalogEntryGroupSplitNonParticipationCheckCount\":35");
+    assert_contains(json, "\"catalogEntryGroupSplitNonParticipationReleaseVersion\":\"v1360\"");
+    assert_contains(json, "\"catalogEntryGroupSplitNonParticipationReleaseRangeStart\":\"v1331\"");
+    assert_contains(json, "\"plannedCatalogEntryGroupSplitNonParticipationCheckCount\":30");
+    assert_contains(json, "\"completedCatalogEntryGroupSplitNonParticipationCheckCount\":30");
     assert_contains(json, "\"catalogEntryGroupSplitNonParticipationValidationPassed\":true");
     assert_contains(json, "\"nodeCatalogEntryRecordsImportedByMiniKv\":false");
     assert_contains(json, "\"nodeCatalogRegistryExecutedByMiniKv\":false");

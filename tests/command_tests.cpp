@@ -597,7 +597,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-catalog-entry-group-split-non-participation-github-actions-closeout-read-only\"");
+        "\"status\":\"route-preview-catalog-entry-group-split-non-participation-follow-up-github-actions-closeout-summary-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1603,8 +1603,10 @@ int main() {
         "\"sourceIntegrityCommand\":\"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\"");
     assert_response_contains(result, "\"sourceIntegrityReleaseVersion\":\"v1295\"");
     assert_response_contains(result, "\"sourceIntegrityPublishedStageCount\":35");
-    assert_response_contains(result, "\"catalogEntryGroupSplitNonParticipationReleaseVersion\":\"v1330\"");
-    assert_response_contains(result, "\"plannedCatalogEntryGroupSplitNonParticipationCheckCount\":35");
+    assert_response_contains(result, "\"catalogEntryGroupSplitNonParticipationReleaseVersion\":\"v1360\"");
+    assert_response_contains(result, "\"catalogEntryGroupSplitNonParticipationReleaseRangeStart\":\"v1331\"");
+    assert_response_contains(result, "\"plannedCatalogEntryGroupSplitNonParticipationCheckCount\":30");
+    assert_response_contains(result, "\"completedCatalogEntryGroupSplitNonParticipationCheckCount\":30");
     assert_response_contains(result, "\"catalogEntryGroupSplitNonParticipationOnly\":true");
     assert_response_contains(result, "\"nodeCatalogEntryRecordsImportedByMiniKv\":false");
     assert_response_contains(result, "\"nodeCatalogRegistryExecutedByMiniKv\":false");

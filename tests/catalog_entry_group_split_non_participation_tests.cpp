@@ -25,8 +25,12 @@ int main() {
     assert_contains(json, "\"sourceIntegrityCommand\":\"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\"");
     assert_contains(json, "\"sourceIntegrityReleaseVersion\":\"v1295\"");
     assert_contains(json, "\"sourceIntegrityPublishedStageCount\":35");
-    assert_contains(json, "\"catalogEntryGroupSplitNonParticipationReleaseVersion\":\"v1330\"");
-    assert_contains(json, "\"plannedCatalogEntryGroupSplitNonParticipationCheckCount\":35");
+    assert_contains(json, "\"catalogEntryGroupSplitNonParticipationReleaseVersion\":\"v1360\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v1359\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v1359.json\"");
+    assert_contains(json, "\"catalogEntryGroupSplitNonParticipationReleaseRangeStart\":\"v1331\"");
+    assert_contains(json, "\"plannedCatalogEntryGroupSplitNonParticipationCheckCount\":30");
+    assert_contains(json, "\"completedCatalogEntryGroupSplitNonParticipationCheckCount\":30");
     assert_contains(json, "\"catalogEntryGroupSplitNonParticipationOnly\":true");
     assert_contains(json, "\"catalog-interfaces-types-module\"");
     assert_contains(json, "\"aggregate-entry-group-registry\"");
@@ -52,10 +56,11 @@ int main() {
     assert_contains(json, "\"catalogEntryGroupSplitNonParticipationValidationPassed\":true");
 
     const auto digest = evidence::catalog_entry_group_split_non_participation_digest_marker();
-    assert(digest.find("v1330-route-preview-catalog-entry-group-split-non-participation-github-actions-closeout") !=
+    assert(digest.find("v1360-route-preview-catalog-entry-group-split-non-participation-follow-up-github-actions-closeout-summary") !=
            std::string::npos);
-    assert(evidence::published_stage_count() == 35);
-    assert(evidence::catalog_entry_group_split_non_participation_status() == "route-preview-catalog-entry-group-split-non-participation-github-actions-closeout-read-only");
+    assert(evidence::published_stage_count() == 30);
+    assert(evidence::catalog_entry_group_split_non_participation_status() ==
+           "route-preview-catalog-entry-group-split-non-participation-follow-up-github-actions-closeout-summary-read-only");
 
     return 0;
 }
