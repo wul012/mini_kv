@@ -54,6 +54,7 @@
 #include "minikv/shard_preview_production_live_capture_archive_non_participation.hpp"
 #include "minikv/shard_preview_production_live_capture_archive_verification_non_participation.hpp"
 #include "minikv/shard_preview_production_live_capture_non_participation.hpp"
+#include "minikv/shard_preview_production_live_capture_release_evidence_review_non_participation.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section_integrity.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_text_package_profile_section.hpp"
@@ -70,7 +71,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v1260";
+constexpr std::string_view release_version = "v1295";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -242,6 +243,9 @@ std::string evidence_digest() {
             {"shardPreviewProductionLiveCaptureArchiveVerificationNonParticipation=" +
              shard_preview_production_live_capture_archive_verification_non_participation::
                  production_live_capture_archive_verification_non_participation_digest_marker()},
+            {"shardPreviewProductionLiveCaptureReleaseEvidenceReviewNonParticipation=" +
+             shard_preview_production_live_capture_release_evidence_review_non_participation::
+                 production_live_capture_release_evidence_review_non_participation_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -287,8 +291,8 @@ std::string format_json() {
            ",\"evidencePath\":" + json_string(fixture_path()) +
            ",\"status\":" +
            json_string(
-               shard_preview_production_live_capture_archive_verification_non_participation::
-                   production_live_capture_archive_verification_non_participation_status()) +
+               shard_preview_production_live_capture_release_evidence_review_non_participation::
+                   production_live_capture_release_evidence_review_non_participation_status()) +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -401,6 +405,9 @@ std::string format_json() {
             ",\"shardPreviewProductionLiveCaptureArchiveVerificationNonParticipation\":" +
             shard_preview_production_live_capture_archive_verification_non_participation::
                 format_production_live_capture_archive_verification_non_participation_json() +
+            ",\"shardPreviewProductionLiveCaptureReleaseEvidenceReviewNonParticipation\":" +
+            shard_preview_production_live_capture_release_evidence_review_non_participation::
+                format_production_live_capture_release_evidence_review_non_participation_json() +
             ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

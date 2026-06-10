@@ -1,3 +1,38 @@
+- v1295: closes release evidence review non-participation with v1294 clean-output parity, the v1260 archive verification non-participation source freeze, and no release review endpoint read, payload import, router, write, WAL, or execution authority.
+- v1294: records generated validation cleanup and commit-preparation boundaries for the release evidence review chain without granting mini-kv cleanup authority over Node outputs.
+- v1293: records Node v1719 segmented full Vitest verification as read-only context while preventing mini-kv execution or sibling service startup.
+- v1292: records Node v1718 release evidence review JSON/Markdown HTTP smoke as Node-only context with no mini-kv endpoint read.
+- v1291: records adjacent archive verification and release review tests plus build validation as sibling-owned evidence only.
+- v1290: records Node v1716 typecheck and focused release evidence review tests without requiring fresh mini-kv evidence.
+- v1289: records status live probe route wiring as read-only sibling context without starting mini-kv services.
+- v1288: records archive verification upstream consumer validation while keeping archive verification payloads out of mini-kv.
+- v1287: records release review JSON/Markdown route coverage without installing a mini-kv route.
+- v1286: records blocked release evidence review behavior while keeping writes and execution disabled.
+- v1285: records Java v51 and mini-kv v60 field-guide behavior coverage as sibling context only.
+- v1284: records direct renderer re-export regression coverage without executing Node from mini-kv.
+- v1283: keeps release review loader orchestration outside mini-kv execution.
+- v1282: records stable Markdown renderer re-export compatibility as metadata only.
+- v1281: keeps release evidence review Markdown rendering outside mini-kv.
+- v1280: records release review summary counts without importing review records.
+- v1279: keeps release review recommendation generation inside Node.
+- v1278: keeps release review warning generation inside Node.
+- v1277: records production blocker collection without mini-kv participation.
+- v1276: records no-execution-authorization review checks without adding execution authority.
+- v1275: keeps upstream-action and automatic-start safety checks from starting mini-kv.
+- v1274: keeps skipped or mixed capture non-pass policy checks outside mini-kv.
+- v1273: records non-pass-only field-guide policy checks without changing mini-kv behavior.
+- v1272: keeps field-guide readiness validation as Node-owned context.
+- v1271: records review-state resolution without accepting review state in mini-kv.
+- v1270: keeps ready-for-read-only-capture-release-evidence-review evaluation outside mini-kv.
+- v1269: records release review check assembly without creating a mini-kv reviewer.
+- v1268: keeps release review digest generation outside mini-kv.
+- v1267: records release semantics selection without accepting release state in mini-kv.
+- v1266: keeps release evidence review endpoint constants away from raw endpoint reads.
+- v1265: records mini-kv v60 field-guide references as historical sibling metadata only.
+- v1264: records Java v51 field-guide references without making mini-kv Java evidence authority.
+- v1263: keeps release review build-parts split outside mini-kv runtime.
+- v1262: records stable release review entrypoint type re-exports without importing Node code.
+- v1261: freezes v1260 archive verification non-participation evidence before the release evidence review chain.
 - v1260: closes archive verification non-participation with v1259 archive-explanation parity, the v1225 source archive non-participation freeze, and no verification endpoint read, payload import, router, write, WAL, or execution authority.
 - v1259: records archive explanation parity for the new command and keeps documentation aligned with the no-router/no-write/no-execution boundary.
 - v1258: proves CLI/TCP smoke parity for the new command with read-only CHECKJSON evidence and no service writes.

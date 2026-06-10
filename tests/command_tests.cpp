@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=76") != std::string::npos);
+    assert(result.response.find("command_count=77") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -411,6 +411,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -493,6 +496,9 @@ int main() {
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -585,7 +591,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-production-live-capture-archive-verification-non-participation-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-production-live-capture-release-evidence-review-non-participation-closeout-summary-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1535,6 +1541,48 @@ int main() {
 
     result = processor.execute("SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON extra");
     assert(result.response == "ERR usage: SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON");
+
+    result = processor.execute("SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON");
+    assert_response_contains(
+        result,
+        "\"contract\":\"shard-route-preview-production-live-capture-release-evidence-review-non-participation.v1\"");
+    assert_response_contains(
+        result,
+        "\"command\":\"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\"");
+    assert_response_contains(
+        result,
+        "\"sourceNodeProductionLiveProbeReadOnlyWindowCaptureReleaseEvidenceReviewCloseoutReleaseVersion\":\"Node v1721\"");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_response_contains(result, "\"sourceNodeReleaseEvidenceReviewModuleSplitOnly\":true");
+    assert_response_contains(
+        result,
+        "\"sourceIntegrityCommand\":\"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON\"");
+    assert_response_contains(result, "\"sourceIntegrityReleaseVersion\":\"v1260\"");
+    assert_response_contains(result, "\"sourceIntegrityPublishedStageCount\":35");
+    assert_response_contains(result,
+                             "\"productionLiveCaptureReleaseEvidenceReviewNonParticipationReleaseVersion\":\"v1295\"");
+    assert_response_contains(result,
+                             "\"plannedProductionLiveCaptureReleaseEvidenceReviewNonParticipationCheckCount\":35");
+    assert_response_contains(result, "\"productionLiveCaptureReleaseEvidenceReviewNonParticipationOnly\":true");
+    assert_response_contains(result, "\"nodeReleaseEvidenceReviewExecuted\":false");
+    assert_response_contains(result, "\"nodeReleaseReviewLoaderExecuted\":false");
+    assert_response_contains(result, "\"nodeReleaseReviewRendererExecuted\":false");
+    assert_response_contains(result, "\"nodeReleaseReviewEndpointReadByMiniKv\":false");
+    assert_response_contains(result, "\"nodeReleaseReviewDigestGeneratedByMiniKv\":false");
+    assert_response_contains(result, "\"miniKvStartsReleaseEvidenceReview\":false");
+    assert_response_contains(result, "\"miniKvReadsReleaseReviewEndpoint\":false");
+    assert_response_contains(result, "\"releaseReviewEndpointRead\":false");
+    assert_response_contains(result, "\"rawEndpointParsed\":false");
+    assert_response_contains(result, "\"releaseReviewPayloadImported\":false");
+    assert_response_contains(result, "\"releaseReviewFixtureImported\":false");
+    assert_response_contains(result, "\"releaseEvidenceReviewRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON extra");
+    assert(result.response ==
+           "ERR usage: SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
@@ -3071,6 +3119,8 @@ int main() {
     assert(result.response.find("SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON") != std::string::npos);
     assert(result.response.find("SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON") !=
+           std::string::npos);
+    assert(result.response.find("SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON") !=
            std::string::npos);
     assert(result.response.find("COMMANDS") != std::string::npos);
     assert(result.response.find("COMMANDSJSON") != std::string::npos);

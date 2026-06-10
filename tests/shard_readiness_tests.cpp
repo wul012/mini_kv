@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-production-live-capture-archive-verification-non-participation-closeout-summary-read-only\"");
+                    "\"status\":\"route-preview-production-live-capture-release-evidence-review-non-participation-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -653,6 +653,35 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewProductionLiveCaptureReleaseEvidenceReviewNonParticipation\":{\"contract\":"
+                          "\"shard-route-preview-production-live-capture-release-evidence-review-non-participation.v1\"");
+    assert_contains(json,
+                    "\"command\":\"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\"");
+    assert_contains(
+        json,
+        "\"sourceNodeProductionLiveProbeReadOnlyWindowCaptureReleaseEvidenceReviewCloseoutReleaseVersion\":\"Node v1721\"");
+    assert_contains(json, "\"sourceNodeReleaseEvidenceReviewModuleSplitOnly\":true");
+    assert_contains(json,
+                    "\"sourceIntegrityCommand\":\"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceIntegrityReleaseVersion\":\"v1260\"");
+    assert_contains(json, "\"sourceIntegrityPublishedStageCount\":35");
+    assert_contains(json, "\"productionLiveCaptureReleaseEvidenceReviewNonParticipationReleaseVersion\":\"v1295\"");
+    assert_contains(json,
+                    "\"plannedProductionLiveCaptureReleaseEvidenceReviewNonParticipationCheckCount\":35");
+    assert_contains(json,
+                    "\"completedProductionLiveCaptureReleaseEvidenceReviewNonParticipationCheckCount\":35");
+    assert_contains(json, "\"productionLiveCaptureReleaseEvidenceReviewNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"nodeReleaseEvidenceReviewExecuted\":false");
+    assert_contains(json, "\"nodeReleaseReviewLoaderExecuted\":false");
+    assert_contains(json, "\"nodeReleaseReviewRendererExecuted\":false");
+    assert_contains(json, "\"nodeReleaseReviewEndpointReadByMiniKv\":false");
+    assert_contains(json, "\"nodeReleaseReviewDigestGeneratedByMiniKv\":false");
+    assert_contains(json, "\"miniKvStartsReleaseEvidenceReview\":false");
+    assert_contains(json, "\"miniKvReadsReleaseReviewEndpoint\":false");
+    assert_contains(json, "\"releaseReviewEndpointRead\":false");
+    assert_contains(json, "\"releaseReviewPayloadImported\":false");
+    assert_contains(json, "\"releaseReviewFixtureImported\":false");
+    assert_contains(json, "\"releaseEvidenceReviewRouterInstalled\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
