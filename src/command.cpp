@@ -46,6 +46,7 @@
 #include "minikv/shard_preview_production_live_capture_non_participation.hpp"
 #include "minikv/shard_preview_production_live_capture_release_evidence_review_non_participation.hpp"
 #include "minikv/shard_preview_catalog_entry_group_split_non_participation.hpp"
+#include "minikv/shard_preview_type_barrel_split_follow_up_non_participation.hpp"
 #include "minikv/shard_preview_type_barrel_split_non_participation.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section_integrity.hpp"
@@ -107,7 +108,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 79> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 80> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -190,6 +191,7 @@ constexpr std::array<CommandDispatchEntry, 79> command_dispatch_table = {{
     {"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON",
      CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
@@ -955,6 +957,16 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
                 format_type_barrel_split_non_participation_json()};
     }
 
+    if (command == "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON");
+        }
+
+        return {
+            shard_preview_type_barrel_split_follow_up_non_participation::
+                format_type_barrel_split_follow_up_non_participation_json()};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -1357,6 +1369,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON\n"
            "  SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\n"
            "  SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON\n"
+           "  SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON\n"
            "  SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"

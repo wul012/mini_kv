@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-type-barrel-split-non-participation-clean-workspace-ci-closeout-read-only\"");
+                    "\"status\":\"route-preview-type-barrel-split-follow-up-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -736,6 +736,19 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"profileBoundaryEndpointRead\":false");
     assert_contains(json, "\"evidenceEndpointRead\":false");
     assert_contains(json, "\"typeRouterInstalled\":false");
+    assert_contains(json, "\"shardPreviewTypeBarrelSplitFollowUpNonParticipation\":{\"contract\":"
+                          "\"shard-route-preview-type-barrel-split-follow-up-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceTypeBarrelSplitReleaseVersion\":\"v1385\"");
+    assert_contains(json, "\"sourceTypeBarrelSplitPublishedStageCount\":25");
+    assert_contains(json, "\"typeBarrelSplitFollowUpNonParticipationReleaseVersion\":\"v1405\"");
+    assert_contains(json, "\"typeBarrelSplitFollowUpNonParticipationReleaseRangeStart\":\"v1386\"");
+    assert_contains(json, "\"plannedTypeBarrelSplitFollowUpNonParticipationCheckCount\":20");
+    assert_contains(json, "\"completedTypeBarrelSplitFollowUpNonParticipationCheckCount\":20");
+    assert_contains(json, "\"typeBarrelSplitFollowUpNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"sourceTypeBarrelSplitNonParticipationFixtureFrozen\":true");
+    assert_contains(json, "\"miniKvStartsTypeBarrelFollowUp\":false");
+    assert_contains(json, "\"miniKvReadsProfileEndpoint\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");

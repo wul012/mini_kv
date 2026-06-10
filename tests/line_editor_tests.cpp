@@ -117,6 +117,7 @@ int main() {
           "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON",
           "SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON",
           "SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON",
+          "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
@@ -250,6 +251,13 @@ int main() {
            std::optional<std::string>{"SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON "});
     const std::string type_barrel_split_prefix = "SHARDROUTETYPE";
     assert(completion.complete(type_barrel_split_prefix, type_barrel_split_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTETYPEBARRELSPLIT"});
+    const std::string type_barrel_split_follow_up_prefix = "SHARDROUTETYPEBARRELSPLITF";
+    assert(completion.complete(type_barrel_split_follow_up_prefix, type_barrel_split_follow_up_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON "});
+    const std::string type_barrel_split_non_participation_prefix = "SHARDROUTETYPEBARRELSPLITN";
+    assert(completion.complete(type_barrel_split_non_participation_prefix,
+                               type_barrel_split_non_participation_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON "});
     const std::string value_supply_approval_template_prefix = "SHARDROUTEVALUESUPPLYA";
     assert(completion.complete(value_supply_approval_template_prefix,

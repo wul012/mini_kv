@@ -226,6 +226,10 @@ add_library(minikv
     src/shard_preview_type_barrel_split_non_participation_stages.cpp
     src/shard_preview_type_barrel_split_non_participation_checks.cpp
     src/shard_preview_type_barrel_split_non_participation_validation.cpp
+    src/shard_preview_type_barrel_split_follow_up_non_participation.cpp
+    src/shard_preview_type_barrel_split_follow_up_non_participation_stages.cpp
+    src/shard_preview_type_barrel_split_follow_up_non_participation_checks.cpp
+    src/shard_preview_type_barrel_split_follow_up_non_participation_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -1418,6 +1422,36 @@ minikv_add_source_dir_test(
     minikv_type_barrel_split_non_participation_fixture_tests
     type_barrel_split_non_participation_fixture_tests
     tests/type_barrel_split_non_participation_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_type_barrel_split_follow_up_non_participation_stages_tests
+    type_barrel_split_follow_up_non_participation_stages_tests
+    tests/type_barrel_split_follow_up_non_participation_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_type_barrel_split_follow_up_non_participation_checks_tests
+    type_barrel_split_follow_up_non_participation_checks_tests
+    tests/type_barrel_split_follow_up_non_participation_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_type_barrel_split_follow_up_non_participation_validation_tests
+    type_barrel_split_follow_up_non_participation_validation_tests
+    tests/type_barrel_split_follow_up_non_participation_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_type_barrel_split_follow_up_non_participation_tests
+    type_barrel_split_follow_up_non_participation_tests
+    tests/type_barrel_split_follow_up_non_participation_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_type_barrel_split_follow_up_non_participation_fixture_tests
+    type_barrel_split_follow_up_non_participation_fixture_tests
+    tests/type_barrel_split_follow_up_non_participation_fixture_tests.cpp
 )
 
 minikv_add_linked_test(
