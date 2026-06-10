@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-production-live-capture-release-evidence-review-non-participation-closeout-summary-read-only\"");
+                    "\"status\":\"route-preview-catalog-entry-group-split-non-participation-github-actions-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -682,6 +682,34 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"releaseReviewPayloadImported\":false");
     assert_contains(json, "\"releaseReviewFixtureImported\":false");
     assert_contains(json, "\"releaseEvidenceReviewRouterInstalled\":false");
+    assert_contains(json, "\"shardPreviewCatalogEntryGroupSplitNonParticipation\":{\"contract\":"
+                          "\"shard-route-preview-catalog-entry-group-split-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceNodeCatalogEntryGroupSplitCloseoutReleaseVersion\":\"Node v1756\"");
+    assert_contains(json, "\"sourceNodeCatalogEntryGroupSplitOnly\":true");
+    assert_contains(
+        json,
+        "\"sourceIntegrityCommand\":\"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceIntegrityReleaseVersion\":\"v1295\"");
+    assert_contains(json, "\"sourceIntegrityPublishedStageCount\":35");
+    assert_contains(json, "\"catalogEntryGroupSplitNonParticipationReleaseVersion\":\"v1330\"");
+    assert_contains(json, "\"plannedCatalogEntryGroupSplitNonParticipationCheckCount\":35");
+    assert_contains(json, "\"completedCatalogEntryGroupSplitNonParticipationCheckCount\":35");
+    assert_contains(json, "\"catalogEntryGroupSplitNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"nodeCatalogEntryRecordsImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeCatalogRegistryExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeCatalogMarkdownRenderedByMiniKv\":false");
+    assert_contains(json, "\"nodeCatalogEndpointReadByMiniKv\":false");
+    assert_contains(json, "\"nodeTypecheckExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeVitestExecutedByMiniKv\":false");
+    assert_contains(json, "\"miniKvStartsCatalogSplit\":false");
+    assert_contains(json, "\"miniKvConsumesCatalogRecords\":false");
+    assert_contains(json, "\"miniKvReadsCatalogEndpoint\":false");
+    assert_contains(json, "\"catalogEndpointRead\":false");
+    assert_contains(json, "\"catalogRecordsImported\":false");
+    assert_contains(json, "\"catalogRegistryExecuted\":false");
+    assert_contains(json, "\"catalogMarkdownRendered\":false");
+    assert_contains(json, "\"catalogRouterInstalled\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
