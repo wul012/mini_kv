@@ -1,3 +1,38 @@
+- v1260: closes archive verification non-participation with v1259 archive-explanation parity, the v1225 source archive non-participation freeze, and no verification endpoint read, payload import, router, write, WAL, or execution authority.
+- v1259: records archive explanation parity for the new command and keeps documentation aligned with the no-router/no-write/no-execution boundary.
+- v1258: proves CLI/TCP smoke parity for the new command with read-only CHECKJSON evidence and no service writes.
+- v1257: hardens fixture export parity for the v1226-v1260 archive verification chain.
+- v1256: hardens command catalog parity for the new archive verification evidence command.
+- v1255: closes Node v1686 closeout context as read-only sibling metadata and freezes the 30-stage source chain.
+- v1254: keeps Node v1685 HTTP smoke, segmented full tests, and cleanup validation outside mini-kv.
+- v1253: records Node v1684 typecheck, focused, adjacent, and build validation without fresh mini-kv evidence.
+- v1252: keeps Node v1683 release evidence review consumer validation read-only.
+- v1251: records Node v1682 JSON/Markdown route coverage without opening a mini-kv route.
+- v1250: keeps Node v1681 blocked behavior coverage from enabling writes or execution.
+- v1249: keeps Node v1680 skipped behavior coverage from opening mini-kv routes.
+- v1248: records Node v1679 renderer reexport regression coverage without running Node from mini-kv.
+- v1247: keeps Node v1678 loader orchestration outside mini-kv execution.
+- v1246: records Node v1677 stable Markdown renderer reexport as metadata only.
+- v1245: keeps Node v1676 Markdown renderer work outside mini-kv.
+- v1244: records Node v1675 summary counts without importing verification records.
+- v1243: keeps Node v1674 recommendation generation inside Node.
+- v1242: keeps Node v1673 warning generation inside Node.
+- v1241: records Node v1672 blocker collection without mini-kv participation.
+- v1240: keeps Node v1671 upstream-action and automatic-start safety checks outside mini-kv.
+- v1239: records Node v1670 skipped and mixed capture non-pass policy checks without changing mini-kv behavior.
+- v1238: keeps Node v1669 Java and mini-kv upstream reference readiness checks as read-only sibling context.
+- v1237: records Node v1668 archive profile version and archive readiness checks without importing archive profiles.
+- v1236: keeps Node v1667 archive digest match validation outside mini-kv.
+- v1235: records Node v1666 verification-state resolution without accepting verification state in mini-kv.
+- v1234: keeps Node v1665 ready-for-read-only-capture-archive-verification evaluation outside mini-kv.
+- v1233: records Node v1664 verification check assembly without creating a mini-kv verifier.
+- v1232: keeps Node v1663 verification evidence endpoint constants away from raw endpoint reads.
+- v1231: records Node v1662 Java v50 and mini-kv v59 reference constants without making mini-kv authoritative.
+- v1230: keeps Node v1661 verification digest generation outside mini-kv.
+- v1229: records Node v1660 expected archive digest recomputation as sibling verification metadata only.
+- v1228: keeps Node v1659 verification build-parts split outside mini-kv runtime.
+- v1227: records Node v1658 stable verification entrypoint reexports without importing Node code.
+- v1226: freezes v1225 as the source archive non-participation fixture and starts the verification chain with Node v1657 profile/message contracts.
 - v1225: freezes v1224 as the final production-live-capture-archive non-participation fixture and closes SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON at route-preview-production-live-capture-archive-non-participation-closeout-summary while preserving the v1195 source live-capture non-participation fixture, Node v1632-v1656 capture archive module-split context, no fresh mini-kv or Java evidence dependency, no archive loader, no endpoint/raw endpoint/archive payload import, no router, no write routing, no WAL touch, and no execution authority.
 - v1224: freezes v1223 as a versioned production-live-capture-archive non-participation fixture and proves real CLI smoke can read archive non-participation evidence without services, writes, WAL, or execution.
 - v1223: freezes v1222 as a versioned production-live-capture-archive non-participation fixture and keeps the macOS verbose build stability guard visible as CI evidence rather than runtime authority.

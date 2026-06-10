@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-production-live-capture-archive-non-participation-closeout-summary-read-only\"");
+                    "\"status\":\"route-preview-production-live-capture-archive-verification-non-participation-closeout-summary-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -624,6 +624,27 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"nodeCaptureArchiveExecuted\":false");
     assert_contains(json, "\"nodeArchiveLoaderExecuted\":false");
     assert_contains(json, "\"miniKvStartsCaptureArchive\":false");
+    assert_contains(json, "\"shardPreviewProductionLiveCaptureArchiveVerificationNonParticipation\":{\"contract\":"
+                          "\"shard-route-preview-production-live-capture-archive-verification-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON\"");
+    assert_contains(
+        json,
+        "\"sourceNodeProductionLiveProbeReadOnlyWindowCaptureArchiveVerificationCloseoutReleaseVersion\":\"Node v1686\"");
+    assert_contains(json, "\"sourceNodeArchiveVerificationModuleSplitOnly\":true");
+    assert_contains(json,
+                    "\"sourceIntegrityCommand\":\"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceIntegrityReleaseVersion\":\"v1225\"");
+    assert_contains(json, "\"sourceIntegrityPublishedStageCount\":30");
+    assert_contains(json, "\"productionLiveCaptureArchiveVerificationNonParticipationReleaseVersion\":\"v1260\"");
+    assert_contains(json, "\"plannedProductionLiveCaptureArchiveVerificationNonParticipationCheckCount\":35");
+    assert_contains(json, "\"completedProductionLiveCaptureArchiveVerificationNonParticipationCheckCount\":35");
+    assert_contains(json, "\"productionLiveCaptureArchiveVerificationNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"nodeCaptureArchiveVerificationExecuted\":false");
+    assert_contains(json, "\"nodeArchiveVerificationLoaderExecuted\":false");
+    assert_contains(json, "\"nodeArchiveVerificationRendererExecuted\":false");
+    assert_contains(json, "\"nodeReleaseEvidenceReviewExecuted\":false");
+    assert_contains(json, "\"miniKvStartsCaptureArchiveVerification\":false");
+    assert_contains(json, "\"miniKvReadsVerificationEndpoint\":false");
     assert_contains(json, "\"miniKvReadsArchiveEndpoint\":false");
     assert_contains(json, "\"archiveEndpointRead\":false");
     assert_contains(json, "\"archivePayloadImported\":false");

@@ -559,6 +559,7 @@ LineEditorCompletionOptions default_client_completion_options() {
                                   "SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON",
                                   "SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON",
                                   "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON",
+                                  "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON",
                                   "HELP",           "EXIT",      "QUIT",        ":history"};
     return options;
 }

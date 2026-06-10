@@ -114,6 +114,7 @@ int main() {
           "SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON",
           "SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON",
           "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON",
+          "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON",
           "COMMANDS", "COMMANDSJSON", "EXPLAINJSON", "CHECKJSON",
          "EXIT", "EXPIRE", ":history"}};
     assert(completion.complete("", 0) == std::nullopt);
@@ -228,7 +229,13 @@ int main() {
     const std::string production_live_capture_archive_prefix = "SHARDROUTEPRODUCTIONLIVECAPTUREA";
     assert(completion.complete(production_live_capture_archive_prefix,
                                production_live_capture_archive_prefix.size()) ==
-           std::optional<std::string>{"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON "});
+           std::optional<std::string>{"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVE"});
+    const std::string production_live_capture_archive_verification_prefix =
+        "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEV";
+    assert(completion.complete(production_live_capture_archive_verification_prefix,
+                               production_live_capture_archive_verification_prefix.size()) ==
+           std::optional<std::string>{
+               "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON "});
     const std::string value_supply_approval_template_prefix = "SHARDROUTEVALUESUPPLYA";
     assert(completion.complete(value_supply_approval_template_prefix,
                                value_supply_approval_template_prefix.size()) ==

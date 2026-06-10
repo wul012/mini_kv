@@ -42,6 +42,7 @@
 #include "minikv/shard_preview_operator_value_supply_profile_section.hpp"
 #include "minikv/shard_preview_operator_value_supply_profile_section_integrity.hpp"
 #include "minikv/shard_preview_production_live_capture_archive_non_participation.hpp"
+#include "minikv/shard_preview_production_live_capture_archive_verification_non_participation.hpp"
 #include "minikv/shard_preview_production_live_capture_non_participation.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section.hpp"
 #include "minikv/shard_preview_signed_approval_artifact_draft_profile_section_integrity.hpp"
@@ -103,7 +104,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 75> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 76> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -182,6 +183,7 @@ constexpr std::array<CommandDispatchEntry, 75> command_dispatch_table = {{
     {"SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
     {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
     {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
@@ -908,6 +910,15 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
                     format_production_live_capture_archive_non_participation_json()};
     }
 
+    if (command == "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON");
+        }
+
+        return {shard_preview_production_live_capture_archive_verification_non_participation::
+                    format_production_live_capture_archive_verification_non_participation_json()};
+    }
+
     if (command == "COMMANDS") {
         if (has_extra_token(input)) {
             return usage("COMMANDS");
@@ -1307,6 +1318,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON\n"
            "  SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON\n"
            "  SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON\n"
+           "  SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON\n"
            "  COMMANDS\n"
            "  COMMANDSJSON\n"
            "  EXPLAINJSON command\n"
