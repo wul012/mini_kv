@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-disabled-precheck-upstream-echo-non-participation-clean-workspace-ci-closeout-read-only\"");
+                    "\"status\":\"route-preview-sandbox-endpoint-credential-resolver-upstream-echo-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -788,6 +788,26 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json, "\"shardPreviewSandboxEndpointCredentialResolverUpstreamEchoNonParticipation\":{\"contract\":"
+                          "\"shard-route-sandbox-endpoint-credential-resolver-upstream-echo-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON\"");
+    assert_contains(json,
+                    "\"sourceNodeSandboxEndpointCredentialResolverUpstreamEchoCloseoutReleaseVersion\":\"Node v1903\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v114\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v105\"");
+    assert_contains(json, "\"sourceDisabledPrecheckReleaseVersion\":\"v1442\"");
+    assert_contains(json, "\"sourceDisabledPrecheckPublishedStageCount\":25");
+    assert_contains(json, "\"sandboxEndpointCredentialResolverUpstreamEchoNonParticipationReleaseVersion\":\"v1472\"");
+    assert_contains(json, "\"sandboxEndpointCredentialResolverUpstreamEchoNonParticipationReleaseRangeStart\":\"v1443\"");
+    assert_contains(json, "\"plannedSandboxEndpointCredentialResolverUpstreamEchoNonParticipationCheckCount\":30");
+    assert_contains(json, "\"completedSandboxEndpointCredentialResolverUpstreamEchoNonParticipationCheckCount\":30");
+    assert_contains(json, "\"sandboxEndpointCredentialResolverUpstreamEchoNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"sourceDisabledPrecheckUpstreamEchoFixtureFrozen\":true");
+    assert_contains(json, "\"nodeSandboxEndpointCredentialResolverStableBarrelImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeSandboxEndpointCredentialResolverCoreLoaderExecutedByMiniKv\":false");
+    assert_contains(json, "\"miniKvReadsEndpointHandles\":false");
+    assert_contains(json, "\"miniKvParsesRawEndpoint\":false");
+    assert_contains(json, "\"miniKvReadsCredentials\":false");
     assert_contains(json, "\"miniKvImportsNodeModules\":false");
     assert_contains(json, "\"miniKvExecutesNodeChecks\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");

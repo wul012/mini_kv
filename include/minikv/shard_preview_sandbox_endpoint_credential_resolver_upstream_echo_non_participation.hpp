@@ -1,0 +1,13 @@
+#pragma once
+
+#include <string>
+
+namespace minikv::shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation {
+
+std::string format_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_json();
+std::string format_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_stage_catalog_json();
+std::string sandbox_endpoint_credential_resolver_upstream_echo_non_participation_digest_marker();
+std::string sandbox_endpoint_credential_resolver_upstream_echo_non_participation_status();
+int published_stage_count();
+
+} // namespace minikv::shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation

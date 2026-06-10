@@ -38,9 +38,11 @@ int main() {
     }
 
     const auto current = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
-    assert_contains(current, "\"releaseVersion\":\"v1442\"");
+    assert_contains(current, "\"releaseVersion\":\"v1472\"");
     assert_contains(current, "\"typeBarrelSplitFollowUpFixtureAuditReleaseVersion\":\"v1417\"");
     assert_contains(current, "\"disabledPrecheckUpstreamEchoNonParticipationReleaseVersion\":\"v1442\"");
+    assert_contains(current,
+                    "\"sandboxEndpointCredentialResolverUpstreamEchoNonParticipationReleaseVersion\":\"v1472\"");
 
     return 0;
 }

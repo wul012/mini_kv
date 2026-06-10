@@ -118,6 +118,7 @@ int main() {
           "SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON",
           "SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON",
           "SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON",
+          "SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
@@ -265,6 +266,11 @@ int main() {
     assert(completion.complete(disabled_precheck_upstream_echo_prefix,
                                disabled_precheck_upstream_echo_prefix.size()) ==
            std::optional<std::string>{"SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON "});
+    const std::string sandbox_endpoint_credential_resolver_prefix = "SHARDROUTESANDBOXENDPOINTCREDENTIAL";
+    assert(completion.complete(sandbox_endpoint_credential_resolver_prefix,
+                               sandbox_endpoint_credential_resolver_prefix.size()) ==
+           std::optional<std::string>{
+               "SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON "});
     const std::string type_barrel_split_follow_up_non_participation_prefix =
         "SHARDROUTETYPEBARRELSPLITFOLLOWUPN";
     assert(completion.complete(type_barrel_split_follow_up_non_participation_prefix,

@@ -238,6 +238,10 @@ add_library(minikv
     src/shard_preview_disabled_precheck_upstream_echo_non_participation_stages.cpp
     src/shard_preview_disabled_precheck_upstream_echo_non_participation_checks.cpp
     src/shard_preview_disabled_precheck_upstream_echo_non_participation_validation.cpp
+    src/shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation.cpp
+    src/shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_stages.cpp
+    src/shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_checks.cpp
+    src/shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -1520,6 +1524,36 @@ minikv_add_source_dir_test(
     minikv_disabled_precheck_upstream_echo_non_participation_fixture_tests
     disabled_precheck_upstream_echo_non_participation_fixture_tests
     tests/disabled_precheck_upstream_echo_non_participation_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_stages_tests
+    sandbox_endpoint_credential_resolver_upstream_echo_non_participation_stages_tests
+    tests/sandbox_endpoint_credential_resolver_upstream_echo_non_participation_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_checks_tests
+    sandbox_endpoint_credential_resolver_upstream_echo_non_participation_checks_tests
+    tests/sandbox_endpoint_credential_resolver_upstream_echo_non_participation_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_validation_tests
+    sandbox_endpoint_credential_resolver_upstream_echo_non_participation_validation_tests
+    tests/sandbox_endpoint_credential_resolver_upstream_echo_non_participation_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_tests
+    sandbox_endpoint_credential_resolver_upstream_echo_non_participation_tests
+    tests/sandbox_endpoint_credential_resolver_upstream_echo_non_participation_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_fixture_tests
+    sandbox_endpoint_credential_resolver_upstream_echo_non_participation_fixture_tests
+    tests/sandbox_endpoint_credential_resolver_upstream_echo_non_participation_fixture_tests.cpp
 )
 
 minikv_add_linked_test(
