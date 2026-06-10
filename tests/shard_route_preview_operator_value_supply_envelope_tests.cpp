@@ -87,7 +87,7 @@ int main() {
     const std::string shard = minikv::shard_readiness::format_json();
     assert(minikv::test_support::occurrence_count(shard, "\"shardRoutePreviewOperatorValueSupplyEnvelope\":") == 1);
     minikv::test_support::assert_contains(shard,
-                                          "\"status\":\"route-preview-catalog-entry-group-split-non-participation-follow-up-github-actions-closeout-summary-read-only\"");
+                                          "\"status\":\"route-preview-type-barrel-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     minikv::test_support::assert_contains(shard, "\"sourceValueDraftReleaseVersion\":\"v585\"");
     minikv::test_support::assert_contains(shard, "\"readyForDisabledValueSupplyEnvelope\":true");
     minikv::test_support::assert_contains(shard, "\"readyForOperatorValueSupply\":false");

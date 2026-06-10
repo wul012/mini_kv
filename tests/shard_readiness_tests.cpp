@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-catalog-entry-group-split-non-participation-follow-up-github-actions-closeout-summary-read-only\"");
+                    "\"status\":\"route-preview-type-barrel-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -711,6 +711,31 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"catalogRegistryExecuted\":false");
     assert_contains(json, "\"catalogMarkdownRendered\":false");
     assert_contains(json, "\"catalogRouterInstalled\":false");
+    assert_contains(json, "\"shardPreviewTypeBarrelSplitNonParticipation\":{\"contract\":"
+                          "\"shard-route-preview-type-barrel-split-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceNodeTypeBarrelSplitCloseoutReleaseVersion\":\"Node v1846\"");
+    assert_contains(json, "\"sourceNodeTypeBarrelSplitOnly\":true");
+    assert_contains(
+        json,
+        "\"sourceIntegrityCommand\":\"SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceIntegrityReleaseVersion\":\"v1360\"");
+    assert_contains(json, "\"sourceIntegrityPublishedStageCount\":30");
+    assert_contains(json, "\"typeBarrelSplitNonParticipationReleaseVersion\":\"v1385\"");
+    assert_contains(json, "\"typeBarrelSplitNonParticipationReleaseRangeStart\":\"v1361\"");
+    assert_contains(json, "\"plannedTypeBarrelSplitNonParticipationCheckCount\":25");
+    assert_contains(json, "\"completedTypeBarrelSplitNonParticipationCheckCount\":25");
+    assert_contains(json, "\"typeBarrelSplitNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"nodeStableBarrelImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeProfileTypesImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeAggregateReexportsImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeProfileBoundaryEndpointReadByMiniKv\":false");
+    assert_contains(json, "\"miniKvStartsTypeBarrelSplit\":false");
+    assert_contains(json, "\"miniKvImportsNodeTypes\":false");
+    assert_contains(json, "\"miniKvConsumesProfileBoundaries\":false");
+    assert_contains(json, "\"profileBoundaryEndpointRead\":false");
+    assert_contains(json, "\"evidenceEndpointRead\":false");
+    assert_contains(json, "\"typeRouterInstalled\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");

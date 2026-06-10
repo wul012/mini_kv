@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=78") != std::string::npos);
+    assert(result.response.find("command_count=79") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -417,6 +417,9 @@ int main() {
     assert(result.response.find(
                "SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
+    assert(result.response.find(
+               "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
     assert(result.response.find("EXPLAINJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("CHECKJSON(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SMOKEJSON(category=meta,mutates_store=no,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -505,6 +508,9 @@ int main() {
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
+               "\"name\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
                "\"name\":\"SHARDROUTEVERIFYREPORTJSON\",\"category\":\"read\",\"mutates_store\":false,"
@@ -597,7 +603,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-catalog-entry-group-split-non-participation-follow-up-github-actions-closeout-summary-read-only\"");
+        "\"status\":\"route-preview-type-barrel-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1627,6 +1633,43 @@ int main() {
 
     result = processor.execute("SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON extra");
     assert(result.response == "ERR usage: SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON");
+
+    result = processor.execute("SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON");
+    assert_response_contains(result, "\"contract\":\"shard-route-preview-type-barrel-split-non-participation.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\"");
+    assert_response_contains(result, "\"sourceNodeTypeBarrelSplitCloseoutReleaseVersion\":\"Node v1846\"");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshJavaEvidence\":false");
+    assert_response_contains(result, "\"sourceNodeTypeBarrelSplitOnly\":true");
+    assert_response_contains(result, "\"sourceNodeRequiresSiblingStartup\":false");
+    assert_response_contains(
+        result,
+        "\"sourceIntegrityCommand\":\"SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON\"");
+    assert_response_contains(result, "\"sourceIntegrityReleaseVersion\":\"v1360\"");
+    assert_response_contains(result, "\"sourceIntegrityPublishedStageCount\":30");
+    assert_response_contains(result, "\"typeBarrelSplitNonParticipationReleaseVersion\":\"v1385\"");
+    assert_response_contains(result, "\"typeBarrelSplitNonParticipationReleaseRangeStart\":\"v1361\"");
+    assert_response_contains(result, "\"plannedTypeBarrelSplitNonParticipationCheckCount\":25");
+    assert_response_contains(result, "\"completedTypeBarrelSplitNonParticipationCheckCount\":25");
+    assert_response_contains(result, "\"typeBarrelSplitNonParticipationOnly\":true");
+    assert_response_contains(result, "\"nodeStableBarrelImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeProfileTypesImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeAggregateReexportsImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeProfileBoundaryEndpointReadByMiniKv\":false");
+    assert_response_contains(result, "\"nodeTypecheckExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeVitestExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"miniKvStartsTypeBarrelSplit\":false");
+    assert_response_contains(result, "\"miniKvImportsNodeTypes\":false");
+    assert_response_contains(result, "\"miniKvConsumesProfileBoundaries\":false");
+    assert_response_contains(result, "\"profileBoundaryEndpointRead\":false");
+    assert_response_contains(result, "\"evidenceEndpointRead\":false");
+    assert_response_contains(result, "\"typeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON extra");
+    assert(result.response == "ERR usage: SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
