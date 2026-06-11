@@ -71,7 +71,7 @@ int main() {
                "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftAuthoringReadiness\":") == 1);
     minikv::test_support::assert_contains(
         shard,
-        "\"status\":\"route-preview-disabled-fake-harness-contract-upstream-echo-verification-split-non-participation-clean-workspace-ci-closeout-read-only\"");
+        "\"status\":\"route-preview-blocked-execution-rehearsal-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     minikv::test_support::assert_contains(
         shard,
         "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":");

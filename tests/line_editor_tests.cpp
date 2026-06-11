@@ -122,6 +122,7 @@ int main() {
           "SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON",
           "SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON",
           "SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON",
+          "SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
@@ -290,6 +291,10 @@ int main() {
                                disabled_fake_harness_contract_upstream_echo_verification_split_prefix.size()) ==
            std::optional<std::string>{
                "SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON "});
+    const std::string blocked_execution_rehearsal_split_prefix = "SHARDROUTEBLOCKEDEXECUTION";
+    assert(completion.complete(blocked_execution_rehearsal_split_prefix,
+                               blocked_execution_rehearsal_split_prefix.size()) ==
+           std::optional<std::string>{"SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON "});
     const std::string type_barrel_split_follow_up_non_participation_prefix =
         "SHARDROUTETYPEBARRELSPLITFOLLOWUPN";
     assert(completion.complete(type_barrel_split_follow_up_non_participation_prefix,

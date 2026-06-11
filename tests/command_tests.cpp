@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=86") != std::string::npos);
+    assert(result.response.find("command_count=87") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -433,6 +433,9 @@ int main() {
                "SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
+               "SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
                "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
@@ -546,6 +549,9 @@ int main() {
                "\"name\":\"SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
+               "\"name\":\"SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
                "\"name\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
@@ -645,7 +651,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-disabled-fake-harness-contract-upstream-echo-verification-split-non-participation-clean-workspace-ci-closeout-read-only\"");
+        "\"status\":\"route-preview-blocked-execution-rehearsal-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -2064,6 +2070,80 @@ int main() {
         processor.execute("SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON extra");
     assert(result.response ==
            "ERR usage: SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON");
+
+    result = processor.execute("SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON");
+    assert_response_contains(
+        result,
+        "\"contract\":\"shard-route-blocked-execution-rehearsal-split-non-participation.v1\"");
+    assert_response_contains(result,
+                             "\"command\":\"SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON\"");
+    assert_response_contains(
+        result,
+        "\"sourceNodeBlockedExecutionRehearsalSplitCloseoutReleaseVersion\":\"Node v1982\"");
+    assert_response_contains(result, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v99\"");
+    assert_response_contains(result, "\"sourceNodeConsumesHistoricalMiniKvEvidence\":\"wal-regression-evidence\"");
+    assert_response_contains(result, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v90\"");
+    assert_response_contains(result, "\"sourceNodeConsumesHistoricalJavaEvidence\":\"context-normalization-evidence\"");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshJavaEvidence\":false");
+    assert_response_contains(
+        result,
+        "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitNonParticipationCommand\":\"SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON\"");
+    assert_response_contains(
+        result,
+        "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitNonParticipationReleaseVersion\":\"v1505\"");
+    assert_response_contains(
+        result,
+        "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitPublishedStageCount\":15");
+    assert_response_contains(
+        result,
+        "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitComplete\":true");
+    assert_response_contains(result,
+                             "\"blockedExecutionRehearsalSplitNonParticipationReleaseVersion\":\"v1525\"");
+    assert_response_contains(result,
+                             "\"blockedExecutionRehearsalSplitNonParticipationReleaseRangeStart\":\"v1506\"");
+    assert_response_contains(result,
+                             "\"blockedExecutionRehearsalSplitNonParticipationReleaseRangeEnd\":\"v1525\"");
+    assert_response_contains(result, "\"plannedBlockedExecutionRehearsalSplitNonParticipationCheckCount\":20");
+    assert_response_contains(result, "\"completedBlockedExecutionRehearsalSplitNonParticipationCheckCount\":20");
+    assert_response_contains(result, "\"blockedExecutionRehearsalSplitNonParticipationOnly\":true");
+    assert_response_contains(result,
+                             "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitFixtureFrozen\":true");
+    assert_response_contains(result, "\"nodeBlockedExecutionRehearsalPublicEntrypointImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBlockedExecutionRehearsalTypesImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBlockedExecutionRehearsalConstantsImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBlockedExecutionRehearsalReferencesParsedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBlockedExecutionRehearsalCoreExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBlockedExecutionRehearsalPolicyExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBlockedExecutionRehearsalRendererExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBlockedExecutionRehearsalLoaderExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodePreconditionIntakeExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeTypecheckExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeVitestExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBuildExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"miniKvImportsNodeModules\":false");
+    assert_response_contains(result, "\"miniKvExecutesNodeChecks\":false");
+    assert_response_contains(result, "\"miniKvStartsServices\":false");
+    assert_response_contains(result, "\"miniKvReadsEndpoints\":false");
+    assert_response_contains(result, "\"miniKvReadsCredentials\":false");
+    assert_response_contains(result, "\"miniKvParsesHistoricalReceipts\":false");
+    assert_response_contains(result, "\"miniKvReadsHistoricalMiniKvV99WalRegressionFile\":false");
+    assert_response_contains(result, "\"miniKvScansJavaV90ContextNormalizationEvidence\":false");
+    assert_response_contains(result, "\"miniKvScansJavaEvidence\":false");
+    assert_response_contains(result, "\"miniKvReplaysWalRegression\":false");
+    assert_response_contains(result, "\"endpointHandleRead\":false");
+    assert_response_contains(result, "\"rawEndpointParsed\":false");
+    assert_response_contains(result, "\"credentialValueRead\":false");
+    assert_response_contains(result, "\"managedAuditConnectionOpened\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"blockedExecutionRehearsalSplitNonParticipationValidationPassed\":true");
+
+    result = processor.execute("SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON extra");
+    assert(result.response ==
+           "ERR usage: SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");

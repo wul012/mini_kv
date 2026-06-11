@@ -56,6 +56,7 @@
 #include "minikv/shard_preview_production_live_capture_non_participation.hpp"
 #include "minikv/shard_preview_production_live_capture_release_evidence_review_non_participation.hpp"
 #include "minikv/shard_preview_catalog_entry_group_split_non_participation.hpp"
+#include "minikv/shard_preview_blocked_execution_rehearsal_split_non_participation.hpp"
 #include "minikv/shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation.hpp"
 #include "minikv/shard_preview_disabled_precheck_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_implementation_plan_upstream_echo_closeout_non_participation.hpp"
@@ -80,7 +81,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v1505";
+constexpr std::string_view release_version = "v1525";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -282,6 +283,9 @@ std::string evidence_digest() {
             {"shardPreviewDisabledFakeHarnessContractUpstreamEchoVerificationSplitNonParticipation=" +
              shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation::
                  disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_digest_marker()},
+            {"shardPreviewBlockedExecutionRehearsalSplitNonParticipation=" +
+             shard_preview_blocked_execution_rehearsal_split_non_participation::
+                 blocked_execution_rehearsal_split_non_participation_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -327,8 +331,8 @@ std::string format_json() {
            ",\"evidencePath\":" + json_string(fixture_path()) +
            ",\"status\":" +
            json_string(
-               shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation::
-                   disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_status()) +
+               shard_preview_blocked_execution_rehearsal_split_non_participation::
+                   blocked_execution_rehearsal_split_non_participation_status()) +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -471,6 +475,9 @@ std::string format_json() {
             ",\"shardPreviewDisabledFakeHarnessContractUpstreamEchoVerificationSplitNonParticipation\":" +
             shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation::
                 format_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_json() +
+            ",\"shardPreviewBlockedExecutionRehearsalSplitNonParticipation\":" +
+            shard_preview_blocked_execution_rehearsal_split_non_participation::
+                format_blocked_execution_rehearsal_split_non_participation_json() +
             ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

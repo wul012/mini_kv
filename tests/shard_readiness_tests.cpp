@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-disabled-fake-harness-contract-upstream-echo-verification-split-non-participation-clean-workspace-ci-closeout-read-only\"");
+                    "\"status\":\"route-preview-blocked-execution-rehearsal-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -886,6 +886,39 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"miniKvParsesHistoricalReceipts\":false");
     assert_contains(json, "\"miniKvReadsHistoricalMiniKvV127ReceiptFile\":false");
     assert_contains(json, "\"miniKvScansJavaEvidence\":false");
+    assert_contains(json, "\"shardPreviewBlockedExecutionRehearsalSplitNonParticipation\":{\"contract\":"
+                          "\"shard-route-blocked-execution-rehearsal-split-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON\"");
+    assert_contains(json,
+                    "\"sourceNodeBlockedExecutionRehearsalSplitCloseoutReleaseVersion\":\"Node v1982\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v99\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalMiniKvEvidence\":\"wal-regression-evidence\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v90\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalJavaEvidence\":\"context-normalization-evidence\"");
+    assert_contains(json,
+                    "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitNonParticipationReleaseVersion\":\"v1505\"");
+    assert_contains(json,
+                    "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitPublishedStageCount\":15");
+    assert_contains(json,
+                    "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitComplete\":true");
+    assert_contains(json, "\"blockedExecutionRehearsalSplitNonParticipationReleaseVersion\":\"v1525\"");
+    assert_contains(json, "\"blockedExecutionRehearsalSplitNonParticipationReleaseRangeStart\":\"v1506\"");
+    assert_contains(json, "\"plannedBlockedExecutionRehearsalSplitNonParticipationCheckCount\":20");
+    assert_contains(json, "\"completedBlockedExecutionRehearsalSplitNonParticipationCheckCount\":20");
+    assert_contains(json, "\"blockedExecutionRehearsalSplitNonParticipationValidationPassed\":true");
+    assert_contains(json,
+                    "\"sourceDisabledFakeHarnessContractUpstreamEchoVerificationSplitFixtureFrozen\":true");
+    assert_contains(json, "\"nodeBlockedExecutionRehearsalPublicEntrypointImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeBlockedExecutionRehearsalTypesImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeBlockedExecutionRehearsalConstantsImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeBlockedExecutionRehearsalReferencesParsedByMiniKv\":false");
+    assert_contains(json, "\"nodeBlockedExecutionRehearsalCoreExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeBlockedExecutionRehearsalPolicyExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeBlockedExecutionRehearsalRendererExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeBlockedExecutionRehearsalLoaderExecutedByMiniKv\":false");
+    assert_contains(json, "\"miniKvReadsHistoricalMiniKvV99WalRegressionFile\":false");
+    assert_contains(json, "\"miniKvScansJavaV90ContextNormalizationEvidence\":false");
+    assert_contains(json, "\"miniKvReplaysWalRegression\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
