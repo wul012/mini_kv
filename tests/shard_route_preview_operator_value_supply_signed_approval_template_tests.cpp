@@ -135,7 +135,7 @@ int main() {
                "\"shardRoutePreviewOperatorValueSupplySignedApprovalTemplate\":") == 1);
     minikv::test_support::assert_contains(
         shard,
-        "\"status\":\"route-preview-implementation-plan-upstream-echo-closeout-non-participation-clean-fixture-closeout-read-only\"");
+        "\"status\":\"route-preview-release-window-readiness-packet-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     minikv::test_support::assert_contains(shard,
                                           "\"sourceApprovalTemplateReleaseVersion\":\"v660\"");
     minikv::test_support::assert_contains(shard,

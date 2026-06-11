@@ -48,6 +48,7 @@
 #include "minikv/shard_preview_catalog_entry_group_split_non_participation.hpp"
 #include "minikv/shard_preview_disabled_precheck_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_implementation_plan_upstream_echo_closeout_non_participation.hpp"
+#include "minikv/shard_preview_release_window_readiness_packet_split_non_participation.hpp"
 #include "minikv/shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_type_barrel_split_follow_up_fixture_audit.hpp"
 #include "minikv/shard_preview_type_barrel_split_follow_up_non_participation.hpp"
@@ -112,7 +113,7 @@ struct CommandDispatchEntry {
     CommandDispatchVerb verb;
 };
 
-constexpr std::array<CommandDispatchEntry, 84> command_dispatch_table = {{
+constexpr std::array<CommandDispatchEntry, 85> command_dispatch_table = {{
     {"PING", CommandDispatchVerb::Ping},
     {"SET", CommandDispatchVerb::Set},
     {"SETNXEX", CommandDispatchVerb::SetNxEx},
@@ -200,6 +201,7 @@ constexpr std::array<CommandDispatchEntry, 84> command_dispatch_table = {{
      CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON",
      CommandDispatchVerb::RuntimeEvidence},
+    {"SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
     {"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
@@ -987,6 +989,16 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
                 format_implementation_plan_upstream_echo_closeout_non_participation_json()};
     }
 
+    if (command == "SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON");
+        }
+
+        return {
+            shard_preview_release_window_readiness_packet_split_non_participation::
+                format_release_window_readiness_packet_split_non_participation_json()};
+    }
+
     if (command == "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON") {
         if (has_extra_token(input)) {
             return usage("SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON");
@@ -1422,6 +1434,7 @@ std::string CommandProcessor::help_text() {
            "  SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON\n"
            "  SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON\n"
            "  SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON\n"
+           "  SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON\n"
            "  SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON\n"
            "  SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON\n"
            "  SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\n"

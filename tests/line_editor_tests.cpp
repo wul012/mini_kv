@@ -120,6 +120,7 @@ int main() {
           "SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON",
           "SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON",
           "SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON",
+          "SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
@@ -277,6 +278,11 @@ int main() {
                                implementation_plan_upstream_echo_prefix.size()) ==
            std::optional<std::string>{
                "SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON "});
+    const std::string release_window_readiness_packet_split_prefix = "SHARDROUTERELEASEWINDOW";
+    assert(completion.complete(release_window_readiness_packet_split_prefix,
+                               release_window_readiness_packet_split_prefix.size()) ==
+           std::optional<std::string>{
+               "SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON "});
     const std::string type_barrel_split_follow_up_non_participation_prefix =
         "SHARDROUTETYPEBARRELSPLITFOLLOWUPN";
     assert(completion.complete(type_barrel_split_follow_up_non_participation_prefix,

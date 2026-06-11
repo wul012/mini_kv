@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-implementation-plan-upstream-echo-closeout-non-participation-clean-fixture-closeout-read-only\"");
+                    "\"status\":\"route-preview-release-window-readiness-packet-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -827,6 +827,31 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"sourceSandboxEndpointCredentialResolverUpstreamEchoFixtureFrozen\":true");
     assert_contains(json, "\"nodeImplementationPlanStableBarrelImportedByMiniKv\":false");
     assert_contains(json, "\"nodeImplementationPlanCoreLoaderExecutedByMiniKv\":false");
+    assert_contains(json, "\"shardPreviewReleaseWindowReadinessPacketSplitNonParticipation\":{\"contract\":"
+                          "\"shard-route-release-window-readiness-packet-split-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON\"");
+    assert_contains(json,
+                    "\"sourceNodeReleaseWindowReadinessPacketSplitCloseoutReleaseVersion\":\"Node v1937\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v70\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v61\"");
+    assert_contains(json, "\"sourceImplementationPlanReleaseVersion\":\"v1475\"");
+    assert_contains(json, "\"sourceImplementationPlanPublishedStageCount\":3");
+    assert_contains(json, "\"releaseWindowReadinessPacketSplitNonParticipationReleaseVersion\":\"v1490\"");
+    assert_contains(json, "\"releaseWindowReadinessPacketSplitNonParticipationReleaseRangeStart\":\"v1476\"");
+    assert_contains(json, "\"plannedReleaseWindowReadinessPacketSplitNonParticipationCheckCount\":15");
+    assert_contains(json, "\"completedReleaseWindowReadinessPacketSplitNonParticipationCheckCount\":15");
+    assert_contains(json, "\"releaseWindowReadinessPacketSplitNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"sourceImplementationPlanUpstreamEchoCloseoutFixtureFrozen\":true");
+    assert_contains(json, "\"nodeReleaseWindowReadinessPacketStableEntrypointImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeReleaseWindowReadinessPacketTypesImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeReleaseWindowReadinessPacketEvidenceImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeReleaseWindowReadinessPacketPolicyImportedByMiniKv\":false");
+    assert_contains(json, "\"nodeReleaseWindowReadinessPacketLoaderExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeReleaseWindowReadinessPacketRendererExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeProductionReleaseDryRunEnvelopeExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeStatusRoutesExecutedByMiniKv\":false");
+    assert_contains(json, "\"miniKvExecutesReleaseWindowPacket\":false");
+    assert_contains(json, "\"miniKvReplaysRestoreDrillEvidence\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");

@@ -8,20 +8,20 @@ int main() {
     using minikv::test_support::read_fixture_text;
     using minikv::test_support::read_shard_readiness_fixture;
 
-    for (int version = 1473; version <= 1475; ++version) {
+    for (int version = 1476; version <= 1490; ++version) {
         const auto fixture = read_shard_readiness_fixture(version);
         assert_contains(fixture, "\"releaseVersion\":\"v" + std::to_string(version) + "\"");
-        assert_contains(fixture, "\"shardPreviewImplementationPlanUpstreamEchoCloseoutNonParticipation\"");
+        assert_contains(fixture, "\"shardPreviewReleaseWindowReadinessPacketSplitNonParticipation\"");
         assert_contains(fixture,
-                        "\"implementationPlanUpstreamEchoCloseoutNonParticipationReleaseVersion\":\"v" +
+                        "\"releaseWindowReadinessPacketSplitNonParticipationReleaseVersion\":\"v" +
                             std::to_string(version) + "\"");
-        assert_contains(fixture, "\"sourceSandboxEndpointReleaseVersion\":\"v1472\"");
-        assert_contains(fixture, "\"sourceSandboxEndpointPublishedStageCount\":30");
-        assert_contains(fixture, "\"sourceSandboxEndpointCredentialResolverUpstreamEchoFixtureFrozen\":true");
+        assert_contains(fixture, "\"sourceImplementationPlanReleaseVersion\":\"v1475\"");
+        assert_contains(fixture, "\"sourceImplementationPlanPublishedStageCount\":3");
+        assert_contains(fixture, "\"sourceImplementationPlanUpstreamEchoCloseoutFixtureFrozen\":true");
         assert_contains(fixture,
-                        "\"sourceNodeImplementationPlanUpstreamEchoCloseoutReleaseVersion\":\"Node v1934\"");
-        assert_contains(fixture, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v126\"");
-        assert_contains(fixture, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v121\"");
+                        "\"sourceNodeReleaseWindowReadinessPacketSplitCloseoutReleaseVersion\":\"Node v1937\"");
+        assert_contains(fixture, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v70\"");
+        assert_contains(fixture, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v61\"");
         assert_contains(fixture, "\"freshMiniKvEvidenceRequiredByNode\":false");
         assert_contains(fixture, "\"freshJavaEvidenceRequiredByNode\":false");
         assert_contains(fixture, "\"miniKvImportsNodeModules\":false");
@@ -29,12 +29,18 @@ int main() {
         assert_contains(fixture, "\"miniKvStartsServices\":false");
         assert_contains(fixture, "\"miniKvReadsEndpoints\":false");
         assert_contains(fixture, "\"miniKvReadsCredentials\":false");
+        assert_contains(fixture, "\"miniKvExecutesReleaseWindowPacket\":false");
+        assert_contains(fixture, "\"miniKvReplaysRestoreDrillEvidence\":false");
         assert_contains(fixture, "\"endpointHandleRead\":false");
         assert_contains(fixture, "\"rawEndpointParsed\":false");
         assert_contains(fixture, "\"credentialValueRead\":false");
         assert_contains(fixture, "\"managedAuditConnectionOpened\":false");
-        assert_contains(fixture, "\"nodeImplementationPlanStableBarrelImportedByMiniKv\":false");
-        assert_contains(fixture, "\"nodeImplementationPlanCoreLoaderExecutedByMiniKv\":false");
+        assert_contains(fixture, "\"nodeReleaseWindowReadinessPacketStableEntrypointImportedByMiniKv\":false");
+        assert_contains(fixture, "\"nodeReleaseWindowReadinessPacketTypesImportedByMiniKv\":false");
+        assert_contains(fixture, "\"nodeReleaseWindowReadinessPacketEvidenceImportedByMiniKv\":false");
+        assert_contains(fixture, "\"nodeReleaseWindowReadinessPacketPolicyImportedByMiniKv\":false");
+        assert_contains(fixture, "\"nodeReleaseWindowReadinessPacketLoaderExecutedByMiniKv\":false");
+        assert_contains(fixture, "\"nodeReleaseWindowReadinessPacketRendererExecutedByMiniKv\":false");
         assert_contains(fixture, "\"nodeTypecheckExecutedByMiniKv\":false");
         assert_contains(fixture, "\"nodeVitestExecutedByMiniKv\":false");
         assert_contains(fixture, "\"nodeBuildExecutedByMiniKv\":false");
@@ -45,8 +51,6 @@ int main() {
 
     const auto current = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
     assert_contains(current, "\"releaseVersion\":\"v1490\"");
-    assert_contains(current,
-                    "\"sandboxEndpointCredentialResolverUpstreamEchoNonParticipationReleaseVersion\":\"v1472\"");
     assert_contains(current,
                     "\"implementationPlanUpstreamEchoCloseoutNonParticipationReleaseVersion\":\"v1475\"");
     assert_contains(current,

@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=84") != std::string::npos);
+    assert(result.response.find("command_count=85") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -427,6 +427,9 @@ int main() {
                "SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
+               "SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
                "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
@@ -534,6 +537,9 @@ int main() {
                "\"name\":\"SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
+               "\"name\":\"SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
                "\"name\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
@@ -633,7 +639,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-implementation-plan-upstream-echo-closeout-non-participation-clean-fixture-closeout-read-only\"");
+        "\"status\":\"route-preview-release-window-readiness-packet-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1915,6 +1921,70 @@ int main() {
     result = processor.execute("SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON extra");
     assert(result.response ==
            "ERR usage: SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON");
+
+    result = processor.execute("SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON");
+    assert_response_contains(
+        result,
+        "\"contract\":\"shard-route-release-window-readiness-packet-split-non-participation.v1\"");
+    assert_response_contains(
+        result, "\"command\":\"SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON\"");
+    assert_response_contains(
+        result,
+        "\"sourceNodeReleaseWindowReadinessPacketSplitCloseoutReleaseVersion\":\"Node v1937\"");
+    assert_response_contains(result, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v70\"");
+    assert_response_contains(result, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v61\"");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_response_contains(
+        result,
+        "\"sourceImplementationPlanCommand\":\"SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON\"");
+    assert_response_contains(result, "\"sourceImplementationPlanReleaseVersion\":\"v1475\"");
+    assert_response_contains(result, "\"sourceImplementationPlanPublishedStageCount\":3");
+    assert_response_contains(
+        result,
+        "\"releaseWindowReadinessPacketSplitNonParticipationReleaseVersion\":\"v1490\"");
+    assert_response_contains(
+        result,
+        "\"releaseWindowReadinessPacketSplitNonParticipationReleaseRangeStart\":\"v1476\"");
+    assert_response_contains(
+        result,
+        "\"plannedReleaseWindowReadinessPacketSplitNonParticipationCheckCount\":15");
+    assert_response_contains(
+        result,
+        "\"completedReleaseWindowReadinessPacketSplitNonParticipationCheckCount\":15");
+    assert_response_contains(
+        result,
+        "\"releaseWindowReadinessPacketSplitNonParticipationOnly\":true");
+    assert_response_contains(result, "\"sourceImplementationPlanUpstreamEchoCloseoutFixtureFrozen\":true");
+    assert_response_contains(result, "\"nodeReleaseWindowReadinessPacketStableEntrypointImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeReleaseWindowReadinessPacketTypesImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeReleaseWindowReadinessPacketEvidenceImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeReleaseWindowReadinessPacketPolicyImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeReleaseWindowReadinessPacketLoaderExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeReleaseWindowReadinessPacketRendererExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeProductionReleaseDryRunEnvelopeExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeStatusRoutesExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeTypecheckExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeVitestExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBuildExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"miniKvImportsNodeModules\":false");
+    assert_response_contains(result, "\"miniKvExecutesNodeChecks\":false");
+    assert_response_contains(result, "\"miniKvStartsServices\":false");
+    assert_response_contains(result, "\"miniKvReadsEndpoints\":false");
+    assert_response_contains(result, "\"miniKvReadsCredentials\":false");
+    assert_response_contains(result, "\"miniKvExecutesReleaseWindowPacket\":false");
+    assert_response_contains(result, "\"miniKvReplaysRestoreDrillEvidence\":false");
+    assert_response_contains(result, "\"endpointHandleRead\":false");
+    assert_response_contains(result, "\"rawEndpointParsed\":false");
+    assert_response_contains(result, "\"credentialValueRead\":false");
+    assert_response_contains(result, "\"managedAuditConnectionOpened\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON extra");
+    assert(result.response ==
+           "ERR usage: SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
