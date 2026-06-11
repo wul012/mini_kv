@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"production-shard-execution-owner-receipt-request-packet-clean-ci-closeout-read-only\"");
+                    "\"status\":\"production-shard-execution-mini-kv-owner-receipt-bundle-clean-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -1082,6 +1082,35 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"mutatesStore\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json,
+                    "\"shardPreviewProductionShardExecutionMiniKvOwnerReceiptBundle\":{\"contract\":"
+                    "\"shard-production-shard-execution-mini-kv-owner-receipt-bundle.v1\"");
+    assert_contains(json, "\"command\":\"SHARDPRODUCTIONSHARDEXECUTIONMINIKVOWNERRECEIPTBUNDLEJSON\"");
+    assert_contains(json, "\"sourceOwnerReceiptRequestPacketReleaseVersion\":\"v1596\"");
+    assert_contains(json, "\"sourceOwnerReceiptRequestPacketComplete\":true");
+    assert_contains(json, "\"productionShardExecutionMiniKvOwnerReceiptBundleReleaseVersion\":\"v1601\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v1600\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v1600.json\"");
+    assert_contains(json, "\"productionShardExecutionMiniKvOwnerReceiptBundleReleaseRangeStart\":\"v1597\"");
+    assert_contains(json, "\"productionShardExecutionMiniKvOwnerReceiptBundleReleaseRangeEnd\":\"v1601\"");
+    assert_contains(json, "\"miniKvReceiptSlotCount\":4");
+    assert_contains(json, "\"miniKvAbortOwnerReceiptPresent\":true");
+    assert_contains(json, "\"miniKvRollbackOwnerReceiptPresent\":true");
+    assert_contains(json, "\"miniKvLifecycleOwnerReceiptPresent\":true");
+    assert_contains(json, "\"miniKvCleanupNoStartProofPresent\":true");
+    assert_contains(json, "\"miniKvReceiptsComplete\":true");
+    assert_contains(json, "\"javaOwnerReceiptsPresent\":false");
+    assert_contains(json, "\"crossProjectCleanupReconciliationReceiptPresent\":false");
+    assert_contains(json, "\"archiveRoot\":\"f\"");
+    assert_contains(json, "\"archiveRootIsF\":true");
+    assert_contains(json,
+                    "\"versionedArchiveDirectories\":[\"f/1597/\",\"f/1598/\",\"f/1599/\",\"f/1600/\",\"f/1601/\"]");
+    assert_contains(json, "\"completedProductionShardExecutionMiniKvOwnerReceiptBundleCheckCount\":12");
+    assert_contains(json, "\"productionShardExecutionMiniKvOwnerReceiptBundleValidationPassed\":true");
+    assert_contains(json, "\"abortExecutionPerformed\":false");
+    assert_contains(json, "\"rollbackExecutionPerformed\":false");
+    assert_contains(json, "\"lifecycleServiceStarted\":false");
+    assert_contains(json, "\"cleanupExecutionPerformed\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -1646,10 +1675,10 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"extraArgsAllowed\":false");
     assert_contains(json, "\"sideEffects\":[\"metadata_read\"]");
     assert_contains(json, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
-    assert_contains(json, "\"releaseRangeEnd\":\"v1596\"");
+    assert_contains(json, "\"releaseRangeEnd\":\"v1601\"");
     assert_contains(json,
-                    "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-and-owner-receipt-request-gates\"");
-    assert_contains(json, "\"commandCount\":91");
+                    "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-owner-request-and-mini-kv-receipt-gates\"");
+    assert_contains(json, "\"commandCount\":92");
     assert_contains(json, "\"dispatchCatalogSplit\":true");
     assert_contains(json, "\"contractCatalogDeduplicated\":true");
     assert_contains(json, "\"helpTextGeneratedFromCatalog\":true");

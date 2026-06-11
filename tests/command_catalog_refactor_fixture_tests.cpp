@@ -31,13 +31,13 @@ int main() {
     }
 
     const auto current = read_fixture_text(release_fixture_path("shard-readiness.json"));
-    assert_contains(current, "\"releaseVersion\":\"v1596\"");
+    assert_contains(current, "\"releaseVersion\":\"v1601\"");
     assert_contains(
         current,
-        "\"status\":\"production-shard-execution-owner-receipt-request-packet-clean-ci-closeout-read-only\"");
+        "\"status\":\"production-shard-execution-mini-kv-owner-receipt-bundle-clean-ci-closeout-read-only\"");
     assert_contains(current, "\"precheckUpstreamReceiptVerificationSplitNonParticipationReleaseVersion\":\"v1545\"");
-    assert_contains(current, "\"releaseRangeEnd\":\"v1596\"");
-    assert_contains(current, "\"commandCount\":91");
+    assert_contains(current, "\"releaseRangeEnd\":\"v1601\"");
+    assert_contains(current, "\"commandCount\":92");
 
     return 0;
 }

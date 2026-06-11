@@ -65,6 +65,7 @@
 #include "minikv/shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation.hpp"
 #include "minikv/shard_preview_code_walkthrough_quality_gate_non_participation.hpp"
 #include "minikv/shard_preview_production_shard_execution_owner_receipt_request_packet.hpp"
+#include "minikv/shard_preview_production_shard_execution_mini_kv_owner_receipt_bundle.hpp"
 #include "minikv/shard_preview_release_window_readiness_packet_split_non_participation.hpp"
 #include "minikv/shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_type_barrel_split_follow_up_fixture_audit.hpp"
@@ -86,7 +87,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v1596";
+constexpr std::string_view release_version = "v1601";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -107,8 +108,8 @@ std::string format_command_catalog_json() {
 }
 
 std::string format_command_catalog_quality_json() {
-    return "{\"releaseRangeStart\":\"v1546\",\"releaseRangeEnd\":\"v1596\","
-           "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-and-owner-receipt-request-gates\","
+    return "{\"releaseRangeStart\":\"v1546\",\"releaseRangeEnd\":\"v1601\","
+           "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-owner-request-and-mini-kv-receipt-gates\","
            "\"commandCount\":" + std::to_string(command_catalog::count()) +
            ",\"dispatchCatalogSplit\":true"
            ",\"contractCatalogDeduplicated\":true"
@@ -136,8 +137,8 @@ std::string evidence_digest() {
             {"routingMode=single-shard-readiness-prototype"},
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
-            {"commandCatalogSingleSourceRefactor=v1546-v1596-no-runtime-behavior-change"},
-            {"commandCatalogCount=91"},
+            {"commandCatalogSingleSourceRefactor=v1546-v1601-no-runtime-behavior-change"},
+            {"commandCatalogCount=92"},
             {"commandCatalogHelpCompletionContractsDeduplicated=true"},
             {"fixtureParity=runtime-matches-current-fixture"},
             {"historicalFallback=v261-frozen-no-rolling-current"},
@@ -322,6 +323,9 @@ std::string evidence_digest() {
             {"shardPreviewProductionShardExecutionOwnerReceiptRequestPacket=" +
              shard_preview_production_shard_execution_owner_receipt_request_packet::
                  production_shard_execution_owner_receipt_request_packet_digest_marker()},
+            {"shardPreviewProductionShardExecutionMiniKvOwnerReceiptBundle=" +
+             shard_preview_production_shard_execution_mini_kv_owner_receipt_bundle::
+                 production_shard_execution_mini_kv_owner_receipt_bundle_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -367,8 +371,8 @@ std::string format_json() {
            ",\"evidencePath\":" + json_string(fixture_path()) +
             ",\"status\":" +
             json_string(
-                shard_preview_production_shard_execution_owner_receipt_request_packet::
-                    production_shard_execution_owner_receipt_request_packet_status()) +
+                shard_preview_production_shard_execution_mini_kv_owner_receipt_bundle::
+                    production_shard_execution_mini_kv_owner_receipt_bundle_status()) +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -526,6 +530,9 @@ std::string format_json() {
             ",\"shardPreviewProductionShardExecutionOwnerReceiptRequestPacket\":" +
             shard_preview_production_shard_execution_owner_receipt_request_packet::
                 format_production_shard_execution_owner_receipt_request_packet_json() +
+            ",\"shardPreviewProductionShardExecutionMiniKvOwnerReceiptBundle\":" +
+            shard_preview_production_shard_execution_mini_kv_owner_receipt_bundle::
+                format_production_shard_execution_mini_kv_owner_receipt_bundle_json() +
             ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +
