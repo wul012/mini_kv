@@ -36,7 +36,7 @@ inline void assert_response_contains(const std::string& response, std::string_vi
 inline void assert_current_shard_readiness_status(const std::string& shard_json) {
     assert_contains(
         shard_json,
-        "\"status\":\"runtime-execution-packet-approval-gate-archive-verification-non-participation-clean-ci-closeout-read-only\"");
+        "\"status\":\"code-walkthrough-quality-gate-non-participation-clean-ci-closeout-read-only\"");
 }
 
 inline void assert_precheck_upstream_receipt_source_status(const std::string& shard_json) {

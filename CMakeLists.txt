@@ -267,6 +267,10 @@ add_library(minikv
     src/shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation_stages.cpp
     src/shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation_checks.cpp
     src/shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation_validation.cpp
+    src/shard_preview_code_walkthrough_quality_gate_non_participation.cpp
+    src/shard_preview_code_walkthrough_quality_gate_non_participation_stages.cpp
+    src/shard_preview_code_walkthrough_quality_gate_non_participation_checks.cpp
+    src/shard_preview_code_walkthrough_quality_gate_non_participation_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -1771,6 +1775,36 @@ minikv_add_source_dir_test(
     minikv_runtime_approval_gate_archive_np_fixture_tests
     runtime_approval_gate_archive_np_fixture_tests
     tests/runtime_execution_packet_approval_gate_archive_verification_non_participation_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_code_walkthrough_quality_gate_np_stages_tests
+    code_walkthrough_quality_gate_np_stages_tests
+    tests/code_walkthrough_quality_gate_non_participation_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_code_walkthrough_quality_gate_np_checks_tests
+    code_walkthrough_quality_gate_np_checks_tests
+    tests/code_walkthrough_quality_gate_non_participation_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_code_walkthrough_quality_gate_np_validation_tests
+    code_walkthrough_quality_gate_np_validation_tests
+    tests/code_walkthrough_quality_gate_non_participation_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_code_walkthrough_quality_gate_np_tests
+    code_walkthrough_quality_gate_np_tests
+    tests/code_walkthrough_quality_gate_non_participation_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_code_walkthrough_quality_gate_np_fixture_tests
+    code_walkthrough_quality_gate_np_fixture_tests
+    tests/code_walkthrough_quality_gate_non_participation_fixture_tests.cpp
 )
 
 minikv_add_linked_test(

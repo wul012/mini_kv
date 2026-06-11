@@ -4,6 +4,7 @@
 
 ## 当前状态
 
+- v1586-v1591: [974-version-1586-1591-code-walkthrough-quality-gate-non-participation.md](974-version-1586-1591-code-walkthrough-quality-gate-non-participation.md) - Node v2077 documentation-quality closeout is recorded as a local mini-kv walkthrough quality gate with one read-only command, six versioned fixtures, split modules, and no sibling file scan or execution authority.
 - v1566-v1585: [973-version-1566-1585-runtime-execution-packet-approval-gate-archive-verification-non-participation.md](973-version-1566-1585-runtime-execution-packet-approval-gate-archive-verification-non-participation.md) - Node v399 runtime execution packet approval gate archive-verification context is frozen as mini-kv read-only non-participation evidence with split modules, fixtures, tests, and boundary assertions.
 
 可以没有讲解：如果某轮只是索引、归档说明、链接修复、文档治理或极小维护，且没有新增代码语义，可以不写代码讲解。

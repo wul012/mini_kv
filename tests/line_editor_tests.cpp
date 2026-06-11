@@ -125,6 +125,7 @@ int main() {
           "SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON",
           "SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON",
           "SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON",
+          "SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
@@ -307,6 +308,10 @@ int main() {
                                runtime_approval_gate_archive_prefix.size()) ==
            std::optional<std::string>{
                "SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON "});
+    const std::string code_walkthrough_quality_gate_prefix = "SHARDCODEWALKTHROUGHQUALITY";
+    assert(completion.complete(code_walkthrough_quality_gate_prefix,
+                               code_walkthrough_quality_gate_prefix.size()) ==
+           std::optional<std::string>{"SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON "});
     const std::string type_barrel_split_follow_up_non_participation_prefix =
         "SHARDROUTETYPEBARRELSPLITFOLLOWUPN";
     assert(completion.complete(type_barrel_split_follow_up_non_participation_prefix,

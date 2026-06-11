@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"runtime-execution-packet-approval-gate-archive-verification-non-participation-clean-ci-closeout-read-only\"");
+                    "\"status\":\"code-walkthrough-quality-gate-non-participation-clean-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -1008,6 +1008,39 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"miniKvEnablesActiveRouter\":false");
     assert_contains(json, "\"runtimeExecutionPacketPresent\":false");
     assert_contains(json, "\"runtimeGateApprovalPresent\":false");
+    assert_contains(json,
+                    "\"shardPreviewCodeWalkthroughQualityGateNonParticipation\":{\"contract\":"
+                    "\"shard-route-code-walkthrough-quality-gate-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceNodeCodeWalkthroughQualityGateReleaseVersion\":\"Node v2077\"");
+    assert_contains(json, "\"sourceNodeQualityRunRange\":\"Node v2068-v2077\"");
+    assert_contains(
+        json,
+        "\"sourceRuntimeExecutionPacketApprovalGateArchiveVerificationReleaseVersion\":\"v1585\"");
+    assert_contains(
+        json,
+        "\"sourceRuntimeExecutionPacketApprovalGateArchiveVerificationFixturePath\":\"fixtures/release/"
+        "shard-readiness-v1585.json\"");
+    assert_contains(json,
+                    "\"sourceRuntimeExecutionPacketApprovalGateArchiveVerificationPublishedStageCount\":20");
+    assert_contains(json, "\"codeWalkthroughQualityGateNonParticipationReleaseVersion\":\"v1591\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v1590\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v1590.json\"");
+    assert_contains(json, "\"codeWalkthroughQualityGateNonParticipationReleaseRangeStart\":\"v1586\"");
+    assert_contains(json, "\"codeWalkthroughQualityGateNonParticipationReleaseRangeEnd\":\"v1591\"");
+    assert_contains(json, "\"plannedCodeWalkthroughQualityGateNonParticipationCheckCount\":12");
+    assert_contains(json, "\"completedCodeWalkthroughQualityGateNonParticipationCheckCount\":12");
+    assert_contains(json, "\"codeWalkthroughQualityGateNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"walkthroughQualityGateOnly\":true");
+    assert_contains(json, "\"codeWalkthroughMayBeOmittedForTinyMaintenance\":true");
+    assert_contains(json, "\"placeholderWalkthroughAllowed\":false");
+    assert_contains(json, "\"unsafeProductionClaimAllowed\":false");
+    assert_contains(json, "\"bulkHistoricalRelocationAllowed\":false");
+    assert_contains(json, "\"nodeWalkthroughFilesReadByMiniKv\":false");
+    assert_contains(json, "\"miniKvScansNodeRepository\":false");
+    assert_contains(json, "\"miniKvExecutesNodeQualityRoute\":false");
+    assert_contains(json, "\"miniKvMutatesNodeDocs\":false");
+    assert_contains(json, "\"miniKvMutatesJavaDocs\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -1572,9 +1605,9 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"extraArgsAllowed\":false");
     assert_contains(json, "\"sideEffects\":[\"metadata_read\"]");
     assert_contains(json, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
-    assert_contains(json, "\"releaseRangeEnd\":\"v1585\"");
-    assert_contains(json, "\"scope\":\"command-catalog-single-source-refactor\"");
-    assert_contains(json, "\"commandCount\":89");
+    assert_contains(json, "\"releaseRangeEnd\":\"v1591\"");
+    assert_contains(json, "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-quality-gate\"");
+    assert_contains(json, "\"commandCount\":90");
     assert_contains(json, "\"dispatchCatalogSplit\":true");
     assert_contains(json, "\"contractCatalogDeduplicated\":true");
     assert_contains(json, "\"helpTextGeneratedFromCatalog\":true");

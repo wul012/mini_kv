@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=89") != std::string::npos);
+    assert(result.response.find("command_count=90") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -442,6 +442,9 @@ int main() {
                "SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
+               "SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
                "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
@@ -564,6 +567,9 @@ int main() {
                "\"name\":\"SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
+               "\"name\":\"SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
                "\"name\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
@@ -663,7 +669,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"runtime-execution-packet-approval-gate-archive-verification-non-participation-clean-ci-closeout-read-only\"");
+        "\"status\":\"code-walkthrough-quality-gate-non-participation-clean-ci-closeout-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -2237,6 +2243,42 @@ int main() {
     assert(result.response ==
            "ERR usage: SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON");
 
+    result = processor.execute("SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON");
+    assert_response_contains(
+        result,
+        "\"contract\":\"shard-route-code-walkthrough-quality-gate-non-participation.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON\"");
+    assert_response_contains(result, "\"sourceNodeCodeWalkthroughQualityGateReleaseVersion\":\"Node v2077\"");
+    assert_response_contains(result, "\"sourceNodeQualityRunRange\":\"Node v2068-v2077\"");
+    assert_response_contains(
+        result,
+        "\"sourceRuntimeExecutionPacketApprovalGateArchiveVerificationReleaseVersion\":\"v1585\"");
+    assert_response_contains(result, "\"codeWalkthroughQualityGateNonParticipationReleaseVersion\":\"v1591\"");
+    assert_response_contains(result, "\"sourceFrozenReleaseVersion\":\"v1590\"");
+    assert_response_contains(result, "\"codeWalkthroughQualityGateNonParticipationReleaseRangeStart\":\"v1586\"");
+    assert_response_contains(result, "\"codeWalkthroughQualityGateNonParticipationReleaseRangeEnd\":\"v1591\"");
+    assert_response_contains(result, "\"walkthroughQualityGateOnly\":true");
+    assert_response_contains(result, "\"codeWalkthroughMayBeOmittedForTinyMaintenance\":true");
+    assert_response_contains(result, "\"placeholderWalkthroughAllowed\":false");
+    assert_response_contains(result, "\"unsafeProductionClaimAllowed\":false");
+    assert_response_contains(result, "\"bulkHistoricalRelocationAllowed\":false");
+    assert_response_contains(result, "\"nodeWalkthroughFilesReadByMiniKv\":false");
+    assert_response_contains(result, "\"miniKvScansNodeRepository\":false");
+    assert_response_contains(result, "\"miniKvExecutesNodeQualityRoute\":false");
+    assert_response_contains(result, "\"miniKvStartsNodeServices\":false");
+    assert_response_contains(result, "\"miniKvStartsJavaService\":false");
+    assert_response_contains(result, "\"miniKvStartsMiniKvService\":false");
+    assert_response_contains(result, "\"miniKvMutatesNodeDocs\":false");
+    assert_response_contains(result, "\"miniKvMutatesJavaDocs\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(result, "\"codeWalkthroughQualityGateNonParticipationValidationPassed\":true");
+
+    result = processor.execute("SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON extra");
+    assert(result.response == "ERR usage: SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON");
+
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
     assert_response_contains(result, "\"approvalPacketPresent\":false");
@@ -2318,9 +2360,10 @@ int main() {
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
-    assert_response_contains(result, "\"releaseRangeEnd\":\"v1585\"");
-    assert_response_contains(result, "\"scope\":\"command-catalog-single-source-refactor\"");
-    assert_response_contains(result, "\"commandCount\":89");
+    assert_response_contains(result, "\"releaseRangeEnd\":\"v1591\"");
+    assert_response_contains(result,
+                             "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-quality-gate\"");
+    assert_response_contains(result, "\"commandCount\":90");
     assert_response_contains(result, "\"dispatchCatalogSplit\":true");
     assert_response_contains(result, "\"contractCatalogDeduplicated\":true");
     assert_response_contains(result, "\"helpTextGeneratedFromCatalog\":true");
