@@ -1,5 +1,6 @@
 #include "minikv/shard_readiness.hpp"
 
+#include "minikv/command_catalog.hpp"
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/shard_route_preview.hpp"
 #include "minikv/shard_route_preview_archive_maintenance.hpp"
@@ -82,7 +83,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v1545";
+constexpr std::string_view release_version = "v1565";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -102,6 +103,22 @@ std::string format_command_catalog_json() {
            "\"sideEffects\":[\"metadata_read\"]}";
 }
 
+std::string format_command_catalog_quality_json() {
+    return "{\"releaseRangeStart\":\"v1546\",\"releaseRangeEnd\":\"v1565\","
+           "\"scope\":\"command-catalog-single-source-refactor\","
+           "\"commandCount\":" + std::to_string(command_catalog::count()) +
+           ",\"dispatchCatalogSplit\":true"
+           ",\"contractCatalogDeduplicated\":true"
+           ",\"helpTextGeneratedFromCatalog\":true"
+           ",\"completionCandidatesGeneratedFromCatalog\":true"
+           ",\"keyCompletionPolicyGeneratedFromCatalog\":true"
+           ",\"runtimeCommandBehaviorChanged\":false"
+           ",\"storageBehaviorChanged\":false"
+           ",\"walBehaviorChanged\":false"
+           ",\"routerBehaviorChanged\":false"
+           ",\"nodeOrJavaFilesModified\":false}";
+}
+
 std::string evidence_digest() {
     const std::string digest_prefix = "mini-kv-shard-readiness-" + std::string{release_version};
     return runtime_evidence::digest(
@@ -116,6 +133,9 @@ std::string evidence_digest() {
             {"routingMode=single-shard-readiness-prototype"},
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
+            {"commandCatalogSingleSourceRefactor=v1546-v1565-no-runtime-behavior-change"},
+            {"commandCatalogCount=88"},
+            {"commandCatalogHelpCompletionContractsDeduplicated=true"},
             {"fixtureParity=runtime-matches-current-fixture"},
             {"historicalFallback=v261-frozen-no-rolling-current"},
             {"archivedNodeEvidence=v370-v480-preserved"},
@@ -492,6 +512,7 @@ std::string format_json() {
            ",\"boundaries\":" + format_boundaries_json() +
            ",\"diagnostics\":" + history::format_diagnostics_json() +
            ",\"commandCatalog\":" + format_command_catalog_json() +
+           ",\"commandCatalogQuality\":" + format_command_catalog_quality_json() +
            ",\"fixtureParity\":" + history::format_fixture_parity_json() +
            ",\"archiveCompatibility\":" + history::format_archive_compatibility_json() +
            ",\"historicalFallback\":" + history::format_historical_fallback_json() +

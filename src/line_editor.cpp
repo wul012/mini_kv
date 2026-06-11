@@ -1,4 +1,6 @@
 #include "minikv/line_editor.hpp"
+
+#include "minikv/command_catalog.hpp"
 #include "minikv/string_utils.hpp"
 
 #include <algorithm>
@@ -46,8 +48,7 @@ std::size_t token_end(std::string_view text, std::size_t cursor) {
 
 bool is_key_completion_command(std::string_view command) {
     const std::string upper = to_upper(command);
-    return upper == "GET" || upper == "DEL" || upper == "EXPIRE" || upper == "TTL" || upper == "SET" ||
-           upper == "SETNXEX";
+    return command_catalog::is_key_completion_command(upper);
 }
 
 std::size_t common_prefix_length(std::string_view left, std::string_view right, bool case_insensitive) {
@@ -511,68 +512,8 @@ KeyEvent read_key() {
 
 LineEditorCompletionOptions default_client_completion_options() {
     LineEditorCompletionOptions options;
-    options.command_candidates = {"PING",           "SET",       "SETNXEX",     "GET",        "DEL",
-                                  "EXPIRE",         "TTL",       "SIZE",        "KEYS",       "KEYSJSON",
-                                  "SAVE",           "LOAD",      "COMPACT",     "COMMANDS",   "COMMANDSJSON",
-                                  "EXPLAINJSON",    "CHECKJSON", "WALINFO",     "STATS",      "STATSJSON",
-                                  "SMOKEJSON",      "STORAGEJSON", "RESETSTATS", "HEALTH",    "INFO",
-                                  "INFOJSON",       "SHARDJSON", "SHARDROUTE",  "SHARDROUTEJSON",
-                                  "SHARDROUTEVERIFYJSON", "SHARDROUTEVERIFYREPORTJSON",
-                                  "SHARDROUTEVERIFYREPORTCLOSEOUTJSON",
-                                  "SHARDROUTEVERIFYREPORTARCHIVEJSON",
-                                  "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON",
-                                  "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON",
-                                  "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON",
-                                  "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON",
-                                  "SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON",
-                                  "SHARDROUTEARCHIVEMAINTJSON",
-                                  "SHARDROUTEARCHIVEMAINTVERIFYJSON",
-                                  "SHARDROUTEWORKSHEETVERIFYJSON",
-                                  "SHARDROUTEIMPORTPREFLIGHTJSON",
-                                  "SHARDROUTEVALUEDRAFTJSON",
-                                  "SHARDROUTEVALUESUPPLYJSON",
-                                  "SHARDROUTEVALUESUPPLYPRECHECKJSON",
-                                  "SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON",
-                                  "SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON",
-                                  "SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON",
-                                  "SHARDROUTECANDIDATEINTAKEPACKETJSON",
-                                  "SHARDROUTECANDIDATEMATERIALREQUESTJSON",
-                                  "SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON",
-                                  "SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON",
-                                  "SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON",
-                                  "SHARDROUTECANDIDATEPROFILESECTIONJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON",
-                                  "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON",
-                                  "SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON",
-                                  "SHARDROUTEVALUESUPPLYPROFILESECTIONJSON",
-                                  "SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON",
-                                  "SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON",
-                                  "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON",
-                                  "SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON",
-                                  "SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON",
-                                  "SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON",
-                                  "SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON",
-                                  "SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON",
-                                  "SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON",
-                                  "SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON",
-                                  "SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON",
-                                  "SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON",
-                                  "SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON",
-                                  "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON",
-                                  "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
-                                  "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
-                                  "HELP",           "EXIT",      "QUIT",        ":history"};
+    options.command_candidates = command_catalog::command_names();
+    options.command_candidates.push_back(":history");
     return options;
 }
 

@@ -1,18 +1,13 @@
 #pragma once
 
+#include "minikv/command_catalog.hpp"
+
 #include <string>
 #include <string_view>
 
 namespace minikv::command_contracts {
 
-struct CommandCatalogEntry {
-    std::string_view name;
-    std::string_view category;
-    bool mutates_store;
-    bool touches_wal;
-    bool stable;
-    std::string_view description;
-};
+using CommandCatalogEntry = command_catalog::CommandCatalogEntry;
 
 const CommandCatalogEntry* find_command_catalog_entry(std::string_view command);
 bool is_known_command(std::string_view command);

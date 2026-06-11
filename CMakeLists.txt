@@ -15,6 +15,7 @@ configure_file(
 add_library(minikv
     src/client_history.cpp
     src/command.cpp
+    src/command_catalog.cpp
     src/command_contracts.cpp
     src/command_response_formatters.cpp
     src/command_smoke_formatters.cpp
@@ -351,6 +352,18 @@ minikv_add_source_dir_test(
     minikv_command_tests
     command_tests
     tests/command_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_command_catalog_tests
+    command_catalog_tests
+    tests/command_catalog_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_command_catalog_refactor_fixture_tests
+    command_catalog_refactor_fixture_tests
+    tests/command_catalog_refactor_fixture_tests.cpp
 )
 
 minikv_add_source_dir_test(

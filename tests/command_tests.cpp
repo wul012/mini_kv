@@ -2278,6 +2278,16 @@ int main() {
     assert_response_contains(result, "\"executionAllowed\":false");
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
+    assert_response_contains(result, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
+    assert_response_contains(result, "\"releaseRangeEnd\":\"v1565\"");
+    assert_response_contains(result, "\"scope\":\"command-catalog-single-source-refactor\"");
+    assert_response_contains(result, "\"commandCount\":88");
+    assert_response_contains(result, "\"dispatchCatalogSplit\":true");
+    assert_response_contains(result, "\"contractCatalogDeduplicated\":true");
+    assert_response_contains(result, "\"helpTextGeneratedFromCatalog\":true");
+    assert_response_contains(result, "\"completionCandidatesGeneratedFromCatalog\":true");
+    assert_response_contains(result, "\"runtimeCommandBehaviorChanged\":false");
+    assert_response_contains(result, "\"storageBehaviorChanged\":false");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
     assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v419\"");

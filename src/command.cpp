@@ -1,5 +1,6 @@
 #include "minikv/command.hpp"
 
+#include "minikv/command_catalog.hpp"
 #include "minikv/command_contracts.hpp"
 #include "minikv/command_response_formatters.hpp"
 #include "minikv/shard_route_preview_archive_maintenance.hpp"
@@ -64,7 +65,6 @@
 #include "minikv/snapshot.hpp"
 #include "minikv/wal.hpp"
 
-#include <array>
 #include <chrono>
 #include <condition_variable>
 #include <cstdint>
@@ -80,6 +80,8 @@
 namespace minikv {
 namespace {
 
+using CommandDispatchVerb = command_catalog::CommandDispatchVerb;
+
 std::string command_token(std::string_view text) {
     std::istringstream input{std::string{text}};
     std::string command;
@@ -87,153 +89,9 @@ std::string command_token(std::string_view text) {
     return to_upper(command);
 }
 
-enum class CommandDispatchVerb {
-    Ping,
-    Set,
-    SetNxEx,
-    Get,
-    Del,
-    Expire,
-    Ttl,
-    Size,
-    Keys,
-    KeysJson,
-    Save,
-    Load,
-    Compact,
-    WalInfo,
-    ResetStats,
-    RuntimeEvidence,
-    ExplainJson,
-    CheckJson,
-    Help,
-    Quit,
-    Unknown,
-};
-
-struct CommandDispatchEntry {
-    std::string_view command;
-    CommandDispatchVerb verb;
-};
-
-constexpr std::array<CommandDispatchEntry, 88> command_dispatch_table = {{
-    {"PING", CommandDispatchVerb::Ping},
-    {"SET", CommandDispatchVerb::Set},
-    {"SETNXEX", CommandDispatchVerb::SetNxEx},
-    {"GET", CommandDispatchVerb::Get},
-    {"DEL", CommandDispatchVerb::Del},
-    {"EXPIRE", CommandDispatchVerb::Expire},
-    {"TTL", CommandDispatchVerb::Ttl},
-    {"SIZE", CommandDispatchVerb::Size},
-    {"KEYS", CommandDispatchVerb::Keys},
-    {"KEYSJSON", CommandDispatchVerb::KeysJson},
-    {"SAVE", CommandDispatchVerb::Save},
-    {"LOAD", CommandDispatchVerb::Load},
-    {"COMPACT", CommandDispatchVerb::Compact},
-    {"WALINFO", CommandDispatchVerb::WalInfo},
-    {"RESETSTATS", CommandDispatchVerb::ResetStats},
-    {"STATS", CommandDispatchVerb::RuntimeEvidence},
-    {"STATSJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SMOKEJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"STORAGEJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"HEALTH", CommandDispatchVerb::RuntimeEvidence},
-    {"INFO", CommandDispatchVerb::RuntimeEvidence},
-    {"INFOJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTE", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYREPORTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYREPORTCLOSEOUTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYREPORTARCHIVEJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEARCHIVEMAINTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEARCHIVEMAINTVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEWORKSHEETVERIFYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEIMPORTPREFLIGHTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUEDRAFTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYPRECHECKJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECANDIDATEINTAKEPACKETJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECANDIDATEMATERIALREQUESTJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECANDIDATEPROFILESECTIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYPROFILESECTIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON",
-     CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"COMMANDS", CommandDispatchVerb::RuntimeEvidence},
-    {"COMMANDSJSON", CommandDispatchVerb::RuntimeEvidence},
-    {"EXPLAINJSON", CommandDispatchVerb::ExplainJson},
-    {"CHECKJSON", CommandDispatchVerb::CheckJson},
-    {"HELP", CommandDispatchVerb::Help},
-    {"EXIT", CommandDispatchVerb::Quit},
-    {"QUIT", CommandDispatchVerb::Quit},
-}};
-
-CommandDispatchVerb lookup_command_dispatch_verb(std::string_view command) {
-    for (const auto& entry : command_dispatch_table) {
-        if (entry.command == command) {
-            return entry.verb;
-        }
-    }
-    return CommandDispatchVerb::Unknown;
-}
-
 std::string metrics_command_name(std::string_view command) {
     std::string name = to_upper(command);
-    if (name.empty() || !command_contracts::is_known_command(name)) {
+    if (name.empty() || !command_catalog::is_known(name)) {
         return "UNKNOWN";
     }
     return name;
@@ -1112,7 +970,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
     input >> command;
     command = to_upper(command);
 
-    switch (lookup_command_dispatch_verb(command)) {
+    switch (command_catalog::lookup_dispatch_verb(command)) {
     case CommandDispatchVerb::Ping: {
         std::string message;
         std::getline(input >> std::ws, message);
@@ -1395,95 +1253,7 @@ CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
 }
 
 std::string CommandProcessor::help_text() {
-    return "Commands:\n"
-           "  PING [message]\n"
-           "  SET key value\n"
-           "  SETNXEX key seconds value\n"
-           "  GET key\n"
-           "  DEL key\n"
-           "  EXPIRE key seconds\n"
-           "  TTL key\n"
-           "  SIZE\n"
-           "  KEYS [prefix]\n"
-           "  KEYSJSON [prefix]\n"
-           "  SAVE path\n"
-           "  LOAD path\n"
-           "  COMPACT\n"
-           "  WALINFO\n"
-           "  STATS\n"
-           "  STATSJSON\n"
-           "  SMOKEJSON\n"
-           "  RESETSTATS\n"
-           "  HEALTH\n"
-           "  INFO\n"
-           "  INFOJSON\n"
-           "  SHARDJSON\n"
-           "  SHARDROUTE key\n"
-           "  SHARDROUTEJSON key\n"
-           "  SHARDROUTEVERIFYJSON key\n"
-           "  SHARDROUTEVERIFYREPORTJSON key\n"
-           "  SHARDROUTEVERIFYREPORTCLOSEOUTJSON\n"
-           "  SHARDROUTEVERIFYREPORTARCHIVEJSON\n"
-           "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTJSON\n"
-           "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYJSON\n"
-           "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITJSON\n"
-           "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTJSON\n"
-           "  SHARDROUTEVERIFYREPORTARCHIVECLOSEOUTVERIFYAUDITCLOSEOUTARCHIVEVERIFYJSON\n"
-           "  SHARDROUTEARCHIVEMAINTJSON\n"
-           "  SHARDROUTEARCHIVEMAINTVERIFYJSON\n"
-           "  SHARDROUTEWORKSHEETVERIFYJSON\n"
-           "  SHARDROUTEIMPORTPREFLIGHTJSON\n"
-           "  SHARDROUTEVALUEDRAFTJSON\n"
-           "  SHARDROUTEVALUESUPPLYJSON\n"
-           "  SHARDROUTEVALUESUPPLYPRECHECKJSON\n"
-           "  SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTPREFLIGHTJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\n"
-           "  SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON\n"
-           "  SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON\n"
-           "  SHARDROUTECANDIDATEINTAKEPACKETJSON\n"
-           "  SHARDROUTECANDIDATEMATERIALREQUESTJSON\n"
-           "  SHARDROUTECANDIDATEMATERIALREQUESTINTEGRITYJSON\n"
-           "  SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON\n"
-           "  SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON\n"
-           "  SHARDROUTECANDIDATEPROFILESECTIONJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON\n"
-           "  SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEPROFILESECTIONJSON\n"
-           "  SHARDROUTEVALUESUPPLYAPPROVALPROFILESECTIONJSON\n"
-           "  SHARDROUTEVALUESUPPLYPROFILESECTIONJSON\n"
-           "  SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON\n"
-           "  SHARDROUTEPRODUCTIONLIVECAPTURENONPARTICIPATIONJSON\n"
-           "  SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVENONPARTICIPATIONJSON\n"
-           "  SHARDROUTEPRODUCTIONLIVECAPTUREARCHIVEVERIFYNONPARTICIPATIONJSON\n"
-           "  SHARDROUTEPRODUCTIONLIVECAPTURERELEASEEVIDENCEREVIEWNONPARTICIPATIONJSON\n"
-           "  SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON\n"
-           "  SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON\n"
-           "  SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON\n"
-           "  SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON\n"
-           "  SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON\n"
-           "  SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON\n"
-           "  SHARDROUTEBLOCKEDEXECUTIONREHEARSALSPLITNONPARTICIPATIONJSON\n"
-           "  SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON\n"
-           "  SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON\n"
-           "  SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON\n"
-           "  SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\n"
-           "  COMMANDS\n"
-           "  COMMANDSJSON\n"
-           "  EXPLAINJSON command\n"
-           "  CHECKJSON command\n"
-           "  STORAGEJSON\n"
-           "  HELP\n"
-           "  EXIT\n"
-           "  QUIT";
+    return command_catalog::help_text();
 }
 
 } // namespace minikv

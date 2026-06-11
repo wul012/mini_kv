@@ -1523,6 +1523,16 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"extraArgsAllowed\":false");
     assert_contains(json, "\"sideEffects\":[\"metadata_read\"]");
+    assert_contains(json, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
+    assert_contains(json, "\"releaseRangeEnd\":\"v1565\"");
+    assert_contains(json, "\"scope\":\"command-catalog-single-source-refactor\"");
+    assert_contains(json, "\"commandCount\":88");
+    assert_contains(json, "\"dispatchCatalogSplit\":true");
+    assert_contains(json, "\"contractCatalogDeduplicated\":true");
+    assert_contains(json, "\"helpTextGeneratedFromCatalog\":true");
+    assert_contains(json, "\"completionCandidatesGeneratedFromCatalog\":true");
+    assert_contains(json, "\"runtimeCommandBehaviorChanged\":false");
+    assert_contains(json, "\"storageBehaviorChanged\":false");
     assert_contains(json, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json, "\"historicalFixturePaths\":[\"fixtures/release/shard-readiness-v144.json\","
                           "\"fixtures/release/shard-readiness-v145.json\","
