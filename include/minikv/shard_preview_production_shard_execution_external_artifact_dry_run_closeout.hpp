@@ -1,0 +1,13 @@
+#pragma once
+
+#include <string>
+
+namespace minikv::shard_preview_production_shard_execution_external_artifact_dry_run_closeout {
+
+std::string format_production_shard_execution_external_artifact_dry_run_closeout_json();
+std::string format_production_shard_execution_external_artifact_dry_run_closeout_stage_catalog_json();
+std::string production_shard_execution_external_artifact_dry_run_closeout_digest_marker();
+std::string production_shard_execution_external_artifact_dry_run_closeout_status();
+int published_stage_count();
+
+} // namespace minikv::shard_preview_production_shard_execution_external_artifact_dry_run_closeout

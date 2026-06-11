@@ -1,0 +1,14 @@
+#pragma once
+
+#include "minikv/shard_route_preview_stage_catalog.hpp"
+
+#include <span>
+
+namespace minikv::shard_preview_production_shard_execution_external_artifact_dry_run_closeout_stages {
+
+std::span<const shard_route_preview_stage_catalog::StageRecord>
+production_shard_execution_external_artifact_dry_run_closeout_stages();
+int first_production_shard_execution_external_artifact_dry_run_closeout_release_number();
+int planned_production_shard_execution_external_artifact_dry_run_closeout_stage_count();
+
+} // namespace minikv::shard_preview_production_shard_execution_external_artifact_dry_run_closeout_stages

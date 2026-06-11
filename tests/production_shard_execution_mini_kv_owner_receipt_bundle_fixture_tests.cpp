@@ -48,11 +48,12 @@ int main() {
     }
 
     const auto current = read_fixture_text(release_fixture_path("shard-readiness.json"));
-    assert_contains(current, "\"releaseVersion\":\"v1601\"");
+    assert_contains(current, "\"releaseVersion\":\"v1606\"");
     assert_current_shard_readiness_status(current);
-    assert_contains(current, "\"commandCount\":92");
+    assert_contains(current, "\"commandCount\":93");
     assert_contains(current, "\"productionShardExecutionMiniKvOwnerReceiptBundleReleaseVersion\":\"v1601\"");
     assert_contains(current, "\"productionShardExecutionMiniKvOwnerReceiptBundleValidationPassed\":true");
+    assert_contains(current, "\"productionShardExecutionExternalArtifactDryRunCloseoutReleaseVersion\":\"v1606\"");
     assert_contains(current, "\"versionedArchiveDirectories\":[\"f/1597/\",\"f/1598/\",\"f/1599/\",\"f/1600/\",\"f/1601/\"]");
 
     return 0;

@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"production-shard-execution-mini-kv-owner-receipt-bundle-clean-ci-closeout-read-only\"");
+                    "\"status\":\"production-shard-execution-external-artifact-dry-run-closeout-clean-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -1111,6 +1111,47 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"rollbackExecutionPerformed\":false");
     assert_contains(json, "\"lifecycleServiceStarted\":false");
     assert_contains(json, "\"cleanupExecutionPerformed\":false");
+    assert_contains(json,
+                    "\"shardPreviewProductionShardExecutionExternalArtifactDryRunCloseout\":{\"contract\":"
+                    "\"shard-production-shard-execution-external-artifact-dry-run-closeout.v1\"");
+    assert_contains(json, "\"command\":\"SHARDPRODUCTIONSHARDEXECUTIONEXTERNALARTIFACTDRYRUNCLOSEOUTJSON\"");
+    assert_contains(json, "\"sourceMiniKvOwnerReceiptBundleReleaseVersion\":\"v1601\"");
+    assert_contains(json, "\"sourceMiniKvOwnerReceiptBundleComplete\":true");
+    assert_contains(json, "\"productionShardExecutionExternalArtifactDryRunCloseoutReleaseVersion\":\"v1606\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v1605\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v1605.json\"");
+    assert_contains(json, "\"productionShardExecutionExternalArtifactDryRunCloseoutReleaseRangeStart\":\"v1602\"");
+    assert_contains(json, "\"productionShardExecutionExternalArtifactDryRunCloseoutReleaseRangeEnd\":\"v1606\"");
+    assert_contains(json, "\"dryRunBatchClosed\":true");
+    assert_contains(json, "\"nodeOnlyGrowthStopped\":true");
+    assert_contains(json, "\"missingRealArtifactBlockerListed\":true");
+    assert_contains(json, "\"realExternalArtifactPresent\":false");
+    assert_contains(json, "\"externalArtifactParsed\":false");
+    assert_contains(json, "\"externalArtifactAccepted\":false");
+    assert_contains(json, "\"externalArtifactStored\":false");
+    assert_contains(json, "\"dryRunArtifactExecuted\":false");
+    assert_contains(json, "\"realSignedApprovalPresent\":false");
+    assert_contains(json, "\"managedAuditOwnerBindingPresent\":false");
+    assert_contains(json, "\"realJavaReceiptPresent\":false");
+    assert_contains(json, "\"realMiniKvSignedReceiptPresent\":false");
+    assert_contains(json, "\"realCleanupReceiptPresent\":false");
+    assert_contains(json, "\"archiveRoot\":\"f\"");
+    assert_contains(json,
+                    "\"versionedArchiveDirectories\":[\"f/1602/\",\"f/1603/\",\"f/1604/\",\"f/1605/\",\"f/1606/\"]");
+    assert_contains(json, "\"completedProductionShardExecutionExternalArtifactDryRunCloseoutCheckCount\":12");
+    assert_contains(json, "\"productionShardExecutionExternalArtifactDryRunCloseoutValidationPassed\":true");
+    assert_contains(json, "\"realExternalArtifactAbsent\":true");
+    assert_contains(json, "\"realReceiptsMissing\":true");
+    assert_contains(json, "\"productionShardExecutionEnabled\":false");
+    assert_contains(json, "\"managedAuditStoreBound\":false");
+    assert_contains(json, "\"rawEndpointParsed\":false");
+    assert_contains(json, "\"credentialValueRead\":false");
+    assert_contains(json, "\"startsMiniKvService\":false");
+    assert_contains(json, "\"activeRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"mutatesStore\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -1675,10 +1716,10 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"extraArgsAllowed\":false");
     assert_contains(json, "\"sideEffects\":[\"metadata_read\"]");
     assert_contains(json, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
-    assert_contains(json, "\"releaseRangeEnd\":\"v1601\"");
+    assert_contains(json, "\"releaseRangeEnd\":\"v1606\"");
     assert_contains(json,
-                    "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-owner-request-and-mini-kv-receipt-gates\"");
-    assert_contains(json, "\"commandCount\":92");
+                    "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-owner-request-mini-kv-receipt-and-external-artifact-closeout-gates\"");
+    assert_contains(json, "\"commandCount\":93");
     assert_contains(json, "\"dispatchCatalogSplit\":true");
     assert_contains(json, "\"contractCatalogDeduplicated\":true");
     assert_contains(json, "\"helpTextGeneratedFromCatalog\":true");

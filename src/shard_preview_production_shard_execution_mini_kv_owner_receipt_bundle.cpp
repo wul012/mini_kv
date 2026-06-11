@@ -154,11 +154,6 @@ std::string format_production_shard_execution_mini_kv_owner_receipt_bundle_json(
     const int planned_check_count =
         checks::planned_production_shard_execution_mini_kv_owner_receipt_bundle_check_count();
     const int check_count = completed_check_count();
-    const bool chain_complete =
-        current_stage_count ==
-            stages::planned_production_shard_execution_mini_kv_owner_receipt_bundle_stage_count() &&
-        source_complete;
-
     return "{\"contract\":\"shard-production-shard-execution-mini-kv-owner-receipt-bundle.v1\""
            ",\"project\":\"mini-kv\""
            ",\"command\":" + json_string(command_name) +
