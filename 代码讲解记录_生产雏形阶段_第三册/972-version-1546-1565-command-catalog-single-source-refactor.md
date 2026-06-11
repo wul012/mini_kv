@@ -1,5 +1,17 @@
 # 第 1546-1565 版代码讲解：command catalog single-source refactor
 
+## 最近250版讲解清算补记
+
+本篇已纳入 v1316-v1565 最近250版讲解清算。清算参照 `D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3-v103.md` 的 production-readiness walkthrough 模式；原文保留为历史正文，本节补齐统一判断口径。
+
+- 清算范围：v1546-v1565（完整覆盖最近250版窗口）。
+- 目标定位：本篇用于回看 mini-kv 只读证据、维护拆分或证据链闭环，不是新的运行入口。
+- 不是什么：不打开 router/write/WAL/execution，不读取 credential/raw endpoint，不启动 Node/Java/mini-kv sibling 服务，不把 mini-kv 变成 order 或 audit authority。
+- 入口和证据：以原文记录的 command surface、SHARDJSON/current fixture/versioned fixture、CTest、CLI/TCP smoke、归档说明为准；控制面只能按只读证据理解。
+- 边界字段：阅读时优先核对 `read_only`、`execution_allowed`、`order_authoritative`、`mutates_store`、`touches_wal`、`warnings`、`blockers`、`diagnostics` 等字段是否继续表达只读、不可执行、非权威和不写入。
+- 测试理解：测试应说明断言保护的边界行为；若原文仅列命令，本节将其清算为“命令证据必须服务于 no router / no write / no WAL / no execution 判断”。
+- 清算结论：保留原位置，不搬迁；后续若重写正文，按治理模板补齐入口、结构、流程、边界字段、测试和一句话总结。
+
 本版目标是把 mini-kv 长期分散在多个文件里的“命令目录”收束成一个单一来源。之前 `src/command.cpp` 有一份分发表，`src/command_contracts.cpp` 有一份命令契约表，`src/line_editor.cpp` 又有一份补全候选和 key 参数补全判断。它们描述的是同一批 88 个命令，但维护位置分散，后续每增加一个只读证据命令，都要同步改好几处，最容易出错的不是业务逻辑，而是目录、HELP、COMMANDSJSON、EXPLAINJSON、CHECKJSON、补全策略之间的轻微不一致。
 
 本版不是新增执行入口，不是新增 read/write 路由，不是改写存储语义，不是开放 LOAD/RESTORE/COMPACT 参与证据生成，也不是让 mini-kv 去扫描 Node 或 Java。它做的是可维护性拆分：把同一份命令事实集中到 `command_catalog`，再让既有消费者从这里读取，最后用测试和 SHARDJSON 的 `commandCatalogQuality` 字段证明这只是结构优化，不改变运行时命令行为。

@@ -1,5 +1,17 @@
 # 第 962 篇代码讲解：mini-kv v1361-v1385 type barrel split non-participation
 
+## 最近250版讲解清算补记
+
+本篇已纳入 v1316-v1565 最近250版讲解清算。清算参照 `D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3-v103.md` 的 production-readiness walkthrough 模式；原文保留为历史正文，本节补齐统一判断口径。
+
+- 清算范围：v1361-v1385（完整覆盖最近250版窗口）。
+- 目标定位：本篇用于回看 mini-kv 只读证据、维护拆分或证据链闭环，不是新的运行入口。
+- 不是什么：不打开 router/write/WAL/execution，不读取 credential/raw endpoint，不启动 Node/Java/mini-kv sibling 服务，不把 mini-kv 变成 order 或 audit authority。
+- 入口和证据：以原文记录的 command surface、SHARDJSON/current fixture/versioned fixture、CTest、CLI/TCP smoke、归档说明为准；控制面只能按只读证据理解。
+- 边界字段：阅读时优先核对 `read_only`、`execution_allowed`、`order_authoritative`、`mutates_store`、`touches_wal`、`warnings`、`blockers`、`diagnostics` 等字段是否继续表达只读、不可执行、非权威和不写入。
+- 测试理解：测试应说明断言保护的边界行为；若原文仅列命令，本节将其清算为“命令证据必须服务于 no router / no write / no WAL / no execution 判断”。
+- 清算结论：保留原位置，不搬迁；后续若重写正文，按治理模板补齐入口、结构、流程、边界字段、测试和一句话总结。
+
 本版目标是把 Node v1822-v1846 的 `controlled read-only shard preview type barrel split` 作为 mini-kv 的版本化只读证据冻结下来。它的角色是证据链，不是新的执行入口：mini-kv 不导入 Node 的 TypeScript type/barrel/profile boundary，不读取 profile endpoint 或 evidence endpoint，不执行 Node typecheck/build/Vitest，不安装 router，不写 WAL，不开启 load/restore/compact，也不获得任何跨项目审批权。
 
 为什么要做这一版：最新 Node 计划把一个过大的 controlled read-only shard preview type aggregator 拆成稳定 barrel、profile-only type module、aggregate re-export module，以及 reads/preview graph/evidence endpoints 等命名 profile boundary。mini-kv 侧不需要新鲜证据才能让 Node 完成这个维护拆分，但需要把“我知道这件事，并且我没有参与运行时执行”的边界写成可测试 fixture，避免后续控制面误解为 mini-kv 已经消费了 Node 类型或 endpoint。

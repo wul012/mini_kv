@@ -1,5 +1,17 @@
 # 第 963 篇代码讲解：mini-kv v1386-v1405 type barrel split follow-up non-participation
 
+## 最近250版讲解清算补记
+
+本篇已纳入 v1316-v1565 最近250版讲解清算。清算参照 `D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3-v103.md` 的 production-readiness walkthrough 模式；原文保留为历史正文，本节补齐统一判断口径。
+
+- 清算范围：v1386-v1405（完整覆盖最近250版窗口）。
+- 目标定位：本篇用于回看 mini-kv 只读证据、维护拆分或证据链闭环，不是新的运行入口。
+- 不是什么：不打开 router/write/WAL/execution，不读取 credential/raw endpoint，不启动 Node/Java/mini-kv sibling 服务，不把 mini-kv 变成 order 或 audit authority。
+- 入口和证据：以原文记录的 command surface、SHARDJSON/current fixture/versioned fixture、CTest、CLI/TCP smoke、归档说明为准；控制面只能按只读证据理解。
+- 边界字段：阅读时优先核对 `read_only`、`execution_allowed`、`order_authoritative`、`mutates_store`、`touches_wal`、`warnings`、`blockers`、`diagnostics` 等字段是否继续表达只读、不可执行、非权威和不写入。
+- 测试理解：测试应说明断言保护的边界行为；若原文仅列命令，本节将其清算为“命令证据必须服务于 no router / no write / no WAL / no execution 判断”。
+- 清算结论：保留原位置，不搬迁；后续若重写正文，按治理模板补齐入口、结构、流程、边界字段、测试和一句话总结。
+
 本版目标是把 v1385 的 `shardPreviewTypeBarrelSplitNonParticipation` 证据冻结成后续 20 个版本的 source fixture，并继续证明 mini-kv 对 Node v1822-v1846 type-barrel/profile-boundary 拆分只做只读观察，不导入 Node TypeScript 类型，不读取 profile endpoint，不执行 Node route/renderer/typecheck/build/Vitest，不安装 router，不打开写路由，不触碰 WAL，也不获得 load/restore/compact 或运行时执行权。
 
 它不是新的跨项目执行入口。`SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON` 只是一个 read/stable 元数据命令，作用是把“v1385 已经完成，后续只是在 mini-kv 侧守住证据和质量边界”写成可测试、可归档、可消费的 JSON。Node 的 type split 是否正确，仍由 Node 自己的 typecheck/build/Vitest 和路线图负责；mini-kv 只证明自己没有越界参与。

@@ -1,5 +1,17 @@
 # 第 1526-1545 版代码讲解：precheck upstream receipt verification split non-participation
 
+## 最近250版讲解清算补记
+
+本篇已纳入 v1316-v1565 最近250版讲解清算。清算参照 `D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3-v103.md` 的 production-readiness walkthrough 模式；原文保留为历史正文，本节补齐统一判断口径。
+
+- 清算范围：v1526-v1545（完整覆盖最近250版窗口）。
+- 目标定位：本篇用于回看 mini-kv 只读证据、维护拆分或证据链闭环，不是新的运行入口。
+- 不是什么：不打开 router/write/WAL/execution，不读取 credential/raw endpoint，不启动 Node/Java/mini-kv sibling 服务，不把 mini-kv 变成 order 或 audit authority。
+- 入口和证据：以原文记录的 command surface、SHARDJSON/current fixture/versioned fixture、CTest、CLI/TCP smoke、归档说明为准；控制面只能按只读证据理解。
+- 边界字段：阅读时优先核对 `read_only`、`execution_allowed`、`order_authoritative`、`mutates_store`、`touches_wal`、`warnings`、`blockers`、`diagnostics` 等字段是否继续表达只读、不可执行、非权威和不写入。
+- 测试理解：测试应说明断言保护的边界行为；若原文仅列命令，本节将其清算为“命令证据必须服务于 no router / no write / no WAL / no execution 判断”。
+- 清算结论：保留原位置，不搬迁；后续若重写正文，按治理模板补齐入口、结构、流程、边界字段、测试和一句话总结。
+
 本版目标是把 Node v1983-v2002 的 `managedAuditManualSandboxConnectionPrecheckUpstreamReceiptVerification` 拆分计划，落成 mini-kv 侧的版本化、只读、不参与证据。它冻结的直接来源是 mini-kv v1525 的 blocked execution rehearsal split non-participation 证据；Node 计划中提到的 Java v99 receipt evidence 和 mini-kv v108 non-participation evidence 都只是 Node 侧已经消费过的历史引用，不要求 mini-kv 在本版重新扫描 Java、不要求读取旧 mini-kv fixture，也不要求启动任何服务。
 
 它不是什么：不是新的执行入口，不导入 Node 模块，不解析 Node/Java 历史文件，不跑 TypeScript、Vitest、build 或 downstream guard，不变更 large-file inventory，不读取 endpoint 或 credential，不打开 managed audit connection，不安装 router，不写 store，不碰 WAL，也不允许 LOAD/RESTORE/COMPACT 作为证据生成的一部分。
