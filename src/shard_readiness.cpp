@@ -60,6 +60,7 @@
 #include "minikv/shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation.hpp"
 #include "minikv/shard_preview_disabled_precheck_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_implementation_plan_upstream_echo_closeout_non_participation.hpp"
+#include "minikv/shard_preview_precheck_upstream_receipt_verification_split_non_participation.hpp"
 #include "minikv/shard_preview_release_window_readiness_packet_split_non_participation.hpp"
 #include "minikv/shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_type_barrel_split_follow_up_fixture_audit.hpp"
@@ -81,7 +82,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v1525";
+constexpr std::string_view release_version = "v1545";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -286,6 +287,9 @@ std::string evidence_digest() {
             {"shardPreviewBlockedExecutionRehearsalSplitNonParticipation=" +
              shard_preview_blocked_execution_rehearsal_split_non_participation::
                  blocked_execution_rehearsal_split_non_participation_digest_marker()},
+            {"shardPreviewPrecheckUpstreamReceiptVerificationSplitNonParticipation=" +
+             shard_preview_precheck_upstream_receipt_verification_split_non_participation::
+                 precheck_upstream_receipt_verification_split_non_participation_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -331,8 +335,8 @@ std::string format_json() {
            ",\"evidencePath\":" + json_string(fixture_path()) +
            ",\"status\":" +
            json_string(
-               shard_preview_blocked_execution_rehearsal_split_non_participation::
-                   blocked_execution_rehearsal_split_non_participation_status()) +
+               shard_preview_precheck_upstream_receipt_verification_split_non_participation::
+                   precheck_upstream_receipt_verification_split_non_participation_status()) +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -478,6 +482,9 @@ std::string format_json() {
             ",\"shardPreviewBlockedExecutionRehearsalSplitNonParticipation\":" +
             shard_preview_blocked_execution_rehearsal_split_non_participation::
                 format_blocked_execution_rehearsal_split_non_participation_json() +
+            ",\"shardPreviewPrecheckUpstreamReceiptVerificationSplitNonParticipation\":" +
+            shard_preview_precheck_upstream_receipt_verification_split_non_participation::
+                format_precheck_upstream_receipt_verification_split_non_participation_json() +
             ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

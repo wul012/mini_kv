@@ -63,12 +63,14 @@ int main() {
     }
 
     const auto current = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
-    assert_contains(current, "\"releaseVersion\":\"v1525\"");
+    assert_contains(current, "\"releaseVersion\":\"v1545\"");
     assert_contains(
         current,
         "\"disabledFakeHarnessContractUpstreamEchoVerificationSplitNonParticipationReleaseVersion\":\"v1505\"");
     assert_contains(current,
                     "\"blockedExecutionRehearsalSplitNonParticipationReleaseVersion\":\"v1525\"");
+    assert_contains(current,
+                    "\"precheckUpstreamReceiptVerificationSplitNonParticipationReleaseVersion\":\"v1545\"");
 
     return 0;
 }

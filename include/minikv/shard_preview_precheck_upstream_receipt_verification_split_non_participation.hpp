@@ -1,0 +1,13 @@
+#pragma once
+
+#include <string>
+
+namespace minikv::shard_preview_precheck_upstream_receipt_verification_split_non_participation {
+
+std::string format_precheck_upstream_receipt_verification_split_non_participation_json();
+std::string format_precheck_upstream_receipt_verification_split_non_participation_stage_catalog_json();
+std::string precheck_upstream_receipt_verification_split_non_participation_digest_marker();
+std::string precheck_upstream_receipt_verification_split_non_participation_status();
+int published_stage_count();
+
+} // namespace minikv::shard_preview_precheck_upstream_receipt_verification_split_non_participation

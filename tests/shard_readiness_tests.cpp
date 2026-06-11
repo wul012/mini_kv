@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-blocked-execution-rehearsal-split-non-participation-clean-workspace-ci-closeout-read-only\"");
+                    "\"status\":\"route-preview-precheck-upstream-receipt-verification-split-non-participation-clean-workspace-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -919,6 +919,47 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"miniKvReadsHistoricalMiniKvV99WalRegressionFile\":false");
     assert_contains(json, "\"miniKvScansJavaV90ContextNormalizationEvidence\":false");
     assert_contains(json, "\"miniKvReplaysWalRegression\":false");
+    assert_contains(json, "\"shardPreviewPrecheckUpstreamReceiptVerificationSplitNonParticipation\":{\"contract\":"
+                          "\"shard-route-precheck-upstream-receipt-verification-split-non-participation.v1\"");
+    assert_contains(json, "\"command\":\"SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON\"");
+    assert_contains(json,
+                    "\"sourceNodePrecheckUpstreamReceiptVerificationSplitCloseoutReleaseVersion\":\"Node v2002\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v108\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalMiniKvEvidence\":\"non-participation-evidence\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v99\"");
+    assert_contains(json, "\"sourceNodeConsumesHistoricalJavaEvidence\":\"receipt-evidence\"");
+    assert_contains(json, "\"sourceBlockedExecutionRehearsalSplitNonParticipationReleaseVersion\":\"v1525\"");
+    assert_contains(json, "\"sourceBlockedExecutionRehearsalSplitNonParticipationPublishedStageCount\":20");
+    assert_contains(json, "\"sourceBlockedExecutionRehearsalSplitNonParticipationComplete\":true");
+    assert_contains(json,
+                    "\"precheckUpstreamReceiptVerificationSplitNonParticipationReleaseVersion\":\"v1545\"");
+    assert_contains(json,
+                    "\"precheckUpstreamReceiptVerificationSplitNonParticipationReleaseRangeStart\":\"v1526\"");
+    assert_contains(json,
+                    "\"plannedPrecheckUpstreamReceiptVerificationSplitNonParticipationCheckCount\":20");
+    assert_contains(json,
+                    "\"completedPrecheckUpstreamReceiptVerificationSplitNonParticipationCheckCount\":20");
+    assert_contains(json,
+                    "\"precheckUpstreamReceiptVerificationSplitNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"sourceBlockedExecutionRehearsalSplitNonParticipationFixtureFrozen\":true");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationPublicLoaderImportedByMiniKv\":false");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationTypesImportedByMiniKv\":false");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationConstantsImportedByMiniKv\":false");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationReferencesParsedByMiniKv\":false");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationCheckPolicyExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationMessagePolicyExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationCoreExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationRendererExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodePrecheckUpstreamReceiptVerificationEntrypointExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeCodeHealthScanExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeLargeFileInventoryMutatedByMiniKv\":false");
+    assert_contains(json, "\"nodeDirectTestsExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeDownstreamCodeHealthExecutedByMiniKv\":false");
+    assert_contains(json, "\"nodeDownstreamRehearsalGuardExecutedByMiniKv\":false");
+    assert_contains(json, "\"miniKvReadsHistoricalMiniKvV108NonParticipationFile\":false");
+    assert_contains(json, "\"miniKvScansJavaV99Evidence\":false");
+    assert_contains(json, "\"miniKvExecutesDownstreamChecks\":false");
+    assert_contains(json, "\"miniKvMutatesLargeFileInventory\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
