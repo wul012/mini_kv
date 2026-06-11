@@ -1,0 +1,14 @@
+#pragma once
+
+#include "minikv/shard_route_preview_stage_catalog.hpp"
+
+#include <span>
+
+namespace minikv::shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_stages {
+
+std::span<const shard_route_preview_stage_catalog::StageRecord>
+disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_stages();
+int first_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_release_number();
+int planned_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_stage_count();
+
+} // namespace minikv::shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_stages

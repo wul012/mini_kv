@@ -250,6 +250,10 @@ add_library(minikv
     src/shard_preview_release_window_readiness_packet_split_non_participation_stages.cpp
     src/shard_preview_release_window_readiness_packet_split_non_participation_checks.cpp
     src/shard_preview_release_window_readiness_packet_split_non_participation_validation.cpp
+    src/shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation.cpp
+    src/shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_stages.cpp
+    src/shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_checks.cpp
+    src/shard_preview_disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -1622,6 +1626,36 @@ minikv_add_source_dir_test(
     minikv_release_window_readiness_packet_split_non_participation_fixture_tests
     release_window_readiness_packet_split_non_participation_fixture_tests
     tests/release_window_readiness_packet_split_non_participation_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_dfh_echo_split_np_stages_tests
+    dfh_echo_split_np_stages_tests
+    tests/disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_dfh_echo_split_np_checks_tests
+    dfh_echo_split_np_checks_tests
+    tests/disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_dfh_echo_split_np_validation_tests
+    dfh_echo_split_np_validation_tests
+    tests/disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_dfh_echo_split_np_tests
+    dfh_echo_split_np_tests
+    tests/disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_dfh_echo_split_np_fixture_tests
+    dfh_echo_split_np_fixture_tests
+    tests/disabled_fake_harness_contract_upstream_echo_verification_split_non_participation_fixture_tests.cpp
 )
 
 minikv_add_linked_test(
