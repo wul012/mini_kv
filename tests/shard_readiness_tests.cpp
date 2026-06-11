@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"route-preview-precheck-upstream-receipt-verification-split-non-participation-clean-workspace-ci-closeout-read-only\"");
+                    "\"status\":\"runtime-execution-packet-approval-gate-archive-verification-non-participation-clean-ci-closeout-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -960,6 +960,54 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"miniKvScansJavaV99Evidence\":false");
     assert_contains(json, "\"miniKvExecutesDownstreamChecks\":false");
     assert_contains(json, "\"miniKvMutatesLargeFileInventory\":false");
+    assert_contains(json,
+                    "\"shardPreviewRuntimeExecutionPacketApprovalGateArchiveVerificationNonParticipation\":{\"contract\":"
+                    "\"shard-route-runtime-execution-packet-approval-gate-archive-verification-non-participation.v1\"");
+    assert_contains(
+        json,
+        "\"command\":\"SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON\"");
+    assert_contains(json, "\"sourceNodeArchiveVerificationReleaseVersion\":\"Node v399\"");
+    assert_contains(json, "\"sourceNodeVerifiedArchiveReleaseVersion\":\"Node v398\"");
+    assert_contains(json, "\"sourceNodeNextConsumer\":\"Node v400\"");
+    assert_contains(json, "\"sourcePrecheckUpstreamReceiptVerificationSplitReleaseVersion\":\"v1545\"");
+    assert_contains(json, "\"sourcePrecheckUpstreamReceiptVerificationSplitPublishedStageCount\":20");
+    assert_contains(json, "\"sourcePrecheckUpstreamReceiptVerificationSplitComplete\":true");
+    assert_contains(
+        json,
+        "\"runtimeExecutionPacketApprovalGateArchiveVerificationNonParticipationReleaseVersion\":\"v1585\"");
+    assert_contains(
+        json,
+        "\"runtimeExecutionPacketApprovalGateArchiveVerificationNonParticipationReleaseRangeStart\":\"v1566\"");
+    assert_contains(
+        json,
+        "\"runtimeExecutionPacketApprovalGateArchiveVerificationNonParticipationReleaseRangeEnd\":\"v1585\"");
+    assert_contains(
+        json,
+        "\"plannedRuntimeExecutionPacketApprovalGateArchiveVerificationNonParticipationCheckCount\":20");
+    assert_contains(
+        json,
+        "\"completedRuntimeExecutionPacketApprovalGateArchiveVerificationNonParticipationCheckCount\":20");
+    assert_contains(
+        json,
+        "\"runtimeExecutionPacketApprovalGateArchiveVerificationNonParticipationValidationPassed\":true");
+    assert_contains(json, "\"archiveVerificationOnly\":true");
+    assert_contains(json, "\"approvalInputCount\":0");
+    assert_contains(json, "\"requiredApprovalInputCount\":3");
+    assert_contains(json, "\"runtimeArtifactCount\":0");
+    assert_contains(json, "\"requiredRuntimeArtifactCount\":6");
+    assert_contains(json, "\"nodeV400MustNotTreatArchiveVerificationAsApproval\":true");
+    assert_contains(json, "\"miniKvReadsNodeArchiveFiles\":false");
+    assert_contains(json, "\"miniKvReplaysNodeArchive\":false");
+    assert_contains(json, "\"miniKvStartsNodeServices\":false");
+    assert_contains(json, "\"miniKvStartsJavaService\":false");
+    assert_contains(json, "\"miniKvStartsMiniKvService\":false");
+    assert_contains(json, "\"miniKvReadsEndpoints\":false");
+    assert_contains(json, "\"miniKvReadsCredentials\":false");
+    assert_contains(json, "\"miniKvParsesRawEndpoint\":false");
+    assert_contains(json, "\"miniKvExecutesRuntimeProbe\":false");
+    assert_contains(json, "\"miniKvEnablesActiveRouter\":false");
+    assert_contains(json, "\"runtimeExecutionPacketPresent\":false");
+    assert_contains(json, "\"runtimeGateApprovalPresent\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -1524,9 +1572,9 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"extraArgsAllowed\":false");
     assert_contains(json, "\"sideEffects\":[\"metadata_read\"]");
     assert_contains(json, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
-    assert_contains(json, "\"releaseRangeEnd\":\"v1565\"");
+    assert_contains(json, "\"releaseRangeEnd\":\"v1585\"");
     assert_contains(json, "\"scope\":\"command-catalog-single-source-refactor\"");
-    assert_contains(json, "\"commandCount\":88");
+    assert_contains(json, "\"commandCount\":89");
     assert_contains(json, "\"dispatchCatalogSplit\":true");
     assert_contains(json, "\"contractCatalogDeduplicated\":true");
     assert_contains(json, "\"helpTextGeneratedFromCatalog\":true");

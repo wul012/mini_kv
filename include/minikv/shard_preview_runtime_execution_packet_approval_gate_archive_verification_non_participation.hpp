@@ -1,0 +1,13 @@
+#pragma once
+
+#include <string>
+
+namespace minikv::shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation {
+
+std::string format_runtime_execution_packet_approval_gate_archive_verification_non_participation_json();
+std::string format_runtime_execution_packet_approval_gate_archive_verification_non_participation_stage_catalog_json();
+std::string runtime_execution_packet_approval_gate_archive_verification_non_participation_digest_marker();
+std::string runtime_execution_packet_approval_gate_archive_verification_non_participation_status();
+int published_stage_count();
+
+} // namespace minikv::shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation

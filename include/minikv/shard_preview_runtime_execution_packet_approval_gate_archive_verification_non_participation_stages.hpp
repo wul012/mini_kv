@@ -1,0 +1,14 @@
+#pragma once
+
+#include "minikv/shard_route_preview_stage_catalog.hpp"
+
+#include <span>
+
+namespace minikv::shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation_stages {
+
+std::span<const shard_route_preview_stage_catalog::StageRecord>
+runtime_execution_packet_approval_gate_archive_verification_non_participation_stages();
+int first_runtime_execution_packet_approval_gate_archive_verification_non_participation_release_number();
+int planned_runtime_execution_packet_approval_gate_archive_verification_non_participation_stage_count();
+
+} // namespace minikv::shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation_stages

@@ -62,6 +62,7 @@
 #include "minikv/shard_preview_disabled_precheck_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_implementation_plan_upstream_echo_closeout_non_participation.hpp"
 #include "minikv/shard_preview_precheck_upstream_receipt_verification_split_non_participation.hpp"
+#include "minikv/shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation.hpp"
 #include "minikv/shard_preview_release_window_readiness_packet_split_non_participation.hpp"
 #include "minikv/shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation.hpp"
 #include "minikv/shard_preview_type_barrel_split_follow_up_fixture_audit.hpp"
@@ -83,7 +84,7 @@ namespace minikv::shard_readiness {
 namespace {
 
 constexpr std::string_view contract_version = "shard-readiness.v1";
-constexpr std::string_view release_version = "v1565";
+constexpr std::string_view release_version = "v1585";
 
 std::string json_string(std::string_view value) {
     return runtime_evidence::json_string(value);
@@ -104,7 +105,7 @@ std::string format_command_catalog_json() {
 }
 
 std::string format_command_catalog_quality_json() {
-    return "{\"releaseRangeStart\":\"v1546\",\"releaseRangeEnd\":\"v1565\","
+    return "{\"releaseRangeStart\":\"v1546\",\"releaseRangeEnd\":\"v1585\","
            "\"scope\":\"command-catalog-single-source-refactor\","
            "\"commandCount\":" + std::to_string(command_catalog::count()) +
            ",\"dispatchCatalogSplit\":true"
@@ -133,8 +134,8 @@ std::string evidence_digest() {
             {"routingMode=single-shard-readiness-prototype"},
             {fixture_path()},
             {"commandCatalog=read-no-mutate-no-wal"},
-            {"commandCatalogSingleSourceRefactor=v1546-v1565-no-runtime-behavior-change"},
-            {"commandCatalogCount=88"},
+            {"commandCatalogSingleSourceRefactor=v1546-v1585-no-runtime-behavior-change"},
+            {"commandCatalogCount=89"},
             {"commandCatalogHelpCompletionContractsDeduplicated=true"},
             {"fixtureParity=runtime-matches-current-fixture"},
             {"historicalFallback=v261-frozen-no-rolling-current"},
@@ -310,6 +311,9 @@ std::string evidence_digest() {
             {"shardPreviewPrecheckUpstreamReceiptVerificationSplitNonParticipation=" +
              shard_preview_precheck_upstream_receipt_verification_split_non_participation::
                  precheck_upstream_receipt_verification_split_non_participation_digest_marker()},
+            {"shardPreviewRuntimeExecutionPacketApprovalGateArchiveVerificationNonParticipation=" +
+             shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation::
+                 runtime_execution_packet_approval_gate_archive_verification_non_participation_digest_marker()},
             {"shardReadinessReleaseCatalog=v165-versioned-catalog-no-execution"},
             {"shardReadinessReleaseCatalogAudit=v166-catalog-consistency-no-execution"},
             {"nodeRouteSplitCompatibilityWindow=v232-node-v433-v472-route-catalog-cleanup-closeout-no-execution"},
@@ -355,8 +359,8 @@ std::string format_json() {
            ",\"evidencePath\":" + json_string(fixture_path()) +
            ",\"status\":" +
            json_string(
-               shard_preview_precheck_upstream_receipt_verification_split_non_participation::
-                   precheck_upstream_receipt_verification_split_non_participation_status()) +
+               shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation::
+                   runtime_execution_packet_approval_gate_archive_verification_non_participation_status()) +
            ",\"shardMap\":" + slot_preview::format_shard_map_json() +
            ",\"keyRoutingSamples\":" + slot_preview::format_route_samples_json() +
            ",\"slotTablePreview\":" + slot_preview::format_slot_table_preview_json() +
@@ -505,6 +509,9 @@ std::string format_json() {
             ",\"shardPreviewPrecheckUpstreamReceiptVerificationSplitNonParticipation\":" +
             shard_preview_precheck_upstream_receipt_verification_split_non_participation::
                 format_precheck_upstream_receipt_verification_split_non_participation_json() +
+            ",\"shardPreviewRuntimeExecutionPacketApprovalGateArchiveVerificationNonParticipation\":" +
+            shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation::
+                format_runtime_execution_packet_approval_gate_archive_verification_non_participation_json() +
             ",\"shardReadinessReleaseCatalog\":" +
            release_catalog::format_release_catalog_json() +
            ",\"shardReadinessReleaseCatalogAudit\":" +

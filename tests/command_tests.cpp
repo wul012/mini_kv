@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=88") != std::string::npos);
+    assert(result.response.find("command_count=89") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -439,6 +439,9 @@ int main() {
                "SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
+               "SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
                "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
@@ -558,6 +561,9 @@ int main() {
                "\"name\":\"SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
+               "\"name\":\"SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
                "\"name\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
@@ -657,7 +663,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-precheck-upstream-receipt-verification-split-non-participation-clean-workspace-ci-closeout-read-only\"");
+        "\"status\":\"runtime-execution-packet-approval-gate-archive-verification-non-participation-clean-ci-closeout-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -2198,6 +2204,39 @@ int main() {
     assert(result.response ==
            "ERR usage: SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON");
 
+    result = processor.execute("SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON");
+    assert_response_contains(
+        result,
+        "\"contract\":\"shard-route-runtime-execution-packet-approval-gate-archive-verification-non-participation.v1\"");
+    assert_response_contains(
+        result,
+        "\"command\":\"SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON\"");
+    assert_response_contains(result, "\"sourceNodeArchiveVerificationReleaseVersion\":\"Node v399\"");
+    assert_response_contains(result, "\"sourceNodeVerifiedArchiveReleaseVersion\":\"Node v398\"");
+    assert_response_contains(result, "\"sourceNodeNextConsumer\":\"Node v400\"");
+    assert_response_contains(
+        result,
+        "\"runtimeExecutionPacketApprovalGateArchiveVerificationNonParticipationReleaseVersion\":\"v1585\"");
+    assert_response_contains(result, "\"approvalInputCount\":0");
+    assert_response_contains(result, "\"requiredApprovalInputCount\":3");
+    assert_response_contains(result, "\"runtimeArtifactCount\":0");
+    assert_response_contains(result, "\"requiredRuntimeArtifactCount\":6");
+    assert_response_contains(result, "\"miniKvReadsNodeArchiveFiles\":false");
+    assert_response_contains(result, "\"miniKvStartsJavaService\":false");
+    assert_response_contains(result, "\"miniKvStartsMiniKvService\":false");
+    assert_response_contains(result, "\"managedAuditConnectionOpened\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+    assert_response_contains(
+        result,
+        "\"runtimeExecutionPacketApprovalGateArchiveVerificationNonParticipationValidationPassed\":true");
+
+    result = processor.execute("SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON extra");
+    assert(result.response ==
+           "ERR usage: SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON");
+
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
     assert_response_contains(result, "\"approvalPacketPresent\":false");
@@ -2279,9 +2318,9 @@ int main() {
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
-    assert_response_contains(result, "\"releaseRangeEnd\":\"v1565\"");
+    assert_response_contains(result, "\"releaseRangeEnd\":\"v1585\"");
     assert_response_contains(result, "\"scope\":\"command-catalog-single-source-refactor\"");
-    assert_response_contains(result, "\"commandCount\":88");
+    assert_response_contains(result, "\"commandCount\":89");
     assert_response_contains(result, "\"dispatchCatalogSplit\":true");
     assert_response_contains(result, "\"contractCatalogDeduplicated\":true");
     assert_response_contains(result, "\"helpTextGeneratedFromCatalog\":true");

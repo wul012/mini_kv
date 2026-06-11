@@ -23,8 +23,8 @@ int main() {
     using minikv::command_catalog::CommandDispatchVerb;
 
     const auto& entries = minikv::command_catalog::entries();
-    assert(entries.size() == 88);
-    assert(minikv::command_catalog::count() == 88);
+    assert(entries.size() == 89);
+    assert(minikv::command_catalog::count() == 89);
 
     const auto* set = minikv::command_catalog::find("SET");
     assert(set != nullptr);
@@ -42,6 +42,15 @@ int main() {
     assert(!precheck->touches_wal);
     assert(precheck->dispatch_verb == CommandDispatchVerb::RuntimeEvidence);
     assert(!precheck->key_completion);
+
+    const auto* runtime_archive = minikv::command_catalog::find(
+        "SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON");
+    assert(runtime_archive != nullptr);
+    assert(runtime_archive->category == "read");
+    assert(!runtime_archive->mutates_store);
+    assert(!runtime_archive->touches_wal);
+    assert(runtime_archive->dispatch_verb == CommandDispatchVerb::RuntimeEvidence);
+    assert(!runtime_archive->key_completion);
 
     assert(minikv::command_catalog::lookup_dispatch_verb("SET") == CommandDispatchVerb::Set);
     assert(minikv::command_catalog::lookup_dispatch_verb("COMMANDSJSON") == CommandDispatchVerb::RuntimeEvidence);
@@ -84,16 +93,22 @@ int main() {
     assert(!minikv::command_contracts::is_known_command("NOT_A_COMMAND"));
 
     const std::string commands = minikv::command_contracts::format_commands();
-    assert_contains(commands, "command_count=88");
+    assert_contains(commands, "command_count=89");
     assert_contains(commands, "SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)");
     assert_contains(
         commands,
         "SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(
+        commands,
+        "SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     const std::string commands_json = minikv::command_contracts::format_commands_json();
     assert_contains(commands_json, "\"name\":\"STORAGEJSON\",\"category\":\"read\"");
     assert_contains(commands_json,
                     "\"name\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\",\"category\":\"read\"");
+    assert_contains(
+        commands_json,
+        "\"name\":\"SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON\",\"category\":\"read\"");
 
     return 0;
 }

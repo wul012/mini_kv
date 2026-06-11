@@ -54,7 +54,8 @@ int main() {
     assert(minikv::test_support::occurrence_count(shard, "\"shardRoutePreviewArchiveMaintenanceVerification\":") ==
            1);
     minikv::test_support::assert_contains(shard, "\"releaseVersion\":\"v");
-    minikv::test_support::assert_contains(shard, "\"status\":\"route-preview-");
+    minikv::test_support::assert_current_shard_readiness_status(shard);
+    minikv::test_support::assert_precheck_upstream_receipt_source_status(shard);
     minikv::test_support::assert_contains(shard, "\"verificationReleaseVersion\":\"v510\"");
 
     minikv::Store store;
