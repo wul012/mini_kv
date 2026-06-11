@@ -4,6 +4,7 @@
 
 ## 当前状态
 
+- v1592-v1596: [975-version-1592-1596-production-shard-execution-owner-receipt-request-packet.md](975-version-1592-1596-production-shard-execution-owner-receipt-request-packet.md) - Node v2087 owner receipt request gaps are frozen as local mini-kv request-only evidence with split modules, five versioned fixtures, per-version command archives, and no signed receipt, router, write, WAL, or execution authority.
 - v1586-v1591: [974-version-1586-1591-code-walkthrough-quality-gate-non-participation.md](974-version-1586-1591-code-walkthrough-quality-gate-non-participation.md) - Node v2077 documentation-quality closeout is recorded as a local mini-kv walkthrough quality gate with one read-only command, six versioned fixtures, split modules, and no sibling file scan or execution authority.
 - v1566-v1585: [973-version-1566-1585-runtime-execution-packet-approval-gate-archive-verification-non-participation.md](973-version-1566-1585-runtime-execution-packet-approval-gate-archive-verification-non-participation.md) - Node v399 runtime execution packet approval gate archive-verification context is frozen as mini-kv read-only non-participation evidence with split modules, fixtures, tests, and boundary assertions.
 

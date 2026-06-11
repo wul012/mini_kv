@@ -271,6 +271,10 @@ add_library(minikv
     src/shard_preview_code_walkthrough_quality_gate_non_participation_stages.cpp
     src/shard_preview_code_walkthrough_quality_gate_non_participation_checks.cpp
     src/shard_preview_code_walkthrough_quality_gate_non_participation_validation.cpp
+    src/shard_preview_production_shard_execution_owner_receipt_request_packet.cpp
+    src/shard_preview_production_shard_execution_owner_receipt_request_packet_stages.cpp
+    src/shard_preview_production_shard_execution_owner_receipt_request_packet_checks.cpp
+    src/shard_preview_production_shard_execution_owner_receipt_request_packet_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -1805,6 +1809,36 @@ minikv_add_source_dir_test(
     minikv_code_walkthrough_quality_gate_np_fixture_tests
     code_walkthrough_quality_gate_np_fixture_tests
     tests/code_walkthrough_quality_gate_non_participation_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_owner_receipt_request_packet_stages_tests
+    owner_receipt_request_packet_stages_tests
+    tests/production_shard_execution_owner_receipt_request_packet_stages_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_owner_receipt_request_packet_checks_tests
+    owner_receipt_request_packet_checks_tests
+    tests/production_shard_execution_owner_receipt_request_packet_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_owner_receipt_request_packet_validation_tests
+    owner_receipt_request_packet_validation_tests
+    tests/production_shard_execution_owner_receipt_request_packet_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_owner_receipt_request_packet_tests
+    owner_receipt_request_packet_tests
+    tests/production_shard_execution_owner_receipt_request_packet_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_owner_receipt_request_packet_fixture_tests
+    owner_receipt_request_packet_fixture_tests
+    tests/production_shard_execution_owner_receipt_request_packet_fixture_tests.cpp
 )
 
 minikv_add_linked_test(

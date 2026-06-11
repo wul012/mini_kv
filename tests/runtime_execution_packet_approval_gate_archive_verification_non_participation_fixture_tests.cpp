@@ -52,12 +52,13 @@ int main() {
     }
 
     const auto current = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
-    assert_contains(current, "\"releaseVersion\":\"v1591\"");
+    assert_contains(current, "\"releaseVersion\":\"v1596\"");
     assert_contains(current,
                     "\"precheckUpstreamReceiptVerificationSplitNonParticipationReleaseVersion\":\"v1545\"");
     assert_contains(current,
                     "\"runtimeExecutionPacketApprovalGateArchiveVerificationNonParticipationReleaseVersion\":\"v1585\"");
     assert_contains(current, "\"codeWalkthroughQualityGateNonParticipationReleaseVersion\":\"v1591\"");
+    assert_contains(current, "\"productionShardExecutionOwnerReceiptRequestPacketReleaseVersion\":\"v1596\"");
 
     return 0;
 }

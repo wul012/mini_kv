@@ -23,8 +23,8 @@ int main() {
     using minikv::command_catalog::CommandDispatchVerb;
 
     const auto& entries = minikv::command_catalog::entries();
-    assert(entries.size() == 90);
-    assert(minikv::command_catalog::count() == 90);
+    assert(entries.size() == 91);
+    assert(minikv::command_catalog::count() == 91);
 
     const auto* set = minikv::command_catalog::find("SET");
     assert(set != nullptr);
@@ -60,6 +60,15 @@ int main() {
     assert(!code_walkthrough_gate->touches_wal);
     assert(code_walkthrough_gate->dispatch_verb == CommandDispatchVerb::RuntimeEvidence);
     assert(!code_walkthrough_gate->key_completion);
+
+    const auto* owner_receipt_packet =
+        minikv::command_catalog::find("SHARDPRODUCTIONSHARDEXECUTIONOWNERRECEIPTREQUESTPACKETJSON");
+    assert(owner_receipt_packet != nullptr);
+    assert(owner_receipt_packet->category == "read");
+    assert(!owner_receipt_packet->mutates_store);
+    assert(!owner_receipt_packet->touches_wal);
+    assert(owner_receipt_packet->dispatch_verb == CommandDispatchVerb::RuntimeEvidence);
+    assert(!owner_receipt_packet->key_completion);
 
     assert(minikv::command_catalog::lookup_dispatch_verb("SET") == CommandDispatchVerb::Set);
     assert(minikv::command_catalog::lookup_dispatch_verb("COMMANDSJSON") == CommandDispatchVerb::RuntimeEvidence);
@@ -102,7 +111,7 @@ int main() {
     assert(!minikv::command_contracts::is_known_command("NOT_A_COMMAND"));
 
     const std::string commands = minikv::command_contracts::format_commands();
-    assert_contains(commands, "command_count=90");
+    assert_contains(commands, "command_count=91");
     assert_contains(commands, "SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)");
     assert_contains(
         commands,
@@ -113,6 +122,9 @@ int main() {
     assert_contains(
         commands,
         "SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
+    assert_contains(
+        commands,
+        "SHARDPRODUCTIONSHARDEXECUTIONOWNERRECEIPTREQUESTPACKETJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)");
 
     const std::string commands_json = minikv::command_contracts::format_commands_json();
     assert_contains(commands_json, "\"name\":\"STORAGEJSON\",\"category\":\"read\"");
@@ -123,6 +135,9 @@ int main() {
         "\"name\":\"SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON\",\"category\":\"read\"");
     assert_contains(commands_json,
                     "\"name\":\"SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON\",\"category\":\"read\"");
+    assert_contains(
+        commands_json,
+        "\"name\":\"SHARDPRODUCTIONSHARDEXECUTIONOWNERRECEIPTREQUESTPACKETJSON\",\"category\":\"read\"");
 
     return 0;
 }

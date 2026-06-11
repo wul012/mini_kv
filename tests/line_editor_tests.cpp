@@ -126,6 +126,7 @@ int main() {
           "SHARDROUTEPRECHECKUPSTREAMRECEIPTVERIFICATIONSPLITNONPARTICIPATIONJSON",
           "SHARDROUTERUNTIMEEXECUTIONPACKETAPPROVALGATEARCHIVEVERIFYNONPARTICIPATIONJSON",
           "SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON",
+          "SHARDPRODUCTIONSHARDEXECUTIONOWNERRECEIPTREQUESTPACKETJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
@@ -312,6 +313,10 @@ int main() {
     assert(completion.complete(code_walkthrough_quality_gate_prefix,
                                code_walkthrough_quality_gate_prefix.size()) ==
            std::optional<std::string>{"SHARDCODEWALKTHROUGHQUALITYGATENONPARTICIPATIONJSON "});
+    const std::string owner_receipt_request_packet_prefix = "SHARDPRODUCTIONSHARDEXECUTIONOWNER";
+    assert(completion.complete(owner_receipt_request_packet_prefix,
+                               owner_receipt_request_packet_prefix.size()) ==
+           std::optional<std::string>{"SHARDPRODUCTIONSHARDEXECUTIONOWNERRECEIPTREQUESTPACKETJSON "});
     const std::string type_barrel_split_follow_up_non_participation_prefix =
         "SHARDROUTETYPEBARRELSPLITFOLLOWUPN";
     assert(completion.complete(type_barrel_split_follow_up_non_participation_prefix,

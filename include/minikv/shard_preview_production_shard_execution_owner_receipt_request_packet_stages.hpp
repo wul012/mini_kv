@@ -1,0 +1,14 @@
+#pragma once
+
+#include "minikv/shard_route_preview_stage_catalog.hpp"
+
+#include <span>
+
+namespace minikv::shard_preview_production_shard_execution_owner_receipt_request_packet_stages {
+
+std::span<const shard_route_preview_stage_catalog::StageRecord>
+production_shard_execution_owner_receipt_request_packet_stages();
+int first_production_shard_execution_owner_receipt_request_packet_release_number();
+int planned_production_shard_execution_owner_receipt_request_packet_stage_count();
+
+} // namespace minikv::shard_preview_production_shard_execution_owner_receipt_request_packet_stages
