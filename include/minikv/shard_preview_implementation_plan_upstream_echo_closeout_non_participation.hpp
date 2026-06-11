@@ -1,0 +1,13 @@
+#pragma once
+
+#include <string>
+
+namespace minikv::shard_preview_implementation_plan_upstream_echo_closeout_non_participation {
+
+std::string format_implementation_plan_upstream_echo_closeout_non_participation_json();
+std::string format_implementation_plan_upstream_echo_closeout_non_participation_stage_catalog_json();
+std::string implementation_plan_upstream_echo_closeout_non_participation_digest_marker();
+std::string implementation_plan_upstream_echo_closeout_non_participation_status();
+int published_stage_count();
+
+} // namespace minikv::shard_preview_implementation_plan_upstream_echo_closeout_non_participation

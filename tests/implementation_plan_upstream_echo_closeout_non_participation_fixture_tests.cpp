@@ -8,33 +8,33 @@ int main() {
     using minikv::test_support::read_fixture_text;
     using minikv::test_support::read_shard_readiness_fixture;
 
-    for (int version = 1443; version <= 1472; ++version) {
+    for (int version = 1473; version <= 1475; ++version) {
         const auto fixture = read_shard_readiness_fixture(version);
         assert_contains(fixture, "\"releaseVersion\":\"v" + std::to_string(version) + "\"");
-        assert_contains(fixture, "\"shardPreviewSandboxEndpointCredentialResolverUpstreamEchoNonParticipation\"");
+        assert_contains(fixture, "\"shardPreviewImplementationPlanUpstreamEchoCloseoutNonParticipation\"");
         assert_contains(fixture,
-                        "\"sandboxEndpointCredentialResolverUpstreamEchoNonParticipationReleaseVersion\":\"v" +
+                        "\"implementationPlanUpstreamEchoCloseoutNonParticipationReleaseVersion\":\"v" +
                             std::to_string(version) + "\"");
-        assert_contains(fixture, "\"sourceDisabledPrecheckReleaseVersion\":\"v1442\"");
-        assert_contains(fixture, "\"sourceDisabledPrecheckPublishedStageCount\":25");
-        assert_contains(fixture, "\"sourceDisabledPrecheckUpstreamEchoFixtureFrozen\":true");
+        assert_contains(fixture, "\"sourceSandboxEndpointReleaseVersion\":\"v1472\"");
+        assert_contains(fixture, "\"sourceSandboxEndpointPublishedStageCount\":30");
+        assert_contains(fixture, "\"sourceSandboxEndpointCredentialResolverUpstreamEchoFixtureFrozen\":true");
         assert_contains(fixture,
-                        "\"sourceNodeSandboxEndpointCredentialResolverUpstreamEchoCloseoutReleaseVersion\":\"Node v1903\"");
-        assert_contains(fixture, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v114\"");
-        assert_contains(fixture, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v105\"");
+                        "\"sourceNodeImplementationPlanUpstreamEchoCloseoutReleaseVersion\":\"Node v1934\"");
+        assert_contains(fixture, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v126\"");
+        assert_contains(fixture, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v121\"");
         assert_contains(fixture, "\"freshMiniKvEvidenceRequiredByNode\":false");
+        assert_contains(fixture, "\"freshJavaEvidenceRequiredByNode\":false");
         assert_contains(fixture, "\"miniKvImportsNodeModules\":false");
         assert_contains(fixture, "\"miniKvExecutesNodeChecks\":false");
         assert_contains(fixture, "\"miniKvStartsServices\":false");
-        assert_contains(fixture, "\"miniKvReadsEndpointHandles\":false");
-        assert_contains(fixture, "\"miniKvParsesRawEndpoint\":false");
+        assert_contains(fixture, "\"miniKvReadsEndpoints\":false");
         assert_contains(fixture, "\"miniKvReadsCredentials\":false");
         assert_contains(fixture, "\"endpointHandleRead\":false");
         assert_contains(fixture, "\"rawEndpointParsed\":false");
         assert_contains(fixture, "\"credentialValueRead\":false");
         assert_contains(fixture, "\"managedAuditConnectionOpened\":false");
-        assert_contains(fixture, "\"nodeSandboxEndpointCredentialResolverStableBarrelImportedByMiniKv\":false");
-        assert_contains(fixture, "\"nodeSandboxEndpointCredentialResolverCoreLoaderExecutedByMiniKv\":false");
+        assert_contains(fixture, "\"nodeImplementationPlanStableBarrelImportedByMiniKv\":false");
+        assert_contains(fixture, "\"nodeImplementationPlanCoreLoaderExecutedByMiniKv\":false");
         assert_contains(fixture, "\"nodeTypecheckExecutedByMiniKv\":false");
         assert_contains(fixture, "\"nodeVitestExecutedByMiniKv\":false");
         assert_contains(fixture, "\"nodeBuildExecutedByMiniKv\":false");
@@ -45,7 +45,6 @@ int main() {
 
     const auto current = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
     assert_contains(current, "\"releaseVersion\":\"v1475\"");
-    assert_contains(current, "\"disabledPrecheckUpstreamEchoNonParticipationReleaseVersion\":\"v1442\"");
     assert_contains(current,
                     "\"sandboxEndpointCredentialResolverUpstreamEchoNonParticipationReleaseVersion\":\"v1472\"");
     assert_contains(current,

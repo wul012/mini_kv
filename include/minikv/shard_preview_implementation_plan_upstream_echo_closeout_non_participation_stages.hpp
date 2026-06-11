@@ -1,0 +1,14 @@
+#pragma once
+
+#include "minikv/shard_route_preview_stage_catalog.hpp"
+
+#include <span>
+
+namespace minikv::shard_preview_implementation_plan_upstream_echo_closeout_non_participation_stages {
+
+std::span<const shard_route_preview_stage_catalog::StageRecord>
+implementation_plan_upstream_echo_closeout_non_participation_stages();
+int first_implementation_plan_upstream_echo_closeout_non_participation_release_number();
+int planned_implementation_plan_upstream_echo_closeout_non_participation_stage_count();
+
+} // namespace minikv::shard_preview_implementation_plan_upstream_echo_closeout_non_participation_stages

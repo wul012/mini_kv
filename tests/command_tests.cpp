@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=83") != std::string::npos);
+    assert(result.response.find("command_count=84") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -424,6 +424,9 @@ int main() {
                "SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
+               "SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
                "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
@@ -528,6 +531,9 @@ int main() {
                "\"name\":\"SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
+               "\"name\":\"SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
                "\"name\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
@@ -627,7 +633,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"route-preview-sandbox-endpoint-credential-resolver-upstream-echo-non-participation-clean-workspace-ci-closeout-read-only\"");
+        "\"status\":\"route-preview-implementation-plan-upstream-echo-closeout-non-participation-clean-fixture-closeout-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -1854,6 +1860,61 @@ int main() {
     result = processor.execute("SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON extra");
     assert(result.response ==
            "ERR usage: SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON");
+
+    result = processor.execute("SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON");
+    assert_response_contains(
+        result,
+        "\"contract\":\"shard-route-implementation-plan-upstream-echo-closeout-non-participation.v1\"");
+    assert_response_contains(
+        result, "\"command\":\"SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON\"");
+    assert_response_contains(
+        result,
+        "\"sourceNodeImplementationPlanUpstreamEchoCloseoutReleaseVersion\":\"Node v1934\"");
+    assert_response_contains(result, "\"sourceNodeConsumesHistoricalMiniKvReleaseVersion\":\"v126\"");
+    assert_response_contains(result, "\"sourceNodeConsumesHistoricalJavaReleaseVersion\":\"Java v121\"");
+    assert_response_contains(result, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
+    assert_response_contains(result, "\"sourceNodeImplementationPlanUpstreamEchoCloseoutDocumentationOnly\":true");
+    assert_response_contains(
+        result,
+        "\"sourceSandboxEndpointCommand\":\"SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON\"");
+    assert_response_contains(result, "\"sourceSandboxEndpointReleaseVersion\":\"v1472\"");
+    assert_response_contains(result, "\"sourceSandboxEndpointPublishedStageCount\":30");
+    assert_response_contains(
+        result,
+        "\"implementationPlanUpstreamEchoCloseoutNonParticipationReleaseVersion\":\"v1475\"");
+    assert_response_contains(
+        result,
+        "\"implementationPlanUpstreamEchoCloseoutNonParticipationReleaseRangeStart\":\"v1473\"");
+    assert_response_contains(result,
+                             "\"plannedImplementationPlanUpstreamEchoCloseoutNonParticipationCheckCount\":8");
+    assert_response_contains(result,
+                             "\"completedImplementationPlanUpstreamEchoCloseoutNonParticipationCheckCount\":8");
+    assert_response_contains(
+        result,
+        "\"implementationPlanUpstreamEchoCloseoutNonParticipationOnly\":true");
+    assert_response_contains(result, "\"sourceSandboxEndpointCredentialResolverUpstreamEchoFixtureFrozen\":true");
+    assert_response_contains(result, "\"nodeImplementationPlanStableBarrelImportedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeImplementationPlanCoreLoaderExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeTypecheckExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeVitestExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"nodeBuildExecutedByMiniKv\":false");
+    assert_response_contains(result, "\"miniKvImportsNodeModules\":false");
+    assert_response_contains(result, "\"miniKvExecutesNodeChecks\":false");
+    assert_response_contains(result, "\"miniKvStartsServices\":false");
+    assert_response_contains(result, "\"miniKvReadsEndpoints\":false");
+    assert_response_contains(result, "\"miniKvReadsCredentials\":false");
+    assert_response_contains(result, "\"endpointHandleRead\":false");
+    assert_response_contains(result, "\"rawEndpointParsed\":false");
+    assert_response_contains(result, "\"credentialValueRead\":false");
+    assert_response_contains(result, "\"managedAuditConnectionOpened\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON extra");
+    assert(result.response ==
+           "ERR usage: SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON");
 
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
