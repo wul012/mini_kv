@@ -103,12 +103,15 @@ add_library(minikv
     src/route_preview_evidence_boundary.cpp
     src/shard_readiness.cpp
     src/shard_readiness_approval_inputs.cpp
+    src/shard_readiness_boundary_validators.cpp
     src/shard_readiness_boundary_catalog_index.cpp
     src/shard_readiness_boundary_catalog_maintenance.cpp
     src/shard_readiness_boundary_catalog_groups.cpp
     src/shard_readiness_boundary_field_names.cpp
     src/shard_readiness_boundary_fields.cpp
+    src/shard_readiness_core_digest.cpp
     src/shard_readiness_history.cpp
+    src/shard_readiness_json.cpp
     src/shard_readiness_lifecycle_sections.cpp
     src/shard_readiness_node_compatibility.cpp
     src/shard_readiness_route_catalog_cleanup_catalog.cpp

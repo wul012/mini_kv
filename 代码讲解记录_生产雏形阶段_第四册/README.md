@@ -4,6 +4,7 @@
 
 ## 当前状态
 
+- v1619: [989-version-1619-production-excellence-k4-shard-readiness-split.md](989-version-1619-production-excellence-k4-shard-readiness-split.md) - 完成 production-excellence K4 的 shard-readiness 拆分：`shard_readiness.cpp` 退成公开 fixture-path shim，SHARDJSON 拼装、digest 证据链、边界/catalog helper 分别进入独立 translation unit，并把 `shard_readiness_boundary_field_names.cpp` 的后续 E9 迁移豁免写清楚，保持 read-only/no-router/no-write/no-WAL/no-execution 不变。
 - v1617: [987-version-1617-production-excellence-k4-command-dispatch-split.md](987-version-1617-production-excellence-k4-command-dispatch-split.md) - 启动 production-excellence K4 第一刀：把 `execute_trimmed` 拆到 `command_dispatch.cpp`，把 parse/error helper 和 WAL gate 拆成内部模块，并把 coverage filter 跟进到新 command 核心文件，保持命令输出、fixture、WAL、snapshot、TCP/RESP 和执行边界不变。
 - v1618: [988-version-1618-production-excellence-k4-command-family-executor-split.md](988-version-1618-production-excellence-k4-command-family-executor-split.md) - 继续 K4 command 侧拆分：`command_dispatch.cpp` 降为薄分发器，string/expiry/persistence/introspection 四类命令执行体分别进入独立 translation unit，同时更新 CMake、coverage filter 和 CI contract test，保持 public command output、CHECKJSON、WAL/snapshot、CLI/TCP 行为不变。
 - v1616: [986-version-1616-production-excellence-k3-zero-dependency-logger.md](986-version-1616-production-excellence-k3-zero-dependency-logger.md) - 完成 production-excellence K3 零依赖分级日志：新增 `minikv::Logger`，给 CLI/server 接入 `--log-level`，把 TCP 运行日志导向 stderr，同时保持 stdout 证据契约不变。
