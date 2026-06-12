@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
+#include <stdexcept>
 #include <sstream>
 #include <string>
 
@@ -11,7 +12,9 @@ namespace {
 
 std::string read_text(const std::filesystem::path& path) {
     std::ifstream input{path, std::ios::binary};
-    assert(input.is_open());
+    if (!input.is_open()) {
+        throw std::runtime_error{"failed to open walkthrough file"};
+    }
 
     std::ostringstream output;
     output << input.rdbuf();
@@ -65,16 +68,32 @@ std::size_t count_chinese_characters(const std::string& text) {
     return count;
 }
 
+std::filesystem::path find_walkthrough_file() {
+    constexpr std::string_view target_file_name = "978-version-1607-f-folder-explanation-quality-closeout.md";
+    const std::filesystem::path target_path{std::string{target_file_name}};
+    const auto root = minikv::test_support::source_root();
+    const std::filesystem::recursive_directory_iterator end;
+    std::filesystem::recursive_directory_iterator it{
+        root,
+        std::filesystem::directory_options::skip_permission_denied};
+    for (; it != end; ++it) {
+        if (!it->is_regular_file()) {
+            continue;
+        }
+        if (it->path().filename() == target_path) {
+            return it->path();
+        }
+    }
+
+    throw std::runtime_error{"missing walkthrough file: 978-version-1607-f-folder-explanation-quality-closeout.md"};
+}
+
 } // namespace
 
 int main() {
     using minikv::test_support::assert_contains;
 
-    const auto path =
-        minikv::test_support::source_root() / "代码讲解记录_生产雏形阶段_第四册" /
-        "978-version-1607-f-folder-explanation-quality-closeout.md";
-    assert(std::filesystem::exists(path));
-
+    const auto path = find_walkthrough_file();
     const auto text = read_text(path);
     assert(count_chinese_characters(text) >= 3000);
     assert_contains(text, "# v1607 f-folder 解释质量收口");

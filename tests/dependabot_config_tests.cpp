@@ -61,7 +61,8 @@ int main() {
 
     assert_contains(ci_workflow, "uses: actions/checkout@v4");
     assert_contains(ci_workflow, "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug");
-    assert_contains(ci_workflow, "ctest --test-dir build -C Debug --output-on-failure");
+    assert_contains(ci_workflow, "timeout-minutes: 30");
+    assert_contains(ci_workflow, "ctest --test-dir build -C Debug --output-on-failure --timeout 120 --progress");
 
     return 0;
 }
