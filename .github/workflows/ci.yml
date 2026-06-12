@@ -113,7 +113,7 @@ jobs:
       - name: Generate core coverage report
         run: |
           mkdir -p coverage
-          gcovr --root . --object-directory build-coverage --filter "src/(store|command|command_catalog|command_contracts|command_response_formatters|command_smoke_formatters|wal|snapshot|resp)\\.cpp" --txt coverage/core-coverage.txt --html-details coverage/core-coverage.html
+          gcovr --root . --object-directory build-coverage --filter "src/(store|command|command_catalog|command_contracts|command_response_formatters|command_smoke_formatters|wal|snapshot|resp)\\.cpp" --gcov-ignore-parse-errors negative_hits.warn_once_per_file --txt coverage/core-coverage.txt --html-details coverage/core-coverage.html
           cat coverage/core-coverage.txt
 
       - name: Upload core coverage report
