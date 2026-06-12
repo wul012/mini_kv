@@ -54,9 +54,13 @@ add_library(minikv
     src/command_catalog.cpp
     src/command_contracts.cpp
     src/command_dispatch.cpp
+    src/command_expiry_ops.cpp
+    src/command_introspection_ops.cpp
     src/command_parse_helpers.cpp
+    src/command_persistence_ops.cpp
     src/command_response_formatters.cpp
     src/command_smoke_formatters.cpp
+    src/command_string_ops.cpp
     src/command_wal_gate.cpp
     src/line_editor.cpp
     src/log.cpp

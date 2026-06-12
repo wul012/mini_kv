@@ -78,10 +78,12 @@ int main() {
     assert_contains(ci_workflow, "cmake --build build-coverage --config Debug --parallel 4 --verbose");
     assert_contains(ci_workflow,
                     "ctest --test-dir build-coverage -C Debug --output-on-failure --timeout 120 --progress");
-    assert_contains(ci_workflow,
-                    "src/"
-                    "(store|command|command_catalog|command_contracts|command_dispatch|command_parse_helpers|command_"
-                    "response_formatters|command_smoke_formatters|command_wal_gate|wal|snapshot|resp)\\\\.cpp");
+    assert_contains(
+        ci_workflow,
+        "src/"
+        "(store|command|command_catalog|command_contracts|command_dispatch|command_expiry_ops|command_"
+        "introspection_ops|command_parse_helpers|command_persistence_ops|command_response_formatters|command_"
+        "smoke_formatters|command_string_ops|command_wal_gate|wal|snapshot|resp)\\\\.cpp");
     assert_contains(ci_workflow, "--gcov-ignore-parse-errors negative_hits.warn_once_per_file");
     assert_contains(ci_workflow, "--fail-under-line 88");
     assert_contains(ci_workflow, "name: mini-kv-core-coverage");

@@ -18,6 +18,9 @@
 namespace minikv {
 
 class WriteAheadLog;
+namespace command_catalog {
+enum class CommandDispatchVerb;
+}
 
 struct CommandResult {
     std::string response;
@@ -83,9 +86,7 @@ struct CommandProcessorOptions {
 
 class CommandProcessor {
 public:
-    explicit CommandProcessor(Store& store,
-                              WriteAheadLog* wal = nullptr,
-                              CommandProcessorOptions options = {});
+    explicit CommandProcessor(Store& store, WriteAheadLog* wal = nullptr, CommandProcessorOptions options = {});
 
     CommandResult execute(std::string_view line);
     CommandProcessorMetrics metrics() const;
@@ -94,6 +95,10 @@ public:
 
 private:
     CommandResult execute_trimmed(std::string_view trimmed);
+    CommandResult execute_string_command(command_catalog::CommandDispatchVerb verb, std::istringstream& input);
+    CommandResult execute_expiry_command(command_catalog::CommandDispatchVerb verb, std::istringstream& input);
+    CommandResult execute_persistence_command(command_catalog::CommandDispatchVerb verb, std::istringstream& input);
+    CommandResult execute_introspection_command(command_catalog::CommandDispatchVerb verb, std::istringstream& input);
     CommandResult execute_runtime_evidence_command(std::string_view command, std::istringstream& input);
     CommandResult execute_with_wal(std::function<std::optional<std::string>()> wal_record,
                                    std::function<CommandResult()> mutation);
