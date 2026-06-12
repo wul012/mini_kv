@@ -1,5 +1,4 @@
-#ifndef MINIKV_METRICS_FILE_HPP
-#define MINIKV_METRICS_FILE_HPP
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
@@ -41,5 +40,3 @@ private:
 };
 
 } // namespace minikv
-
-#endif // MINIKV_METRICS_FILE_HPP

@@ -6,6 +6,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(MINIKV_CURRENT_ARCHIVE_VERSION
+    "c/102/"
+    CACHE STRING "Archive path hint for the frozen current runtime fixture exposed in generated version.hpp"
+)
+
 configure_file(
     ${PROJECT_SOURCE_DIR}/include/minikv/version.hpp.in
     ${PROJECT_BINARY_DIR}/generated/include/minikv/version.hpp

@@ -11,26 +11,25 @@ Features:
 - RESP protocol support
 - Runtime JSON evidence for commands and snapshots
 - Command execution audit with SMOKEJSON/INFOJSON/KEYSJSON outputs
-- CMake + Ninja build with CTest
+- CMake builds with CTest coverage across the command, WAL, snapshot, RESP, TCP, fixture, and governance evidence suites
 
 ## Why it matters
 
 This project demonstrates systems engineering discipline in C++:
 
 - Proper thread-safe data structures with minimal critical sections
-- Command dispatch architecture and code refactoring (v106 table-driven command dispatch)
+- Command dispatch architecture and a long-running plan to split oversized command/evidence files without changing public output
 - WAL, snapshot, restore, auto-compaction, and evidence correctness
-- CI and test coverage to ensure runtime contracts
+- CI and test coverage to ensure runtime contracts and read-only governance boundaries
 
-The README contains full walkthroughs of how each version evolved and why v106 introduces a dispatch table for clarity and maintainability.
+The README contains the long project history. New production-excellence progress is tracked in `docs/production-excellence-progress.md` so the README does not absorb another governance chain.
 
 ## How to run it
 
 ```powershell
-mkdir build && cd build
-cmake -G Ninja ..
-ninja
-ctest --output-on-failure
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --config Debug --parallel
+ctest --test-dir build -C Debug --output-on-failure --timeout 120 --progress
 ./minikv_server.exe 6506 127.0.0.1
 ./minikv_client.exe
 ```
@@ -40,18 +39,21 @@ Follow the README for detailed command usage and screenshots.
 ## Top technical highlights
 
 1. WAL + atomic append mutation separation
-2. Command dispatch table and `CommandDispatchVerb` switch
+2. Command dispatch table and planned command-family split
 3. C++20 thread-safe data structures with snapshot/recovery support
 4. Full test coverage with CTest and runtime JSON verification
 
 ## Latest version summary
 
-Current focus: **v106 table-drive command dispatch**. Converts the long `if (command == ...)` chain into a dispatch table plus enum-based switch. Behavior unchanged but easier to audit and extend.
+Current focus: **v1609 production-excellence K0 quick wins**. The active work is internal quality: refresh this entry point, move the frozen current-runtime archive hint out of `version.hpp.in` into a CMake variable, normalize the last include guard outlier, add changed-file clang-format checking, and track the production-excellence gates in this repo.
+
+Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
 ## Where to look next
 
 - `README.md` — full versioned project explanations
 - `src/` — core KV engine and command handling
 - `tests/` — runtime and regression tests
-- `c/` — versioned screenshots and evidence
-- `docs/` — optional detailed command and runtime explanation
+- `a/` through `f/` — frozen versioned screenshots and evidence; do not move or rename historical roots
+- `docs/production-excellence-progress.md` — current production-excellence gate tracking
+- `治理计划/` — mini-kv local governance and archive-retention plans

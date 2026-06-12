@@ -5,6 +5,6 @@
 namespace minikv {
 
 inline constexpr std::string_view version = "@PROJECT_VERSION@";
-inline constexpr std::string_view current_version_path_hint = "c/102/";
+inline constexpr std::string_view current_version_path_hint = "@MINIKV_CURRENT_ARCHIVE_VERSION@";
 
 } // namespace minikv
