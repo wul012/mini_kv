@@ -153,9 +153,8 @@ void log_wal_maintenance(const minikv::WriteAheadLog& wal, const minikv::WalMain
 void log_wal_auto_compact(const minikv::WriteAheadLog& wal, const minikv::WalAutoCompactReport& report) {
     if (!report.compacted) {
         std::cout << "event=wal_auto_compact_skipped path=" << quote_value(wal.path().string())
-                  << " reason=not_recommended"
-                  << " wal_bytes=" << report.before.bytes << " wal_records=" << report.before.records
-                  << " live_keys=" << report.before.live_keys << '\n';
+                  << " reason=not_recommended" << " wal_bytes=" << report.before.bytes
+                  << " wal_records=" << report.before.records << " live_keys=" << report.before.live_keys << '\n';
         return;
     }
 
