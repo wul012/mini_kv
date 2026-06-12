@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1616 production-excellence K3 zero-dependency logging**. mini-kv now has a small in-house `minikv::Logger` with `error/warn/info/debug` filtering, UTC timestamp and thread id fields, plus `--log-level` on `minikv_cli` and `minikv_server`. Runtime logs go to stderr; server startup/WAL/evidence stdout stays unchanged. K3 is ready for review after v1616 CI is green.
+Current focus: **v1617 production-excellence K4 command dispatch split, first slice**. K3 has passed planner review, so mini-kv has started the high-risk file-split milestone with the safest command-side cut: `CommandProcessor::execute_trimmed` now lives in `src/command_dispatch.cpp`, shared parse/error helpers live in `src/command_parse_helpers.*`, and the WAL command/compaction gate lives in `src/command_wal_gate.*`. Public command output, fixtures, WAL/snapshot/RESP behavior, router authority, write authority, and execution authority stay unchanged; K4 remains in progress until the remaining command-family and shard-readiness splits are complete.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

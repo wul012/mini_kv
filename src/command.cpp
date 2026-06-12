@@ -1,5 +1,7 @@
 #include "minikv/command.hpp"
 
+#include "command_parse_helpers.hpp"
+#include "command_wal_gate.hpp"
 #include "minikv/command_catalog.hpp"
 #include "minikv/command_contracts.hpp"
 #include "minikv/command_response_formatters.hpp"
@@ -68,11 +70,9 @@
 #include "minikv/shard_preview_signed_approval_artifact_draft_text_package_profile_section.hpp"
 #include "minikv/shard_readiness.hpp"
 #include "minikv/string_utils.hpp"
-#include "minikv/snapshot.hpp"
 #include "minikv/wal.hpp"
 
 #include <chrono>
-#include <condition_variable>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -86,7 +86,10 @@
 namespace minikv {
 namespace {
 
-using CommandDispatchVerb = command_catalog::CommandDispatchVerb;
+using command_internal::has_extra_token;
+using command_internal::usage;
+using command_internal::wal_command_gate;
+using command_internal::wal_error;
 
 std::string command_token(std::string_view text) {
     std::istringstream input{std::string{text}};
@@ -103,135 +106,6 @@ std::string metrics_command_name(std::string_view command) {
     return name;
 }
 
-bool has_extra_token(std::istringstream& input) {
-    std::string extra;
-    return static_cast<bool>(input >> extra);
-}
-
-CommandResult usage(std::string_view command) {
-    return {std::string{"ERR usage: "} + std::string{command}};
-}
-
-CommandResult wal_error() {
-    return {"ERR wal append failed"};
-}
-
-CommandResult wal_disabled_error() {
-    return {"ERR WAL not enabled"};
-}
-
-CommandResult wal_compact_error() {
-    return {"ERR wal compact failed"};
-}
-
-CommandResult snapshot_error(std::string_view action) {
-    return {std::string{"ERR snapshot "} + std::string{action} + " failed"};
-}
-
-// Keeps WAL append+mutation atomic while letting compaction run outside the write command scope.
-class WalCommandGate {
-public:
-    class Scope {
-    public:
-        Scope() = default;
-        Scope(WalCommandGate& gate, bool compaction) : gate_(&gate), compaction_(compaction) {}
-
-        Scope(const Scope&) = delete;
-        Scope& operator=(const Scope&) = delete;
-
-        Scope(Scope&& other) noexcept : gate_(other.gate_), compaction_(other.compaction_) {
-            other.gate_ = nullptr;
-        }
-
-        Scope& operator=(Scope&& other) noexcept {
-            if (this != &other) {
-                release();
-                gate_ = other.gate_;
-                compaction_ = other.compaction_;
-                other.gate_ = nullptr;
-            }
-            return *this;
-        }
-
-        ~Scope() {
-            release();
-        }
-
-    private:
-        void release() {
-            if (gate_ == nullptr) {
-                return;
-            }
-            gate_->leave(compaction_);
-            gate_ = nullptr;
-        }
-
-        WalCommandGate* gate_ = nullptr;
-        bool compaction_ = false;
-    };
-
-    Scope enter_command() {
-        std::unique_lock lock{mutex_};
-        condition_.wait(lock, [this] { return !command_active_ && !compaction_active_; });
-        command_active_ = true;
-        return Scope{*this, false};
-    }
-
-    Scope enter_compaction() {
-        std::unique_lock lock{mutex_};
-        condition_.wait(lock, [this] { return !command_active_ && !compaction_active_; });
-        compaction_active_ = true;
-        return Scope{*this, true};
-    }
-
-private:
-    void leave(bool compaction) {
-        {
-            std::lock_guard lock{mutex_};
-            if (compaction) {
-                compaction_active_ = false;
-            } else {
-                command_active_ = false;
-            }
-        }
-        condition_.notify_all();
-    }
-
-    std::mutex mutex_;
-    std::condition_variable condition_;
-    bool command_active_ = false;
-    bool compaction_active_ = false;
-};
-
-WalCommandGate& wal_command_gate() {
-    static WalCommandGate gate;
-    return gate;
-}
-
-std::optional<std::chrono::seconds> parse_positive_seconds(std::string_view text) {
-    std::istringstream input{std::string{text}};
-    long long seconds = 0;
-    char extra = '\0';
-
-    if (!(input >> seconds) || seconds <= 0 || (input >> extra)) {
-        return std::nullopt;
-    }
-
-    return std::chrono::seconds{seconds};
-}
-
-std::string format_expires_at(std::string_view key, Store::TimePoint expires_at) {
-    const auto epoch_millis =
-        std::chrono::duration_cast<std::chrono::milliseconds>(expires_at.time_since_epoch()).count();
-    return std::string{"EXPIREAT "} + std::string{key} + " " + std::to_string(epoch_millis);
-}
-
-std::string format_setex_at(std::string_view key, Store::TimePoint expires_at, std::string_view value) {
-    const auto epoch_millis =
-        std::chrono::duration_cast<std::chrono::milliseconds>(expires_at.time_since_epoch()).count();
-    return std::string{"SETEXAT "} + std::string{key} + " " + std::to_string(epoch_millis) + " " + std::string{value};
-}
-
 CommandConnectionStats connection_stats(const CommandProcessorOptions& options) {
     if (options.connection_stats) {
         return options.connection_stats();
@@ -241,9 +115,7 @@ CommandConnectionStats connection_stats(const CommandProcessorOptions& options) 
 
 } // namespace
 
-void CommandMetricsTracker::record(const CommandResult& result) {
-    record("UNKNOWN", result, 0);
-}
+void CommandMetricsTracker::record(const CommandResult& result) { record("UNKNOWN", result, 0); }
 
 void CommandMetricsTracker::record(std::string_view command, const CommandResult& result, std::uint64_t elapsed_ns) {
     const std::string bucket_name = metrics_command_name(command);
@@ -295,11 +167,9 @@ CommandProcessorMetrics CommandMetricsTracker::stats() const {
 }
 
 CommandProcessor::CommandProcessor(Store& store, WriteAheadLog* wal, CommandProcessorOptions options)
-    : store_(store),
-      wal_(wal),
-      options_(std::move(options)),
-      metrics_tracker_(options_.metrics_tracker ? options_.metrics_tracker : std::make_shared<CommandMetricsTracker>()) {
-}
+    : store_(store), wal_(wal), options_(std::move(options)),
+      metrics_tracker_(options_.metrics_tracker ? options_.metrics_tracker
+                                                : std::make_shared<CommandMetricsTracker>()) {}
 
 void CommandProcessor::auto_compact_wal_if_needed() {
     if (wal_ == nullptr || !options_.auto_compact_wal) {
@@ -347,8 +217,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {command_response_formatters::format_stats(
-            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+        return {command_response_formatters::format_stats(live_keys, wal_, wal_report, metrics_tracker_->stats(),
+                                                          connection_stats(options_))};
     }
 
     if (command == "STATSJSON") {
@@ -363,8 +233,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {command_response_formatters::format_stats_json(
-            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+        return {command_response_formatters::format_stats_json(live_keys, wal_, wal_report, metrics_tracker_->stats(),
+                                                               connection_stats(options_))};
     }
 
     if (command == "SMOKEJSON") {
@@ -379,8 +249,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {command_response_formatters::format_smoke_json(
-            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_), options_.runtime_info)};
+        return {command_response_formatters::format_smoke_json(live_keys, wal_, wal_report, metrics_tracker_->stats(),
+                                                               connection_stats(options_), options_.runtime_info)};
     }
 
     if (command == "STORAGEJSON") {
@@ -410,8 +280,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
         }
 
         const std::size_t live_keys = wal_report.has_value() ? wal_report->live_keys : store_.size();
-        return {command_response_formatters::format_health(
-            live_keys, wal_, wal_report, metrics_tracker_->stats(), connection_stats(options_))};
+        return {command_response_formatters::format_health(live_keys, wal_, wal_report, metrics_tracker_->stats(),
+                                                           connection_stats(options_))};
     }
 
     if (command == "INFO") {
@@ -577,16 +447,16 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTEVALUESUPPLYAPPROVALTEMPLATEJSON");
         }
 
-        return {shard_route_preview_operator_value_supply_approval_template::
-                    format_value_supply_approval_template_json()};
+        return {
+            shard_route_preview_operator_value_supply_approval_template::format_value_supply_approval_template_json()};
     }
     if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON") {
         if (has_extra_token(input)) {
             return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALTEMPLATEJSON");
         }
 
-        return {shard_route_preview_operator_value_supply_signed_approval_template::
-                    format_signed_approval_template_json()};
+        return {
+            shard_route_preview_operator_value_supply_signed_approval_template::format_signed_approval_template_json()};
     }
     if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREPREFLIGHTJSON") {
         if (has_extra_token(input)) {
@@ -626,8 +496,9 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON");
         }
 
-        return {shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_preflight::
-                    format_signed_approval_capture_artifact_draft_text_package_review_preflight_json()};
+        return {
+            shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_preflight::
+                format_signed_approval_capture_artifact_draft_text_package_review_preflight_json()};
     }
 
     if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON") {
@@ -635,31 +506,39 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON");
         }
 
-        return {shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit::
-                    format_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_json()};
+        return {
+            shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit::
+                format_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_json()};
     }
 
     if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON") {
         if (has_extra_token(input)) {
-            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON");
+            return usage(
+                "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON");
         }
 
-        return {shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit::
-                    format_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_json()};
+        return {
+            shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit::
+                format_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_json()};
     }
 
-    if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON") {
+    if (command ==
+        "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON") {
         if (has_extra_token(input)) {
-            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON");
+            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTA"
+                         "KEAUDITJSON");
         }
 
-        return {shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit::
-                    format_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_json()};
+        return {
+            shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit::
+                format_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_json()};
     }
 
-    if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON") {
+    if (command == "SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECL"
+                   "OSEOUTJSON") {
         if (has_extra_token(input)) {
-            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON");
+            return usage("SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPAC"
+                         "KAGECLOSEOUTJSON");
         }
 
         return {shard_preview_candidate_request_package::format_candidate_document_request_package_closeout_json()};
@@ -710,7 +589,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKJSON");
         }
 
-        return {shard_preview_candidate_material_submission_precheck::format_candidate_material_submission_precheck_json()};
+        return {
+            shard_preview_candidate_material_submission_precheck::format_candidate_material_submission_precheck_json()};
     }
 
     if (command == "SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON") {
@@ -718,9 +598,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON");
         }
 
-        return {
-            shard_preview_candidate_material_submission_precheck_integrity::
-                format_candidate_material_submission_precheck_integrity_json()};
+        return {shard_preview_candidate_material_submission_precheck_integrity::
+                    format_candidate_material_submission_precheck_integrity_json()};
     }
 
     if (command == "SHARDROUTECANDIDATEPROFILESECTIONJSON") {
@@ -772,8 +651,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTEVALUESUPPLYPROFILESECTIONJSON");
         }
 
-        return {shard_preview_operator_value_supply_profile_section::
-                    format_operator_value_supply_profile_section_json()};
+        return {
+            shard_preview_operator_value_supply_profile_section::format_operator_value_supply_profile_section_json()};
     }
 
     if (command == "SHARDROUTEVALUESUPPLYPROFILESECTIONINTEGRITYJSON") {
@@ -826,9 +705,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTECATALOGENTRYGROUPSPLITNONPARTICIPATIONJSON");
         }
 
-        return {
-            shard_preview_catalog_entry_group_split_non_participation::
-                format_catalog_entry_group_split_non_participation_json()};
+        return {shard_preview_catalog_entry_group_split_non_participation::
+                    format_catalog_entry_group_split_non_participation_json()};
     }
 
     if (command == "SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON") {
@@ -836,9 +714,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTEDISABLEDPRECHECKUPSTREAMECHONONPARTICIPATIONJSON");
         }
 
-        return {
-            shard_preview_disabled_precheck_upstream_echo_non_participation::
-                format_disabled_precheck_upstream_echo_non_participation_json()};
+        return {shard_preview_disabled_precheck_upstream_echo_non_participation::
+                    format_disabled_precheck_upstream_echo_non_participation_json()};
     }
 
     if (command == "SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON") {
@@ -846,9 +723,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTESANDBOXENDPOINTCREDENTIALRESOLVERUPSTREAMECHONONPARTICIPATIONJSON");
         }
 
-        return {
-            shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation::
-                format_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_json()};
+        return {shard_preview_sandbox_endpoint_credential_resolver_upstream_echo_non_participation::
+                    format_sandbox_endpoint_credential_resolver_upstream_echo_non_participation_json()};
     }
 
     if (command == "SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON") {
@@ -856,9 +732,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTEIMPLEMENTATIONPLANUPSTREAMECHOCLOSEOUTNONPARTICIPATIONJSON");
         }
 
-        return {
-            shard_preview_implementation_plan_upstream_echo_closeout_non_participation::
-                format_implementation_plan_upstream_echo_closeout_non_participation_json()};
+        return {shard_preview_implementation_plan_upstream_echo_closeout_non_participation::
+                    format_implementation_plan_upstream_echo_closeout_non_participation_json()};
     }
 
     if (command == "SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON") {
@@ -866,9 +741,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTERELEASEWINDOWREADINESSPACKETSPLITNONPARTICIPATIONJSON");
         }
 
-        return {
-            shard_preview_release_window_readiness_packet_split_non_participation::
-                format_release_window_readiness_packet_split_non_participation_json()};
+        return {shard_preview_release_window_readiness_packet_split_non_participation::
+                    format_release_window_readiness_packet_split_non_participation_json()};
     }
 
     if (command == "SHARDROUTEDISABLEDFAKEHARNESSCONTRACTUPSTREAMECHOVERIFICATIONSPLITNONPARTICIPATIONJSON") {
@@ -948,8 +822,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON");
         }
 
-        return {shard_preview_f_folder_explanation_quality_closeout::
-                    format_f_folder_explanation_quality_closeout_json()};
+        return {
+            shard_preview_f_folder_explanation_quality_closeout::format_f_folder_explanation_quality_closeout_json()};
     }
 
     if (command == "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON") {
@@ -957,9 +831,7 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON");
         }
 
-        return {
-            shard_preview_type_barrel_split_non_participation::
-                format_type_barrel_split_non_participation_json()};
+        return {shard_preview_type_barrel_split_non_participation::format_type_barrel_split_non_participation_json()};
     }
 
     if (command == "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON") {
@@ -967,9 +839,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON");
         }
 
-        return {
-            shard_preview_type_barrel_split_follow_up_non_participation::
-                format_type_barrel_split_follow_up_non_participation_json()};
+        return {shard_preview_type_barrel_split_follow_up_non_participation::
+                    format_type_barrel_split_follow_up_non_participation_json()};
     }
 
     if (command == "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON") {
@@ -977,9 +848,8 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
             return usage("SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON");
         }
 
-        return {
-            shard_preview_type_barrel_split_follow_up_fixture_audit::
-                format_type_barrel_split_follow_up_fixture_audit_json()};
+        return {shard_preview_type_barrel_split_follow_up_fixture_audit::
+                    format_type_barrel_split_follow_up_fixture_audit_json()};
     }
 
     if (command == "COMMANDS") {
@@ -1019,301 +889,6 @@ CommandResult CommandProcessor::execute(std::string_view line) {
     return result;
 }
 
-CommandProcessorMetrics CommandProcessor::metrics() const {
-    return metrics_tracker_->stats();
-}
-
-CommandResult CommandProcessor::execute_trimmed(std::string_view trimmed) {
-    std::istringstream input{std::string{trimmed}};
-
-    std::string command;
-    input >> command;
-    command = to_upper(command);
-
-    switch (command_catalog::lookup_dispatch_verb(command)) {
-    case CommandDispatchVerb::Ping: {
-        std::string message;
-        std::getline(input >> std::ws, message);
-
-        return {message.empty() ? "PONG" : message};
-    }
-
-    case CommandDispatchVerb::Set: {
-        std::string key;
-        input >> key;
-
-        std::string value;
-        std::getline(input >> std::ws, value);
-
-        if (key.empty() || value.empty()) {
-            return usage("SET key value");
-        }
-
-        return execute_with_wal(
-            [key, value] { return std::optional<std::string>{std::string{"SET "} + key + " " + value}; },
-            [this, key, value] {
-                const bool inserted = store_.set(key, value);
-                return CommandResult{inserted ? "OK inserted" : "OK updated"};
-            });
-    }
-
-    case CommandDispatchVerb::SetNxEx: {
-        std::string key;
-        std::string seconds_text;
-        input >> key >> seconds_text;
-
-        std::string value;
-        std::getline(input >> std::ws, value);
-
-        const auto seconds = parse_positive_seconds(seconds_text);
-        if (key.empty() || !seconds.has_value() || value.empty()) {
-            return usage("SETNXEX key seconds value");
-        }
-
-        const auto expires_at = Store::Clock::now() + *seconds;
-        return execute_with_wal(
-            [this, key, expires_at, value]() -> std::optional<std::string> {
-                if (store_.contains(key)) {
-                    return std::nullopt;
-                }
-                return format_setex_at(key, expires_at, value);
-            },
-            [this, key, value, expires_at] {
-                const bool claimed = store_.set_if_absent(key, value, expires_at);
-                return CommandResult{claimed ? "1" : "0"};
-            });
-    }
-
-    case CommandDispatchVerb::Get: {
-        std::string key;
-        input >> key;
-
-        if (key.empty() || has_extra_token(input)) {
-            return usage("GET key");
-        }
-
-        const auto value = store_.get(key);
-        if (!value.has_value()) {
-            return {"(nil)"};
-        }
-
-        return {*value};
-    }
-
-    case CommandDispatchVerb::Del: {
-        std::string key;
-        input >> key;
-
-        if (key.empty() || has_extra_token(input)) {
-            return usage("DEL key");
-        }
-
-        return execute_with_wal(
-            [this, key]() -> std::optional<std::string> {
-                if (!store_.contains(key)) {
-                    return std::nullopt;
-                }
-                return std::string{"DEL "} + key;
-            },
-            [this, key] {
-                const bool erased = store_.erase(key);
-                return CommandResult{erased ? "1" : "0"};
-            });
-    }
-
-    case CommandDispatchVerb::Expire: {
-        std::string key;
-        std::string seconds_text;
-        input >> key >> seconds_text;
-
-        const auto seconds = parse_positive_seconds(seconds_text);
-        if (key.empty() || !seconds.has_value() || has_extra_token(input)) {
-            return usage("EXPIRE key seconds");
-        }
-
-        const auto expires_at = Store::Clock::now() + *seconds;
-        return execute_with_wal(
-            [this, key, expires_at]() -> std::optional<std::string> {
-                if (!store_.contains(key)) {
-                    return std::nullopt;
-                }
-                return format_expires_at(key, expires_at);
-            },
-            [this, key, expires_at] {
-                const bool updated = store_.expire_at(key, expires_at);
-                return CommandResult{updated ? "1" : "0"};
-            });
-    }
-
-    case CommandDispatchVerb::Ttl: {
-        std::string key;
-        input >> key;
-
-        if (key.empty() || has_extra_token(input)) {
-            return usage("TTL key");
-        }
-
-        const auto ttl = store_.ttl(key);
-        if (!ttl.has_value()) {
-            return {"-2"};
-        }
-
-        return {std::to_string(ttl->count())};
-    }
-
-    case CommandDispatchVerb::Size: {
-        if (has_extra_token(input)) {
-            return usage("SIZE");
-        }
-
-        return {std::to_string(store_.size())};
-    }
-
-    case CommandDispatchVerb::Keys: {
-        std::string prefix;
-        if (input >> prefix) {
-            if (has_extra_token(input)) {
-                return usage("KEYS [prefix]");
-            }
-
-            return {command_response_formatters::format_prefixed_keys(prefix, store_.keys_with_prefix(prefix))};
-        }
-
-        return {command_response_formatters::format_keys(store_.keys())};
-    }
-
-    case CommandDispatchVerb::KeysJson: {
-        std::string prefix;
-        if (input >> prefix) {
-            if (has_extra_token(input)) {
-                return usage("KEYSJSON [prefix]");
-            }
-
-            return {command_response_formatters::format_keys_json(prefix, store_.keys_with_prefix(prefix))};
-        }
-
-        return {command_response_formatters::format_keys_json(std::nullopt, store_.keys())};
-    }
-
-    case CommandDispatchVerb::Save: {
-        std::string path;
-        std::getline(input >> std::ws, path);
-
-        if (path.empty()) {
-            return usage("SAVE path");
-        }
-
-        std::size_t saved = 0;
-        if (!SnapshotFile::save(store_, path, &saved)) {
-            return snapshot_error("save");
-        }
-
-        return {std::string{"OK saved "} + std::to_string(saved)};
-    }
-
-    case CommandDispatchVerb::Load: {
-        std::string path;
-        std::getline(input >> std::ws, path);
-
-        if (path.empty()) {
-            return usage("LOAD path");
-        }
-
-        std::size_t loaded = 0;
-        if (!SnapshotFile::load(store_, path, &loaded)) {
-            return snapshot_error("load");
-        }
-
-        return {std::string{"OK loaded "} + std::to_string(loaded)};
-    }
-
-    case CommandDispatchVerb::Compact: {
-        if (has_extra_token(input)) {
-            return usage("COMPACT");
-        }
-
-        if (wal_ == nullptr) {
-            return wal_disabled_error();
-        }
-
-        std::size_t compacted = 0;
-        {
-            auto scope = wal_command_gate().enter_compaction();
-            if (!wal_->compact(store_, &compacted)) {
-                return wal_compact_error();
-            }
-        }
-
-        return {std::string{"OK compacted "} + std::to_string(compacted)};
-    }
-
-    case CommandDispatchVerb::WalInfo: {
-        if (has_extra_token(input)) {
-            return usage("WALINFO");
-        }
-
-        if (wal_ == nullptr) {
-            return wal_disabled_error();
-        }
-
-        auto scope = wal_command_gate().enter_command();
-        return {command_response_formatters::format_walinfo(wal_->maintenance_report(store_))};
-    }
-
-    case CommandDispatchVerb::ResetStats: {
-        if (has_extra_token(input)) {
-            return usage("RESETSTATS");
-        }
-
-        metrics_tracker_->reset();
-        return {"OK stats reset"};
-    }
-
-    case CommandDispatchVerb::RuntimeEvidence:
-        return execute_runtime_evidence_command(command, input);
-
-    case CommandDispatchVerb::ExplainJson: {
-        std::string target_command;
-        std::getline(input >> std::ws, target_command);
-        if (target_command.empty()) {
-            return usage("EXPLAINJSON command");
-        }
-
-        return {command_contracts::format_explain_json(target_command)};
-    }
-
-    case CommandDispatchVerb::CheckJson: {
-        std::string target_command;
-        std::getline(input >> std::ws, target_command);
-        if (target_command.empty()) {
-            return usage("CHECKJSON command");
-        }
-
-        return {command_contracts::format_check_json(target_command, wal_ != nullptr)};
-    }
-
-    case CommandDispatchVerb::Help:
-        if (has_extra_token(input)) {
-            return usage("HELP");
-        }
-
-        return {help_text()};
-
-    case CommandDispatchVerb::Quit:
-        if (has_extra_token(input)) {
-            return usage("QUIT");
-        }
-
-        return {"BYE", true};
-
-    case CommandDispatchVerb::Unknown:
-        return {"ERR unknown command"};
-    }
-    return {"ERR unknown command"};
-}
-
-std::string CommandProcessor::help_text() {
-    return command_catalog::help_text();
-}
+CommandProcessorMetrics CommandProcessor::metrics() const { return metrics_tracker_->stats(); }
 
 } // namespace minikv

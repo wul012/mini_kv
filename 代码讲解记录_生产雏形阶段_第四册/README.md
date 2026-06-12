@@ -4,6 +4,7 @@
 
 ## 当前状态
 
+- v1617: [987-version-1617-production-excellence-k4-command-dispatch-split.md](987-version-1617-production-excellence-k4-command-dispatch-split.md) - 启动 production-excellence K4 第一刀：把 `execute_trimmed` 拆到 `command_dispatch.cpp`，把 parse/error helper 和 WAL gate 拆成内部模块，并把 coverage filter 跟进到新 command 核心文件，保持命令输出、fixture、WAL、snapshot、TCP/RESP 和执行边界不变。
 - v1616: [986-version-1616-production-excellence-k3-zero-dependency-logger.md](986-version-1616-production-excellence-k3-zero-dependency-logger.md) - 完成 production-excellence K3 零依赖分级日志：新增 `minikv::Logger`，给 CLI/server 接入 `--log-level`，把 TCP 运行日志导向 stderr，同时保持 stdout 证据契约不变。
 - v1615: [985-version-1615-post-k2-actions-runtime-readiness.md](985-version-1615-post-k2-actions-runtime-readiness.md) - 收掉 K2 review 后的 GitHub Actions Node 20 runtime 时间敏感提醒，升级 checkout/upload-artifact action tag，并用 CTest 防止旧 action tag 回归。
 - v1614: [984-version-1614-production-excellence-k2-coverage-floor-closure.md](984-version-1614-production-excellence-k2-coverage-floor-closure.md) - 冻结 v1613 远端 coverage artifact 的 90% core baseline，并把 Ubuntu coverage CI 升级为 `--fail-under-line 88` 硬门槛，完成 K2 后等待 Claude review。
