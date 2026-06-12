@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1614 production-excellence K2 coverage floor closure**. The Ubuntu coverage artifact baseline is 2,292 core lines, 2,082 executed lines, and 90% total line coverage across the selected store/command/WAL/snapshot/RESP modules. The CI coverage job now enforces `gcovr --fail-under-line 88`, which is the measured baseline minus two points, and the local CI contract test protects that floor from being silently removed. After v1614 is pushed and CI is green, stop for the Claude review checkpoint before starting K3 logging.
+Current focus: **v1615 post-K2 review GitHub Actions runtime advisory closure**. Claude reviewed K2 as PASS on June 12, 2026, and mini-kv is cleared for K3 logging after this time-sensitive CI maintenance version. v1615 updates `actions/checkout` to `v6.0.3` and `actions/upload-artifact` to `v7.0.1` so the workflow is ready for GitHub's June 16, 2026 Node 24 action runtime enforcement before K3 starts.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

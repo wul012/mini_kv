@@ -59,7 +59,10 @@ int main() {
     assert_not_contains(dependabot, "package-ecosystem: \"cargo\"");
     assert_not_contains(dependabot, "package-ecosystem: \"docker\"");
 
-    assert_contains(ci_workflow, "uses: actions/checkout@v4");
+    assert_contains(ci_workflow, "uses: actions/checkout@v6.0.3");
+    assert_contains(ci_workflow, "uses: actions/upload-artifact@v7.0.1");
+    assert_not_contains(ci_workflow, "uses: actions/checkout@v4");
+    assert_not_contains(ci_workflow, "uses: actions/upload-artifact@v4");
     assert_contains(ci_workflow, "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug");
     assert_contains(ci_workflow, "timeout-minutes: 30");
     assert_contains(ci_workflow, "ctest --test-dir build -C Debug --output-on-failure --timeout 120 --progress");

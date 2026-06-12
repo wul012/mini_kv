@@ -4,6 +4,7 @@
 
 ## 当前状态
 
+- v1615: [985-version-1615-post-k2-actions-runtime-readiness.md](985-version-1615-post-k2-actions-runtime-readiness.md) - 收掉 K2 review 后的 GitHub Actions Node 20 runtime 时间敏感提醒，升级 checkout/upload-artifact action tag，并用 CTest 防止旧 action tag 回归。
 - v1614: [984-version-1614-production-excellence-k2-coverage-floor-closure.md](984-version-1614-production-excellence-k2-coverage-floor-closure.md) - 冻结 v1613 远端 coverage artifact 的 90% core baseline，并把 Ubuntu coverage CI 升级为 `--fail-under-line 88` 硬门槛，完成 K2 后等待 Claude review。
 - v1613: [983-version-1613-production-excellence-k2-coverage-report-hardening.md](983-version-1613-production-excellence-k2-coverage-report-hardening.md) - 修复 v1612 远端 coverage report 在 GCC/gcov negative branch-hit 输出上的 `gcovr` parse failure，保留 required coverage job 和 full CTest，只把该已知工具链问题降级为 warning。
 - v1612: [982-version-1612-production-excellence-k2-coverage-baseline.md](982-version-1612-production-excellence-k2-coverage-baseline.md) - 启动 production-excellence K2 coverage baseline，新增 `MINIKV_COVERAGE`、Ubuntu coverage CI 与 core `gcovr` artifact，明确 Windows MinGW coverage path-limit fast-fail，并等待远端 baseline 后再固化 floor。
