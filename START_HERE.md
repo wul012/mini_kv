@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1619 production-excellence K4 ready for planner review**. K3 has passed planner review, and K4 now has both required split slices landed: command execution is split into dispatch plus family executors, and `src/shard_readiness.cpp` has been reduced to the public fixture-path shim while SHARDJSON formatting, digest construction, and boundary/catalog helpers live in focused shard-readiness translation units. Public command output, fixtures, WAL/snapshot/RESP behavior, router authority, write authority, and execution authority stay unchanged. Do not start K5 until the K4 review checkpoint is complete.
+Current focus: **v1620 production-excellence K5 archive retention**. K4 has passed planner review, so K5 now freezes the archive-retention operating model without moving historical evidence: `docs/archive-retention-index.md` records `a/` through `f/`, `scripts/archive_inventory.py` measures root/latest-version size with warning-only budgets, and CI runs that inventory as an operator signal. The post-K4 coverage advisory is also being re-tested by removing the old `gcovr --gcov-ignore-parse-errors negative_hits.warn_once_per_file` workaround from the Ubuntu coverage lane.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

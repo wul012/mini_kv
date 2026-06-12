@@ -66,6 +66,8 @@ int main() {
     assert_contains(ci_workflow, "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug");
     assert_contains(ci_workflow, "timeout-minutes: 30");
     assert_contains(ci_workflow, "ctest --test-dir build -C Debug --output-on-failure --timeout 120 --progress");
+    assert_contains(ci_workflow, "name: archive inventory");
+    assert_contains(ci_workflow, "python3 scripts/archive_inventory.py --budget-mib 8 --github-warning");
     assert_contains(ci_workflow, "name: ubuntu sanitizer");
     assert_not_contains(ci_workflow, "continue-on-error: true");
     assert_contains(ci_workflow, "cmake -S . -B build-sanitize -DCMAKE_BUILD_TYPE=Debug -DMINIKV_SANITIZE=ON");
@@ -84,7 +86,8 @@ int main() {
         "(store|command|command_catalog|command_contracts|command_dispatch|command_expiry_ops|command_"
         "introspection_ops|command_parse_helpers|command_persistence_ops|command_response_formatters|command_"
         "smoke_formatters|command_string_ops|command_wal_gate|wal|snapshot|resp)\\\\.cpp");
-    assert_contains(ci_workflow, "--gcov-ignore-parse-errors negative_hits.warn_once_per_file");
+    assert_not_contains(ci_workflow, "--gcov-ignore-parse-errors");
+    assert_not_contains(ci_workflow, "negative_hits.warn_once_per_file");
     assert_contains(ci_workflow, "--fail-under-line 88");
     assert_contains(ci_workflow, "name: mini-kv-core-coverage");
 

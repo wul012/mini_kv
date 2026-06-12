@@ -73,6 +73,7 @@ Use these rules for mini-kv versions that include implementation, tests, fixture
 - Preferred closure order: read the active Node plan, implement, run targeted tests, run full CTest, run real CLI/TCP smoke when relevant, update README/walkthrough/archive docs, rerun final verification for the archived screenshots, clean temporary files/processes, confirm a clean working tree, then commit/tag/push.
 - Commit, supplemental tag, push, and remote verification are part of completing a mini-kv version unless the user explicitly asks not to commit.
 - Run the cleanup gate before the final handoff: delete `cmake-build-v<version>`, scratch logs, render intermediates, and `d/<version>/_logs`; keep final `d/<version>/图片/`, `d/<version>/解释/说明.md`, fixtures, walkthroughs, docs, and source changes.
+- Forward archive policy after v1620: future new-version screenshots should stay selective and compressed, raw command output should be truncated to the asserted portions in screenshot render pages, and final archives must not include build binaries or raw temporary logs. Historical archive roots remain path-stable evidence and must not be retroactively compressed, moved, renamed, or deleted.
 
 ## C++ Ownership Rule
 
@@ -129,6 +130,8 @@ Keep historical `a/`, `b/`, `c/`, and any later archive roots exactly where they
 e/<version>/图片/
 e/<version>/解释/说明.md
 ```
+
+K5 archive-retention note: current active archives use `f/<version>/图片/` and `f/<version>/解释/说明.md`. Existing version directories in `f/` are path-stable once created. Do not start `g/` or any later root until `docs/archive-retention-index.md` and this file are updated first.
 
 每次执行关键命令后，需要把重要执行结果归档。
 
