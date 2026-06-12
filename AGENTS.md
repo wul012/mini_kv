@@ -58,6 +58,11 @@ Refactoring rhythm:
 - Prefer structured fixture parsing and reusable test helpers over ever-growing string-fragment assertions when the risk justifies it.
 - Move shared fixture loaders, report helpers, validators, renderers, and message collectors into common utilities when duplication is clear.
 
+Internal governance plans:
+- mini-kv-specific consolidation and maintenance roadmaps live under `治理计划/`.
+- Read `治理计划/README.md` before starting broad refactors, archive-retention work, command dispatch consolidation, or shard readiness section splits.
+- Historical archive roots `a/` through `f/` and `fixtures/release/*.json` are path-stable evidence. Do not move, rename, compress-replace, or delete them as part of cleanup unless the user explicitly authorizes a separate archival migration plan.
+
 ## Version Closure Discipline
 
 Use these rules for mini-kv versions that include implementation, tests, fixtures, docs, screenshots, or release evidence:
