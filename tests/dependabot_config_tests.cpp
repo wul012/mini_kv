@@ -79,6 +79,7 @@ int main() {
                                  "(store|command|command_catalog|command_contracts|command_response_formatters|command_"
                                  "smoke_formatters|wal|snapshot|resp)\\\\.cpp");
     assert_contains(ci_workflow, "--gcov-ignore-parse-errors negative_hits.warn_once_per_file");
+    assert_contains(ci_workflow, "--fail-under-line 88");
     assert_contains(ci_workflow, "name: mini-kv-core-coverage");
 
     return 0;

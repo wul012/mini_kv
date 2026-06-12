@@ -4,6 +4,7 @@
 
 ## 当前状态
 
+- v1614: [984-version-1614-production-excellence-k2-coverage-floor-closure.md](984-version-1614-production-excellence-k2-coverage-floor-closure.md) - 冻结 v1613 远端 coverage artifact 的 90% core baseline，并把 Ubuntu coverage CI 升级为 `--fail-under-line 88` 硬门槛，完成 K2 后等待 Claude review。
 - v1613: [983-version-1613-production-excellence-k2-coverage-report-hardening.md](983-version-1613-production-excellence-k2-coverage-report-hardening.md) - 修复 v1612 远端 coverage report 在 GCC/gcov negative branch-hit 输出上的 `gcovr` parse failure，保留 required coverage job 和 full CTest，只把该已知工具链问题降级为 warning。
 - v1612: [982-version-1612-production-excellence-k2-coverage-baseline.md](982-version-1612-production-excellence-k2-coverage-baseline.md) - 启动 production-excellence K2 coverage baseline，新增 `MINIKV_COVERAGE`、Ubuntu coverage CI 与 core `gcovr` artifact，明确 Windows MinGW coverage path-limit fast-fail，并等待远端 baseline 后再固化 floor。
 - v1611: [981-version-1611-production-excellence-k1-required-sanitizer-gate.md](981-version-1611-production-excellence-k1-required-sanitizer-gate.md) - 将 v1610 已跑绿的 Ubuntu ASan/UBSan 诊断轨道转成 required gate，测试禁止 `continue-on-error` 静默回归，并保持运行时命令、归档路径、写入、WAL 与执行边界不变。

@@ -10,6 +10,7 @@ This file is the mini-kv local progress ledger. The Node playbook is read-only f
 - K1 starts with a diagnostic sanitizer lane instead of making sanitizer required in the same commit. The local CLion Windows MinGW toolchain does not ship `-lasan`/`-lubsan`; `MINIKV_SANITIZE=ON` therefore fails fast on that local toolchain with an explicit message, while the actual ASan/UBSan signal is collected by the Ubuntu CI job. Once that job is green, a follow-up version should remove `continue-on-error: true`.
 - K2 also uses Ubuntu as the source of truth for coverage. The local CLion Windows MinGW toolchain can compile default Debug builds, but gcov instrumentation writes `.gcno` sidecar paths long enough to exceed the bundled Windows MinGW object-path limit in this repository. `MINIKV_COVERAGE=ON` therefore fails fast on Windows MinGW with an explicit message, while the Ubuntu coverage CI job builds, runs CTest, and publishes the core coverage report artifact.
 - K2 v1612 proved the Ubuntu coverage build and full CTest path, but `gcovr 7.0` failed while parsing GCC/gcov negative branch hits in `src/command.cpp` (`branch 7 taken -2`). v1613 follows the tool's own recommendation and adds `--gcov-ignore-parse-errors negative_hits.warn_once_per_file`; this keeps the job strict for build/test/report generation while treating the known gcov negative-hit parser issue as a warning.
+- K2 v1614 freezes the first green Ubuntu coverage artifact from GitHub Actions run `27408621850`: selected core modules report 2,292 total lines, 2,082 executed lines, and 90% line coverage. The enforced floor is `--fail-under-line 88`, exactly the measured baseline minus two points, and the next step is the Claude review checkpoint before K3.
 
 ## Progress
 
@@ -17,8 +18,8 @@ This file is the mini-kv local progress ledger. The Node playbook is read-only f
 | --------- | ---------- | ----- | -------- |
 | K0 | v1609 | completed | START_HERE refresh; CMake-configured archive hint with unchanged `c/102/` output; `metrics_file.hpp` pragma once; `.clang-format`; changed-file clang-format CI check; local configure/build/focused CTest/full CTest/CLI smoke |
 | K1 | v1610-v1611 | completed | v1610 added `MINIKV_SANITIZE` and proved the Ubuntu sanitizer diagnostic job green; v1611 removes `continue-on-error: true`, tests that the sanitizer job cannot silently weaken, keeps Windows MinGW local sanitizer limitation as a fast configure failure, and preserves local default configure/build/334 CTest |
-| K2 | v1612-v1613 | measuring baseline | v1612 added `MINIKV_COVERAGE`, required Ubuntu coverage CI job, `gcovr` core-module report artifact, local Windows MinGW coverage fast-fail, and local default configure/build/334 CTest; v1613 handles the observed gcov negative-hit parse warning so the report can be generated |
+| K2 | v1612-v1614 | completed; awaiting Claude review | v1612 added `MINIKV_COVERAGE`, required Ubuntu coverage CI job, `gcovr` core-module report artifact, local Windows MinGW coverage fast-fail, and local default configure/build/334 CTest; v1613 handles the observed gcov negative-hit parse warning; v1614 freezes the green Ubuntu artifact baseline at 90% and enforces `--fail-under-line 88` |
 | K3 | — | not started | |
-| K4 | — | blocked on K1+K2 | |
+| K4 | — | blocked on K3 and planner sequencing | |
 | K5 | — | not started | |
 | K6 | — | not started | |
