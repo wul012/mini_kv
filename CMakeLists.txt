@@ -12,6 +12,11 @@ set(MINIKV_CURRENT_ARCHIVE_VERSION
 )
 
 option(MINIKV_SANITIZE "Enable AddressSanitizer and UndefinedBehaviorSanitizer for GCC/Clang Debug checks" OFF)
+option(MINIKV_COVERAGE "Enable gcov-compatible coverage instrumentation for GCC/Clang Debug checks" OFF)
+
+if(MINIKV_SANITIZE AND MINIKV_COVERAGE)
+    message(FATAL_ERROR "MINIKV_SANITIZE and MINIKV_COVERAGE are separate CI lanes; enable only one at a time")
+endif()
 
 if(MINIKV_SANITIZE)
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
@@ -22,6 +27,18 @@ if(MINIKV_SANITIZE)
         add_link_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
     else()
         message(FATAL_ERROR "MINIKV_SANITIZE requires a GCC or Clang compatible compiler")
+    endif()
+endif()
+
+if(MINIKV_COVERAGE)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+        if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            message(FATAL_ERROR "MINIKV_COVERAGE writes gcov sidecar files whose paths exceed the bundled Windows MinGW limit in this repository. Use the Ubuntu coverage CI job.")
+        endif()
+        add_compile_options(--coverage -O0 -g)
+        add_link_options(--coverage)
+    else()
+        message(FATAL_ERROR "MINIKV_COVERAGE requires a GCC or Clang compatible compiler")
     endif()
 endif()
 

@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1611 production-excellence K1 required sanitizer gate**. The active work is internal quality: `MINIKV_SANITIZE` is available for GCC/Clang ASan+UBSan builds, Ubuntu CI runs the Debug sanitizer lane as a required job, and Windows MinGW fails fast with a clear runtime-library message instead of failing deep in the linker. The next milestone is K2 coverage; the next Claude review checkpoint is after that coverage milestone is committed and CI-verified.
+Current focus: **v1612 production-excellence K2 coverage baseline**. The active work is internal quality: `MINIKV_COVERAGE` is available for GCC/Clang gcov-compatible builds, Ubuntu CI runs the Debug coverage lane, publishes a `gcovr` core-module report artifact, and Windows MinGW fails fast with a clear gcov sidecar path-limit message instead of failing deep in the build. The next step is to read the Ubuntu coverage baseline, set the K2 floor at baseline minus two points, and then stop for the Claude review checkpoint once that required coverage gate is CI-verified.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

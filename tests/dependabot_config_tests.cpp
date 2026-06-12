@@ -69,6 +69,16 @@ int main() {
     assert_contains(ci_workflow, "cmake --build build-sanitize --config Debug --parallel 4 --verbose");
     assert_contains(ci_workflow,
                     "ctest --test-dir build-sanitize -C Debug --output-on-failure --timeout 120 --progress");
+    assert_contains(ci_workflow, "name: ubuntu coverage");
+    assert_contains(ci_workflow, "sudo apt-get install -y gcovr");
+    assert_contains(ci_workflow, "cmake -S . -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DMINIKV_COVERAGE=ON");
+    assert_contains(ci_workflow, "cmake --build build-coverage --config Debug --parallel 4 --verbose");
+    assert_contains(ci_workflow,
+                    "ctest --test-dir build-coverage -C Debug --output-on-failure --timeout 120 --progress");
+    assert_contains(ci_workflow, "src/"
+                                 "(store|command|command_catalog|command_contracts|command_response_formatters|command_"
+                                 "smoke_formatters|wal|snapshot|resp)\\\\.cpp");
+    assert_contains(ci_workflow, "name: mini-kv-core-coverage");
 
     return 0;
 }

@@ -84,3 +84,40 @@ jobs:
       - name: Test sanitizer build
         timeout-minutes: 30
         run: ctest --test-dir build-sanitize -C Debug --output-on-failure --timeout 120 --progress
+
+  coverage:
+    name: ubuntu coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install gcovr
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcovr
+          gcovr --version
+
+      - name: Configure coverage build
+        run: cmake -S . -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DMINIKV_COVERAGE=ON
+
+      - name: Build coverage target set
+        timeout-minutes: 45
+        run: cmake --build build-coverage --config Debug --parallel 4 --verbose
+
+      - name: Test coverage build
+        timeout-minutes: 30
+        run: ctest --test-dir build-coverage -C Debug --output-on-failure --timeout 120 --progress
+
+      - name: Generate core coverage report
+        run: |
+          mkdir -p coverage
+          gcovr --root . --object-directory build-coverage --filter "src/(store|command|command_catalog|command_contracts|command_response_formatters|command_smoke_formatters|wal|snapshot|resp)\\.cpp" --txt coverage/core-coverage.txt --html-details coverage/core-coverage.html
+          cat coverage/core-coverage.txt
+
+      - name: Upload core coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mini-kv-core-coverage
+          path: coverage/
