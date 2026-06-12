@@ -63,6 +63,12 @@ int main() {
     assert_contains(ci_workflow, "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug");
     assert_contains(ci_workflow, "timeout-minutes: 30");
     assert_contains(ci_workflow, "ctest --test-dir build -C Debug --output-on-failure --timeout 120 --progress");
+    assert_contains(ci_workflow, "name: ubuntu sanitizer");
+    assert_contains(ci_workflow, "continue-on-error: true");
+    assert_contains(ci_workflow, "cmake -S . -B build-sanitize -DCMAKE_BUILD_TYPE=Debug -DMINIKV_SANITIZE=ON");
+    assert_contains(ci_workflow, "cmake --build build-sanitize --config Debug --parallel 4 --verbose");
+    assert_contains(ci_workflow,
+                    "ctest --test-dir build-sanitize -C Debug --output-on-failure --timeout 120 --progress");
 
     return 0;
 }

@@ -65,3 +65,23 @@ jobs:
       - name: Test
         timeout-minutes: 30
         run: ctest --test-dir build -C Debug --output-on-failure --timeout 120 --progress
+
+  sanitizer:
+    name: ubuntu sanitizer
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure sanitizer build
+        run: cmake -S . -B build-sanitize -DCMAKE_BUILD_TYPE=Debug -DMINIKV_SANITIZE=ON
+
+      - name: Build sanitizer target set
+        timeout-minutes: 45
+        run: cmake --build build-sanitize --config Debug --parallel 4 --verbose
+
+      - name: Test sanitizer build
+        timeout-minutes: 30
+        run: ctest --test-dir build-sanitize -C Debug --output-on-failure --timeout 120 --progress

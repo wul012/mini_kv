@@ -4,6 +4,7 @@
 
 ## 当前状态
 
+- v1610: [980-version-1610-production-excellence-k1-sanitizer-bootstrap.md](980-version-1610-production-excellence-k1-sanitizer-bootstrap.md) - 完成 production-excellence K1 sanitizer 诊断引导：新增 `MINIKV_SANITIZE`，接入 Ubuntu ASan/UBSan CI 诊断轨道，收敛 Windows MinGW sanitizer runtime 限制，并保持默认构建、运行时命令、归档路径、写入与执行边界不变。
 - v1609: [979-version-1609-production-excellence-k0-quick-wins.md](979-version-1609-production-excellence-k0-quick-wins.md) - 完成 production-excellence K0 快速胜利：刷新 START_HERE、建立本地进度账本、将当前 runtime archive hint 改为 CMake 配置但保持 `c/102/` 输出不变、统一最后一个 include guard、接入 changed-file clang-format CI，并保持 no contract / no archive move / no execution 边界。
 - v1607: [978-version-1607-f-folder-explanation-quality-closeout.md](978-version-1607-f-folder-explanation-quality-closeout.md) - 将 f-folder 解释质量收口成一个单大版本证据层，新增 `SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON`，冻结 v1606 为来源，写入中文讲解、三千字下限、禁止硬凑、字数不够就加大版本工作量、截图目录必须有真实截图、mini-kv 不扫描 Node f-folder、不导入 Node 质量路由、不启动服务、不路由写入、不触 WAL、不允许执行等边界。
 - v1602-v1606: [977-version-1602-1606-production-shard-execution-external-artifact-dry-run-closeout.md](977-version-1602-1606-production-shard-execution-external-artifact-dry-run-closeout.md) - Node v2093 dry-run closeout is frozen as mini-kv read-only evidence with five fixtures, split modules, f-root per-version archives, and no external artifact parse/store/execute, router, write, WAL, or execution authority.

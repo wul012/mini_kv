@@ -11,6 +11,20 @@ set(MINIKV_CURRENT_ARCHIVE_VERSION
     CACHE STRING "Archive path hint for the frozen current runtime fixture exposed in generated version.hpp"
 )
 
+option(MINIKV_SANITIZE "Enable AddressSanitizer and UndefinedBehaviorSanitizer for GCC/Clang Debug checks" OFF)
+
+if(MINIKV_SANITIZE)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+        if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            message(FATAL_ERROR "MINIKV_SANITIZE requires ASan/UBSan runtime libraries; the bundled Windows MinGW toolchain does not provide -lasan/-lubsan. Use the Ubuntu sanitizer CI job.")
+        endif()
+        add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+        add_link_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+    else()
+        message(FATAL_ERROR "MINIKV_SANITIZE requires a GCC or Clang compatible compiler")
+    endif()
+endif()
+
 configure_file(
     ${PROJECT_SOURCE_DIR}/include/minikv/version.hpp.in
     ${PROJECT_BINARY_DIR}/generated/include/minikv/version.hpp

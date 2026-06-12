@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1609 production-excellence K0 quick wins**. The active work is internal quality: refresh this entry point, move the frozen current-runtime archive hint out of `version.hpp.in` into a CMake variable, normalize the last include guard outlier, add changed-file clang-format checking, and track the production-excellence gates in this repo.
+Current focus: **v1610 production-excellence K1 sanitizer bootstrap**. The active work is internal quality: `MINIKV_SANITIZE` is available for GCC/Clang ASan+UBSan builds, Ubuntu CI runs a Debug sanitizer lane as a diagnostic job, and Windows MinGW fails fast with a clear runtime-library message instead of failing deep in the linker. The next K1 step is to observe Ubuntu CI and, if green, make the sanitizer lane required in a follow-up version.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
