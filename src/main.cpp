@@ -1,4 +1,5 @@
 #include "minikv/command.hpp"
+#include "minikv/log.hpp"
 #include "minikv/wal.hpp"
 
 #include <cstddef>
@@ -18,6 +19,7 @@ struct CliOptions {
     bool repair_wal = false;
     bool auto_compact_wal = false;
     bool custom_wal_options = false;
+    minikv::LogLevel log_level = minikv::LogLevel::warn;
     minikv::WalMaintenanceOptions wal_options;
 };
 
@@ -25,7 +27,7 @@ void print_usage(const char* program) {
     std::cerr << "Usage: " << program
               << " [wal_path] [--repair-wal] [--auto-compact-wal]"
                  " [--wal-compact-min-records count] [--wal-compact-record-ratio ratio]"
-                 " [--wal-compact-min-bytes bytes]\n";
+                 " [--wal-compact-min-bytes bytes] [--log-level error|warn|info|debug]\n";
 }
 
 std::uintmax_t parse_positive_uintmax(const char* text, std::string_view name) {
@@ -92,6 +94,18 @@ std::optional<CliOptions> parse_options(int argc, char** argv) {
             continue;
         }
 
+        if (argument == "--log-level") {
+            if (++index >= argc) {
+                return std::nullopt;
+            }
+            const auto log_level = minikv::parse_log_level(argv[index]);
+            if (!log_level.has_value()) {
+                return std::nullopt;
+            }
+            options.log_level = *log_level;
+            continue;
+        }
+
         if (!argument.empty() && argument.front() == '-') {
             return std::nullopt;
         }
@@ -111,27 +125,23 @@ std::optional<CliOptions> parse_options(int argc, char** argv) {
 }
 
 void print_wal_replay(const minikv::WriteAheadLog& wal, const minikv::WalReplayReport& replay) {
-    std::cout << "WAL: " << wal.path().string() << " (" << replay.applied_records
-              << " records replayed, " << replay.skipped_records << " skipped, "
-              << replay.truncated_records << " truncated, " << replay.checksum_failed_records
-              << " checksum failed)\n";
+    std::cout << "WAL: " << wal.path().string() << " (" << replay.applied_records << " records replayed, "
+              << replay.skipped_records << " skipped, " << replay.truncated_records << " truncated, "
+              << replay.checksum_failed_records << " checksum failed)\n";
 }
 
 void print_wal_repair(const minikv::WriteAheadLog& wal, const minikv::WalRepairReport& repair) {
-    std::cout << "WAL: " << wal.path().string() << " (" << repair.replay.applied_records
-              << " records replayed, " << repair.replay.skipped_records << " skipped, "
-              << repair.replay.truncated_records << " truncated, " << repair.replay.checksum_failed_records
-              << " checksum failed; repaired to " << repair.compacted_keys << " keys)\n";
+    std::cout << "WAL: " << wal.path().string() << " (" << repair.replay.applied_records << " records replayed, "
+              << repair.replay.skipped_records << " skipped, " << repair.replay.truncated_records << " truncated, "
+              << repair.replay.checksum_failed_records << " checksum failed; repaired to " << repair.compacted_keys
+              << " keys)\n";
 }
 
-const char* yes_no(bool value) {
-    return value ? "yes" : "no";
-}
+const char* yes_no(bool value) { return value ? "yes" : "no"; }
 
 void print_wal_maintenance(const minikv::WalMaintenanceReport& report) {
     std::cout << "WAL stats: bytes=" << report.bytes << " records=" << report.records
-              << " live_keys=" << report.live_keys
-              << " compact_recommended=" << yes_no(report.compact_recommended)
+              << " live_keys=" << report.live_keys << " compact_recommended=" << yes_no(report.compact_recommended)
               << " compact_min_records=" << report.options.compact_min_records
               << " compact_record_ratio=" << report.options.compact_record_ratio
               << " compact_min_bytes=" << report.options.compact_min_bytes
@@ -152,9 +162,8 @@ void print_wal_auto_compact(const minikv::WalAutoCompactReport& report) {
         return;
     }
 
-    std::cout << "WAL auto compact: compacted=" << report.compacted_keys
-              << " records=" << report.before.records << "->" << report.after.records
-              << " bytes=" << report.before.bytes << "->" << report.after.bytes << '\n';
+    std::cout << "WAL auto compact: compacted=" << report.compacted_keys << " records=" << report.before.records << "->"
+              << report.after.records << " bytes=" << report.before.bytes << "->" << report.after.bytes << '\n';
 }
 
 } // namespace
@@ -166,6 +175,7 @@ int main(int argc, char** argv) {
             print_usage(argv[0]);
             return 2;
         }
+        minikv::Logger logger{options->log_level, std::cerr};
 
         minikv::Store store;
         std::optional<minikv::WriteAheadLog> wal;
@@ -175,7 +185,7 @@ int main(int argc, char** argv) {
             if (options->repair_wal) {
                 minikv::WalRepairReport repair;
                 if (!wal->repair(store, &repair)) {
-                    std::cerr << "fatal: WAL repair failed\n";
+                    logger.log(minikv::LogLevel::error, "fatal: WAL repair failed");
                     return 1;
                 }
                 print_wal_repair(*wal, repair);
@@ -185,7 +195,7 @@ int main(int argc, char** argv) {
             if (options->auto_compact_wal) {
                 minikv::WalAutoCompactReport compact;
                 if (!wal->compact_if_recommended(store, &compact)) {
-                    std::cerr << "fatal: WAL auto compact failed\n";
+                    logger.log(minikv::LogLevel::error, "fatal: WAL auto compact failed");
                     return 1;
                 }
                 print_wal_auto_compact(compact);
@@ -219,7 +229,7 @@ int main(int argc, char** argv) {
             }
         }
     } catch (const std::exception& error) {
-        std::cerr << "fatal: " << error.what() << '\n';
+        minikv::Logger{}.log(minikv::LogLevel::error, std::string{"fatal: "} + error.what());
         return 1;
     }
 

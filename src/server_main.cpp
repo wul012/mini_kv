@@ -1,3 +1,4 @@
+#include "minikv/log.hpp"
 #include "minikv/metrics_file.hpp"
 #include "minikv/store.hpp"
 #include "minikv/tcp_server.hpp"
@@ -20,13 +21,9 @@ namespace {
 
 volatile std::sig_atomic_t shutdown_requested = 0;
 
-void handle_shutdown_signal(int) {
-    shutdown_requested = 1;
-}
+void handle_shutdown_signal(int) { shutdown_requested = 1; }
 
-bool should_stop() {
-    return shutdown_requested != 0;
-}
+bool should_stop() { return shutdown_requested != 0; }
 
 void install_shutdown_handlers() {
     std::signal(SIGINT, handle_shutdown_signal);
@@ -93,13 +90,13 @@ void print_usage(const char* program) {
                  " [--wal-compact-min-bytes bytes] [--max-request-bytes bytes]"
                  " [--accept-poll-ms ms] [--metrics-interval-ms ms] [--metrics-file path]"
                  " [--metrics-file-format text|jsonl]"
-                 " [--metrics-file-max-bytes bytes] [--metrics-file-keep count]\n";
+                 " [--metrics-file-max-bytes bytes] [--metrics-file-keep count]"
+                 " [--log-level error|warn|info|debug]\n";
 }
 
 void log_wal_replay(const minikv::WriteAheadLog& wal, const minikv::WalReplayReport& replay) {
-    std::cout << "event=wal_replay path=" << quote_value(wal.path().string())
-              << " records=" << replay.applied_records << " skipped=" << replay.skipped_records
-              << " truncated=" << replay.truncated_records
+    std::cout << "event=wal_replay path=" << quote_value(wal.path().string()) << " records=" << replay.applied_records
+              << " skipped=" << replay.skipped_records << " truncated=" << replay.truncated_records
               << " checksum_failed=" << replay.checksum_failed_records << '\n';
 }
 
@@ -111,9 +108,7 @@ void log_wal_repair(const minikv::WriteAheadLog& wal, const minikv::WalRepairRep
               << " compacted_keys=" << repair.compacted_keys << '\n';
 }
 
-const char* true_false(bool value) {
-    return value ? "true" : "false";
-}
+const char* true_false(bool value) { return value ? "true" : "false"; }
 
 minikv::MetricsExportFormat parse_metrics_file_format(std::string_view value) {
     if (value == "text") {
@@ -136,9 +131,8 @@ const char* metrics_file_format_name(minikv::MetricsExportFormat format) {
 }
 
 void log_wal_maintenance(const minikv::WriteAheadLog& wal, const minikv::WalMaintenanceReport& report) {
-    std::cout << "event=wal_stats path=" << quote_value(wal.path().string())
-              << " wal_bytes=" << report.bytes << " wal_records=" << report.records
-              << " live_keys=" << report.live_keys
+    std::cout << "event=wal_stats path=" << quote_value(wal.path().string()) << " wal_bytes=" << report.bytes
+              << " wal_records=" << report.records << " live_keys=" << report.live_keys
               << " compact_recommended=" << true_false(report.compact_recommended)
               << " compact_min_records=" << report.options.compact_min_records
               << " compact_record_ratio=" << report.options.compact_record_ratio
@@ -151,9 +145,8 @@ void log_wal_maintenance(const minikv::WriteAheadLog& wal, const minikv::WalMain
               << " bytes_saved=" << report.compaction_stats.bytes_saved << '\n';
 
     if (report.compact_recommended) {
-        std::cout << "event=wal_compact_hint path=" << quote_value(wal.path().string())
-                  << " wal_bytes=" << report.bytes << " wal_records=" << report.records
-                  << " live_keys=" << report.live_keys << '\n';
+        std::cout << "event=wal_compact_hint path=" << quote_value(wal.path().string()) << " wal_bytes=" << report.bytes
+                  << " wal_records=" << report.records << " live_keys=" << report.live_keys << '\n';
     }
 }
 
@@ -161,19 +154,15 @@ void log_wal_auto_compact(const minikv::WriteAheadLog& wal, const minikv::WalAut
     if (!report.compacted) {
         std::cout << "event=wal_auto_compact_skipped path=" << quote_value(wal.path().string())
                   << " reason=not_recommended"
-                  << " wal_bytes=" << report.before.bytes
-                  << " wal_records=" << report.before.records
+                  << " wal_bytes=" << report.before.bytes << " wal_records=" << report.before.records
                   << " live_keys=" << report.before.live_keys << '\n';
         return;
     }
 
     std::cout << "event=wal_auto_compact path=" << quote_value(wal.path().string())
-              << " compacted_keys=" << report.compacted_keys
-              << " before_wal_bytes=" << report.before.bytes
-              << " after_wal_bytes=" << report.after.bytes
-              << " before_wal_records=" << report.before.records
-              << " after_wal_records=" << report.after.records
-              << " live_keys=" << report.after.live_keys << '\n';
+              << " compacted_keys=" << report.compacted_keys << " before_wal_bytes=" << report.before.bytes
+              << " after_wal_bytes=" << report.after.bytes << " before_wal_records=" << report.before.records
+              << " after_wal_records=" << report.after.records << " live_keys=" << report.after.live_keys << '\n';
 }
 
 } // namespace
@@ -185,17 +174,13 @@ int main(int argc, char** argv) {
 
         minikv::TcpServer::Options options;
         options.should_stop = should_stop;
-        std::mutex log_mutex;
-        options.logger = [&log_mutex](const std::string& message) {
-            std::lock_guard lock{log_mutex};
-            std::cout << message << '\n';
-        };
 
         int positional = 0;
         std::optional<std::string> wal_path;
         bool repair_wal = false;
         bool auto_compact_wal = false;
         bool custom_wal_options = false;
+        minikv::LogLevel log_level = minikv::LogLevel::warn;
         std::optional<std::string> metrics_file_path;
         std::optional<std::uintmax_t> metrics_file_max_bytes;
         std::size_t metrics_file_keep = 3;
@@ -269,6 +254,20 @@ int main(int argc, char** argv) {
                 continue;
             }
 
+            if (argument == "--log-level") {
+                if (++index >= argc) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                const auto parsed_log_level = minikv::parse_log_level(argv[index]);
+                if (!parsed_log_level.has_value()) {
+                    print_usage(argv[0]);
+                    return 2;
+                }
+                log_level = *parsed_log_level;
+                continue;
+            }
+
             if (argument == "--repair-wal") {
                 repair_wal = true;
                 continue;
@@ -339,6 +338,13 @@ int main(int argc, char** argv) {
             return 2;
         }
 
+        minikv::Logger logger{log_level, std::cerr};
+        std::mutex log_mutex;
+        options.logger = [&logger, &log_mutex](const std::string& message) {
+            std::lock_guard lock{log_mutex};
+            logger.log(minikv::LogLevel::info, message);
+        };
+
         std::optional<minikv::MetricsFileWriter> metrics_file;
         std::mutex metrics_file_mutex;
         if (metrics_file_path.has_value()) {
@@ -362,7 +368,7 @@ int main(int argc, char** argv) {
             if (repair_wal) {
                 minikv::WalRepairReport repair;
                 if (!wal->repair(store, &repair)) {
-                    std::cerr << "fatal: WAL repair failed\n";
+                    logger.log(minikv::LogLevel::error, "fatal: WAL repair failed");
                     return 1;
                 }
                 log_wal_repair(*wal, repair);
@@ -372,7 +378,7 @@ int main(int argc, char** argv) {
             if (auto_compact_wal) {
                 minikv::WalAutoCompactReport compact;
                 if (!wal->compact_if_recommended(store, &compact)) {
-                    std::cerr << "fatal: WAL auto compact failed\n";
+                    logger.log(minikv::LogLevel::error, "fatal: WAL auto compact failed");
                     return 1;
                 }
                 log_wal_auto_compact(*wal, compact);
@@ -398,7 +404,7 @@ int main(int argc, char** argv) {
         server.run();
         std::cout << "event=server_stopped host=" << options.host << " port=" << options.port << '\n';
     } catch (const std::exception& error) {
-        std::cerr << "fatal: " << error.what() << '\n';
+        minikv::Logger{}.log(minikv::LogLevel::error, std::string{"fatal: "} + error.what());
         return 1;
     }
 

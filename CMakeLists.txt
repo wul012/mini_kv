@@ -56,6 +56,7 @@ add_library(minikv
     src/command_response_formatters.cpp
     src/command_smoke_formatters.cpp
     src/line_editor.cpp
+    src/log.cpp
     src/managed_audit_adapter_receipts.cpp
     src/managed_audit_connection_receipts.cpp
     src/managed_audit_core_receipts.cpp
@@ -400,6 +401,24 @@ minikv_add_standalone_source_dir_test(
     minikv_dependabot_config_tests
     dependabot_config_tests
     tests/dependabot_config_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_log_tests
+    log_tests
+    tests/log_tests.cpp
+)
+
+add_test(NAME cli_log_level_flag_smoke COMMAND minikv_cli --log-level debug)
+set_tests_properties(cli_log_level_flag_smoke
+    PROPERTIES
+        PASS_REGULAR_EXPRESSION "mini-kv CLI"
+)
+
+add_test(NAME server_log_level_invalid_smoke COMMAND minikv_server --log-level trace)
+set_tests_properties(server_log_level_invalid_smoke
+    PROPERTIES
+        WILL_FAIL TRUE
 )
 
 minikv_add_linked_test(

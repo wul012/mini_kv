@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1615 post-K2 review GitHub Actions runtime advisory closure**. Claude reviewed K2 as PASS on June 12, 2026, and mini-kv is cleared for K3 logging after this time-sensitive CI maintenance version. v1615 updates `actions/checkout` to `v6.0.3` and `actions/upload-artifact` to `v7.0.1` so the workflow is ready for GitHub's June 16, 2026 Node 24 action runtime enforcement before K3 starts.
+Current focus: **v1616 production-excellence K3 zero-dependency logging**. mini-kv now has a small in-house `minikv::Logger` with `error/warn/info/debug` filtering, UTC timestamp and thread id fields, plus `--log-level` on `minikv_cli` and `minikv_server`. Runtime logs go to stderr; server startup/WAL/evidence stdout stays unchanged. K3 is ready for review after v1616 CI is green.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
