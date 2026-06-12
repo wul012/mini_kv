@@ -4,6 +4,7 @@
 
 ## 当前状态
 
+- v1607: [978-version-1607-f-folder-explanation-quality-closeout.md](978-version-1607-f-folder-explanation-quality-closeout.md) - 将 f-folder 解释质量收口成一个单大版本证据层，新增 `SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON`，冻结 v1606 为来源，写入中文讲解、三千字下限、禁止硬凑、字数不够就加大版本工作量、截图目录必须有真实截图、mini-kv 不扫描 Node f-folder、不导入 Node 质量路由、不启动服务、不路由写入、不触 WAL、不允许执行等边界。
 - v1602-v1606: [977-version-1602-1606-production-shard-execution-external-artifact-dry-run-closeout.md](977-version-1602-1606-production-shard-execution-external-artifact-dry-run-closeout.md) - Node v2093 dry-run closeout is frozen as mini-kv read-only evidence with five fixtures, split modules, f-root per-version archives, and no external artifact parse/store/execute, router, write, WAL, or execution authority.
 - v1597-v1601: [976-version-1597-1601-production-shard-execution-mini-kv-owner-receipt-bundle.md](976-version-1597-1601-production-shard-execution-mini-kv-owner-receipt-bundle.md) - The v1596 owner receipt request packet is satisfied only for mini-kv-owned abort, rollback, lifecycle, and cleanup-no-start proof slots, with split modules, five versioned fixtures, f-root command archives, and no Java, cross-project, router, write, WAL, or execution authority.
 - v1592-v1596: [975-version-1592-1596-production-shard-execution-owner-receipt-request-packet.md](975-version-1592-1596-production-shard-execution-owner-receipt-request-packet.md) - Node v2087 owner receipt request gaps are frozen as local mini-kv request-only evidence with split modules, five versioned fixtures, per-version command archives, and no signed receipt, router, write, WAL, or execution authority.
@@ -33,6 +34,8 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## 写作底线
 
 - 开头说明目标、角色、为什么做，以及“不是什么”。
+- v1607 起，mini-kv 非微小版本的代码讲解默认中文书写，每个版本至少保留一篇三千字级别讲解。
+- 如果讲解无法自然达到三千字级别，说明本版工作量不够，应继续加厚实现、测试、fixture、归档、重构或边界说明，禁止硬凑。
 - 必须讲入口、响应/证据结构、核心流程、边界字段和测试覆盖。
 - 测试部分不能只列命令，要说明断言保护什么行为。
 - 不要把纯归档输出、截图清单或字段清单伪装成代码讲解。

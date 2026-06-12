@@ -54,6 +54,7 @@
 #include "minikv/shard_preview_precheck_upstream_receipt_verification_split_non_participation.hpp"
 #include "minikv/shard_preview_runtime_execution_packet_approval_gate_archive_verification_non_participation.hpp"
 #include "minikv/shard_preview_code_walkthrough_quality_gate_non_participation.hpp"
+#include "minikv/shard_preview_f_folder_explanation_quality_closeout.hpp"
 #include "minikv/shard_preview_production_shard_execution_external_artifact_dry_run_closeout.hpp"
 #include "minikv/shard_preview_production_shard_execution_owner_receipt_request_packet.hpp"
 #include "minikv/shard_preview_production_shard_execution_mini_kv_owner_receipt_bundle.hpp"
@@ -940,6 +941,15 @@ CommandResult CommandProcessor::execute_runtime_evidence_command(std::string_vie
 
         return {shard_preview_production_shard_execution_external_artifact_dry_run_closeout::
                     format_production_shard_execution_external_artifact_dry_run_closeout_json()};
+    }
+
+    if (command == "SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON") {
+        if (has_extra_token(input)) {
+            return usage("SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON");
+        }
+
+        return {shard_preview_f_folder_explanation_quality_closeout::
+                    format_f_folder_explanation_quality_closeout_json()};
     }
 
     if (command == "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON") {

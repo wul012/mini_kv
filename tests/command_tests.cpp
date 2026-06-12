@@ -272,7 +272,7 @@ int main() {
     assert(result.response == "ERR usage: COMMANDS");
 
     result = processor.execute("COMMANDS");
-    assert(result.response.find("command_count=93") != std::string::npos);
+    assert(result.response.find("command_count=94") != std::string::npos);
     assert(result.response.find("PING(category=meta,mutates_store=no,touches_wal=no,stable=yes)") != std::string::npos);
     assert(result.response.find("SET(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
     assert(result.response.find("SETNXEX(category=write,mutates_store=yes,touches_wal=yes,stable=yes)") != std::string::npos);
@@ -454,6 +454,9 @@ int main() {
                "SHARDPRODUCTIONSHARDEXECUTIONEXTERNALARTIFACTDRYRUNCLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
+               "SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
+           std::string::npos);
+    assert(result.response.find(
                "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON(category=read,mutates_store=no,touches_wal=no,stable=yes)") !=
            std::string::npos);
     assert(result.response.find(
@@ -588,6 +591,9 @@ int main() {
                "\"name\":\"SHARDPRODUCTIONSHARDEXECUTIONEXTERNALARTIFACTDRYRUNCLOSEOUTJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
+               "\"name\":\"SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON\","
+               "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
+    assert(result.response.find(
                "\"name\":\"SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON\","
                "\"category\":\"read\",\"mutates_store\":false,\"touches_wal\":false") != std::string::npos);
     assert(result.response.find(
@@ -687,7 +693,7 @@ int main() {
     assert_response_contains(result, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(
         result,
-        "\"status\":\"production-shard-execution-external-artifact-dry-run-closeout-clean-ci-closeout-read-only\"");
+        "\"status\":\"f-folder-explanation-quality-closeout-single-large-version-read-only\"");
     assert_response_contains(result, "\"slotTablePreview\":{\"previewMode\":\"single-shard-slot-table-read-only\"");
     assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/"
                                      "v425-post-credential-resolver-disabled-runtime-shell-readiness-route-group-split-roadmap.md\"");
@@ -2399,6 +2405,33 @@ int main() {
     result = processor.execute("SHARDPRODUCTIONSHARDEXECUTIONEXTERNALARTIFACTDRYRUNCLOSEOUTJSON extra");
     assert(result.response == "ERR usage: SHARDPRODUCTIONSHARDEXECUTIONEXTERNALARTIFACTDRYRUNCLOSEOUTJSON");
 
+    result = processor.execute("SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON");
+    assert_response_contains(result, "\"contract\":\"shard-f-folder-explanation-quality-closeout.v1\"");
+    assert_response_contains(result, "\"command\":\"SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON\"");
+    assert_response_contains(result, "\"sourceNodePlan\":\"docs/plans3/v2103-f-folder-explanation-expansion-closeout-roadmap.md\"");
+    assert_response_contains(result, "\"sourceExternalArtifactCloseoutReleaseVersion\":\"v1606\"");
+    assert_response_contains(result, "\"fFolderExplanationQualityCloseoutReleaseVersion\":\"v1607\"");
+    assert_response_contains(result, "\"chineseWritingRequired\":true");
+    assert_response_contains(result, "\"minimumWalkthroughChineseCharacterCount\":3000");
+    assert_response_contains(result, "\"insufficientWordCountExpandsVersionWorkload\":true");
+    assert_response_contains(result, "\"fillerPaddingAllowed\":false");
+    assert_response_contains(result, "\"singleVersionLargeScope\":true");
+    assert_response_contains(result, "\"multiVersionFragmentationAllowed\":false");
+    assert_response_contains(result, "\"plannedFFolderExplanationQualityRuleCount\":13");
+    assert_response_contains(result, "\"completedFFolderExplanationQualityCloseoutCheckCount\":19");
+    assert_response_contains(result, "\"fFolderExplanationQualityCloseoutValidationPassed\":true");
+    assert_response_contains(result, "\"scansNodeFolders\":false");
+    assert_response_contains(result, "\"importsNodeQualityRoute\":false");
+    assert_response_contains(result, "\"createsPictureDirsWithoutEvidence\":false");
+    assert_response_contains(result, "\"activeRouterInstalled\":false");
+    assert_response_contains(result, "\"writeRoutingAllowed\":false");
+    assert_response_contains(result, "\"mutatesStore\":false");
+    assert_response_contains(result, "\"touchesWal\":false");
+    assert_response_contains(result, "\"executionAllowed\":false");
+
+    result = processor.execute("SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON extra");
+    assert(result.response == "ERR usage: SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON");
+
     result = processor.execute("SHARDJSON");
     assert_response_contains(result, "\"approvalPacketRequired\":true");
     assert_response_contains(result, "\"approvalPacketPresent\":false");
@@ -2480,16 +2513,22 @@ int main() {
     assert_response_contains(result, "\"archivedNodeEvidenceMutated\":false");
     assert_response_contains(result, "\"commandCatalog\":{\"command\":\"SHARDJSON\",\"category\":\"read\"");
     assert_response_contains(result, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
-    assert_response_contains(result, "\"releaseRangeEnd\":\"v1606\"");
+    assert_response_contains(result, "\"releaseRangeEnd\":\"v1607\"");
     assert_response_contains(result,
-                             "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-owner-request-mini-kv-receipt-and-external-artifact-closeout-gates\"");
-    assert_response_contains(result, "\"commandCount\":93");
+                             "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-owner-request-mini-kv-receipt-external-artifact-and-f-folder-explanation-quality-gates\"");
+    assert_response_contains(result, "\"commandCount\":94");
     assert_response_contains(result, "\"dispatchCatalogSplit\":true");
     assert_response_contains(result, "\"contractCatalogDeduplicated\":true");
     assert_response_contains(result, "\"helpTextGeneratedFromCatalog\":true");
     assert_response_contains(result, "\"completionCandidatesGeneratedFromCatalog\":true");
     assert_response_contains(result, "\"runtimeCommandBehaviorChanged\":false");
     assert_response_contains(result, "\"storageBehaviorChanged\":false");
+    assert_response_contains(result, "\"shardPreviewFFolderExplanationQualityCloseout\":{\"contract\":\"shard-f-folder-explanation-quality-closeout.v1\"");
+    assert_response_contains(result, "\"fFolderExplanationQualityCloseoutReleaseVersion\":\"v1607\"");
+    assert_response_contains(result, "\"sourceExternalArtifactCloseoutReleaseVersion\":\"v1606\"");
+    assert_response_contains(result, "\"minimumWalkthroughChineseCharacterCount\":3000");
+    assert_response_contains(result, "\"fillerPaddingAllowed\":false");
+    assert_response_contains(result, "\"fFolderExplanationQualityCloseoutValidationPassed\":true");
     assert_response_contains(result, "\"fixtureParity\":{\"currentFixturePath\":\"fixtures/release/shard-readiness.json\"");
     assert_response_contains(result, "\"archiveCompatibility\":{\"preservesNodeArchivedEvidence\":true");
     assert_response_contains(result, "\"historicalFallback\":{\"previousConsumedReleaseVersion\":\"v419\"");

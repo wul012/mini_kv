@@ -197,6 +197,8 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 
 Execution rules:
 - Code walkthroughs are optional for doc-only or very small maintenance work; do not write filler just to satisfy a ritual.
+- From v1607 onward, mini-kv code walkthroughs must be written in Chinese by default.
+- For each non-trivial version, keep at least one code walkthrough at 3000+ Chinese characters. If the content cannot naturally reach that floor, the version workload is too thin: expand implementation, tests, evidence, archive explanation, or refactoring before writing. Do not pad prose just to satisfy the counter.
 - If a walkthrough is written, it must use that mode: state the goal, role, and "what this is not"; identify the entry command/module; explain response/evidence structure; explain core flow and module responsibilities; explain upstream/downstream evidence only when relevant; explain boundary fields such as `read_only`, `execution_allowed`, `order_authoritative`, `mutates_store`, `touches_wal`, `warnings`, `blockers`, and `diagnostics`; explain what each test class protects; end with one sentence of value for loose Node/Java/mini-kv integration.
 - Avoid huge concentrated README files. Use a small active-volume README plus a segmented index when a folder becomes crowded.
 - `代码讲解记录_生产雏形阶段_第三册/` is archived after v1546-v1565; new walkthroughs should start in `代码讲解记录_生产雏形阶段_第四册/` unless the user gives a different explicit archive direction.

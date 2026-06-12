@@ -283,6 +283,10 @@ add_library(minikv
     src/shard_preview_production_shard_execution_external_artifact_dry_run_closeout_stages.cpp
     src/shard_preview_production_shard_execution_external_artifact_dry_run_closeout_checks.cpp
     src/shard_preview_production_shard_execution_external_artifact_dry_run_closeout_validation.cpp
+    src/shard_preview_f_folder_explanation_quality_closeout.cpp
+    src/shard_preview_f_folder_explanation_quality_closeout_rules.cpp
+    src/shard_preview_f_folder_explanation_quality_closeout_checks.cpp
+    src/shard_preview_f_folder_explanation_quality_closeout_validation.cpp
     src/shard_route_preview_operator_value_supply_envelope.cpp
     src/shard_route_preview_operator_value_supply_envelope_slots.cpp
     src/shard_route_preview_operator_value_supply_precheck.cpp
@@ -1907,6 +1911,42 @@ minikv_add_source_dir_test(
     minikv_external_artifact_dry_run_closeout_fixture_tests
     external_artifact_dry_run_closeout_fixture_tests
     tests/production_shard_execution_external_artifact_dry_run_closeout_fixture_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_f_folder_explanation_quality_closeout_rules_tests
+    f_folder_explanation_quality_closeout_rules_tests
+    tests/f_folder_explanation_quality_closeout_rules_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_f_folder_explanation_quality_closeout_checks_tests
+    f_folder_explanation_quality_closeout_checks_tests
+    tests/f_folder_explanation_quality_closeout_checks_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_f_folder_explanation_quality_closeout_validation_tests
+    f_folder_explanation_quality_closeout_validation_tests
+    tests/f_folder_explanation_quality_closeout_validation_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_f_folder_explanation_quality_closeout_tests
+    f_folder_explanation_quality_closeout_tests
+    tests/f_folder_explanation_quality_closeout_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_f_folder_explanation_quality_closeout_fixture_tests
+    f_folder_explanation_quality_closeout_fixture_tests
+    tests/f_folder_explanation_quality_closeout_fixture_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_f_folder_explanation_quality_closeout_walkthrough_tests
+    f_folder_explanation_quality_closeout_walkthrough_tests
+    tests/f_folder_explanation_quality_closeout_walkthrough_tests.cpp
 )
 
 minikv_add_linked_test(

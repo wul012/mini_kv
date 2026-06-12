@@ -129,6 +129,7 @@ int main() {
           "SHARDPRODUCTIONSHARDEXECUTIONOWNERRECEIPTREQUESTPACKETJSON",
           "SHARDPRODUCTIONSHARDEXECUTIONMINIKVOWNERRECEIPTBUNDLEJSON",
           "SHARDPRODUCTIONSHARDEXECUTIONEXTERNALARTIFACTDRYRUNCLOSEOUTJSON",
+          "SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPFIXTUREAUDITJSON",
           "SHARDROUTETYPEBARRELSPLITFOLLOWUPNONPARTICIPATIONJSON",
           "SHARDROUTETYPEBARRELSPLITNONPARTICIPATIONJSON",
@@ -158,6 +159,7 @@ int main() {
     assert(completion.complete("STOR", 4) == std::optional<std::string>{"STORAGEJSON "});
     assert(completion.complete("SHARDR", 6) == std::optional<std::string>{"SHARDROUTE"});
     assert(completion.complete("SHARDROUTEJ", 11) == std::optional<std::string>{"SHARDROUTEJSON "});
+    assert(completion.complete("SHARDF", 6) == std::optional<std::string>{"SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON "});
     assert(!completion.complete("SHARDROUTEV", 11).has_value());
     assert(completion.complete("SHARDROUTEVE", 12) == std::optional<std::string>{"SHARDROUTEVERIFY"});
     assert(completion.complete("SHARDROUTEVERIFYJ", 17) == std::optional<std::string>{"SHARDROUTEVERIFYJSON "});

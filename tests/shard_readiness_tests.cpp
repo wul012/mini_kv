@@ -51,7 +51,7 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"routingMode\":\"single-shard-readiness-prototype\"");
     assert_contains(json, "\"evidencePath\":\"fixtures/release/shard-readiness.json\"");
     assert_contains(json,
-                    "\"status\":\"production-shard-execution-external-artifact-dry-run-closeout-clean-ci-closeout-read-only\"");
+                    "\"status\":\"f-folder-explanation-quality-closeout-single-large-version-read-only\"");
     assert_contains(json, "\"shardRoutePreviewOperatorValueSupplySignedApprovalCaptureArtifactDraftInstructionPreflight\":{\"contract\":"
                           "\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
@@ -1152,6 +1152,43 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"mutatesStore\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
+    assert_contains(json,
+                    "\"shardPreviewFFolderExplanationQualityCloseout\":{\"contract\":"
+                    "\"shard-f-folder-explanation-quality-closeout.v1\"");
+    assert_contains(json, "\"command\":\"SHARDFFOLDEREXPLANATIONQUALITYCLOSEOUTJSON\"");
+    assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/v2103-f-folder-explanation-expansion-closeout-roadmap.md\"");
+    assert_contains(json, "\"sourceExternalArtifactCloseoutReleaseVersion\":\"v1606\"");
+    assert_contains(json, "\"sourceExternalArtifactCloseoutComplete\":true");
+    assert_contains(json, "\"fFolderExplanationQualityCloseoutReleaseVersion\":\"v1607\"");
+    assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v1606\"");
+    assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v1606.json\"");
+    assert_contains(json, "\"nodeV2103CloseoutObserved\":true");
+    assert_contains(json, "\"longChineseExplanationsRequired\":true");
+    assert_contains(json, "\"chineseWritingRequired\":true");
+    assert_contains(json, "\"minimumWalkthroughChineseCharacterCount\":3000");
+    assert_contains(json, "\"insufficientWordCountExpandsVersionWorkload\":true");
+    assert_contains(json, "\"fillerPaddingAllowed\":false");
+    assert_contains(json, "\"shortExplanationsRejected\":true");
+    assert_contains(json, "\"plannedFFolderExplanationQualityRuleCount\":13");
+    assert_contains(json, "\"publishedFFolderExplanationQualityRuleCount\":13");
+    assert_contains(json, "\"plannedFFolderExplanationQualityCloseoutCheckCount\":19");
+    assert_contains(json, "\"completedFFolderExplanationQualityCloseoutCheckCount\":19");
+    assert_contains(json, "\"singleVersionLargeScope\":true");
+    assert_contains(json, "\"multiVersionFragmentationAllowed\":false");
+    assert_contains(json, "\"pictureDirectoryCreatedOnlyWithRealScreenshot\":true");
+    assert_contains(json, "\"fFolderExplanationQualityCloseoutValidationPassed\":true");
+    assert_contains(json, "\"scansNodeFolders\":false");
+    assert_contains(json, "\"importsNodeQualityRoute\":false");
+    assert_contains(json, "\"createsPictureDirsWithoutEvidence\":false");
+    assert_contains(json, "\"rewritesHistoricalWalkthroughs\":false");
+    assert_contains(json, "\"startsNodeServices\":false");
+    assert_contains(json, "\"startsJavaService\":false");
+    assert_contains(json, "\"startsMiniKvService\":false");
+    assert_contains(json, "\"activeRouterInstalled\":false");
+    assert_contains(json, "\"writeRoutingAllowed\":false");
+    assert_contains(json, "\"mutatesStore\":false");
+    assert_contains(json, "\"touchesWal\":false");
+    assert_contains(json, "\"executionAllowed\":false");
     assert_contains(json, "\"shardId\":\"shard-0\"");
     assert_contains(json, "\"storagePath\":\"not-created\"");
     assert_contains(json, "\"writesAllowed\":false");
@@ -1716,10 +1753,10 @@ void assert_shard_readiness_contract(const std::string& json) {
     assert_contains(json, "\"extraArgsAllowed\":false");
     assert_contains(json, "\"sideEffects\":[\"metadata_read\"]");
     assert_contains(json, "\"commandCatalogQuality\":{\"releaseRangeStart\":\"v1546\"");
-    assert_contains(json, "\"releaseRangeEnd\":\"v1606\"");
+    assert_contains(json, "\"releaseRangeEnd\":\"v1607\"");
     assert_contains(json,
-                    "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-owner-request-mini-kv-receipt-and-external-artifact-closeout-gates\"");
-    assert_contains(json, "\"commandCount\":93");
+                    "\"scope\":\"command-catalog-single-source-refactor-plus-code-walkthrough-owner-request-mini-kv-receipt-external-artifact-and-f-folder-explanation-quality-gates\"");
+    assert_contains(json, "\"commandCount\":94");
     assert_contains(json, "\"dispatchCatalogSplit\":true");
     assert_contains(json, "\"contractCatalogDeduplicated\":true");
     assert_contains(json, "\"helpTextGeneratedFromCatalog\":true");
