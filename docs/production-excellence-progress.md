@@ -14,7 +14,7 @@ This file is the mini-kv local progress ledger. The Node playbook is read-only f
 | Milestone | Version(s) | State | Evidence |
 | --------- | ---------- | ----- | -------- |
 | K0 | v1609 | completed | START_HERE refresh; CMake-configured archive hint with unchanged `c/102/` output; `metrics_file.hpp` pragma once; `.clang-format`; changed-file clang-format CI check; local configure/build/focused CTest/full CTest/CLI smoke |
-| K1 | v1610 | diagnostic active | `MINIKV_SANITIZE` CMake option; ubuntu sanitizer CI job starts as `continue-on-error: true`; Windows MinGW sanitizer runtime limitation fails fast at configure time; local default configure/build/334 CTest pass; CI observation pending |
+| K1 | v1610-v1611 | completed | v1610 added `MINIKV_SANITIZE` and proved the Ubuntu sanitizer diagnostic job green; v1611 removes `continue-on-error: true`, tests that the sanitizer job cannot silently weaken, keeps Windows MinGW local sanitizer limitation as a fast configure failure, and preserves local default configure/build/334 CTest |
 | K2 | — | not started | baseline: __% |
 | K3 | — | not started | |
 | K4 | — | blocked on K1+K2 | |
