@@ -288,8 +288,8 @@ inline void wait_for_connection_total(const TcpServer& server, std::uint64_t tot
 
 class TestTcpServerHarness {
 public:
-    TestTcpServerHarness()
-        : options_(make_options(logs_, logs_mutex_)),
+    explicit TestTcpServerHarness(std::chrono::milliseconds client_idle_timeout = std::chrono::milliseconds{0})
+        : options_(make_options(logs_, logs_mutex_, client_idle_timeout)),
           server_(store_, options_) {
         server_thread_ = std::thread{[this] {
             try {
@@ -351,13 +351,16 @@ public:
     }
 
 private:
-    static TcpServer::Options make_options(std::vector<std::string>& logs, std::mutex& logs_mutex) {
+    static TcpServer::Options make_options(std::vector<std::string>& logs,
+                                           std::mutex& logs_mutex,
+                                           std::chrono::milliseconds client_idle_timeout) {
         using namespace std::chrono_literals;
 
         TcpServer::Options options;
         options.host = "127.0.0.1";
         options.port = 0;
         options.accept_poll_interval = 10ms;
+        options.client_idle_timeout = client_idle_timeout;
         options.logger = [&](const std::string& message) {
             std::lock_guard lock{logs_mutex};
             logs.push_back(message);

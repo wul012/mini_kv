@@ -1,0 +1,30 @@
+v1621 — full CTest summary (local, CLion mingw toolchain, MinGW Makefiles)
+Host: Windows 11, PATH includes D:\CLION\CLion 2025.1.1\bin\mingw\bin
+Command: ctest --test-dir cmake-build-v1621 --output-on-failure --timeout 120
+
+Incremental build: exit 0 (~10s).
+
+Result: 99% tests passed, 1 test failed out of 338
+Total Test time (real) = 244.48 sec
+
+PASSED: 337/338  (including the new tcp_server_timeout_limit_tests, and all
+existing tcp_server / wal / snapshot / command / receipt suites).
+
+FAILED: 1
+  4 - cli_log_level_flag_smoke (Timeout)
+
+Triage of the lone failure (NOT a K6 regression):
+  - add_test(NAME cli_log_level_flag_smoke COMMAND minikv_cli --log-level debug)
+    has no stdin redirection. On Linux CI ctest connects stdin to /dev/null ->
+    immediate EOF -> CLI exits 0 (passes). On this Windows host ctest leaves
+    stdin open -> the interactive REPL blocks -> 120s timeout.
+  - The test runs the minikv_cli binary (depends on command.cpp, NOT the
+    tcp_server.cpp changed in this version); the incremental build did not
+    recompile it.
+  - Isolated proof the CLI is healthy:
+      "EXIT" | minikv_cli --log-level debug   ->  exit code 0 in ~0s.
+  - mini-kv treats the Ubuntu CI 3-OS matrix as the source of truth, where this
+    test is green.
+
+Conclusion: K6 build + suite verified. The single local timeout is a documented
+Windows-local ctest stdin-plumbing limitation, recorded as a deviation.

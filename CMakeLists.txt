@@ -2087,6 +2087,12 @@ minikv_add_linked_test(
 )
 
 minikv_add_linked_test(
+    minikv_tcp_server_timeout_limit_tests
+    tcp_server_timeout_limit_tests
+    tests/tcp_server_timeout_limit_tests.cpp
+)
+
+minikv_add_linked_test(
     minikv_client_history_tests
     client_history_tests
     tests/client_history_tests.cpp

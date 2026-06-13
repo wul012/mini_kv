@@ -259,6 +259,11 @@ std::string request_limit_fields(std::size_t pending_bytes, std::size_t max_requ
            " max_request_bytes=" + std::to_string(max_request_bytes);
 }
 
+std::string client_timeout_fields(std::size_t pending_bytes, std::chrono::milliseconds client_idle_timeout) {
+    return "pending_bytes=" + std::to_string(pending_bytes) +
+           " client_idle_timeout_ms=" + std::to_string(client_idle_timeout.count());
+}
+
 std::uint16_t socket_bound_port(SocketHandle socket) {
     sockaddr_storage address{};
 #ifdef _WIN32
@@ -297,16 +302,16 @@ timeval to_timeval(std::chrono::milliseconds timeout) {
     return value;
 }
 
-bool wait_for_listener(SocketHandle listener, std::chrono::milliseconds timeout) {
+bool wait_for_readable(SocketHandle socket, std::chrono::milliseconds timeout) {
     fd_set read_fds;
     FD_ZERO(&read_fds);
-    FD_SET(listener, &read_fds);
+    FD_SET(socket, &read_fds);
 
     timeval wait_time = to_timeval(timeout);
 #ifdef _WIN32
     const int result = select(0, &read_fds, nullptr, nullptr, &wait_time);
 #else
-    const int result = select(listener + 1, &read_fds, nullptr, nullptr, &wait_time);
+    const int result = select(socket + 1, &read_fds, nullptr, nullptr, &wait_time);
 #endif
     if (result < 0) {
 #ifdef _WIN32
@@ -321,7 +326,7 @@ bool wait_for_listener(SocketHandle listener, std::chrono::milliseconds timeout)
         throw std::runtime_error{socket_error_message("select failed")};
     }
 
-    return result > 0 && FD_ISSET(listener, &read_fds);
+    return result > 0 && FD_ISSET(socket, &read_fds);
 }
 
 class SocketGuard {
@@ -495,6 +500,7 @@ void serve_client(Store& store,
                   std::shared_ptr<CommandMetricsTracker> command_metrics_tracker,
                   std::uint64_t connection_id,
                   std::size_t max_request_bytes,
+                  std::chrono::milliseconds client_idle_timeout,
                   CommandRuntimeInfo runtime_info,
                   bool auto_compact_wal) {
     SocketGuard client{client_socket};
@@ -512,6 +518,26 @@ void serve_client(Store& store,
     std::array<char, 4096> buffer{};
 
     while (true) {
+        if (client_idle_timeout > std::chrono::milliseconds::zero() &&
+            !wait_for_readable(client.get(), client_idle_timeout)) {
+            const bool has_partial_command = !pending.empty();
+            if (logger) {
+                logger("event=tcp_request_rejected " + endpoint + " connection_id=" +
+                       std::to_string(connection_id) +
+                       " reason=" + (has_partial_command ? "command_timeout " : "client_idle_timeout ") +
+                       client_timeout_fields(pending.size(), client_idle_timeout));
+            }
+
+            if (has_partial_command) {
+                if (pending.front() == '*') {
+                    send_all(client.get(), "-ERR command timeout\r\n");
+                } else {
+                    send_all(client.get(), "ERR command timeout\n");
+                }
+            }
+            return;
+        }
+
 #ifdef _WIN32
         const int received = recv(client.get(), buffer.data(), static_cast<int>(buffer.size()), 0);
 #else
@@ -661,7 +687,7 @@ void TcpServer::run() {
             }
         }
 
-        if (!wait_for_listener(listener.get(), listener_wait_interval(options_))) {
+        if (!wait_for_readable(listener.get(), listener_wait_interval(options_))) {
             continue;
         }
 
@@ -694,6 +720,7 @@ void TcpServer::run() {
                     command_metrics_tracker_,
                     snapshot.connection_id,
                     options_.max_request_bytes,
+                    options_.client_idle_timeout,
                     std::move(runtime_info),
                     options_.auto_compact_wal}
             .detach();
