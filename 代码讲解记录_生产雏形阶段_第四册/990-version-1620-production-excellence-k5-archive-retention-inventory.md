@@ -60,7 +60,7 @@ warnings: none
 
 根目录容量上限内置在脚本默认配置里：`a/`、`c/`、`d/` 默认 64 MiB，`b/` 默认 16 MiB，`e/` 默认 1200 MiB，`f/` 默认 128 MiB。这个配置不是为了宣称这些大小永远合理，而是把当前历史现实和未来预期分开。`e/` 的上限高，是因为它已经是高容量历史根；`f/` 的上限低一些，是因为从现在起要维持更克制的归档风格。脚本还提供 `--root-ceiling-mib ROOT=MIB`，以后如果维护者需要临时调整某个根的预算，可以在不改源码的情况下试跑。
 
-## CI 契约与 gcov workaround 退场
+## CI 契约与 gcov workaround 保留
 
 本版修改了：
 
@@ -77,7 +77,9 @@ CI 新增 `archive inventory` job，运行在 Ubuntu 上，只做 checkout 和 P
 --gcov-ignore-parse-errors negative_hits.warn_once_per_file
 ```
 
-K4 已经把 `command.cpp` 拆开，所以 v1620 重新测试这个 workaround 是否还需要。做法不是只从 workflow 中删掉参数，而是在 `dependabot_config_tests.cpp` 中增加反向断言，确认 CI 文本中不再出现 `--gcov-ignore-parse-errors` 和 `negative_hits.warn_once_per_file`。这让“workaround 已退场”变成测试保护的事实。后续如果远端 coverage 因同类 gcovr 问题重新失败，维护者必须有意识地把参数和测试一起改回来，并在进度文档中写明限制，而不是悄悄恢复一个没人记得来源的 CI flag。
+K4 已经把 `command.cpp` 拆开，所以 v1620 重新测试这个 workaround 是否还需要。第一轮实现曾经把 workflow 中的参数删掉，并把 `dependabot_config_tests.cpp` 改成反向断言，目的是让远端 Ubuntu coverage 给出真实答案。GitHub Actions run `27428515080` 很快给出答案：coverage build 和 full CTest 都通过，但 `Generate core coverage report` 在 `src/command_catalog.cpp` 上失败，gcovr 日志显示 `branch 4 taken -32`，并明确提示继续使用 `--gcov-ignore-parse-errors negative_hits.warn_once_per_file`。这说明 K4 拆分确实移走了旧 `command.cpp` 的触发点，但 GCC/gcov 的 negative-hit bug 仍可能出现在命令 catalog 这类模板/容器密集代码上。
+
+因此最终 v1620 没有把 workaround 退场，而是把它恢复并继续由测试保护。`dependabot_config_tests.cpp` 现在断言 workflow 中必须出现 `--gcov-ignore-parse-errors` 和 `negative_hits.warn_once_per_file`，含义不是放松 coverage floor，而是把已知 gcov/gcovr 解析缺陷降级为 warning，同时继续要求 coverage build、CTest、report generation 和 `--fail-under-line 88` 全部成功。这个调整比“硬删 flag”更诚实：工具链问题没有消失，就不应该把它包装成清理成功；但失败证据已经被记录下来，后续如果 gcovr 版本升级或 GCC 输出变化，再做一次退场复测就有明确入口。
 
 这个动作也体现了 K5 的维护思路：不是把脚本和文档写完就算，而是顺手把上一阶段 review 中明确提出的临时债务闭环。K1 到 K4 建起的 sanitizer、coverage、format 和 split safety net 现在开始服务于维护动作本身。
 
@@ -118,7 +120,7 @@ python scripts\archive_inventory.py --budget-mib 8 --strict
 ctest --test-dir cmake-build-v1620 -C Debug --output-on-failure --timeout 120 -R dependabot_config_tests
 ```
 
-它保护 workflow 中必须有 archive inventory job，也保护 coverage workaround 已经退场。第三层是全量 CTest：
+它保护 workflow 中必须有 archive inventory job，也保护 coverage workaround 在当前工具链下继续保留。第三层是全量 CTest：
 
 ```powershell
 ctest --test-dir cmake-build-v1620 -C Debug --output-on-failure --timeout 120 --progress

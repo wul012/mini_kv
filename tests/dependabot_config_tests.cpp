@@ -86,8 +86,8 @@ int main() {
         "(store|command|command_catalog|command_contracts|command_dispatch|command_expiry_ops|command_"
         "introspection_ops|command_parse_helpers|command_persistence_ops|command_response_formatters|command_"
         "smoke_formatters|command_string_ops|command_wal_gate|wal|snapshot|resp)\\\\.cpp");
-    assert_not_contains(ci_workflow, "--gcov-ignore-parse-errors");
-    assert_not_contains(ci_workflow, "negative_hits.warn_once_per_file");
+    assert_contains(ci_workflow, "--gcov-ignore-parse-errors");
+    assert_contains(ci_workflow, "negative_hits.warn_once_per_file");
     assert_contains(ci_workflow, "--fail-under-line 88");
     assert_contains(ci_workflow, "name: mini-kv-core-coverage");
 
