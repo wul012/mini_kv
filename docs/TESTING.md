@@ -73,4 +73,3 @@ Those behaviors require separate system-level tests if the project ever chooses 
 The tested state should be described as single-project validation plus cross-project contract alignment unless there is real integration evidence. Valid integration evidence would be a command or test proving Node actually consumes mini-kv runtime output, Java actually preserves order authority, and no side project can trigger mini-kv writes, restore/load/compact execution, service startup, credential reads, deployment, rollback, or managed audit writes.
 
 Until that exists, mini-kv evidence remains a local C++ proof surface prepared for downstream review, not a live four-project integration guarantee.
-

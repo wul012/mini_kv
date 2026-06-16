@@ -78,4 +78,3 @@ Node and Java may consume mini-kv evidence as read-only context. That consumptio
 - Restore, load, compact, rollback, deployment, and production-window behavior require separate approval and are not authorized by evidence JSON.
 
 When in doubt, treat mini-kv evidence as a signed-off checklist candidate only after a separate review confirms the exact command, environment, and operator approval path.
-

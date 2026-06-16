@@ -7,13 +7,13 @@
 
 namespace {
 
-using minikv::test_support::TestNetworkRuntime;
-using minikv::test_support::TestSocketGuard;
-using minikv::test_support::TestTcpServerHarness;
 using minikv::test_support::connect_test_socket;
 using minikv::test_support::exchange_raw;
 using minikv::test_support::receive_all;
 using minikv::test_support::send_all;
+using minikv::test_support::TestNetworkRuntime;
+using minikv::test_support::TestSocketGuard;
+using minikv::test_support::TestTcpServerHarness;
 using minikv::test_support::wait_for_connection_total;
 
 constexpr std::size_t sequential_connection_count = 100;

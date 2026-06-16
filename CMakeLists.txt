@@ -419,7 +419,13 @@ minikv_add_linked_test(
     tests/log_tests.cpp
 )
 
-add_test(NAME cli_log_level_flag_smoke COMMAND minikv_cli --log-level debug)
+add_test(
+    NAME cli_log_level_flag_smoke
+    COMMAND ${CMAKE_COMMAND}
+            -DCLI_PATH=$<TARGET_FILE:minikv_cli>
+            -DINPUT_PATH=${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_quit_input.txt
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_cli_log_level_smoke.cmake
+)
 set_tests_properties(cli_log_level_flag_smoke
     PROPERTIES
         PASS_REGULAR_EXPRESSION "mini-kv CLI"

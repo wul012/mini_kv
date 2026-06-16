@@ -48,9 +48,7 @@ public:
         }
     }
 
-    ~TestNetworkRuntime() {
-        WSACleanup();
-    }
+    ~TestNetworkRuntime() { WSACleanup(); }
 };
 
 inline void close_test_socket(TestSocket socket) {
@@ -63,9 +61,7 @@ inline std::string socket_error_message(std::string_view prefix) {
     return std::string{prefix} + ": WSA error " + std::to_string(WSAGetLastError());
 }
 
-inline std::string address_error_message(int result) {
-    return "getaddrinfo failed: " + std::to_string(result);
-}
+inline std::string address_error_message(int result) { return "getaddrinfo failed: " + std::to_string(result); }
 
 #else
 using TestSocket = int;
@@ -95,9 +91,7 @@ class TestSocketGuard {
 public:
     explicit TestSocketGuard(TestSocket socket = invalid_test_socket) : socket_(socket) {}
 
-    ~TestSocketGuard() {
-        close_test_socket(socket_);
-    }
+    ~TestSocketGuard() { close_test_socket(socket_); }
 
     TestSocketGuard(const TestSocketGuard&) = delete;
     TestSocketGuard& operator=(const TestSocketGuard&) = delete;
@@ -112,9 +106,7 @@ public:
         return *this;
     }
 
-    TestSocket get() const {
-        return socket_;
-    }
+    TestSocket get() const { return socket_; }
 
 private:
     TestSocket release() {
@@ -139,18 +131,15 @@ public:
     TestAddrInfoGuard(const TestAddrInfoGuard&) = delete;
     TestAddrInfoGuard& operator=(const TestAddrInfoGuard&) = delete;
 
-    addrinfo* get() const {
-        return info_;
-    }
+    addrinfo* get() const { return info_; }
 
 private:
     addrinfo* info_;
 };
 
 inline bool contains_log(const std::vector<std::string>& logs, std::string_view needle) {
-    return std::any_of(logs.begin(), logs.end(), [needle](const std::string& line) {
-        return line.find(needle) != std::string::npos;
-    });
+    return std::any_of(logs.begin(), logs.end(),
+                       [needle](const std::string& line) { return line.find(needle) != std::string::npos; });
 }
 
 inline std::string make_resp_array(std::initializer_list<std::string_view> arguments) {
@@ -250,9 +239,7 @@ inline std::string exchange_raw(std::string_view host, std::uint16_t port, std::
     return receive_all(socket.get());
 }
 
-inline void wait_for_log(const std::vector<std::string>& logs,
-                         std::mutex& logs_mutex,
-                         std::string_view needle) {
+inline void wait_for_log(const std::vector<std::string>& logs, std::mutex& logs_mutex, std::string_view needle) {
     using namespace std::chrono_literals;
 
     bool found = false;
@@ -289,8 +276,7 @@ inline void wait_for_connection_total(const TcpServer& server, std::uint64_t tot
 class TestTcpServerHarness {
 public:
     explicit TestTcpServerHarness(std::chrono::milliseconds client_idle_timeout = std::chrono::milliseconds{0})
-        : options_(make_options(logs_, logs_mutex_, client_idle_timeout)),
-          server_(store_, options_) {
+        : options_(make_options(logs_, logs_mutex_, client_idle_timeout)), server_(store_, options_) {
         server_thread_ = std::thread{[this] {
             try {
                 server_.run();
@@ -315,21 +301,13 @@ public:
     TestTcpServerHarness(const TestTcpServerHarness&) = delete;
     TestTcpServerHarness& operator=(const TestTcpServerHarness&) = delete;
 
-    Store& store() {
-        return store_;
-    }
+    Store& store() { return store_; }
 
-    TcpServer& server() {
-        return server_;
-    }
+    TcpServer& server() { return server_; }
 
-    const TcpServer& server() const {
-        return server_;
-    }
+    const TcpServer& server() const { return server_; }
 
-    std::uint16_t bound_port() const {
-        return server_.bound_port();
-    }
+    std::uint16_t bound_port() const { return server_.bound_port(); }
 
     bool contains_log(std::string_view needle) const {
         std::lock_guard lock{logs_mutex_};
@@ -351,8 +329,7 @@ public:
     }
 
 private:
-    static TcpServer::Options make_options(std::vector<std::string>& logs,
-                                           std::mutex& logs_mutex,
+    static TcpServer::Options make_options(std::vector<std::string>& logs, std::mutex& logs_mutex,
                                            std::chrono::milliseconds client_idle_timeout) {
         using namespace std::chrono_literals;
 

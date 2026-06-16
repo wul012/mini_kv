@@ -135,4 +135,3 @@ The long per-version history now lives in `docs/CHANGELOG.md`; this section keep
 - Concurrent RESP-over-TCP raw-socket client coverage with active and peak connection checks
 - GitHub Actions CI for Linux, macOS, and Windows CMake build plus CTest
 - Dependabot maintenance for GitHub Actions updates only, with grouped minor/patch updates and semver-major auto-updates ignored
-

@@ -22,7 +22,7 @@ This project demonstrates systems engineering discipline in C++:
 - WAL, snapshot, restore, auto-compaction, and evidence correctness
 - CI and test coverage to ensure runtime contracts and read-only governance boundaries
 
-The README contains the long project history. New production-excellence progress is tracked in `docs/production-excellence-progress.md` so the README does not absorb another governance chain.
+The README keeps the project overview and latest versions. Long history lives in `docs/CHANGELOG.md`, detailed capability notes live in `docs/CAPABILITY-SNAPSHOT.md`, and production-excellence progress is tracked in `docs/production-excellence-progress.md`.
 
 ## How to run it
 
@@ -45,13 +45,15 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1620 production-excellence K5 archive retention**. K4 has passed planner review, so K5 now freezes the archive-retention operating model without moving historical evidence: `docs/archive-retention-index.md` records `a/` through `f/`, `scripts/archive_inventory.py` measures root/latest-version size with warning-only budgets, and CI runs that inventory as an operator signal. The post-K4 coverage advisory was re-tested in GitHub Actions run `27428515080`; removing the old `gcovr --gcov-ignore-parse-errors negative_hits.warn_once_per_file` workaround still failed on a gcov negative-hit parser bug in `src/command_catalog.cpp`, so the final v1620 coverage lane keeps that workaround.
+Current focus: **v1622 production-excellence closeout quality repair**. v1621 completed K6 docs/release discipline and opt-in TCP idle/command timeout coverage, but its first push left a red changed-file clang-format CI job plus three Markdown EOF blank-line issues and a Windows-local `cli_log_level_flag_smoke` stdin waiver. v1622 closes those gaps: changed C++ files pass the CLion-bundled clang-format dry-run, `git diff --check` is clean, the CLI log-level smoke now feeds `QUIT` through a CMake script, focused CTest passes, and full local CTest is 338/338.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
 ## Where to look next
 
-- `README.md` — full versioned project explanations
+- `README.md` — overview, latest versions, build/run, protocol, and roadmap
+- `docs/CHANGELOG.md` — full versioned project explanations
+- `docs/CAPABILITY-SNAPSHOT.md` — dense capability and evidence-field snapshot
 - `src/` — core KV engine and command handling
 - `tests/` — runtime and regression tests
 - `a/` through `f/` — frozen versioned screenshots and evidence; do not move or rename historical roots
