@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1622 production-excellence closeout quality repair**. v1621 completed K6 docs/release discipline and opt-in TCP idle/command timeout coverage, but its first push left a red changed-file clang-format CI job plus three Markdown EOF blank-line issues and a Windows-local `cli_log_level_flag_smoke` stdin waiver. v1622 closes those gaps: changed C++ files pass the CLion-bundled clang-format dry-run, `git diff --check` is clean, the CLI log-level smoke now feeds `QUIT` through a CMake script, focused CTest passes, and full local CTest is 338/338.
+Current focus: **v1623 project orientation guide closeout**. v1622 repaired the K6 quality gaps and left the production-excellence chain green. v1623 turns the plain-language mini-kv explanation into a maintained project surface under `项目通俗说明/`: it explains the C++ KV core, WAL, snapshot, TCP/RESP, read-only evidence commands, `CHECKJSON` / `SMOKEJSON` boundaries, and Node/Java consumption model, then protects the guide with a small CTest contract so future edits cannot accidentally remove the essential mechanism and boundary sections.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
@@ -54,6 +54,7 @@ Version scheme note: the CMake project version is still `0.102.0` because severa
 - `README.md` — overview, latest versions, build/run, protocol, and roadmap
 - `docs/CHANGELOG.md` — full versioned project explanations
 - `docs/CAPABILITY-SNAPSHOT.md` — dense capability and evidence-field snapshot
+- `项目通俗说明/` — Chinese project orientation guides with diagrams and input/output explanations
 - `src/` — core KV engine and command handling
 - `tests/` — runtime and regression tests
 - `a/` through `f/` — frozen versioned screenshots and evidence; do not move or rename historical roots

@@ -413,6 +413,13 @@ minikv_add_standalone_source_dir_test(
     tests/dependabot_config_tests.cpp
 )
 
+add_test(
+    NAME project_orientation_doc_contract
+    COMMAND ${CMAKE_COMMAND}
+            -DDOC_PATH=${CMAKE_CURRENT_SOURCE_DIR}/项目通俗说明/mini-kv-项目机制与价值说明.md
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_project_orientation_doc.cmake
+)
+
 minikv_add_linked_test(
     minikv_log_tests
     log_tests
