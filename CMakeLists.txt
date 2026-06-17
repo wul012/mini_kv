@@ -421,6 +421,12 @@ add_test(
 )
 
 minikv_add_linked_test(
+    minikv_project_orientation_examples_tests
+    project_orientation_examples_tests
+    tests/project_orientation_examples_tests.cpp
+)
+
+minikv_add_linked_test(
     minikv_log_tests
     log_tests
     tests/log_tests.cpp

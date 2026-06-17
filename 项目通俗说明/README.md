@@ -4,7 +4,7 @@
 
 ## 当前说明
 
-- `mini-kv-项目机制与价值说明.md`：解释 mini-kv 是什么、为什么有价值、普通命令/WAL/snapshot/TCP/RESP/只读证据命令分别如何输入和输出，以及为什么 `CHECKJSON` / `SMOKEJSON` 只做边界证明而不是执行生产动作。
+- `mini-kv-项目机制与价值说明.md`：解释 mini-kv 是什么、为什么有价值、普通命令/WAL/snapshot/TCP/RESP/只读证据命令分别如何输入和输出，以及为什么 `CHECKJSON` / `SMOKEJSON` 只做边界证明而不是执行生产动作；v1624 起，其中的最小命令故事由 `project_orientation_examples_tests` 可执行验证。
 
 ## 维护规则
 

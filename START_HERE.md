@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1623 project orientation guide closeout**. v1622 repaired the K6 quality gaps and left the production-excellence chain green. v1623 turns the plain-language mini-kv explanation into a maintained project surface under `项目通俗说明/`: it explains the C++ KV core, WAL, snapshot, TCP/RESP, read-only evidence commands, `CHECKJSON` / `SMOKEJSON` boundaries, and Node/Java consumption model, then protects the guide with a small CTest contract so future edits cannot accidentally remove the essential mechanism and boundary sections.
+Current focus: **v1624 executable project orientation examples**. v1623 turned the plain-language mini-kv explanation into a maintained project surface under `项目通俗说明/`; v1624 now connects that guide to real code by adding `project_orientation_examples_tests`. The test creates `Store` and `CommandProcessor`, executes `SET order:100 paid`, `GET order:100`, `INFOJSON`, `CHECKJSON LOAD data/prod.snap`, and `SMOKEJSON`, and proves the guide's examples still match runtime behavior while `CHECKJSON` remains read-only analysis rather than snapshot load, store replacement, WAL mutation, service startup, routing, or execution authority.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

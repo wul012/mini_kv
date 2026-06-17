@@ -149,6 +149,21 @@ sequenceDiagram
 
 关键机理是：写命令先写 WAL，再改 Store。这样即使程序崩溃，后续也可以从 WAL 中恢复。
 
+## 可执行最小导览实验
+
+v1624 起，这份导览不只靠人工阅读维护，还新增了 `project_orientation_examples_tests`。这个 CTest 直接创建 `Store` 和 `CommandProcessor`，按导览里的最小故事执行命令，并断言每一步输入输出和边界含义。
+
+| 步骤 | 输入 | 预期输出或状态 | 说明 |
+|---|---|---|---|
+| 写入业务样例键 | `SET order:100 paid` | `OK inserted`，Store 里有 1 个 live key | 证明普通写命令真的修改内存 Store。 |
+| 读取业务样例键 | `GET order:100` | `paid` | 证明读命令走 Store 读取路径。 |
+| 读取身份状态 | `INFOJSON` | 包含 `read_only=true`、`execution_allowed=false`、`order_authoritative=false` | 证明运行时身份信息是只读控制面材料，不是执行入口。 |
+| 检查危险命令 | `CHECKJSON LOAD data/prod.snap` | 包含 `command=LOAD`、`execution_allowed=false`、`store_replace_from_snapshot` | 证明 `CHECKJSON` 只解释 `LOAD` 的风险，不执行 `LOAD`。 |
+| 再读业务样例键 | `GET order:100` | 仍然是 `paid` | 证明前一步没有加载 snapshot、没有替换 Store。 |
+| 读取综合证据 | `SMOKEJSON` | 包含 forbidden commands、no auto-start、no managed audit write、no restore/compact execution | 证明综合证据仍是只读边界证明。 |
+
+这条测试的价值是把“通俗说明”和“真实代码路径”接上：如果未来有人改了命令输出、误删边界字段，或者让 `CHECKJSON` 真的执行了危险动作，测试会先拦住。
+
 ## WAL 恢复的一步步输入输出
 
 假设启动时传入 WAL 文件：
