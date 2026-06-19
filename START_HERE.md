@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1624 executable project orientation examples**. v1623 turned the plain-language mini-kv explanation into a maintained project surface under `项目通俗说明/`; v1624 now connects that guide to real code by adding `project_orientation_examples_tests`. The test creates `Store` and `CommandProcessor`, executes `SET order:100 paid`, `GET order:100`, `INFOJSON`, `CHECKJSON LOAD data/prod.snap`, and `SMOKEJSON`, and proves the guide's examples still match runtime behavior while `CHECKJSON` remains read-only analysis rather than snapshot load, store replacement, WAL mutation, service startup, routing, or execution authority.
+Current focus: **v1625 runtime receipts consolidation design gate**. The production-excellence K4 stretch scope is now backed by `docs/receipts-consolidation-note.md`: 28 runtime receipt files / 788,811 bytes are inventoried, the 26-file credential-resolver family is selected as the first target, and future code migration must begin with an ordered zero-dependency builder plus fixture-subobject byte parity. v1625 changes no runtime formatter, fixture, digest, command, router, write path, credential/network boundary, or execution authority.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
@@ -54,6 +54,7 @@ Version scheme note: the CMake project version is still `0.102.0` because severa
 - `README.md` — overview, latest versions, build/run, protocol, and roadmap
 - `docs/CHANGELOG.md` — full versioned project explanations
 - `docs/CAPABILITY-SNAPSHOT.md` — dense capability and evidence-field snapshot
+- `docs/receipts-consolidation-note.md` — v1625 necessity proof, ordered formatter design, byte-parity gate, and phased receipt migration plan
 - `项目通俗说明/` — Chinese project orientation guides with diagrams and input/output explanations
 - `src/` — core KV engine and command handling
 - `tests/` — runtime and regression tests

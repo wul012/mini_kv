@@ -420,6 +420,14 @@ add_test(
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_project_orientation_doc.cmake
 )
 
+add_test(
+    NAME receipts_consolidation_note_contract
+    COMMAND ${CMAKE_COMMAND}
+            -DDOC_PATH=${CMAKE_CURRENT_SOURCE_DIR}/docs/receipts-consolidation-note.md
+            -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_receipts_consolidation_note.cmake
+)
+
 minikv_add_linked_test(
     minikv_project_orientation_examples_tests
     project_orientation_examples_tests
