@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1627 runtime receipts consolidation Slice 1 / abort-rollback first migration**. The v1626 builder foundation is now used by `src/runtime_credential_resolver_abort_rollback_semantics_receipts.cpp`, which moved the abort/rollback non-participation receipt assembly onto the internal ordered JSON builder while keeping byte-for-byte fixture parity. The same test surface now records the no-network drift before any no-network migration: it is exactly one legacy apostrophe escaping difference between `Node v323\u0027s` in the committed fixture and `Node v323's` in the current formatter, with no semantic field drift, no digest drift, and no boundary expansion.
+Current focus: **v1628 runtime receipts consolidation quality correction / no-network drift closure**. This version does not migrate another receipt formatter. It corrects the false shrink metric in `docs/receipts-consolidation-note.md`: line-count shrink is a review metric, not a stop-condition, so v1627's +116 diff-line abort/rollback growth is accepted only because byte parity, boundary closure, and builder testability improved. `runtime_receipt_json_builder_tests` now drives no-network drift to ground: both objects have 118 top-level fields, and the only raw-byte delta is the single `boundary` phrase `Node v323\u0027s` in the committed fixture versus `Node v323's` in the current formatter. No semantic field, digest, no-network/no-write/WAL/credential/execution boundary, fixture, or formatter migration changes in this version.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
@@ -54,7 +54,7 @@ Version scheme note: the CMake project version is still `0.102.0` because severa
 - `README.md` — overview, latest versions, build/run, protocol, and roadmap
 - `docs/CHANGELOG.md` — full versioned project explanations
 - `docs/CAPABILITY-SNAPSHOT.md` — dense capability and evidence-field snapshot
-- `docs/receipts-consolidation-note.md` — v1625 necessity proof plus v1626 Slice 0 implementation notes for ordered JSON building and fixture-subobject parity
+- `docs/receipts-consolidation-note.md` — v1625 necessity proof plus v1626-v1628 implementation notes for ordered JSON building, fixture-subobject parity, false shrink metric correction, and no-network drift closure
 - `项目通俗说明/` — Chinese project orientation guides with diagrams and input/output explanations
 - `src/` — core KV engine and command handling
 - `tests/` — runtime and regression tests

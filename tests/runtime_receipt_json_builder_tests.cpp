@@ -7,6 +7,7 @@
 #include <cassert>
 #include <filesystem>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace {
@@ -31,6 +32,66 @@ std::string replace_once(std::string text, std::string_view from, std::string_vi
     assert(text.find(std::string{from}, position + from.size()) == std::string::npos);
     text.replace(position, from.size(), std::string{to});
     return text;
+}
+
+std::size_t count_occurrences(std::string_view text, std::string_view needle) {
+    assert(!needle.empty());
+    std::size_t count = 0;
+    for (std::size_t position = text.find(needle); position != std::string_view::npos;
+         position = text.find(needle, position + needle.size())) {
+        ++count;
+    }
+    return count;
+}
+
+std::size_t count_top_level_fields(std::string_view object_json) {
+    assert(!object_json.empty() && object_json.front() == '{' && object_json.back() == '}');
+
+    std::size_t depth = 0;
+    std::size_t count = 0;
+    bool in_string = false;
+    bool escaped = false;
+    bool top_level_string_candidate = false;
+
+    for (std::size_t index = 0; index < object_json.size(); ++index) {
+        const char ch = object_json[index];
+        if (in_string) {
+            if (escaped) {
+                escaped = false;
+            } else if (ch == '\\') {
+                escaped = true;
+            } else if (ch == '"') {
+                in_string = false;
+                if (top_level_string_candidate) {
+                    std::size_t cursor = index + 1;
+                    while (cursor < object_json.size() &&
+                           (object_json[cursor] == ' ' || object_json[cursor] == '\t' || object_json[cursor] == '\n' ||
+                            object_json[cursor] == '\r')) {
+                        ++cursor;
+                    }
+                    if (cursor < object_json.size() && object_json[cursor] == ':') {
+                        ++count;
+                    }
+                }
+                top_level_string_candidate = false;
+            }
+            continue;
+        }
+
+        if (ch == '"') {
+            in_string = true;
+            top_level_string_candidate = depth == 1;
+        } else if (ch == '{' || ch == '[') {
+            ++depth;
+        } else if (ch == '}' || ch == ']') {
+            assert(depth > 0);
+            --depth;
+        }
+    }
+
+    assert(depth == 0);
+    assert(!in_string);
+    return count;
 }
 
 void ordered_object_preserves_scalars_and_escaping() {
@@ -125,7 +186,19 @@ void candidate_formatters_have_explicit_fixture_parity_state() {
     const auto no_network_current = minikv::runtime_evidence_receipts::
         format_credential_resolver_no_network_safety_fixture_contract_non_participation_receipt_json(read_commands);
     assert(*no_network_object != no_network_current);
+    assert(count_top_level_fields(*no_network_object) == 118);
+    assert(count_top_level_fields(no_network_current) == 118);
     assert(no_network_object->size() == no_network_current.size() + 5);
+    assert(count_occurrences(*no_network_object, "\\u0027") == 1);
+    assert(count_occurrences(no_network_current, "\\u0027") == 0);
+    assert(count_occurrences(*no_network_object, "Node v323\\u0027s no-network fixture contract") == 1);
+    assert(count_occurrences(no_network_current, "Node v323's no-network fixture contract") == 1);
+    assert(no_network_object->find("\"boundary\":\"credential resolver no-network safety fixture contract "
+                                   "non-participation receipt only; mini-kv echoes Node v323\\u0027s "
+                                   "no-network fixture contract") != std::string::npos);
+    assert(no_network_current.find("\"boundary\":\"credential resolver no-network safety fixture contract "
+                                   "non-participation receipt only; mini-kv echoes Node v323's "
+                                   "no-network fixture contract") != std::string::npos);
     assert(no_network_object->find("Node v323\\u0027s no-network fixture contract") != std::string::npos);
     assert(no_network_current.find("Node v323's no-network fixture contract") != std::string::npos);
     assert(no_network_current.find("Node v323\\u0027s no-network fixture contract") == std::string::npos);

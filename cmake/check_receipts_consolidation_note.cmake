@@ -30,6 +30,10 @@ set(required_fragments
     "no write"
     "Slice 0"
     "Slice 1"
+    "Line-count shrink is a review metric, not a stop condition"
+    "+116 diff lines"
+    "false shrink metric"
+    "Node v323\\u0027s no-network fixture contract"
     "full CTest"
 )
 
