@@ -175,3 +175,18 @@ v1625 只在以下条件全部成立时完成：
 - 后续 v1626 从 Slice 0 开始，不跳过 parity harness 直接搬 receipt。
 
 一句话：v1625 把“receipts 看起来重复”升级为可量化、可验证、可停止的重构合同，为后续在不改变任何 JSON 字节、digest 和只读边界的前提下逐步收敛 26 个 credential resolver receipt 文件。
+
+## 9. v1626 Slice 0 实施记录
+
+v1626 完成了本设计的第一层基础设施，但没有迁移任何 receipt formatter。新增的 `src/runtime_receipt_json_builder.hpp/.cpp` 是内部 ordered JSON builder，复用既有 `runtime_evidence::json_string`、`json_bool` 和 `json_object`，只补齐数字、raw JSON array、initializer-list 入口和显式 ordered field 模型。它不进入 public include，不新增第三方依赖，不读取 Node/Java，不启动服务，也不解释 receipt 业务语义。
+
+测试侧新增 `tests/receipt_fixture_parity.hpp` 和 `tests/runtime_receipt_json_builder_tests.cpp`。前者按字段名从已提交 fixture 中提取完整 JSON object，能处理字符串转义、嵌套对象、数组和空白，并对未闭合对象、重复字段、非对象目标、坏字段名、未终止字符串等情况 fail closed。后者先验证 builder 的字节行为：字段顺序保持输入顺序，false、0、空对象、空数组不被省略，普通字符串正确转义，已经编码好的 object/array 不会被二次转义。
+
+fixture 冻结结果如下：
+
+- `credential_resolver_no_network_safety_fixture_contract_non_participation_receipt`：嵌套对象长度 17,738 字节，FNV digest `fnv1a64:794a730788ce0e87`。
+- `credential_resolver_abort_rollback_semantics_contract_non_participation_receipt`：嵌套对象长度 19,183 字节，FNV digest `fnv1a64:0e41aded16909c6d`。
+
+候选 formatter 状态也被显式记录：abort/rollback 这份当前已经与冻结 fixture 子对象 byte-for-byte 相等；no-network 这份当前不是 byte-for-byte 相等，因此只能作为已知 pre-migration drift 输入，不能在下一版直接声称“迁移前后全等”。这不是放宽标准，而是把风险提前暴露出来：后续 Slice 1 若要迁移 no-network，必须先定位并解释漂移来源，或者先选择 abort/rollback 作为更低风险的首个迁移样本。
+
+v1626 的验收结果：focused receipt/build tests 通过，`smokejson_command_receipt_tests`、`runtime_smoke_evidence_tests`、`release_verification_manifest_tests` 通过，full local CTest 为 342/342。fixtures、public receipt output、runtime commands、router authority、write path、WAL behavior、network behavior、credential boundary 和 execution authority 均未扩展。

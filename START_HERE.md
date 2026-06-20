@@ -45,7 +45,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1625 runtime receipts consolidation design gate**. The production-excellence K4 stretch scope is now backed by `docs/receipts-consolidation-note.md`: 28 runtime receipt files / 788,811 bytes are inventoried, the 26-file credential-resolver family is selected as the first target, and future code migration must begin with an ordered zero-dependency builder plus fixture-subobject byte parity. v1625 changes no runtime formatter, fixture, digest, command, router, write path, credential/network boundary, or execution authority.
+Current focus: **v1626 runtime receipts consolidation Slice 0**. The v1625 design gate now has its first code foundation: an internal ordered JSON builder in `src/runtime_receipt_json_builder.*`, a fail-closed fixture subobject extractor in `tests/receipt_fixture_parity.hpp`, and `runtime_receipt_json_builder_tests` covering deterministic object/array assembly, escaping, raw nested JSON values, fixture byte freezing, and explicit candidate parity state. v1626 migrates no runtime receipt formatter yet and changes no fixture, digest, command, router, write path, WAL behavior, credential/network boundary, or execution authority.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
@@ -54,7 +54,7 @@ Version scheme note: the CMake project version is still `0.102.0` because severa
 - `README.md` — overview, latest versions, build/run, protocol, and roadmap
 - `docs/CHANGELOG.md` — full versioned project explanations
 - `docs/CAPABILITY-SNAPSHOT.md` — dense capability and evidence-field snapshot
-- `docs/receipts-consolidation-note.md` — v1625 necessity proof, ordered formatter design, byte-parity gate, and phased receipt migration plan
+- `docs/receipts-consolidation-note.md` — v1625 necessity proof plus v1626 Slice 0 implementation notes for ordered JSON building and fixture-subobject parity
 - `项目通俗说明/` — Chinese project orientation guides with diagrams and input/output explanations
 - `src/` — core KV engine and command handling
 - `tests/` — runtime and regression tests

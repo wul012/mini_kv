@@ -97,6 +97,7 @@ add_library(minikv
     src/runtime_credential_resolver_receipts.cpp
     src/runtime_credential_resolver_test_only_shell_receipts.cpp
     src/runtime_evidence_receipts.cpp
+    src/runtime_receipt_json_builder.cpp
     src/runtime_sandbox_receipts.cpp
     src/recovery_evidence.cpp
     src/resp.cpp
@@ -432,6 +433,17 @@ minikv_add_linked_test(
     minikv_project_orientation_examples_tests
     project_orientation_examples_tests
     tests/project_orientation_examples_tests.cpp
+)
+
+minikv_add_source_dir_test(
+    minikv_runtime_receipt_json_builder_tests
+    runtime_receipt_json_builder_tests
+    tests/runtime_receipt_json_builder_tests.cpp
+)
+
+target_include_directories(minikv_runtime_receipt_json_builder_tests
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
 )
 
 minikv_add_linked_test(
