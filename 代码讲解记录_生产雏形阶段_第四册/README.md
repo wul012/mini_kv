@@ -55,3 +55,6 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 - 测试部分不能只列命令，要说明断言保护什么行为。
 - 不要把纯归档输出、截图清单或字段清单伪装成代码讲解。
 - 单册超过 150 篇或 README 超过 50KB 时，优先开下一册。
+## v1627 补充索引
+
+- v1627: [995-version-1627-abort-rollback-builder-migration-and-no-network-drift.md](995-version-1627-abort-rollback-builder-migration-and-no-network-drift.md) - 先迁移已经具备 byte parity 的 abort/rollback receipt formatter 到内部 ordered JSON builder，再把 no-network 的 pre-migration drift 查清为唯一一处 `\u0027` 与直接 apostrophe 的历史转义差异；测试继续保护 fixture、digest、字段顺序、no-network/no-write/no-WAL/no-execution 边界不被静默改变。

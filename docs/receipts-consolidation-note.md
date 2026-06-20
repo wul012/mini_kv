@@ -190,3 +190,14 @@ fixture 冻结结果如下：
 候选 formatter 状态也被显式记录：abort/rollback 这份当前已经与冻结 fixture 子对象 byte-for-byte 相等；no-network 这份当前不是 byte-for-byte 相等，因此只能作为已知 pre-migration drift 输入，不能在下一版直接声称“迁移前后全等”。这不是放宽标准，而是把风险提前暴露出来：后续 Slice 1 若要迁移 no-network，必须先定位并解释漂移来源，或者先选择 abort/rollback 作为更低风险的首个迁移样本。
 
 v1626 的验收结果：focused receipt/build tests 通过，`smokejson_command_receipt_tests`、`runtime_smoke_evidence_tests`、`release_verification_manifest_tests` 通过，full local CTest 为 342/342。fixtures、public receipt output、runtime commands、router authority、write path、WAL behavior、network behavior、credential boundary 和 execution authority 均未扩展。
+## 10. v1627 Slice 1a 实施记录：先迁移 abort/rollback，先诊断 no-network
+
+v1627 只执行 Slice 1 的低风险半步：先迁移 `runtime_credential_resolver_abort_rollback_semantics_receipts.cpp`，暂不迁移 `runtime_credential_resolver_no_network_safety_fixture_receipts.cpp`。原因很直接：v1626 已经证明 abort/rollback 当前 public formatter 与冻结 fixture 子对象逐字节相等，而 no-network 已经被标记为 pre-migration drift 输入。按照本设计的停止条件，有漂移的 formatter 不能被直接改写；必须先查清漂移，再决定下一刀。
+
+abort/rollback 的迁移方式是保守的。文件仍然保留本 receipt 的常量、digest parts、领域段落、source Node v326/v325 引用和所有边界字段；新的内部 ordered JSON builder 只负责把已经排好序的字段拼成 compact JSON。`required_fields`、`prohibited_fields`、`checks` 等历史 raw JSON 片段没有被重新解释，digest parts 的顺序也没有改变。顶层对象仍按原顺序输出：版本和来源字段、Node 引用、mini-kv receipt、checks、summary、warnings、recommendations、evidence endpoints、digest 字段、关闭边界旗标、`boundary` 和 `node_action`。这保证迁移是在“拼装机制”层面收敛重复，而不是在“证据语义”层面发明新 contract。
+
+本版同时把 no-network 漂移查清楚并写进测试。诊断结论是：committed fixture 子对象和当前 formatter 在 JSON 语义上完全一致，字段数都是 118，字段顺序一致，递归解析后的值差异数为 0，`receipt_digest` 都是 `fnv1a64:3d8c483c93f8acf9`。唯一的原始字节差异出现在一段说明文字：fixture 使用 `Node v323\u0027s no-network fixture contract`，当前 formatter 使用 `Node v323's no-network fixture contract`。长度差正好是 5 个字符，因为 `\u0027` 比直接 apostrophe 多 5 个字节。`runtime_receipt_json_builder_tests` 现在用 `replace_once` 明确证明：只把 fixture 中这一处 `\u0027` 替换为直接 apostrophe，整段 no-network 子对象就与当前 formatter 完全相等。
+
+这不是给 no-network 迁移开绿灯，而是给下一版设置更清楚的入口条件。下一步若迁移 no-network，需要先明确选择：要么让新 builder 保留 fixture 的历史 `\u0027` 字节拼写，追求 fixture 子对象 byte parity；要么承认当前 formatter 的直接 apostrophe 是已经运行中的 public surface，并补充一个专门的 fixture/manifest 兼容决策。无论选择哪条，都不能在迁移中顺手“格式化一下”或偷偷改 fixture。v1627 的价值在于把这个差异缩小到一个可命名、可测试、可审查的字节级事实。
+
+验收结果：`runtime_receipt_json_builder_tests`、`smokejson_command_receipt_tests`、`release_verification_manifest_tests`、`runtime_smoke_evidence_tests`、`no_network_safety_fixture_contract_receipt_tests`、`abort_rollback_semantics_contract_receipt_tests` 均通过；full local CTest 为 342/342。`clang-format --dry-run --Werror`、`git diff --check` 和严格归档预算检查通过。fixtures、public command surface、SMOKEJSON、release manifest、router authority、Store/WAL 写入、credential value、raw endpoint、network access、rollback/deployment/LOAD/COMPACT/RESTORE/SETNXEX execution authority 均未扩展。

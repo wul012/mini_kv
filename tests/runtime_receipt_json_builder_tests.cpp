@@ -25,6 +25,14 @@ std::string stable_fixture_digest(std::string_view prefix, const std::string& ob
     return minikv::runtime_evidence::digest(prefix, {{object_json}});
 }
 
+std::string replace_once(std::string text, std::string_view from, std::string_view to) {
+    const auto position = text.find(std::string{from});
+    assert(position != std::string::npos);
+    assert(text.find(std::string{from}, position + from.size()) == std::string::npos);
+    text.replace(position, from.size(), std::string{to});
+    return text;
+}
+
 void ordered_object_preserves_scalars_and_escaping() {
     const auto output = json_object({
         {"message", json_string("quote=\" slash=\\ line=\n tab=\t control=\x01")},
@@ -117,6 +125,13 @@ void candidate_formatters_have_explicit_fixture_parity_state() {
     const auto no_network_current = minikv::runtime_evidence_receipts::
         format_credential_resolver_no_network_safety_fixture_contract_non_participation_receipt_json(read_commands);
     assert(*no_network_object != no_network_current);
+    assert(no_network_object->size() == no_network_current.size() + 5);
+    assert(no_network_object->find("Node v323\\u0027s no-network fixture contract") != std::string::npos);
+    assert(no_network_current.find("Node v323's no-network fixture contract") != std::string::npos);
+    assert(no_network_current.find("Node v323\\u0027s no-network fixture contract") == std::string::npos);
+    assert(replace_once(*no_network_object, "Node v323\\u0027s no-network fixture contract",
+                        "Node v323's no-network fixture contract") == no_network_current);
+    assert(no_network_current.find("\"receipt_digest\":\"fnv1a64:3d8c483c93f8acf9\"") != std::string::npos);
     assert(no_network_current.find("\"read_only\":true") != std::string::npos);
     assert(no_network_current.find("\"execution_allowed\":false") != std::string::npos);
     assert(no_network_current.find("\"network_safety_fixture_executed\":false") != std::string::npos);
