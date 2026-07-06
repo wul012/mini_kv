@@ -1,0 +1,57 @@
+$ ssh azure-linux bash -s <<'REMOTE_SCRIPT'
+set -eo pipefail
+[ -f ~/.profile ] && . ~/.profile || true
+cd /home/azureuser/mini-kv
+tmp=/tmp/osfs-v1636-persistence-check.txt
+cat > "$tmp" <<'EOF'
+WHOAMI
+LOGIN carol carol456
+DIR
+LOGIN alice alice123
+DIR
+OPEN bigfile r
+SEEK 0 4088
+READ 0 96
+FSCK
+QUIT
+EOF
+./build-osfs-linux/minikv_osfs --disk /tmp/osfs-v1636-linux-demo.img --script "$tmp"
+rc=$?
+rm -f "$tmp"
+exit $rc
+REMOTE_SCRIPT
+
+mini-kv osfs course shell
+disk=/tmp/osfs-v1636-linux-demo.img blocks=160 block_size=512 inodes=64
+Commands: HELP, WHOAMI, LOGIN user password, DIR [user], CREATE name, DELETE name, STAT name, CHMOD name mode, OPEN name r|w|rw|a, READ fd [length], WRITE fd text, SEEK fd offset, TELL fd, CLOSE fd, FSCK, USERADD user password, PASSWD [user] password, QUIT
+osfs> WHOAMI
+not logged in
+osfs> LOGIN carol carol456
+OK login carol uid=1002
+osfs> DIR
+name inode physical mode owner size
+carol-note 7 0 0644 1002 0
+osfs> LOGIN alice alice123
+OK login alice uid=1000
+osfs> DIR
+name inode physical mode owner size
+bigfile 5 22 0644 1000 4291
+report 4 20 0600 1000 13
+osfs> OPEN bigfile r
+OK fd=3
+osfs> SEEK 0 4088
+ERR bad fd
+osfs> READ 0 96
+ERR bad fd
+osfs> FSCK
+FSCK OK checks=6
+OK superblock: magic/version/geometry ok
+OK inode bitmap: inode bitmap matches used inode records
+OK block bitmap: block bitmap matches metadata and reachable blocks
+OK file sizes: file sizes match referenced data-block counts
+OK user table: user table, UFD pointers, and MFD entries match
+OK directories: MFD/UFD entries point at valid inodes
+osfs> QUIT
+BYE
+
+[exit_code=0]

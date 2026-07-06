@@ -1,0 +1,17 @@
+$ ssh azure-linux bash -s <<'REMOTE_SCRIPT'
+set -eo pipefail
+[ -f ~/.profile ] && . ~/.profile || true
+cd /home/azureuser/mini-kv
+ctest --test-dir build-osfs-linux -R '^osfs_tests$' --output-on-failure --timeout 120
+REMOTE_SCRIPT
+
+Internal ctest changing into directory: /home/azureuser/mini-kv/build-osfs-linux
+Test project /home/azureuser/mini-kv/build-osfs-linux
+    Start 8: osfs_tests
+1/1 Test #8: osfs_tests .......................   Passed    0.04 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.05 sec
+
+[exit_code=0]

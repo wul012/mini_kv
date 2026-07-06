@@ -1,0 +1,17 @@
+$ ssh azure-linux bash -s <<'REMOTE_SCRIPT'
+set -eo pipefail
+[ -f ~/.profile ] && . ~/.profile || true
+cd /home/azureuser/mini-kv
+cmake -S . -B build-osfs-linux -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build build-osfs-linux --target minikv_osfs minikv_osfs_tests --parallel 1
+ls -lh build-osfs-linux/minikv_osfs build-osfs-linux/minikv_osfs_tests
+REMOTE_SCRIPT
+
+-- Configuring done (0.1s)
+-- Generating done (0.4s)
+-- Build files have been written to: /home/azureuser/mini-kv/build-osfs-linux
+ninja: no work to do.
+-rwxrwxr-x 1 azureuser azureuser 2.9M Jul  6 08:39 build-osfs-linux/minikv_osfs
+-rwxrwxr-x 1 azureuser azureuser 3.1M Jul  6 08:39 build-osfs-linux/minikv_osfs_tests
+
+[exit_code=0]

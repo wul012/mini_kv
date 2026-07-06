@@ -1,0 +1,51 @@
+$ ssh azure-linux bash -s <<'REMOTE_SCRIPT'
+set -eo pipefail
+[ -f ~/.profile ] && . ~/.profile || true
+cd /home/azureuser/mini-kv
+delivery=$(find . -type d -name v1636-osfs-final | head -1); test -n "$delivery"; echo delivery=$delivery;
+echo '[python modules]'
+python3 -c 'import docx, PIL.Image; print("python-docx OK"); print("Pillow OK")'
+echo '[report files]'
+find "$delivery" -maxdepth 2 -type f \( -name '*.docx' -o -name '*.pdf' -o -name '*.png' \) -exec ls -lh {} +
+echo '[pdf info]'
+pdf=$(find "$delivery" -maxdepth 1 -name '*.pdf' | head -1)
+pdfinfo "$pdf" | sed -n '1,25p'
+echo '[libreoffice]'
+soffice --headless --version
+REMOTE_SCRIPT
+
+delivery=./课程设计交付/v1636-osfs-final
+[python modules]
+python-docx OK
+Pillow OK
+[report files]
+-rw-rw-r-- 1 azureuser azureuser  96K Jul  6 08:36 ./课程设计交付/v1636-osfs-final/images/01-osfs-system-architecture.png
+-rw-rw-r-- 1 azureuser azureuser 102K Jul  6 08:36 ./课程设计交付/v1636-osfs-final/images/02-osfs-disk-layout-v3.png
+-rw-rw-r-- 1 azureuser azureuser  69K Jul  6 08:36 ./课程设计交付/v1636-osfs-final/images/03-osfs-indirect-block-flow.png
+-rw-rw-r-- 1 azureuser azureuser  81K Jul  6 08:36 ./课程设计交付/v1636-osfs-final/images/04-osfs-fsck-user-admin-flow.png
+-rw-rw-r-- 1 azureuser azureuser 368K Jul  6 08:36 ./课程设计交付/v1636-osfs-final/操作系统课程设计报告-OSFS-v1636.docx
+-rw-rw-r-- 1 azureuser azureuser 631K Jul  6 08:36 ./课程设计交付/v1636-osfs-final/操作系统课程设计报告-OSFS-v1636.pdf
+[pdf info]
+Author:          python-docx
+Creator:         Writer
+Producer:        LibreOffice 26.2.3.2 (X86_64)
+CreationDate:    Mon Jul  6 08:03:53 2026 UTC
+Custom Metadata: no
+Metadata Stream: yes
+Tagged:          yes
+UserProperties:  no
+Suspects:        no
+Form:            none
+JavaScript:      no
+Pages:           9
+Encrypted:       no
+Page size:       612 x 792 pts (letter)
+Page rot:        0
+File size:       646023 bytes
+Optimized:       no
+PDF version:     1.7
+[libreoffice]
+LibreOffice 24.2.7.2 420(Build:2)
+
+
+[exit_code=0]

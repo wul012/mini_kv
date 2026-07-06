@@ -1,0 +1,15 @@
+$ ssh azure-linux bash -s <<'REMOTE_SCRIPT'
+set -eo pipefail
+[ -f ~/.profile ] && . ~/.profile || true
+cd /home/azureuser/mini-kv
+ctest --test-dir build-osfs-linux -N -R '^(osfs_tests|osfs_cli_smoke)$'
+REMOTE_SCRIPT
+
+Internal ctest changing into directory: /home/azureuser/mini-kv/build-osfs-linux
+Test project /home/azureuser/mini-kv/build-osfs-linux
+  Test #8: osfs_tests
+  Test #9: osfs_cli_smoke
+
+Total Tests: 2
+
+[exit_code=0]

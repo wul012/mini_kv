@@ -1,0 +1,20 @@
+$ ssh azure-linux bash -s <<'REMOTE_SCRIPT'
+set -eo pipefail
+[ -f ~/.profile ] && . ~/.profile || true
+cd /home/azureuser/mini-kv
+echo '[background process check]'
+pgrep -a -u azureuser 'cmake|ninja|c\+\+|g\+\+|soffice|minikv' || true
+echo '[disk]'
+df -h /home/azureuser | tail -1
+echo '[memory]'
+free -h | sed -n '1,2p'
+REMOTE_SCRIPT
+
+[background process check]
+[disk]
+/dev/root        29G  7.2G   21G  26% /
+[memory]
+               total        used        free      shared  buff/cache   available
+Mem:           897Mi       528Mi        80Mi       4.0Mi       451Mi       368Mi
+
+[exit_code=0]

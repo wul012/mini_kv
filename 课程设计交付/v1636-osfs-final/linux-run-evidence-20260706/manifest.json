@@ -1,0 +1,177 @@
+{
+  "output": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706",
+  "style": "terminal",
+  "screenshot_count": 34,
+  "slides": [
+    {
+      "order": 1,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\01-01-env-toolchain-p01.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\01-env-toolchain.txt"
+    },
+    {
+      "order": 2,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\02-01-env-toolchain-p02.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\01-env-toolchain.txt"
+    },
+    {
+      "order": 3,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\03-01-env-toolchain-p03.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\01-env-toolchain.txt"
+    },
+    {
+      "order": 4,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\04-02-repo-version-package-p01.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\02-repo-version-package.txt"
+    },
+    {
+      "order": 5,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\05-02-repo-version-package-p02.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\02-repo-version-package.txt"
+    },
+    {
+      "order": 6,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\06-02-repo-version-package-p03.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\02-repo-version-package.txt"
+    },
+    {
+      "order": 7,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\07-03-cmake-configure-build.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\03-cmake-configure-build.txt"
+    },
+    {
+      "order": 8,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\08-04-ctest-list-osfs.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\04-ctest-list-osfs.txt"
+    },
+    {
+      "order": 9,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\09-05-ctest-osfs-tests-p01.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\05-ctest-osfs-tests.txt"
+    },
+    {
+      "order": 10,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\10-05-ctest-osfs-tests-p02.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\05-ctest-osfs-tests.txt"
+    },
+    {
+      "order": 11,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\11-06-ctest-osfs-cli-smoke-p01.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\06-ctest-osfs-cli-smoke.txt"
+    },
+    {
+      "order": 12,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\12-06-ctest-osfs-cli-smoke-p02.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\06-ctest-osfs-cli-smoke.txt"
+    },
+    {
+      "order": 13,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\13-07-v1636-demo-script-p01.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 14,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\14-07-v1636-demo-script-p02.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 15,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\15-07-v1636-demo-script-p03.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 16,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\16-07-v1636-demo-script-p04.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 17,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\17-07-v1636-demo-script-p05.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 18,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\18-07-v1636-demo-script-p06.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 19,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\19-07-v1636-demo-script-p07.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 20,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\20-07-v1636-demo-script-p08.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 21,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\21-07-v1636-demo-script-p09.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 22,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\22-07-v1636-demo-script-p10.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 23,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\23-07-v1636-demo-script-p11.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 24,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\24-07-v1636-demo-script-p12.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 25,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\25-07-v1636-demo-script-p13.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\07-v1636-demo-script.txt"
+    },
+    {
+      "order": 26,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\26-08-persistence-reopen-p01.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\08-persistence-reopen.txt"
+    },
+    {
+      "order": 27,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\27-08-persistence-reopen-p02.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\08-persistence-reopen.txt"
+    },
+    {
+      "order": 28,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\28-08-persistence-reopen-p03.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\08-persistence-reopen.txt"
+    },
+    {
+      "order": 29,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\29-08-persistence-reopen-p04.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\08-persistence-reopen.txt"
+    },
+    {
+      "order": 30,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\30-09-report-toolchain-and-package-p01.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\09-report-toolchain-and-package.txt"
+    },
+    {
+      "order": 31,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\31-09-report-toolchain-and-package-p02.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\09-report-toolchain-and-package.txt"
+    },
+    {
+      "order": 32,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\32-09-report-toolchain-and-package-p03.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\09-report-toolchain-and-package.txt"
+    },
+    {
+      "order": 33,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\33-09-report-toolchain-and-package-p04.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\09-report-toolchain-and-package.txt"
+    },
+    {
+      "order": 34,
+      "screenshot": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\screenshots\\34-10-clean-process-check.png",
+      "source_log": "D:\\C\\mini-kv\\课程设计交付\\v1636-osfs-final\\linux-run-evidence-20260706\\logs\\10-clean.txt"
+    }
+  ]
+}
