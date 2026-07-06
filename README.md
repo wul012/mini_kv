@@ -4,6 +4,7 @@
 
 The full version history is kept in [`docs/CHANGELOG.md`](docs/CHANGELOG.md). This README keeps only the latest ten entries so the build, run, architecture, and protocol notes remain easy to scan.
 
+- v1629: adds an independent OSFS course-design filesystem layer without changing the KV/WAL/TCP command path: `minikv_osfs` formats a binary disk image with superblock, block bitmap, inode table, root directory, direct data blocks, mode/owner metadata, and handle-style open/read/write/close commands; `osfs_tests` and `osfs_cli_smoke` prove persistence, permissions, directory rows, Chinese-path Windows launch safety, and course-demo behavior, while full local CTest remains green at 344/344.
 - v1628: corrects the runtime-receipts consolidation false shrink metric before scaling the migration: line-count shrink is now documented and contract-tested as a review metric rather than a stop-condition, so v1627's +116 diff-line abort/rollback growth is treated as benign only because byte parity, boundary closure, and builder testability improved; `runtime_receipt_json_builder_tests` also drives the no-network drift fully to ground by proving both objects have 118 top-level fields and the only raw-byte delta is the single `boundary` phrase `Node v323\u0027s` versus `Node v323's`, with no receipt, digest, no-network, no-write, WAL, credential, or execution drift. No additional receipt formatter is migrated in this version.
 - v1627: starts runtime-receipts consolidation Slice 1 with the lower-risk abort/rollback receipt first: `runtime_credential_resolver_abort_rollback_semantics_receipts.cpp` now assembles its nested/top-level receipt object through the internal ordered JSON builder while preserving byte-for-byte formatter parity against the frozen fixture subobject; `runtime_receipt_json_builder_tests` also investigates the no-network pre-migration drift before touching that formatter and proves it is exactly one legacy escaping difference (`Node v323\u0027s` in the committed fixture versus `Node v323's` in the current formatter), with identical field count/order, identical parsed values, identical digest, and unchanged read-only/no-router/no-write/no-WAL/no-network/no-execution boundaries.
 - v1626: starts the runtime-receipts consolidation Slice 0 by adding an internal ordered JSON builder (`src/runtime_receipt_json_builder.*`) plus a fixture subobject extractor/parity test surface; `runtime_receipt_json_builder_tests` freezes the v141 no-network and v142 abort/rollback nested receipt objects by byte length and FNV digest, proves string escaping/raw object/raw array/order/empty/false/zero behavior, records that abort/rollback already has formatter byte parity while no-network remains an explicit pre-migration drift input, and keeps fixtures, public receipt output, runtime commands, router authority, writes, WAL, network access, and execution authority unchanged.
@@ -13,8 +14,6 @@ The full version history is kept in [`docs/CHANGELOG.md`](docs/CHANGELOG.md). Th
 - v1622: closes the v1621 quality gaps by applying the changed-file clang-format gate locally, removing the three Markdown EOF blank-line issues reported by `git show --check`, replacing the Windows-local `cli_log_level_flag_smoke` stdin waiver with a CMake script that feeds `QUIT` into `minikv_cli --log-level debug`, and proving the closeout with format dry-run, whitespace checks, focused CTest, and full 338/338 local CTest while preserving TCP timeout behavior, archive paths, runtime commands, WAL/snapshot behavior, router authority, write authority, and execution authority.
 - v1621: completes production-excellence K6 docs and release discipline by splitting the long README history into `docs/CHANGELOG.md`, adding `docs/SECURITY.md`, `docs/TESTING.md`, and `docs/CAPABILITY-SNAPSHOT.md`, documenting the CMake `0.102.0` vs git-tag `vNNNN` version policy, and adding opt-in TCP client idle/command timeout coverage with no default behavior change.
 - v1620: completes production-excellence K5 archive retention by adding `docs/archive-retention-index.md`, a stdlib-only `scripts/archive_inventory.py`, and a non-failing CI archive inventory warning job; it also records the post-K4 Ubuntu coverage retest from run `27428515080`, where removing `--gcov-ignore-parse-errors negative_hits.warn_once_per_file` still failed on a gcov negative-hit parser bug in `src/command_catalog.cpp`, so the workaround remains intentionally protected while preserving all archive paths, fixtures, runtime commands, WAL/snapshot behavior, router authority, write authority, and execution authority.
-- v1619: completes production-excellence K4 by splitting the 648-line `src/shard_readiness.cpp` into a tiny public fixture-path shim plus `src/shard_readiness_json.cpp`, `src/shard_readiness_core_digest.cpp`, `src/shard_readiness_boundary_validators.cpp`, and `src/shard_readiness_internal.hpp`; CMake now builds the shard-readiness formatter through focused translation units, fixture parity/full CTest/CLI/TCP smoke prove `SHARDJSON` remains read-only/no-router/no-write/no-WAL/no-execution, and K4 is now ready for planner review before any K5 work starts.
-
 ## Current version
 
 Current focus is tracked by the latest entry in `## Recent versions` and by `docs/production-excellence-progress.md`.
@@ -26,6 +25,7 @@ Core surfaces:
 - Inline text and RESP-over-TCP server/client flows
 - WAL, snapshot, restore, and compaction evidence boundaries
 - Runtime read-only JSON evidence through INFOJSON, STATSJSON, SMOKEJSON, STORAGEJSON, COMMANDSJSON, EXPLAINJSON, and CHECKJSON
+- Independent OSFS course-design filesystem shell through `minikv_osfs`, with a binary disk image, superblock, block bitmap, inode table, directory entries, permissions, and handle-style file operations
 - CI-backed CMake/CTest matrix with sanitizer, coverage, format, and archive-inventory lanes
 - Explicit no-router, no-order-authority, no-write-expansion, and no-execution governance fields for Node/Java consumption
 
@@ -86,6 +86,20 @@ CLI with tuned WAL compaction thresholds:
 ```powershell
 .\build\Debug\minikv_cli.exe data\mini-kv.wal --auto-compact-wal --wal-compact-min-records 4 --wal-compact-record-ratio 2 --wal-compact-min-bytes 1048576
 ```
+
+OSFS course-design shell:
+
+```powershell
+.\build\Debug\minikv_osfs.exe --disk data\osfs-course.img --format --blocks 96
+```
+
+OSFS script smoke:
+
+```powershell
+.\build\Debug\minikv_osfs.exe --disk data\osfs-course.img --format --blocks 96 --script tests\osfs_smoke_script.txt
+```
+
+The OSFS course-design guide is documented in [`docs/osfs-course-design-guide.md`](docs/osfs-course-design-guide.md).
 
 TCP server:
 

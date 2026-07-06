@@ -59,3 +59,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 
 - v1627: [995-version-1627-abort-rollback-builder-migration-and-no-network-drift.md](995-version-1627-abort-rollback-builder-migration-and-no-network-drift.md) - 先迁移已经具备 byte parity 的 abort/rollback receipt formatter 到内部 ordered JSON builder，再把 no-network 的 pre-migration drift 查清为唯一一处 `\u0027` 与直接 apostrophe 的历史转义差异；测试继续保护 fixture、digest、字段顺序、no-network/no-write/no-WAL/no-execution 边界不被静默改变。
 - v1628: [996-version-1628-false-shrink-metric-and-no-network-drift-closeout.md](996-version-1628-false-shrink-metric-and-no-network-drift-closeout.md) - 不迁移新的 receipt formatter，先修正 runtime receipts consolidation 设计说明里把行数缩短误写成 stop-condition 的判断，把 +116 diff lines 解释为需要说明但不能单独停机的 review metric；同时把 no-network drift 压实到唯一 `boundary` 字段、唯一 `\u0027` 转义差异、118 个顶层字段、digest 与危险边界全不变。
+
+## v1629 补充索引
+
+- v1629: [997-version-1629-osfs-course-design-layer.md](997-version-1629-osfs-course-design-layer.md) - 新增独立 OSFS 课程设计文件系统层：`minikv_osfs` 通过二进制磁盘镜像模拟 superblock、bitmap、inode table、root directory、直接块、权限和句柄式 open/read/write/close，并用 `osfs_tests`、`osfs_cli_smoke` 与全量 344/344 CTest 证明课设演示路径和原 KV/WAL/TCP 主线互不污染。

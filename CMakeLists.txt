@@ -64,6 +64,9 @@ add_library(minikv
     src/command_wal_gate.cpp
     src/line_editor.cpp
     src/log.cpp
+    src/osfs_command_processor.cpp
+    src/osfs_filesystem.cpp
+    src/osfs_virtual_disk.cpp
     src/managed_audit_adapter_receipts.cpp
     src/managed_audit_connection_receipts.cpp
     src/managed_audit_core_receipts.cpp
@@ -397,6 +400,16 @@ add_executable(minikv_benchmark
 
 target_link_libraries(minikv_benchmark PRIVATE minikv)
 
+add_executable(minikv_osfs
+    src/osfs_main.cpp
+)
+
+target_link_libraries(minikv_osfs PRIVATE minikv)
+
+if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_link_options(minikv_osfs PRIVATE -municode)
+endif()
+
 enable_testing()
 
 add_test(NAME benchmark_evidence_guard COMMAND minikv_benchmark --evidence-json 12 4)
@@ -450,6 +463,21 @@ minikv_add_linked_test(
     minikv_log_tests
     log_tests
     tests/log_tests.cpp
+)
+
+minikv_add_linked_test(
+    minikv_osfs_tests
+    osfs_tests
+    tests/osfs_tests.cpp
+)
+
+add_test(
+    NAME osfs_cli_smoke
+    COMMAND ${CMAKE_COMMAND}
+            -DOSFS_PATH=$<TARGET_FILE:minikv_osfs>
+            -DDISK_PATH=${CMAKE_CURRENT_BINARY_DIR}/osfs-cli-smoke.img
+            -DSCRIPT_PATH=${CMAKE_CURRENT_SOURCE_DIR}/tests/osfs_smoke_script.txt
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_osfs_smoke.cmake
 )
 
 add_test(

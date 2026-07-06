@@ -1,0 +1,9 @@
+CREATE report
+OPEN report rw
+WRITE 3 course design storage layer
+READ 3
+CHMOD report 0600
+LOGIN guest
+OPEN report w
+DIR
+QUIT
