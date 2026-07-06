@@ -239,3 +239,30 @@ network/write/WAL/execution 边界变化。迁移前仍必须显式选择 canoni
 builder 复现历史 fixture 的 `\u0027` 字节拼写以追求 standalone fixture byte parity；要么保留
 当前 formatter 的直接 apostrophe，并用专门兼容决策说明为什么 public runtime surface 优先。
 在这个选择写清之前，no-network formatter 不应被顺手迁移。
+
+## 12. v1637 canonical surface 与 no-network builder 迁移 closeout
+
+v1637 先把 no-network 的唯一历史漂移升级为显式决策，再在这个决策下面迁移
+`runtime_credential_resolver_no_network_safety_fixture_receipts.cpp`。仓库事实现在是：Slice 0 的 ordered JSON
+builder 和 parity harness 已完成，`runtime_credential_resolver_abort_rollback_semantics_receipts.cpp` 与
+`runtime_credential_resolver_no_network_safety_fixture_receipts.cpp` 两个 formatter 已迁移到 builder；其余 receipt
+formatter 仍按后续 slice 继续推进。
+
+canonical 决策保持不变：**以当前运行时 formatter 的直接 apostrophe 拼写作为 canonical runtime surface**。
+理由是下游运行时消费的是 public formatter/SMOKEJSON/CHECKJSON 暴露的当前输出，而历史 fixture 是已提交证据，
+不能为了追求表面一致而改写。具体边界如下：
+
+- 不改写 `fixtures/release/*.json`，历史 fixture 中的 `Node v323\u0027s no-network fixture contract` 保持冻结；
+- no-network public formatter 的运行时输出保持当前 `Node v323's no-network fixture contract` 拼写；
+- `runtime_receipt_json_builder_tests` 中的 parity 规则只允许这一处历史转义拼写差，把 fixture 侧
+  `Node v323\u0027s no-network fixture contract` 规范化为 runtime canonical surface
+  `Node v323's no-network fixture contract` 后必须与 builder 迁移后的 formatter 完全相等；
+- 该规则同时断言 fixture 中 `\u0027` 总数为 1、目标短语出现 1 次、runtime 输出中 legacy 拼写出现 0 次。
+  多出第二处 `\u0027`、字段顺序改变、digest 改变、边界字段改变、network/write/WAL/credential/execution 语义改变，
+  都不属于允许差异。
+
+这不是放宽 byte parity，而是把“fixture 冻结”和“runtime surface 已经公开消费”之间唯一已知历史拼写差
+转成可审查、可失败的兼容规则。no-network 的迁移只发生在这一规则之后：它把 nested sections、数组、
+闭合边界 flags、top-level fields 改为 ordered builder 拼装，同时保持运行时输出、receipt digest、字段顺序、
+compact whitespace、release manifest 嵌入含义和所有 read-only/no-network/no-write/no-execution 边界不变。
+后续 slice 不得继续扩大这个兼容例外；新的 receipt 迁移必须回到普通 fixture/runtime parity 或写出单独 waiver。

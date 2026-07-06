@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -33,6 +34,9 @@ std::string replace_once(std::string text, std::string_view from, std::string_vi
     text.replace(position, from.size(), std::string{to});
     return text;
 }
+
+constexpr std::string_view no_network_fixture_legacy_phrase = "Node v323\\u0027s no-network fixture contract";
+constexpr std::string_view no_network_runtime_canonical_phrase = "Node v323's no-network fixture contract";
 
 std::size_t count_occurrences(std::string_view text, std::string_view needle) {
     assert(!needle.empty());
@@ -92,6 +96,14 @@ std::size_t count_top_level_fields(std::string_view object_json) {
     assert(depth == 0);
     assert(!in_string);
     return count;
+}
+
+std::string no_network_runtime_surface_canonical_json(std::string fixture_object_json) {
+    assert(count_occurrences(fixture_object_json, "\\u0027") == 1);
+    assert(count_occurrences(fixture_object_json, no_network_fixture_legacy_phrase) == 1);
+    assert(count_occurrences(fixture_object_json, no_network_runtime_canonical_phrase) == 0);
+    return replace_once(std::move(fixture_object_json), no_network_fixture_legacy_phrase,
+                        no_network_runtime_canonical_phrase);
 }
 
 void ordered_object_preserves_scalars_and_escaping() {
@@ -191,19 +203,18 @@ void candidate_formatters_have_explicit_fixture_parity_state() {
     assert(no_network_object->size() == no_network_current.size() + 5);
     assert(count_occurrences(*no_network_object, "\\u0027") == 1);
     assert(count_occurrences(no_network_current, "\\u0027") == 0);
-    assert(count_occurrences(*no_network_object, "Node v323\\u0027s no-network fixture contract") == 1);
-    assert(count_occurrences(no_network_current, "Node v323's no-network fixture contract") == 1);
+    assert(count_occurrences(*no_network_object, no_network_fixture_legacy_phrase) == 1);
+    assert(count_occurrences(no_network_current, no_network_runtime_canonical_phrase) == 1);
     assert(no_network_object->find("\"boundary\":\"credential resolver no-network safety fixture contract "
                                    "non-participation receipt only; mini-kv echoes Node v323\\u0027s "
                                    "no-network fixture contract") != std::string::npos);
     assert(no_network_current.find("\"boundary\":\"credential resolver no-network safety fixture contract "
                                    "non-participation receipt only; mini-kv echoes Node v323's "
                                    "no-network fixture contract") != std::string::npos);
-    assert(no_network_object->find("Node v323\\u0027s no-network fixture contract") != std::string::npos);
-    assert(no_network_current.find("Node v323's no-network fixture contract") != std::string::npos);
-    assert(no_network_current.find("Node v323\\u0027s no-network fixture contract") == std::string::npos);
-    assert(replace_once(*no_network_object, "Node v323\\u0027s no-network fixture contract",
-                        "Node v323's no-network fixture contract") == no_network_current);
+    assert(no_network_object->find(std::string{no_network_fixture_legacy_phrase}) != std::string::npos);
+    assert(no_network_current.find(std::string{no_network_runtime_canonical_phrase}) != std::string::npos);
+    assert(no_network_current.find(std::string{no_network_fixture_legacy_phrase}) == std::string::npos);
+    assert(no_network_runtime_surface_canonical_json(*no_network_object) == no_network_current);
     assert(no_network_current.find("\"receipt_digest\":\"fnv1a64:3d8c483c93f8acf9\"") != std::string::npos);
     assert(no_network_current.find("\"read_only\":true") != std::string::npos);
     assert(no_network_current.find("\"execution_allowed\":false") != std::string::npos);

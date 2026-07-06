@@ -91,3 +91,6 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1636 补充索引
 
 - v1636: [1004-version-1636-osfs-final-package-refresh.md](1004-version-1636-osfs-final-package-refresh.md) - 不新增 OSFS 运行命令，而是把 v1634/v1635 的一级间接块、只读 FSCK、USERADD/PASSWD 和真实 CLI transcript 收束为 v1636 最终课程交付包，讲清 DOCX/PDF 渲染、九页报告、四张图、需求矩阵、对抗性自审、UTF-8 transcript 和 no KV/WAL/TCP/Node/Java execution 边界如何共同形成可复核证据链。
+## v1637 补充索引
+
+- v1637: [1005-version-1637-runtime-receipt-canonical-surface-and-no-network-builder.md](1005-version-1637-runtime-receipt-canonical-surface-and-no-network-builder.md) - 先把 no-network 唯一历史拼写差写成可失败的 canonical runtime surface 规则，再把 no-network receipt formatter 迁移到内部 ordered JSON builder，讲清 fixture 冻结、runtime surface 优先、字段顺序、digest、闭合边界 flags、focused tests 和 no router/no write/no WAL/no network/no credential/no execution 边界如何共同保护后续 receipts consolidation。

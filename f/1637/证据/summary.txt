@@ -1,0 +1,29 @@
+mini-kv v1637 command evidence summary
+
+Scope:
+- Decide the no-network canonical runtime surface.
+- Keep frozen fixtures unchanged.
+- Migrate runtime_credential_resolver_no_network_safety_fixture_receipts.cpp to the internal ordered JSON builder.
+- Preserve no router, no write, no WAL, no network, no credential value, and no execution authority.
+
+Focused receipt/parity CTest:
+- Command: ctest -R runtime_receipt_json_builder_tests|receipts_consolidation_note_contract|no_network_safety_fixture_contract_receipt_tests|abort_rollback_semantics_contract_receipt_tests|smokejson_command_receipt_tests|runtime_smoke_evidence_tests|release_verification_manifest_tests --output-on-failure
+- Result: 7/7 passed.
+
+Full build and CTest:
+- Command: cmake --build cmake-build-v1637
+- Result: all targets built.
+- Command: ctest --test-dir cmake-build-v1637 --output-on-failure
+- Result: 344/344 passed, total real time 233.38 sec.
+- Note: an earlier full CTest preflight was run before building all targets and failed to find minikv_benchmark.exe. That was a build-order issue, not a test regression; the full build and rerun are green.
+
+Formatting and diff hygiene:
+- Command: clang-format --dry-run --Werror src/runtime_credential_resolver_no_network_safety_fixture_receipts.cpp tests/runtime_receipt_json_builder_tests.cpp
+- Result: exit 0.
+- Command: git diff --check
+- Result: exit 0. Git printed LF/CRLF working-copy warnings only; no whitespace error was reported.
+
+Archive screenshots:
+- f/1637/图片/01-focused-receipt-tests.png
+- f/1637/图片/02-full-build-and-ctest.png
+- f/1637/图片/03-format-diff-census.png

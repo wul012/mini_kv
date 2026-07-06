@@ -34,6 +34,9 @@ set(required_fragments
     "+116 diff lines"
     "false shrink metric"
     "Node v323\\u0027s no-network fixture contract"
+    "canonical runtime surface"
+    "直接 apostrophe 拼写"
+    "runtime_credential_resolver_no_network_safety_fixture_receipts.cpp"
     "full CTest"
 )
 
