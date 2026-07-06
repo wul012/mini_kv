@@ -63,6 +63,23 @@ Internal governance plans:
 - Read `治理计划/README.md` before starting broad refactors, archive-retention work, command dispatch consolidation, or shard readiness section splits.
 - Historical archive roots `a/` through `f/` and `fixtures/release/*.json` are path-stable evidence. Do not move, rename, compress-replace, or delete them as part of cleanup unless the user explicitly authorizes a separate archival migration plan.
 
+## Substantive Deliverable Quality Gate
+
+Do not rush to package, label, or hand off a deliverable merely because the visible command list works, tests pass, or version-closure artifacts are complete. Functional depth and the user's actual acceptance criteria take precedence over screenshots, reports, archive folders, walkthrough length, commit count, tags, CI status, and nominal version completion.
+
+Before describing coursework, a feature milestone, a release package, or any other user-facing result as `final`, complete, sufficient, ready to submit, or ready for delivery:
+
+- Read the original requirements and build an explicit requirement-to-evidence matrix. Distinguish fully implemented, partially implemented, missing, intentionally out of scope, and blocked items.
+- Treat every explicit requirement as a delivery blocker unless the user knowingly accepts a documented waiver. Do not silently downgrade a mandatory requirement into a future enhancement.
+- Verify each completed requirement through substantive implementation, focused tests, and a real runnable demonstration where relevant. A command name, stub, mock response, document claim, screenshot, or shallow happy-path test is not sufficient evidence by itself.
+- Evaluate depth, not just breadth or line count. Check data-model completeness, persistence, restart behavior, error paths, boundary conditions, security/permission behavior, maintainability, and whether the implementation exposes the mechanism the assignment or product is intended to teach.
+- Compare the result with the expected workload and evaluation level. If it is only a prototype, minimum pass, staged draft, or partial implementation, say so plainly and continue improving it when the user has authorized continued execution.
+- Do not let version-scope discipline force an early handoff. Split required work across additional coherent versions, but continue until the agreed final acceptance gate is actually met.
+- Generate polished reports, screenshots, archives, and submission packages only after substantive blockers are closed. Earlier materials must be labeled draft or stage evidence and must not use misleading `final` naming.
+- Before final handoff, perform an adversarial self-review: identify the strongest likely reviewer objection, verify it against the original requirements, and either close it or disclose it as an unresolved blocker.
+
+If a gap is found after packaging, immediately downgrade the package's status, preserve useful work as a draft, and resume implementation. Never use engineering ceremony to make an underpowered result appear complete, and never knowingly deliver low-quality work merely to finish a version quickly.
+
 ## Version Closure Discipline
 
 Use these rules for mini-kv versions that include implementation, tests, fixtures, docs, screenshots, or release evidence:
