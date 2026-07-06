@@ -1,0 +1,38 @@
+mini-kv v1640 evidence summary
+
+Scope:
+- Refactored only the endpoint-handle allowlist approval receipt closed-boundary boolean flag block.
+- Moved that block from a hand-written inline JSON fragment into OrderedJsonField + json_bool construction.
+- Rendered the ordered fields through json_object and embedded the fragment back at the historical formatter position.
+- Kept frozen fixture files unchanged.
+- Did not migrate signed-human approval in this version.
+- Did not add endpoint routing, raw endpoint parsing, network access, write paths, WAL changes, credential reads, shell execution, LOAD, RESTORE, COMPACT, SETNXEX, or authority expansion.
+
+Plan files read:
+- D:\nodeproj\orderops-node\docs\plans\README.md
+- D:\nodeproj\orderops-node\docs\plans\production-excellence-node-playbook.md
+- D:\nodeproj\orderops-node\docs\plans\v2114-codex-migration-playbook.md
+- D:\nodeproj\orderops-node\docs\plans\production-excellence-minikv-playbook.md
+- Latest Node plan was Node renderer-consolidation work and did not require mini-kv contract changes, so the active mini-kv scope remained v1637+ Production Excellence receipt consolidation.
+
+Validation:
+- Focused endpoint CTest: 5/5 passed.
+- Full build completed.
+- Full CTest: 344/344 passed.
+- Final CTest summary: 100% tests passed, 0 tests failed out of 344.
+- Total full CTest time (real): 157.44 sec.
+- Docs/walkthrough focused CTest: 6/6 passed.
+- clang-format dry run passed for src/runtime_credential_resolver_endpoint_handle_allowlist_approval_receipts.cpp.
+- git diff --check passed.
+- Walkthrough length: 6365 characters, 64 lines.
+
+Archive:
+- f/1640/图片/01-focused-endpoint-boundary-tests.png
+- f/1640/图片/02-full-build-and-ctest.png
+- f/1640/图片/03-doc-format-walkthrough.png
+- f/1640/解释/说明.md
+- f/1640/证据/summary.txt
+
+Notes:
+- v1639 CI was in progress when v1640 started; it was checked and had not failed.
+- v1640 should remain a narrow approval-contract boundary-flag migration, not a claim that the whole approval formatter family is complete.
