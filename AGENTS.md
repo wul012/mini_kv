@@ -1,5 +1,24 @@
 # mini-kv Agent Notes
 
+## Current State (single source of truth)
+
+Update this table instead of appending relative-time rules ("starting with the next version…") below. Where an older section conflicts with this table, this table wins.
+
+| Item | Current |
+|---|---|
+| Active screenshot archive root | `f/<version>/图片/` + `f/<version>/解释/说明.md` |
+| Active walkthrough volume | `代码讲解记录_生产雏形阶段_第四册/` |
+| Active cross-project program | `D:\C\四项目理解统筹\AGENTS.md` → Current Active Program |
+| Local plan briefs | `治理计划/` (see its README index) |
+| Progress ledger | `docs/production-excellence-progress.md` |
+| Session bootstrap | dot-source `. .\scripts\codex-bootstrap.ps1` at session start (orientation + toolchain PATH + `$cmake`/`$ctest`) |
+| Frozen history (never move) | `a/`–`e/`, older walkthrough volumes, `fixtures/release/*.json` |
+
+## Program Discipline
+
+- Progress-ledger rows: at most ~3 lines per version/milestone; details go into per-version evidence files or `治理计划/` docs, the row keeps a pointer. Never grow a row into a paragraph wall.
+- Lesson promotion: when the same deviation or workaround appears twice in the ledger, promote it into this file as a rule instead of recording it a third time.
+
 ## Shared Four-Project Rules
 
 The central backup and index is:
@@ -19,19 +38,7 @@ When doing cross-project evaluation, use `[MODE: RESEARCH]`: prefer read-only in
 
 ## Four-Project Evaluation Baseline
 
-Use this baseline when judging overall developer/project capability unless newer evidence clearly changes it:
-
-| Dimension | Rating |
-|---|---|
-| Architecture design | A- |
-| Multi-language engineering | A |
-| Test engineering | B+ |
-| Output speed | S |
-| Refactoring and debt management | B |
-| Security and compliance awareness | A |
-| Engineering discipline and restraint | C+ |
-
-Core judgment: this is a high-output, strong-design, multi-stack developer with good safety awareness; the main growth area is knowing when to stop, refactor, and trade about 30% speed for restraint.
+The capability baseline table lives ONLY in `D:\C\四项目理解统筹\AGENTS.md` (single source of truth) — read it there instead of keeping a copy here. One-line summary: high-output, strong-design, multi-stack developer; the growth area is restraint.
 
 Evaluation rules:
 - Praise speed, architecture, multi-language execution, and safety awareness, but do not overstate production readiness.
@@ -262,33 +269,4 @@ $env:PATH = 'D:\CLION\CLion 2025.1.1\bin\mingw\bin;' + $env:PATH
 
 ## Current Version
 
-From mini-kv v122 onward, new run screenshots and explanations should use:
-
-```text
-d/<version>/图片/
-d/<version>/解释/说明.md
-```
-
-From the next mini-kv version onward, new code walkthrough documents should use:
-
-```text
-代码讲解记录_生产雏形阶段_第二册/
-```
-
-当前第一版归档位置：
-
-```text
-a/1/图片/
-a/1/解释/说明.md
-```
-
-v2 到 v121 的运行截图和解释归档位置：
-
-```text
-c/<version>/图片/
-c/<version>/解释/说明.md
-```
-
-Note: The `c/<version>/...` block above is historical through v121. For v122 and later, use the `d/<version>/...` archive root defined in Command Result Archive.
-
-When `d/` or `代码讲解记录_生产雏形阶段_第二册/` becomes crowded, future versions may rotate to the sibling roots defined above (`e/<version>/...` and `代码讲解记录_生产雏形阶段_第三册/`) without moving old evidence.
+Superseded by the Current State table at the top of this file. Historical rotation details (which versions live under `a/`–`e/` and the older walkthrough volumes) are recorded in `docs/archive-retention-index.md`; do not re-derive them from this file.

@@ -1,0 +1,25 @@
+#!/bin/sh
+# Fast pre-commit gate: clang-format dry-run on staged C++ files.
+# Purpose: prevent v1622-style closeout-repair versions (format issues found after commit).
+# Defensive: if tooling is missing, exits 0 silently — only real violations block.
+
+CF="D:/CLION/CLion 2025.1.1/bin/clang/win/x64/bin/clang-format.exe"
+if [ ! -x "$CF" ]; then
+  CF="$(command -v clang-format 2>/dev/null)"
+fi
+[ -z "$CF" ] && exit 0
+
+if ! git diff --cached --name-only --diff-filter=ACM -- '*.cpp' '*.hpp' '*.h' |
+  while IFS= read -r f; do
+    [ -n "$f" ] || continue
+    if ! git show ":$f" |
+      "$CF" --dry-run --Werror --assume-filename="$f" - >/dev/null 2>&1; then
+      echo "pre-commit: clang-format violation in $f"
+      exit 1
+    fi
+  done; then
+  echo "pre-commit: fix with clang-format -i on the files above, then commit again."
+  echo "pre-commit: (this gate mirrors the CI clang-format changed-files check)"
+  exit 1
+fi
+exit 0
