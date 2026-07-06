@@ -1,0 +1,30 @@
+WHOAMI
+CREATE blocked-before-login
+LOGIN alice wrong
+LOGIN alice alice123
+WHOAMI
+DIR
+CREATE report
+OPEN report w
+WRITE 3 course-
+WRITE 3 design
+TELL 3
+CLOSE 3
+OPEN report r
+READ 4 6
+READ 4 1
+READ 4
+TELL 4
+CLOSE 4
+CHMOD report 0600
+DIR
+LOGIN bob bob123
+DIR
+OPEN alice/report r
+CREATE bob-note
+DIR
+LOGIN root root
+DIR alice
+OPEN alice/report r
+READ 3
+QUIT

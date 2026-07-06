@@ -4,6 +4,7 @@
 
 The full version history is kept in [`docs/CHANGELOG.md`](docs/CHANGELOG.md). This README keeps only the latest ten entries so the build, run, architecture, and protocol notes remain easy to scan.
 
+- v1633: closes the substantive OSFS coursework brief only after v1631/v1632 functionality is green. `课程设计交付/v1633-osfs-final/` contains a regenerated 9-page DOCX/PDF report, updated architecture/disk-layout/descriptor-flow diagrams, a real CLI transcript, demo guide, submission checklist, and an explicit requirement-to-evidence matrix with adversarial self-review. The package proves persistent users, MFD/UFD directories, authenticated login, directory isolation, permissions, descriptor offsets, range I/O, and 344/344 regression evidence while disclosing single-group, direct-block, no-fsck, no-crash-log, and teaching-password boundaries. The old v1630 package remains in place but is marked superseded.
 - v1632: gives OSFS file descriptors real read/write positions instead of whole-file command behavior. `READ fd [length]` reads from and advances the handle's read offset; repeated `WRITE` calls overwrite/extend from and advance the write offset; `OPEN ... w` truncates, `rw` preserves content for positioned updates, and `a` starts at end-of-file. `SEEK` and `TELL` make both offsets observable for coursework demonstrations. The file-system layer performs direct range I/O across data-block boundaries, enforces permissions before mutation, checks the eight-direct-block limit before allocation, and persists positioned updates across reopen; focused tests, CLI smoke, and full CTest protect the behavior.
 - v1631: replaces the OSFS v1 single-root prototype with a version-2 on-disk two-level directory model: the binary image now stores a master file directory (MFD), one real user file directory (UFD) inode/data block per seeded user, a persistent user table with teaching-only password hashes, separate block/inode bitmaps, free-space counters, uid/gid ownership, and access timestamps. `LOGIN user password` rejects invalid credentials, unauthenticated file commands are blocked, each user sees only their UFD, root can inspect another UFD, and qualified cross-user opens still enforce inode permissions. The OSFS sources are split into disk-layout, directory, file-I/O, lifecycle, and command modules; focused tests, a real CLI smoke, and full local CTest remain green at 344/344.
 - v1630: closes the OSFS coursework delivery package without changing runtime behavior: `课程设计交付/v1630-osfs-final/` now contains the formal DOCX/PDF report, architecture/disk/write-flow diagrams, demo script, demo transcript, handoff README, submission checklist, and rendered evidence screenshots; the version re-reads the 2026 OS course PDF requirements, proves experiment 2 alignment, rebuilds `minikv_osfs`, runs the OSFS demo, renders the report through LibreOffice/Poppler, visually checks the final 8-page PDF, and keeps full local CTest green at 344/344.
@@ -28,7 +29,7 @@ Core surfaces:
 - WAL, snapshot, restore, and compaction evidence boundaries
 - Runtime read-only JSON evidence through INFOJSON, STATSJSON, SMOKEJSON, STORAGEJSON, COMMANDSJSON, EXPLAINJSON, and CHECKJSON
 - Independent OSFS course-design filesystem shell through `minikv_osfs`, with a binary disk image, superblock, block/inode bitmaps, persistent users, MFD/UFD two-level directories, inode ownership/permissions, and handle-style file operations
-- OSFS v1630 coursework artifacts are retained as a draft baseline; the replacement final package is produced only after the v1631+ substantive completion brief is fully closed
+- OSFS final coursework artifacts live under `课程设计交付/v1633-osfs-final/`; the v1630 package is retained only as a superseded draft baseline
 - CI-backed CMake/CTest matrix with sanitizer, coverage, format, and archive-inventory lanes
 - Explicit no-router, no-order-authority, no-write-expansion, and no-execution governance fields for Node/Java consumption
 
@@ -103,7 +104,7 @@ OSFS script smoke:
 .\build\Debug\minikv_osfs.exe --disk data\osfs-course.img --format --blocks 96 --script tests\osfs_smoke_script.txt
 ```
 
-The OSFS course-design guide is documented in [`docs/osfs-course-design-guide.md`](docs/osfs-course-design-guide.md), and the v1630 submission package is summarized in [`docs/osfs-coursework-delivery-v1630.md`](docs/osfs-coursework-delivery-v1630.md).
+The OSFS course-design guide is documented in [`docs/osfs-course-design-guide.md`](docs/osfs-course-design-guide.md), and the final submission package is summarized in [`docs/osfs-coursework-delivery-v1633.md`](docs/osfs-coursework-delivery-v1633.md).
 
 TCP server:
 

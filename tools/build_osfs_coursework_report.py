@@ -4,7 +4,6 @@ import textwrap
 from pathlib import Path
 
 from docx import Document
-from docx.enum.section import WD_SECTION
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
@@ -13,9 +12,9 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DELIVERY = ROOT / "课程设计交付" / "v1630-osfs-final"
+DELIVERY = ROOT / "课程设计交付" / "v1633-osfs-final"
 IMAGE_DIR = DELIVERY / "images"
-REPORT_DOCX = DELIVERY / "操作系统课程设计报告-OSFS-v1630.docx"
+REPORT_DOCX = DELIVERY / "操作系统课程设计报告-OSFS-v1633.docx"
 
 
 def ensure_dirs() -> None:
@@ -79,14 +78,14 @@ def create_architecture_diagram() -> Path:
     image = Image.new("RGB", (1500, 900), "#f8fafc")
     draw = ImageDraw.Draw(image)
     draw.text((60, 45), "OSFS 课程设计系统结构", fill="#0f172a", font=font(42, bold=True))
-    draw.text((60, 100), "新增 OSFS 旁路模块独立服务课设，不改变 mini-kv 原 KV/WAL/TCP 主线。", fill="#475569", font=font(24))
+    draw.text((60, 100), "命令、文件系统、块设备三层分工；OSFS 与原 KV/WAL/TCP 主线保持隔离。", fill="#475569", font=font(24))
 
     boxes = [
-        ((90, 170, 510, 300), "用户/演示者\n输入 LOGIN、CREATE、OPEN、WRITE、READ、DIR 等命令。", "#dbeafe"),
-        ((90, 365, 510, 515), "CommandProcessor\n解析命令，维护当前用户和 fd 句柄表，只调用 OSFS API。", "#e0f2fe"),
-        ((90, 590, 510, 750), "FileSystem\n管理超级块、位图、inode、目录项、权限和直接数据块。", "#dcfce7"),
+        ((90, 170, 510, 300), "用户/演示者\n先 LOGIN 认证，再执行 DIR、OPEN、READ、WRITE 等命令。", "#dbeafe"),
+        ((90, 365, 510, 515), "CommandProcessor\n维护登录身份与 fd 表；每个句柄保存独立读写位移。", "#e0f2fe"),
+        ((90, 590, 510, 750), "FileSystem\n解析 MFD/UFD，执行权限检查、inode/块分配和区间 I/O。", "#dcfce7"),
         ((780, 590, 1200, 750), "VirtualDisk\n把块读写落到二进制镜像文件，模拟磁盘设备。", "#fef3c7"),
-        ((780, 365, 1200, 515), "磁盘镜像 osfs-course.img\n保存文件系统全部状态，退出程序后仍可再次打开。", "#ffedd5"),
+        ((780, 365, 1200, 515), "磁盘镜像 osfs-course.img\n持久化用户表、MFD/UFD、双位图、inode 与文件数据。", "#ffedd5"),
         ((780, 170, 1200, 300), "原 mini-kv 主线\nStore、WAL、Snapshot、TCP/RESP 不被 OSFS 牵动。", "#f3e8ff"),
     ]
     for xy, text, fill in boxes:
@@ -109,17 +108,18 @@ def create_disk_layout_diagram() -> Path:
     draw.text((60, 100), "二进制文件被切成固定大小块，OSFS 在这些块上组织元数据和文件内容。", fill="#4b5563", font=font(24))
 
     x, y, h = 80, 190, 120
-    widths = [170, 170, 300, 170, 170, 170, 170]
+    widths = [135, 135, 135, 135, 210, 150, 150, 150]
     labels = [
-        ("Block 0", "Superblock\n总块数、inode 数、表位置"),
-        ("Block 1", "Block bitmap\n记录数据块占用状态"),
-        ("Block 2..N", "Inode table\n保存类型、权限、owner、size、直接块号"),
-        ("Data", "Root dir\n目录项 name + inode"),
-        ("Data", "file block 1\n文件正文"),
-        ("Data", "file block 2\n文件正文"),
-        ("...", "free blocks\n等待分配"),
+        ("Block 0", "Superblock\n布局与空闲计数"),
+        ("Block 1", "Block bitmap\n块占用状态"),
+        ("Block 2", "Inode bitmap\ninode 占用状态"),
+        ("Block 3", "User table\nuid/gid/hash/UFD"),
+        ("Block 4..N", "Inode table\n类型、权限、时间、直接块"),
+        ("Data", "MFD\nuser -> UFD inode"),
+        ("Data", "UFD blocks\nfilename -> inode"),
+        ("Data", "File/free blocks\n正文与空闲空间"),
     ]
-    colors = ["#bfdbfe", "#bbf7d0", "#fde68a", "#fed7aa", "#e9d5ff", "#e9d5ff", "#e5e7eb"]
+    colors = ["#bfdbfe", "#bbf7d0", "#bbf7d0", "#fecaca", "#fde68a", "#fed7aa", "#e0e7ff", "#e9d5ff"]
     cx = x
     for width, (top, bottom), color in zip(widths, labels, colors):
         draw.rounded_rectangle((cx, y, cx + width, y + h), radius=10, fill=color, outline="#1f2937", width=2)
@@ -131,10 +131,10 @@ def create_disk_layout_diagram() -> Path:
         cx += width + 14
 
     detail = [
-        ("Superblock", "让程序知道整块“磁盘”怎么解释，避免把普通二进制文件误当文件系统。"),
-        ("Bitmap", "写文件前先找空闲块；空间不足时直接拒绝，旧内容保持不变。"),
-        ("Inode", "把文件名和文件内容分开，目录只保存名字到 inode 的索引。"),
-        ("Direct blocks", "本课设版本采用直接块，逻辑清楚，便于解释和测试。"),
+        ("MFD", "主文件目录保存用户名到 UFD inode 的映射，是二级目录的第一层。"),
+        ("UFD", "每个用户拥有独立目录 inode 和数据块，DIR 只读取当前 UFD。"),
+        ("User table", "用户、uid/gid、教学密码哈希和 UFD inode 随磁盘镜像持久化。"),
+        ("Double bitmap", "块和 inode 分开分配；超级块记录两类空闲计数。"),
     ]
     y2 = 390
     for i, (title, body) in enumerate(detail):
@@ -146,20 +146,20 @@ def create_disk_layout_diagram() -> Path:
 
 
 def create_write_flow_diagram() -> Path:
-    path = IMAGE_DIR / "03-osfs-write-flow.png"
+    path = IMAGE_DIR / "03-osfs-descriptor-flow.png"
     image = Image.new("RGB", (1500, 900), "#f8fafc")
     draw = ImageDraw.Draw(image)
-    draw.text((60, 45), "WRITE 命令处理流程", fill="#0f172a", font=font(42, bold=True))
-    draw.text((60, 100), "重点展示权限检查和空间预检查，避免失败写入破坏旧文件。", fill="#475569", font=font(24))
+    draw.text((60, 45), "文件描述符位移与区间 I/O", fill="#0f172a", font=font(42, bold=True))
+    draw.text((60, 100), "fd 保存独立读写位置；底层按块内偏移读取、覆盖或扩展。", fill="#475569", font=font(24))
 
     nodes = [
-        ((80, 190, 390, 300), "1. 输入命令\nWRITE fd text"),
-        ((520, 190, 830, 300), "2. 查 fd\n确认已 open 且允许写"),
-        ((960, 190, 1270, 300), "3. 权限判断\nowner/other write bit"),
-        ((960, 420, 1270, 540), "4. 空间预检查\n空闲块 + 可回收旧块 >= 需要块"),
-        ((520, 420, 830, 540), "5. 分配并写块\n更新 inode size 和 direct blocks"),
-        ((80, 420, 390, 540), "6. 返回结果\nOK wrote N bytes"),
-        ((520, 660, 830, 780), "失败路径\n权限不足或空间不足时返回 ERR，旧内容不变"),
+        ((80, 190, 390, 300), "1. OPEN\nr / w / rw / a 决定初始位移"),
+        ((520, 190, 830, 300), "2. fd 表\nname + readable/writable + offsets"),
+        ((960, 190, 1270, 300), "3. READ/WRITE\n校验句柄模式与 inode 权限"),
+        ((960, 420, 1270, 540), "4. 块定位\ndirect = offset / blockSize"),
+        ((520, 420, 830, 540), "5. 区间 I/O\n跨块读取或覆盖/扩展"),
+        ((80, 420, 390, 540), "6. 推进位移\n只按实际成功字节数更新"),
+        ((520, 660, 830, 780), "SEEK/TELL\n修改或观察句柄位置；失败写入不推进 offset"),
     ]
     for xy, text in nodes:
         fill = "#fee2e2" if text.startswith("失败") else "#dbeafe"
@@ -170,7 +170,7 @@ def create_write_flow_diagram() -> Path:
     draw_arrow(draw, (960, 480), (835, 480))
     draw_arrow(draw, (520, 480), (395, 480))
     draw_arrow(draw, (675, 545), (675, 655), "#b91c1c")
-    draw.text((900, 610), "关键边界：失败不是半写入，测试会检查旧内容仍能读出。", fill="#991b1b", font=font(24, bold=True))
+    draw.text((900, 610), "关键边界：位移属于句柄，不属于文件 inode。", fill="#991b1b", font=font(24, bold=True))
     image.save(path)
     return path
 
@@ -248,20 +248,29 @@ def add_key_value_table(doc: Document, rows: list[tuple[str, str]]) -> None:
                     set_run_font(run, "SimSun", 10)
 
 
+def add_page_number(section) -> None:
+    paragraph = section.footer.paragraphs[0]
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = paragraph.add_run()
+    field_begin = OxmlElement("w:fldChar")
+    field_begin.set(qn("w:fldCharType"), "begin")
+    instruction = OxmlElement("w:instrText")
+    instruction.set(qn("xml:space"), "preserve")
+    instruction.text = "PAGE"
+    field_end = OxmlElement("w:fldChar")
+    field_end.set(qn("w:fldCharType"), "end")
+    run._r.extend([field_begin, instruction, field_end])
+    set_run_font(run, "Times New Roman", 9)
+
+
 def build_report() -> None:
     ensure_dirs()
     architecture = create_architecture_diagram()
     disk_layout = create_disk_layout_diagram()
-    write_flow = create_write_flow_diagram()
+    descriptor_flow = create_write_flow_diagram()
 
-    demo_image = ROOT / "f" / "1630" / "图片" / "03-osfs-course-demo.png"
-    ctest_image = ROOT / "f" / "1630" / "图片" / "05-full-ctest-summary.png"
-    fallback_demo = ROOT / "f" / "1629" / "图片" / "04-osfs-cli-smoke.png"
-    fallback_ctest = ROOT / "f" / "1629" / "图片" / "05-full-ctest-summary.png"
-    if not demo_image.exists():
-        demo_image = fallback_demo
-    if not ctest_image.exists():
-        ctest_image = fallback_ctest
+    demo_image = ROOT / "f" / "1633" / "图片" / "02-final-osfs-demo.png"
+    ctest_image = ROOT / "f" / "1633" / "图片" / "03-full-ctest-summary.png"
 
     transcript = read_optional_text(DELIVERY / "osfs-demo-transcript.txt")
 
@@ -271,6 +280,7 @@ def build_report() -> None:
     section.bottom_margin = Cm(2.2)
     section.left_margin = Cm(2.6)
     section.right_margin = Cm(2.4)
+    add_page_number(section)
 
     styles = doc.styles
     styles["Normal"].font.name = "SimSun"
@@ -285,13 +295,13 @@ def build_report() -> None:
 
     subtitle = doc.add_paragraph()
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = subtitle.add_run("基于虚拟磁盘的简易二级文件系统设计与实现")
+    run = subtitle.add_run("基于虚拟磁盘的 MFD/UFD 二级文件系统设计与实现")
     set_run_font(run, "SimHei", 18, True)
 
     info = [
         ("课程名称", "操作系统课程设计"),
         ("实验题目", "实验二 Linux 二级文件系统"),
-        ("项目名称", "mini-kv OSFS course filesystem"),
+        ("项目名称", "mini-kv OSFS 二级文件系统"),
         ("学生姓名", "【请填写】"),
         ("学号", "【请填写】"),
         ("班级", "【请填写】"),
@@ -309,206 +319,232 @@ def build_report() -> None:
                 for run in para.runs:
                     set_run_font(run, "SimSun", 11)
 
-    doc.add_section(WD_SECTION.NEW_PAGE)
+    doc.add_page_break()
     add_heading(doc, "摘要", 1)
     add_para(
         doc,
-        "本课程设计围绕“Linux 二级文件系统”实验展开，目标是在不修改操作系统内核的前提下，"
-        "用一个二进制文件模拟磁盘空间，并在其上实现一个简化但结构清楚的多用户文件系统。"
-        "系统被命名为 OSFS，作为 mini-kv 项目的独立旁路模块存在。它不接入原来的 KV、WAL、"
-        "TCP 服务链路，而是通过 minikv_osfs 命令行程序提供 format、login、dir、create、delete、"
-        "open、read、write、close、chmod 等演示入口。这样处理的好处是边界清楚：课程设计要解释"
-        "文件系统，原项目核心仍然保持稳定。"
+        "本课程设计实现了一个运行在用户态的二级文件系统 OSFS。程序把普通二进制文件划分为固定大小的"
+        "磁盘块，在镜像中保存超级块、block bitmap、inode bitmap、用户表、inode 表、主文件目录 MFD、"
+        "用户文件目录 UFD 和文件数据。格式化时预置 root、Alice、Bob 三个用户；用户记录包含 uid、gid、"
+        "教学用途的密码哈希和 UFD inode，关闭程序后重新打开镜像仍能完成认证并恢复各自目录。"
     )
     add_para(
         doc,
-        "OSFS 的磁盘布局包含超级块、块位图、inode 表、根目录和数据块。文件名保存在目录项中，"
-        "文件类型、权限、owner、长度、时间戳和直接数据块号保存在 inode 中，文件正文则写入数据块。"
-        "权限方面，系统实现了 root 用户、普通用户、owner 位和 other 位的基本读写控制。测试部分覆盖"
-        "格式化、持久化、目录列出、文件读写、权限拒绝、空间不足失败保持旧内容等行为，能够对应课设"
-        "要求中的“二进制文件模拟磁盘”“inode 信息”“超级块信息”“文件信息”“用户登录”和“读写保护”。"
+        "系统提供 LOGIN、DIR、CREATE、DELETE、OPEN、CLOSE、READ、WRITE、CHMOD、STAT、SEEK 和 TELL"
+        " 命令。每个 fd 保存独立读写位移，分段读取、连续写入、原位覆盖和追加均由数据块区间 I/O 完成。"
+        "测试覆盖错误密码、未登录阻断、用户目录隔离、跨用户权限拒绝、重开持久性、跨块读写、空间不足"
+        "保持旧内容和完整命令行演示。OSFS 使用 mini-kv 仓库的构建与测试基础，但不进入 KV、WAL、"
+        "snapshot 或 TCP/RESP 执行路径。"
     )
-    add_para(doc, "关键词：操作系统；二级文件系统；虚拟磁盘；inode；权限控制；C++")
+    add_para(doc, "关键词：操作系统；二级目录；MFD/UFD；虚拟磁盘；inode；文件描述符")
 
-    add_heading(doc, "1 选题来源与需求分析", 1)
+    add_heading(doc, "1 课题要求与设计取舍", 1)
     add_para(
         doc,
-        "课程设计要求中，实验二要求模仿 Linux EXT2 文件系统，用二进制文件模拟磁盘空间，保存用户信息、"
-        "inode 信息、超级块信息和文件信息，并实现 dir、create、delete、open、close、read、write、login"
-        " 等命令。这个题目比单纯写一个命令行工具更接近操作系统课程的核心，因为它迫使程序把“文件”拆成"
-        "元数据和数据块两部分来处理。学习这部分之前，文件往往只是一个路径和一段内容；做完这个设计后，"
-        "会更容易理解为什么真实文件系统需要位图、inode 表和目录项这些结构。"
+        "课程资料把实验二定义为“Linux 二级文件系统”：用二进制文件模拟磁盘，保存用户、inode、超级块和"
+        "文件信息，完成 dir、create、delete、open、close、read、write、login，并实施读写保护。题目"
+        "前一页还提出多用户和多级目录目标。这里的“二级”按经典课程设计含义处理为 MFD/UFD 两级，而不是"
+        "只做一个名字叫 root 的平面目录。MFD 记录用户名到 UFD inode 的映射，每个用户的 UFD 再保存本用户"
+        "文件名到普通 inode 的映射。"
     )
     add_para(
         doc,
-        "mini-kv 原本已经有 WAL、snapshot、restore 等存储相关能力，但它的主任务是键值存储，不适合直接"
-        "伪装成操作系统文件系统。如果为了课设把目录、权限、inode 全塞进 KV 命令里，项目会变得混乱。"
-        "因此本设计选择增加一个独立 OSFS 层：它复用仓库已有的 CMake、CTest 和工程纪律，但运行入口、磁盘"
-        "镜像和测试都与 KV 主线隔离。这样既能满足课设要求，也不会把原项目变成一个难维护的混合系统。"
+        "mini-kv 原项目已有 WAL 和 snapshot，但这些能力解决的是键值存储恢复，并不能替代文件系统的 inode、"
+        "目录和权限。OSFS 因而采用独立 `minikv_osfs` 入口，复用 CMake、CTest 和跨平台构建，不复用 KV"
+        " 数据模型。这个取舍让磁盘布局可以按字节解释，也避免为了表面复用而把课程要求藏进键值接口。"
     )
 
     add_key_value_table(
         doc,
         [
-            ("二进制文件模拟文件系统", "VirtualDisk 按固定块大小创建和读写 osfs-course.img。"),
-            ("超级块信息", "Block 0 保存 magic、block size、block count、inode count、inode 表起止位置和 root inode。"),
-            ("block/inode 管理", "Block bitmap 记录数据块占用；inode 表保存每个文件或目录的元数据。"),
-            ("文件和目录操作", "CommandProcessor 暴露 DIR、CREATE、DELETE、OPEN、READ、WRITE、CLOSE。"),
-            ("用户交互", "minikv_osfs 提供交互 shell；LOGIN 切换 root 或普通用户。"),
-            ("读写保护", "CHMOD 修改保护码；READ/WRITE 根据 owner/other 权限判断是否允许。"),
-            ("系统测试", "osfs_tests、osfs_cli_smoke 和全量 CTest 共同验证功能与边界。"),
+            ("二进制磁盘", "VirtualDisk 按 block number 读写 osfs-course.img，重开后状态仍在。"),
+            ("文件系统元数据", "Superblock、block bitmap、inode bitmap、user table、inode table 均有固定落盘区域。"),
+            ("二级目录", "MFD 保存 user -> UFD inode；root、Alice、Bob 分别拥有真实 UFD inode 和目录块。"),
+            ("用户与 login", "用户表持久化 uid/gid/教学密码哈希/UFD inode；错误密码不会切换身份。"),
+            ("文件操作", "DIR、CREATE、DELETE、OPEN、CLOSE、READ、WRITE、CHMOD、STAT 均从真实 CLI 可执行。"),
+            ("文件描述符", "Handle 保存 read/write offset；READ/WRITE 推进位置，SEEK/TELL 可修改和观察。"),
+            ("读写保护", "权限按 root、owner、group、other 顺序判断，跨用户 0600 文件访问被拒绝。"),
         ],
     )
 
     add_heading(doc, "2 总体结构设计", 1)
     add_para(
         doc,
-        "OSFS 分成三层：最外层是命令处理层，负责把用户输入的字符串转成具体文件操作；中间层是 FileSystem，"
-        "负责维护超级块、位图、inode、目录项和权限；最底层是 VirtualDisk，它只关心按块读写二进制文件。"
-        "这种分层让报告和代码都比较容易解释。比如 WRITE 命令失败时，不需要在命令层猜测磁盘状态，而是由"
-        "FileSystem 统一判断权限和空间；VirtualDisk 也不需要理解文件名，只处理块号和字节数组。"
+        "程序按三层组织。CommandProcessor 解析文本命令，保存登录身份和 fd 表；FileSystem 处理用户目录"
+        "解析、权限、inode、位图和区间 I/O；VirtualDisk 只执行定长块读写。磁盘结构的编解码又拆到"
+        " osfs_disk_layout 模块，目录和文件内容分别由 osfs_directory、osfs_file_io 管理。这样扩展 fd"
+        " 位移时不需要碰用户认证，修改目录时也不会改写块设备接口。"
     )
     add_figure(doc, architecture, "图 1 OSFS 课程设计系统结构", 14.5)
 
-    add_heading(doc, "3 虚拟磁盘与数据结构设计", 1)
+    add_heading(doc, "3 磁盘布局与关键数据结构", 1)
     add_para(
         doc,
-        "虚拟磁盘采用固定块组织。当前默认块大小为 512 字节，演示时通常创建 96 或 256 个块。Block 0 是"
-        "超级块，Block 1 是块位图，后面一段区域保存 inode 表，剩余区域作为数据块。根目录本身也是一个"
-        "目录 inode，它的数据块里保存目录项。目录项只保存文件名、inode 编号和是否有效；真正的文件长度、"
-        "权限、owner、时间戳和数据块列表都在 inode 中。这样的设计比直接把“文件名和内容”连在一起更接近"
-        "课程中讲到的文件系统思路。"
+        "磁盘格式版本为 2，默认 block size 是 512 字节。Block 0 保存超级块；Block 1 和 Block 2 分别是"
+        "块位图、inode 位图；Block 3 保存固定长度用户记录；其后是 inode table，最后才是目录与普通文件"
+        "数据。超级块记录各区域起点、总量、空闲块、空闲 inode、用户数和 MFD inode。打开镜像时先校验 magic、"
+        "版本和几何信息，v1 镜像会明确要求重新格式化，避免按错误结构解释字节。"
     )
     add_para(
         doc,
-        "为了让实现可控，本版只使用直接数据块。真实 EXT2 inode 会包含 12 个直接块以及多级间接块，"
-        "但课设演示重点是理解文件系统内部结构，而不是追求大文件容量。直接块方案更适合课堂答辩：它能"
-        "清楚展示位图如何分配块、inode 如何记录块号、目录如何通过 inode 找到文件，同时避免间接块把"
-        "讲解重点拉得过散。"
+        "每个 inode 固定 96 字节，保存类型、mode、owner uid/gid、size、ctime、atime、mtime 和八个直接块号。"
+        "目录项固定 64 字节，只保存 used、inode 和 name。用户记录同样为 64 字节，保存用户名、uid、gid、"
+        "UFD inode 和密码哈希。定长结构配合 static_assert，能够在编译期发现填充造成的格式漂移。"
     )
     add_figure(doc, disk_layout, "图 2 OSFS 虚拟磁盘布局", 14.5)
 
-    add_heading(doc, "4 核心操作流程", 1)
+    add_heading(doc, "4 格式化、认证与二级目录", 1)
     add_para(
         doc,
-        "格式化时，程序先创建指定大小的二进制文件，再写入超级块、初始化位图、清空 inode 表，并创建 root"
-        " 目录。创建文件时，系统分配一个空闲 inode，在根目录中添加目录项。打开文件时，命令层记录一个 fd"
-        " 到 inode 的映射；后续 READ 和 WRITE 通过 fd 找回 inode。删除文件时，系统释放 inode 和它占用的"
-        "数据块，并把目录项标记为无效。"
+        "格式化首先为 MFD 分配 inode 0 和目录块，再为 root、Alice、Bob 各分配一个 UFD inode 与目录块。"
+        "MFD 的三个目录项指向这三个 UFD，用户表保存相同 UFD inode。登录时，程序从用户表定位记录，使用"
+        "用户名参与教学哈希计算，再比较磁盘中的 hash。认证失败只返回统一错误；认证成功会切换 uid 并清空"
+        "旧 fd，防止句柄跨身份遗留。"
     )
     add_para(
         doc,
-        "WRITE 是最值得说明的流程。它不只是把字符串写到文件末尾，而是先检查 fd 是否存在、打开模式是否"
-        "允许写、当前用户是否有写权限，然后计算新内容需要多少数据块。空间不足时，程序会在释放旧块之前"
-        "直接返回错误，这一点在测试中专门覆盖。这个细节看起来不大，但它说明实现时考虑了失败场景，不会"
-        "出现写一半失败导致旧文件被破坏的问题。"
-    )
-    add_figure(doc, write_flow, "图 3 WRITE 命令处理流程", 14.5)
-
-    add_heading(doc, "5 权限与用户模型", 1)
-    add_para(
-        doc,
-        "用户模型故意保持简单。root 用户 uid 为 0，普通用户名通过稳定哈希得到 uid。每个文件保存 owner"
-        " 和八进制保护码，例如 0644 或 0600。读写判断时，root 直接通过；如果当前用户是 owner，则检查"
-        " owner read/write 位；如果不是 owner，则检查 other read/write 位。本设计没有引入 group，是因为"
-        "课程要求强调读写保护，owner/other 已经足以演示保护码的作用。"
-    )
-    add_para(
-        doc,
-        "演示中可以先用 root 创建并写入 report 文件，再把权限改成 0600，随后 LOGIN guest 并尝试 READ。"
-        "guest 不是 owner，other read 位又被关闭，因此系统返回 permission denied。这条演示路径比单纯"
-        "展示 chmod 更有说服力，因为它把用户切换、保护码和读操作连接在一起，能说明权限不是文档里的字段，"
-        "而是实际参与了命令执行。"
+        "未带用户名前缀的文件名总是在当前用户 UFD 中解析，所以 Alice 创建的 report 不会进入 Bob 的目录。"
+        "限定名字 `alice/report` 允许 root 审查，也让测试能够让 Bob 到达目标 inode 后接受权限判断。DIR 默认"
+        "只列当前 UFD；普通用户不能列别人的 UFD，root 可以使用 `DIR alice`。这两条规则把目录隔离和 inode"
+        "权限分开，避免用简单的输出过滤假装二级目录。"
     )
 
-    add_heading(doc, "6 关键模块说明", 1)
+    add_heading(doc, "5 文件描述符与区间读写", 1)
+    add_para(
+        doc,
+        "fd 不是文件名的另一个写法。Handle 同时保存文件名、可读/可写标志、read offset 和 write offset。"
+        "`OPEN w` 先截断；`rw` 保留内容并从位置 0 开始；`a` 把写位置设为 EOF。READ 按实际返回字节数推进"
+        "读位置，WRITE 只有成功落盘后才推进写位置。SEEK 设置允许方向的偏移，TELL 输出两个位置。"
+    )
+    add_para(
+        doc,
+        "底层区间 I/O 用 `offset / block_size` 选择直接块，用 `offset % block_size` 找块内位置。一段数据跨越"
+        "512 字节边界时，循环会在当前块末尾切分，再进入下一个块。扩展写入前先检查八个直接块上限和空闲块，"
+        "不足时不修改数据或 fd 位置；新块先清零，避免间隙暴露旧内容。"
+    )
+    add_figure(doc, descriptor_flow, "图 3 文件描述符位移与区间 I/O", 14.5)
+
+    add_heading(doc, "6 权限模型与失败处理", 1)
+    add_para(
+        doc,
+        "inode mode 使用八进制权限位。判断顺序为 root、owner、group、other；root uid 0 可以审查全部目录，普通"
+        "用户只能按自身 uid/gid 和权限位访问。Alice 把文件改成 0600 后，Bob 即使写出 `alice/report` 也会在"
+        " inode 权限处得到 permission denied。密码哈希和 mode 都实际参与命令执行，不是 DIR 中的装饰字段。"
+    )
+    add_para(
+        doc,
+        "整文件替换先比较“空闲块 + 当前文件可回收块”和目标需求，空间不足时旧内容保持不变。区间扩展写也"
+        "在分配前检查所需新增块。创建文件若已取得 inode、随后目录扩容失败，会撤销 inode bitmap；删除则释放"
+        "全部数据块和 inode，并重算超级块空闲计数。课设磁盘规模较小，重算比依靠多处分散加减更容易审查。"
+    )
+
+    add_heading(doc, "7 关键模块说明", 1)
     add_key_value_table(
         doc,
         [
             ("include/minikv/osfs/virtual_disk.hpp", "声明虚拟磁盘接口，提供 create、open、read_block、write_block。"),
             ("src/osfs_virtual_disk.cpp", "负责磁盘镜像大小校验、块边界校验和二进制读写。"),
-            ("include/minikv/osfs/filesystem.hpp", "声明文件系统 API、FileInfo、DirectoryEntry、Stat、OpenMode 等类型。"),
-            ("src/osfs_filesystem.cpp", "实现超级块、位图、inode 表、目录项、文件读写、权限和空间分配。"),
-            ("include/minikv/osfs/command_processor.hpp", "声明课程演示命令处理器和命令返回结构。"),
-            ("src/osfs_command_processor.cpp", "解析 LOGIN、DIR、CREATE、OPEN、WRITE、READ、CHMOD 等命令并维护 fd 表。"),
+            ("src/osfs_disk_layout.*", "固定磁盘结构尺寸，读写 superblock、双位图、用户表、inode 和目录块。"),
+            ("src/osfs_filesystem.cpp", "格式化、打开镜像、用户表查询和密码认证。"),
+            ("src/osfs_directory.cpp", "MFD/UFD 解析、创建、删除、DIR、STAT、CHMOD 与目录权限。"),
+            ("src/osfs_file_io.cpp", "整文件替换、truncate、range read/write、块边界和空间预检。"),
+            ("src/osfs_command_processor.cpp", "解析命令，维护登录状态与带 read/write offset 的 fd 表。"),
             ("src/osfs_main.cpp", "提供 minikv_osfs 命令行入口，支持 --disk、--format、--blocks、--script。"),
-            ("tests/osfs_tests.cpp", "用断言覆盖持久化、权限、目录行、空间失败等关键行为。"),
+            ("tests/osfs_tests.cpp", "覆盖认证、二级目录、权限、持久化、offset、跨块 I/O 和失败保持。"),
         ],
     )
 
-    add_heading(doc, "7 测试与演示结果", 1)
+    add_heading(doc, "8 测试与演示结果", 1)
     add_para(
         doc,
-        "本设计不只依赖一次手工演示。自动化测试先验证底层行为，例如格式化后重新打开磁盘仍能读到文件，"
-        "chmod 后普通用户会被拒绝，空间不足时旧内容不被破坏。脚本 smoke 再从 CLI 入口跑一遍接近课堂演示的"
-        "命令序列。最后，全量 CTest 确认新增 OSFS 没有破坏 mini-kv 原有 KV、WAL、snapshot、TCP 和证据链测试。"
+        "osfs_tests 从 C++ API 检查磁盘格式版本、三个 UFD inode、错误密码、目录隔离、跨用户 0600 拒绝、root"
+        " 审查、重新打开后的认证与数据持久性。fd 测试连续写 `hello-` 和 `world`，再分段读取、SEEK 覆盖、"
+        "append 追加；另一个 700 字节文件专门验证 512 字节块边界。空间不足测试确认失败重写不会破坏旧内容。"
     )
     if demo_image.exists():
         add_figure(doc, demo_image, "图 4 OSFS 命令行演示结果", 14.5)
     if transcript:
         add_para(
             doc,
-            "演示输出中可以看到 CREATE、OPEN、WRITE、READ、CHMOD、LOGIN、权限拒绝和 DIR 列表都按预期执行。"
-            "其中 report 文件在 chmod 0600 后，guest 用户读取失败，说明保护码不是静态展示字段。"
+            "最终脚本从未登录状态开始，先验证命令阻断和错误密码，再以 Alice 创建、连续写、分段读并 chmod"
+            " 0600。Bob 的 DIR 不出现 Alice 文件，限定访问也被拒绝；root 最后列出 Alice UFD 并读取内容。"
+            "脚本由真实 minikv_osfs 可执行文件生成 transcript，没有手写成功输出。"
         )
     if ctest_image.exists():
         add_figure(doc, ctest_image, "图 5 全量 CTest 验证证据", 14.5)
 
-    add_heading(doc, "8 运行与复现步骤", 1)
+    add_heading(doc, "9 运行与复现步骤", 1)
     add_para(
         doc,
-        "在 Linux 环境中，可以使用 CMake 构建 minikv_osfs 目标，然后用脚本运行演示命令。Windows 本地验证"
-        "使用 CLion 捆绑 MinGW 工具链完成，GitHub Actions 也覆盖 Ubuntu、macOS 和 Windows 构建测试。课堂"
-        "演示时建议只展示 OSFS 入口，不需要启动 mini-kv TCP 服务。"
+        "构建只需要 CMake 和 C++20 编译器。课堂演示启动 OSFS 即可，不需要启动 mini-kv TCP 服务。第一次"
+        "运行使用 `--format` 创建 v2 镜像；后续去掉 `--format` 可以验证用户表、UFD 和文件内容确实持久化。"
     )
     code = doc.add_paragraph()
     code.paragraph_format.left_indent = Cm(0.8)
     run = code.add_run(
         "cmake -S . -B build\n"
         "cmake --build build --target minikv_osfs\n"
-        "./build/minikv_osfs --disk data/osfs-course.img --format --blocks 96 --script tests/osfs_smoke_script.txt"
+        "./build/minikv_osfs --disk data/osfs-course.img --format --blocks 96 --script "
+        "课程设计交付/v1633-osfs-final/osfs-demo-script.txt"
     )
     set_run_font(run, "Consolas", 9)
 
-    add_heading(doc, "9 不足与改进方向", 1)
-    add_para(
+    doc.add_page_break()
+    add_heading(doc, "10 需求核对与对抗性自审", 1)
+    add_key_value_table(
         doc,
-        "当前 OSFS 适合作为课程设计主体，但它不是完整生产文件系统。它只实现根目录，没有多级目录；inode 使用"
-        "直接数据块，没有间接块；权限模型也只区分 owner 和 other，没有 group。笔者认为这些限制是可以接受的，"
-        "因为本次课程设计的关键是讲清楚文件系统内部结构和命令行为，而不是复刻完整 EXT2。"
+        [
+            ("保存用户、inode、超级块和文件信息", "完整：四类信息都位于磁盘镜像固定区域，重开测试通过。"),
+            ("二级目录", "完整：MFD 指向 root/Alice/Bob 的真实 UFD inode 与目录块。"),
+            ("dir/create/delete/open/close/read/write", "完整：真实 CLI 与 focused CTest 覆盖。"),
+            ("login 用户登录", "完整：磁盘用户表与密码校验；错误密码失败且不切换身份。"),
+            ("DIR 展示文件名、物理地址、保护码、长度", "完整：同时展示 inode、owner 与 size。"),
+            ("读写保护", "完整：chmod 0600 后跨用户读写拒绝。"),
+            ("EXT2 完整组与间接块", "部分/教学简化：单 block group、八个直接块，不声称完整 EXT2。"),
+        ],
     )
     add_para(
         doc,
-        "如果继续扩展，比较合理的顺序是先加 mkdir、cd、pwd，把根目录扩成多级目录；随后再加 group 权限和"
-        "间接块。另一个方向是增加 fsck 类检查命令，用来发现位图、inode 表和目录项之间的不一致。这样的扩展"
-        "会更接近真实文件系统维护，但也会显著增加测试和答辩解释成本。"
+        "评分老师最可能提出的质疑是：“这是否只是按 owner 过滤一个根目录，并没有真正的二级目录？”回应不靠"
+        "演示文字：格式化会为 MFD 与三个 UFD 分配不同 inode 和数据块，用户表与 MFD 都保存 UFD inode；Alice"
+        " 和 Bob 的目录项写入不同 UFD。测试断言三个 UFD inode 不同、双方 DIR 相互隔离，并在重开镜像后再次"
+        "认证和读取。root 的 `DIR alice` 又能从 MFD/用户表定位 Alice UFD，说明目录关系存在于磁盘结构。"
     )
 
-    add_heading(doc, "10 总结", 1)
+    add_heading(doc, "11 设计边界与后续工作", 1)
     add_para(
         doc,
-        "通过这次设计，我对文件系统的理解从“文件路径加文件内容”推进到了“磁盘块、元数据和权限共同工作”。"
-        "OSFS 的实现不复杂，但它把课程中的几个关键点连在了一起：超级块说明磁盘如何被解释，位图说明空间如何"
-        "被分配，inode 说明文件属性和数据块如何绑定，目录项说明文件名如何映射到 inode，权限检查则说明多用户"
-        "环境下为什么不能只关心数据是否存在。"
+        "OSFS 不是完整 EXT2。它只实现课程要求的 MFD/UFD 两级，不支持任意深度子目录；inode 只有八个直接块，"
+        "没有间接块；用户表容量固定，FNV-1a 哈希仅用于教学；系统没有 fsck、崩溃日志和多进程并发。这些限制"
+        "不会被包装成已完成项。若继续扩展，优先增加 fsck 检查位图、inode 与目录项一致性，再考虑间接块和"
+        "更安全的密码派生。"
+    )
+
+    add_heading(doc, "12 总结", 1)
+    add_para(
+        doc,
+        "本次实现把文件拆成了几条可以追踪的关系：用户表把身份连到 UFD，目录项把名字连到 inode，inode 再把"
+        "权限、长度和数据块连起来。LOGIN 决定从哪个 UFD 开始查找，OPEN 产生带位置的 fd，READ/WRITE 最终"
+        "落到具体块内偏移。沿着这条路径，课程里的超级块、位图、inode、目录、权限和打开文件表不再是分散概念。"
     )
     add_para(
         doc,
-        "这版设计也保留了工程上的克制。它没有把 OSFS 混进 mini-kv 原来的 KV 命令，也没有启动网络服务或打开"
-        "额外执行链路。对课程设计来说，这使系统边界更好讲；对原项目来说，也避免了为了完成作业而破坏已有结构。"
+        "项目最后保留了明确范围：只做 MFD/UFD 二级目录和直接块，不借完整 EXT2 名义夸大成果。OSFS 与原 KV"
+        " 主线仍然隔离，报告中的每个完成项都能指向源码、测试或真实 transcript。"
     )
 
     add_heading(doc, "参考资料", 1)
     refs = [
-        "操作系统课程设计要求 2026，课程讲义 PDF。",
-        "Linux Kernel 源码目录与文件系统子系统课程资料。",
-        "mini-kv 项目源码：include/minikv/osfs、src/osfs_*.cpp、tests/osfs_tests.cpp。",
+        "[1] 操作系统课程设计要求 2026：实验二 Linux 二级文件系统，课程讲义 PDF。",
+        "[2] mini-kv OSFS 源码：include/minikv/osfs、src/osfs_*.cpp。",
+        "[3] mini-kv OSFS 测试与演示：tests/osfs_tests.cpp、tests/osfs_smoke_script.txt。",
     ]
-    for item in refs:
-        p = doc.add_paragraph(style=None)
-        p.paragraph_format.left_indent = Cm(0.6)
-        run = p.add_run(item)
-        set_run_font(run, "SimSun", 10.5)
+    p = doc.add_paragraph(style=None)
+    p.paragraph_format.left_indent = Cm(0.6)
+    p.paragraph_format.line_spacing = 1.0
+    p.paragraph_format.space_after = Pt(0)
+    run = p.add_run("\n".join(refs))
+    set_run_font(run, "SimSun", 9)
 
     doc.save(REPORT_DOCX)
 

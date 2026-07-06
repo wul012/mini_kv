@@ -75,3 +75,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1632 补充索引
 
 - v1632: [1000-version-1632-osfs-descriptor-offset-range-io.md](1000-version-1632-osfs-descriptor-offset-range-io.md) - 为每个打开句柄增加独立读写位置，新增 `READ fd [length]`、连续 `WRITE`、`SEEK/TELL` 与 `w/rw/a` 模式；底层 range I/O 直接跨数据块读取和覆盖/扩展写入，测试覆盖顺序读、原位覆盖、追加、EOF、512 字节块边界和重开持久性，不用整文件字符串拼接伪装 fd 语义。
+
+## v1633 补充索引
+
+- v1633: [1001-version-1633-osfs-coursework-final-delivery-and-quality-gate.md](1001-version-1633-osfs-coursework-final-delivery-and-quality-gate.md) - 不再新增 OSFS runtime 功能，而是在 v1631/v1632 已补齐二级目录、持久化用户、认证权限和 fd offset 后，按课程要求重建最终 DOCX/PDF、真实 CLI transcript、需求-证据矩阵、提交清单、渲染检查和 v1630 superseded 标记，把“能跑”推进到“能审、能复现、能提交”的交付闭环。

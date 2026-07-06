@@ -1,5 +1,7 @@
 # OSFS coursework delivery v1630
 
+> Superseded：本页记录的是单根目录阶段草稿。最终交付与准确需求结论见 `docs/osfs-coursework-delivery-v1633.md` 和 `课程设计交付/v1633-osfs-final/`。
+
 v1630 是 v1629 OSFS 功能层之后的课程设计交付收尾版。它不新增文件系统行为，重点把现有 OSFS 能力整理成老师能验收、学生能演示、平台能提交的材料。
 
 ## 对应课程要求
