@@ -87,3 +87,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1635 补充索引
 
 - v1635: [1003-version-1635-osfs-fsck-user-management.md](1003-version-1635-osfs-fsck-user-management.md) - 为 OSFS 课设层补齐只读 FSCK 与落盘用户管理，讲清 `check_consistency()` 如何重算 superblock、位图、inode、MFD/UFD、用户表和直接/间接块一致性，`USERADD`/`PASSWD` 如何维护真实磁盘结构，以及测试怎样证明坏 block bitmap、root-only 用户创建、旧密码失效、Bob 越权失败、root 审查和全量 CTest 344/344 都成立。
+
+## v1636 补充索引
+
+- v1636: [1004-version-1636-osfs-final-package-refresh.md](1004-version-1636-osfs-final-package-refresh.md) - 不新增 OSFS 运行命令，而是把 v1634/v1635 的一级间接块、只读 FSCK、USERADD/PASSWD 和真实 CLI transcript 收束为 v1636 最终课程交付包，讲清 DOCX/PDF 渲染、九页报告、四张图、需求矩阵、对抗性自审、UTF-8 transcript 和 no KV/WAL/TCP/Node/Java execution 边界如何共同形成可复核证据链。
