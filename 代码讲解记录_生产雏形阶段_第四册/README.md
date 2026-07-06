@@ -63,3 +63,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1629 补充索引
 
 - v1629: [997-version-1629-osfs-course-design-layer.md](997-version-1629-osfs-course-design-layer.md) - 新增独立 OSFS 课程设计文件系统层：`minikv_osfs` 通过二进制磁盘镜像模拟 superblock、bitmap、inode table、root directory、直接块、权限和句柄式 open/read/write/close，并用 `osfs_tests`、`osfs_cli_smoke` 与全量 344/344 CTest 证明课设演示路径和原 KV/WAL/TCP 主线互不污染。
+
+## v1630 补充索引
+
+- v1630: [998-version-1630-osfs-coursework-delivery-closeout.md](998-version-1630-osfs-coursework-delivery-closeout.md) - 把 v1629 已完成的 OSFS 课程设计层收束成可提交材料包：生成课程报告 DOCX/PDF、体系结构图、磁盘布局图、写入流程图、演示脚本、演示 transcript、提交清单、复现 README 和 v1630 命令归档，证明交付材料围绕二级文件系统、权限、目录、open/read/write/close 与测试证据展开，不引入新的 KV 路由、网络、WAL 写入或执行权限。

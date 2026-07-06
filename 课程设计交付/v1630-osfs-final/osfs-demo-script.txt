@@ -1,0 +1,14 @@
+WHOAMI
+DIR
+CREATE report
+OPEN report rw
+WRITE 3 course design storage layer
+READ 3
+CLOSE 3
+CHMOD report 0600
+LOGIN guest
+OPEN report r
+DIR
+LOGIN root
+STAT report
+QUIT

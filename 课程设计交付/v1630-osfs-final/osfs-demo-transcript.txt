@@ -1,0 +1,32 @@
+﻿mini-kv osfs course shell
+disk=D:\C\mini-kv\cmake-build-v1630\osfs-course-demo.img blocks=96 block_size=512 inodes=64
+Commands: HELP, WHOAMI, LOGIN user, DIR, CREATE name, DELETE name, STAT name, CHMOD name mode, OPEN name r|w|rw, READ fd, WRITE fd text, CLOSE fd, QUIT
+osfs> WHOAMI
+root uid=0
+osfs> DIR
+(empty)
+osfs> CREATE report
+OK created report
+osfs> OPEN report rw
+OK fd=3
+osfs> WRITE 3 course design storage layer
+OK wrote 27 bytes
+osfs> READ 3
+course design storage layer
+osfs> CLOSE 3
+OK closed 3
+osfs> CHMOD report 0600
+OK chmod report 0600
+osfs> LOGIN guest
+OK login guest uid=3193756659
+osfs> OPEN report r
+ERR permission denied
+osfs> DIR
+name inode physical mode owner size
+report 1 15 0600 0 27
+osfs> LOGIN root
+OK login root uid=0
+osfs> STAT report
+name=report inode=1 physical=15 mode=0600 owner=0 size=27 created_at=1783306760 modified_at=1783306760
+osfs> QUIT
+BYE
