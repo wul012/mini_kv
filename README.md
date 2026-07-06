@@ -4,6 +4,7 @@
 
 The full version history is kept in [`docs/CHANGELOG.md`](docs/CHANGELOG.md). This README keeps only the latest ten entries so the build, run, architecture, and protocol notes remain easy to scan.
 
+- v1631: replaces the OSFS v1 single-root prototype with a version-2 on-disk two-level directory model: the binary image now stores a master file directory (MFD), one real user file directory (UFD) inode/data block per seeded user, a persistent user table with teaching-only password hashes, separate block/inode bitmaps, free-space counters, uid/gid ownership, and access timestamps. `LOGIN user password` rejects invalid credentials, unauthenticated file commands are blocked, each user sees only their UFD, root can inspect another UFD, and qualified cross-user opens still enforce inode permissions. The OSFS sources are split into disk-layout, directory, file-I/O, lifecycle, and command modules; focused tests, a real CLI smoke, and full local CTest remain green at 344/344.
 - v1630: closes the OSFS coursework delivery package without changing runtime behavior: `课程设计交付/v1630-osfs-final/` now contains the formal DOCX/PDF report, architecture/disk/write-flow diagrams, demo script, demo transcript, handoff README, submission checklist, and rendered evidence screenshots; the version re-reads the 2026 OS course PDF requirements, proves experiment 2 alignment, rebuilds `minikv_osfs`, runs the OSFS demo, renders the report through LibreOffice/Poppler, visually checks the final 8-page PDF, and keeps full local CTest green at 344/344.
 - v1629: adds an independent OSFS course-design filesystem layer without changing the KV/WAL/TCP command path: `minikv_osfs` formats a binary disk image with superblock, block bitmap, inode table, root directory, direct data blocks, mode/owner metadata, and handle-style open/read/write/close commands; `osfs_tests` and `osfs_cli_smoke` prove persistence, permissions, directory rows, Chinese-path Windows launch safety, and course-demo behavior, while full local CTest remains green at 344/344.
 - v1628: corrects the runtime-receipts consolidation false shrink metric before scaling the migration: line-count shrink is now documented and contract-tested as a review metric rather than a stop-condition, so v1627's +116 diff-line abort/rollback growth is treated as benign only because byte parity, boundary closure, and builder testability improved; `runtime_receipt_json_builder_tests` also drives the no-network drift fully to ground by proving both objects have 118 top-level fields and the only raw-byte delta is the single `boundary` phrase `Node v323\u0027s` versus `Node v323's`, with no receipt, digest, no-network, no-write, WAL, credential, or execution drift. No additional receipt formatter is migrated in this version.
@@ -25,8 +26,8 @@ Core surfaces:
 - Inline text and RESP-over-TCP server/client flows
 - WAL, snapshot, restore, and compaction evidence boundaries
 - Runtime read-only JSON evidence through INFOJSON, STATSJSON, SMOKEJSON, STORAGEJSON, COMMANDSJSON, EXPLAINJSON, and CHECKJSON
-- Independent OSFS course-design filesystem shell through `minikv_osfs`, with a binary disk image, superblock, block bitmap, inode table, directory entries, permissions, and handle-style file operations
-- OSFS coursework delivery artifacts under `课程设计交付/v1630-osfs-final/`, including DOCX/PDF report, diagrams, demo transcript, and submission checklist
+- Independent OSFS course-design filesystem shell through `minikv_osfs`, with a binary disk image, superblock, block/inode bitmaps, persistent users, MFD/UFD two-level directories, inode ownership/permissions, and handle-style file operations
+- OSFS v1630 coursework artifacts are retained as a draft baseline; the replacement final package is produced only after the v1631+ substantive completion brief is fully closed
 - CI-backed CMake/CTest matrix with sanitizer, coverage, format, and archive-inventory lanes
 - Explicit no-router, no-order-authority, no-write-expansion, and no-execution governance fields for Node/Java consumption
 
@@ -92,6 +93,7 @@ OSFS course-design shell:
 
 ```powershell
 .\build\Debug\minikv_osfs.exe --disk data\osfs-course.img --format --blocks 96
+# In the shell: LOGIN root root
 ```
 
 OSFS script smoke:

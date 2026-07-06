@@ -67,3 +67,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1630 补充索引
 
 - v1630: [998-version-1630-osfs-coursework-delivery-closeout.md](998-version-1630-osfs-coursework-delivery-closeout.md) - 把 v1629 已完成的 OSFS 课程设计层收束成可提交材料包：生成课程报告 DOCX/PDF、体系结构图、磁盘布局图、写入流程图、演示脚本、演示 transcript、提交清单、复现 README 和 v1630 命令归档，证明交付材料围绕二级文件系统、权限、目录、open/read/write/close 与测试证据展开，不引入新的 KV 路由、网络、WAL 写入或执行权限。
+
+## v1631 补充索引
+
+- v1631: [999-version-1631-osfs-two-level-directory-and-persistent-users.md](999-version-1631-osfs-two-level-directory-and-persistent-users.md) - 把 v1629/v1630 的单根目录草稿升级为磁盘格式 v2：增加持久化用户表、教学密码哈希、MFD、每用户独立 UFD、block/inode 双位图、空闲计数、uid/gid 和 atime；命令层强制 `LOGIN user password`，用错误密码、目录隔离、跨用户权限、root 审查和重开持久性测试证明二级目录不是输出过滤，并从一开始拆分磁盘布局、目录和文件 I/O 职责。

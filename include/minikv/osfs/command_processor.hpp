@@ -23,15 +23,16 @@ private:
         bool writable = false;
     };
 
-    std::string login(const std::string& user);
+    std::string login(const std::string& user, const std::string& password);
     std::string open_file(const std::string& name, const std::string& mode);
     std::string close_file(int fd);
     std::string read_file(int fd);
     std::string write_file(int fd, const std::string& contents);
 
     FileSystem& fs_;
-    std::string current_user_ = "root";
+    std::string current_user_;
     std::uint32_t current_uid_ = 0;
+    bool authenticated_ = false;
     int next_fd_ = 3;
     std::unordered_map<int, Handle> handles_;
 };

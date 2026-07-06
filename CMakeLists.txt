@@ -65,6 +65,9 @@ add_library(minikv
     src/line_editor.cpp
     src/log.cpp
     src/osfs_command_processor.cpp
+    src/osfs_directory.cpp
+    src/osfs_disk_layout.cpp
+    src/osfs_file_io.cpp
     src/osfs_filesystem.cpp
     src/osfs_virtual_disk.cpp
     src/managed_audit_adapter_receipts.cpp

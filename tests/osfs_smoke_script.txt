@@ -1,9 +1,14 @@
+LOGIN alice wrong
+LOGIN alice alice123
 CREATE report
 OPEN report rw
 WRITE 3 course design storage layer
 READ 3
 CHMOD report 0600
-LOGIN guest
-OPEN report w
 DIR
+LOGIN bob bob123
+DIR
+OPEN alice/report r
+LOGIN root root
+DIR alice
 QUIT

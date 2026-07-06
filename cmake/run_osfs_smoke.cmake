@@ -33,6 +33,10 @@ if(NOT osfs_output MATCHES "OK created report")
     message(FATAL_ERROR "minikv_osfs smoke did not create report\n${osfs_output}")
 endif()
 
+if(NOT osfs_output MATCHES "ERR authentication failed")
+    message(FATAL_ERROR "minikv_osfs smoke did not reject the wrong password\n${osfs_output}")
+endif()
+
 if(NOT osfs_output MATCHES "course design storage layer")
     message(FATAL_ERROR "minikv_osfs smoke did not read the written file\n${osfs_output}")
 endif()
@@ -41,6 +45,6 @@ if(NOT osfs_output MATCHES "ERR permission denied")
     message(FATAL_ERROR "minikv_osfs smoke did not enforce write permission denial\n${osfs_output}")
 endif()
 
-if(NOT osfs_output MATCHES "report 1 [0-9]+ 0600 0 27")
+if(NOT osfs_output MATCHES "report [0-9]+ [0-9]+ 0600 1000 27")
     message(FATAL_ERROR "minikv_osfs smoke did not expose the expected directory row\n${osfs_output}")
 endif()

@@ -60,8 +60,8 @@ bool parse_octal_mode(const std::string& text, std::uint16_t* mode) {
 CommandProcessor::CommandProcessor(FileSystem& fs) : fs_{fs} {}
 
 std::string CommandProcessor::help_text() {
-    return "Commands: HELP, WHOAMI, LOGIN user, DIR, CREATE name, DELETE name, STAT name, CHMOD name mode, "
-           "OPEN name r|w|rw, READ fd, WRITE fd text, CLOSE fd, QUIT";
+    return "Commands: HELP, WHOAMI, LOGIN user password, DIR [user], CREATE name, DELETE name, STAT name, "
+           "CHMOD name mode, OPEN name r|w|rw, READ fd, WRITE fd text, CLOSE fd, QUIT";
 }
 
 std::string CommandProcessor::execute(std::string_view line) {
@@ -82,18 +82,35 @@ std::string CommandProcessor::execute(std::string_view line) {
         return "BYE";
     }
     if (command == "WHOAMI") {
+        if (!authenticated_) {
+            return "not logged in";
+        }
         return current_user_ + " uid=" + std::to_string(current_uid_);
     }
     if (command == "LOGIN") {
         std::string user;
-        input >> user;
-        if (user.empty()) {
-            return "ERR usage: LOGIN user";
+        std::string password;
+        input >> user >> password;
+        if (user.empty() || password.empty()) {
+            return "ERR usage: LOGIN user password";
         }
-        return login(user);
+        return login(user, password);
+    }
+    if (!authenticated_) {
+        return "ERR login required";
     }
     if (command == "DIR") {
-        const auto entries = fs_.list_directory();
+        std::string username;
+        input >> username;
+        if (username.empty()) {
+            username = current_user_;
+        }
+        std::string error;
+        const auto entries_result = fs_.list_directory_for(username, current_uid_, &error);
+        if (!entries_result.has_value()) {
+            return require_error(error);
+        }
+        const auto& entries = *entries_result;
         if (entries.empty()) {
             return "(empty)";
         }
@@ -139,14 +156,15 @@ std::string CommandProcessor::execute(std::string_view line) {
         if (name.empty()) {
             return "ERR usage: STAT name";
         }
-        const auto stat = fs_.stat(name);
+        const auto stat = fs_.stat(name, current_uid_);
         if (!stat.has_value()) {
             return "ERR file not found";
         }
         std::ostringstream out;
         out << "name=" << stat->name << " inode=" << stat->inode << " physical=" << stat->first_block
-            << " mode=" << format_mode(stat->mode) << " owner=" << stat->owner_uid << " size=" << stat->size
-            << " created_at=" << stat->created_at << " modified_at=" << stat->modified_at;
+            << " mode=" << format_mode(stat->mode) << " owner=" << stat->owner_uid << " group=" << stat->owner_gid
+            << " size=" << stat->size << " created_at=" << stat->created_at << " accessed_at=" << stat->accessed_at
+            << " modified_at=" << stat->modified_at;
         return out.str();
     }
     if (command == "CHMOD") {
@@ -206,9 +224,14 @@ std::string CommandProcessor::execute(std::string_view line) {
     return "ERR unknown command";
 }
 
-std::string CommandProcessor::login(const std::string& user) {
-    current_user_ = user;
-    current_uid_ = uid_for_user(user);
+std::string CommandProcessor::login(const std::string& user, const std::string& password) {
+    const auto authenticated = fs_.authenticate(user, password);
+    if (!authenticated.has_value()) {
+        return "ERR authentication failed";
+    }
+    current_user_ = authenticated->username;
+    current_uid_ = authenticated->uid;
+    authenticated_ = true;
     handles_.clear();
     next_fd_ = 3;
     return "OK login " + current_user_ + " uid=" + std::to_string(current_uid_);
@@ -220,7 +243,7 @@ std::string CommandProcessor::open_file(const std::string& name, const std::stri
     if (!readable && !writable) {
         return "ERR usage: OPEN name r|w|rw";
     }
-    if (!fs_.stat(name).has_value()) {
+    if (!fs_.stat(name, current_uid_).has_value()) {
         return "ERR file not found";
     }
     if (readable && !fs_.can_read(name, current_uid_)) {
