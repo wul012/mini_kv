@@ -1,0 +1,34 @@
+mini-kv v1639 evidence summary
+
+Scope:
+- Refactored only the credential-handle approval receipt closed-boundary boolean flag block.
+- Moved that block from a monolithic hand-written JSON string into OrderedJsonField + json_bool construction.
+- Kept frozen fixture files unchanged.
+- Did not migrate endpoint-handle approval in this version.
+- Did not add network, write, router, credential resolution, shell execution, LOAD, RESTORE, COMPACT, or SETNXEX behavior.
+
+Plan files read:
+- D:\nodeproj\orderops-node\docs\plans\README.md
+- D:\nodeproj\orderops-node\docs\plans\stage2-operational-reality-program.md
+- Stage 2 was inactive/gated, so the active mini-kv scope remained v1637+ Production Excellence receipt consolidation.
+
+Validation:
+- Focused CTest: 5/5 passed.
+- Full build completed after focused-target build-order miss.
+- Full CTest: 344/344 passed.
+- Final CTest summary: 100% tests passed, 0 tests failed out of 344.
+- Total Test time (real): 110.73 sec.
+- clang-format dry run passed for src/runtime_credential_resolver_credential_handle_approval_receipts.cpp.
+- git diff --check passed.
+- Walkthrough length: 6814 characters, 71 lines.
+
+Archive:
+- f/1639/图片/01-focused-credential-boundary-tests.png
+- f/1639/图片/02-full-build-and-ctest.png
+- f/1639/图片/03-format-diff-walkthrough.png
+- f/1639/解释/说明.md
+- f/1639/证据/summary.txt
+
+Notes:
+- The earlier LastTestsFailed.log entries came from running full CTest before all test executables had been built.
+- The final evidence is the post-full-build CTest run with 344/344 passing.

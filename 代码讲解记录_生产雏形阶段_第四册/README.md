@@ -97,3 +97,6 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1638 补充索引
 
 - v1638: [1006-version-1638-approval-contract-parity-baseline.md](1006-version-1638-approval-contract-parity-baseline.md) - 为审批合同 Slice 2 建立迁移前基线：credential-handle 与 endpoint-handle 证明 fixture/formatter byte parity，signed-human 把唯一 `Node v314\u0027s` 与 `Node v314's` 历史拼写差异命名为单点 canonical runtime surface waiver，并继续保护 read-only/no-router/no-write/no-WAL/no-network/no-credential/no-execution 边界。
+## v1639 补充索引
+
+- v1639: [1007-version-1639-credential-handle-boundary-flags-builder.md](1007-version-1639-credential-handle-boundary-flags-builder.md) - 把 credential-handle approval contract receipt 最密集的闭合边界布尔字段群迁移到 ordered JSON builder，保留历史插入位置和 fixture byte parity，讲清为什么这只是边界 flag block 迁移而不是整份 formatter 完成，以及 no-router/no-write/no-WAL/no-network/no-credential/no-execution 字段如何继续被测试保护。

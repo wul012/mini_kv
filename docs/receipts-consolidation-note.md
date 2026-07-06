@@ -297,3 +297,25 @@ legacy 拼写只出现一次、runtime 输出中 legacy 拼写出现零次、闭
 已经有迁移前 oracle。下一版如果迁移审批合同，应该先从 credential-handle 或 endpoint-handle 这种完全 byte parity
 样本开刀；signed-human 可以迁移，但必须继续使用 v1638 命名的单点 canonical spelling waiver，不能把该 waiver
 复制成宽泛规则。
+
+## 14. v1639 credential-handle 边界 flag builder 迁移
+
+v1639 选择 credential-handle approval contract 作为 Slice 2 的第一刀，但没有一次性重写整份 30KB formatter。迁移范围是
+该 receipt 最密集、最容易出现逗号或顺序漂移的闭合边界 boolean field cluster：原来的 `format_closed_boundary_flags_json`
+是一段超长手写 JSON fragment，现在变成 `append_closed_boundary_flag_fields(std::vector<OrderedJsonField>&)`，逐个追加
+`read_only`、`execution_allowed`、credential handle、credential value、raw endpoint、external request、approval ledger、
+schema migration、restore/load/compact/setnxex、auto-start、audit/order authority 等 false/true 字段，再由内部
+`json_object(fields)` 渲染成 compact JSON object，最后剥掉首尾花括号嵌回历史 formatter 的同一位置。
+
+这不是“整份 credential-handle formatter 已经完全 builder-owned”。领域 section、Node v317/v316 reference、checks、
+summary、warnings、recommendations、evidence endpoints 等仍保留原来的局部拼装方式；本版只把高风险边界尾部从手写字符串
+转成 ordered field 列表。选择这个粒度的原因是 v1638 已证明 credential-handle fixture 与 runtime formatter byte parity
+完全成立，适合先迁移一块输出最敏感但语义最机械的区域。若这一块能在 focused tests 和 full CTest 下保持完全不漂移，
+下一版再复制到 endpoint-handle 或继续拆 credential-handle 的 top-level/nested sections，风险会低得多。
+
+验收结论：`runtime_receipt_json_builder_tests` 继续证明 credential-handle formatter 输出与 frozen fixture 子对象逐字节相等；
+`credential_handle_approval_contract_receipt_tests`、`smokejson_command_receipt_tests`、`runtime_smoke_evidence_tests` 与
+`release_verification_manifest_tests` 继续证明独立 fixture、SMOKEJSON 嵌入、runtime smoke evidence 与 release manifest
+未漂移。本版没有改 fixture，没有改 digest 输入，没有改字段顺序，没有扩大 v1638 signed-human waiver，也没有打开 router、Store/WAL
+write、network、credential read、raw endpoint parse、approval ledger write、schema migration、restore/load/compact/setnxex 或
+automatic upstream start。
