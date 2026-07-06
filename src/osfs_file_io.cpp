@@ -57,35 +57,31 @@ bool FileSystem::write_file(const std::string& name, const std::string& contents
     const auto needed_blocks =
         contents.empty() ? 0U
                          : static_cast<std::uint32_t>((contents.size() + disk_.block_size() - 1) / disk_.block_size());
-    if (needed_blocks > detail::max_direct_blocks) {
-        detail::set_error(error, "file exceeds direct-block limit");
+    if (needed_blocks > detail::max_file_blocks(disk_.block_size())) {
+        detail::set_error(error, "file exceeds indirect-block limit");
         return false;
     }
 
     auto block_bitmap = detail::read_block_bitmap(disk_, sb);
-    const auto reclaimable = static_cast<std::uint32_t>(std::count_if(std::begin(inode.direct), std::end(inode.direct),
-                                                                      [](std::uint32_t block) { return block != 0; }));
-    if (detail::count_free(block_bitmap, sb.data_start_block, sb.block_count) + reclaimable < needed_blocks) {
+    const auto reclaimable = detail::inode_data_block_count(disk_, inode) + (inode.indirect_block != 0 ? 1U : 0U);
+    const auto required = needed_blocks + (needed_blocks > detail::max_direct_blocks ? 1U : 0U);
+    if (detail::count_free(block_bitmap, sb.data_start_block, sb.block_count) + reclaimable < required) {
         detail::set_error(error, "no free data block");
         return false;
     }
 
-    for (auto& direct : inode.direct) {
-        if (direct != 0) {
-            detail::release_block(block_bitmap, direct);
-            detail::clear_block(disk_, direct);
-            direct = 0;
-        }
+    detail::release_inode_storage(disk_, inode, block_bitmap);
+    if (!detail::ensure_inode_data_blocks(disk_, sb, inode, block_bitmap, needed_blocks, error)) {
+        return false;
     }
 
     std::size_t offset = 0;
     for (std::uint32_t index = 0; index < needed_blocks; ++index) {
-        const auto block = detail::allocate_block(sb, block_bitmap);
+        const auto block = detail::inode_data_block_at(disk_, inode, index);
         if (!block.has_value()) {
-            detail::set_error(error, "no free data block");
+            detail::set_error(error, "internal missing data block");
             return false;
         }
-        inode.direct[index] = *block;
         std::vector<char> bytes(disk_.block_size(), '\0');
         const auto count = std::min<std::size_t>(bytes.size(), contents.size() - offset);
         std::memcpy(bytes.data(), contents.data() + offset, count);
@@ -122,13 +118,7 @@ bool FileSystem::truncate_file(const std::string& name, std::uint32_t uid, std::
     }
 
     auto block_bitmap = detail::read_block_bitmap(disk_, sb);
-    for (auto& direct : inode.direct) {
-        if (direct != 0) {
-            detail::release_block(block_bitmap, direct);
-            detail::clear_block(disk_, direct);
-            direct = 0;
-        }
-    }
+    detail::release_inode_storage(disk_, inode, block_bitmap);
     inode.size = 0;
     inode.modified_at = detail::now_seconds();
     sb.free_block_count = detail::count_free(block_bitmap, sb.data_start_block, sb.block_count);
@@ -157,42 +147,33 @@ bool FileSystem::write_file_range(const std::string& name, std::size_t offset, c
         return true;
     }
 
-    const auto max_size = static_cast<std::size_t>(detail::max_direct_blocks) * disk_.block_size();
+    const auto max_size = static_cast<std::size_t>(detail::max_file_blocks(disk_.block_size())) * disk_.block_size();
     if (offset > max_size || contents.size() > max_size - offset) {
-        detail::set_error(error, "file exceeds direct-block limit");
+        detail::set_error(error, "file exceeds indirect-block limit");
         return false;
     }
     const auto target_size = std::max<std::size_t>(static_cast<std::size_t>(inode.size), offset + contents.size());
     const auto needed_blocks = static_cast<std::uint32_t>((target_size + disk_.block_size() - 1) / disk_.block_size());
-    const auto current_blocks = static_cast<std::uint32_t>(std::count_if(
-        std::begin(inode.direct), std::end(inode.direct), [](std::uint32_t block) { return block != 0; }));
 
     auto block_bitmap = detail::read_block_bitmap(disk_, sb);
-    if (needed_blocks > current_blocks &&
-        detail::count_free(block_bitmap, sb.data_start_block, sb.block_count) < needed_blocks - current_blocks) {
-        detail::set_error(error, "no free data block");
+    if (!detail::ensure_inode_data_blocks(disk_, sb, inode, block_bitmap, needed_blocks, error)) {
         return false;
-    }
-
-    for (std::uint32_t index = current_blocks; index < needed_blocks; ++index) {
-        const auto block = detail::allocate_block(sb, block_bitmap);
-        if (!block.has_value()) {
-            detail::set_error(error, "no free data block");
-            return false;
-        }
-        inode.direct[index] = *block;
-        detail::clear_block(disk_, *block);
     }
 
     std::size_t source_offset = 0;
     std::size_t file_offset = offset;
     while (source_offset < contents.size()) {
-        const auto direct_index = file_offset / disk_.block_size();
+        const auto logical_index = static_cast<std::uint32_t>(file_offset / disk_.block_size());
         const auto within_block = file_offset % disk_.block_size();
-        auto block = disk_.read_block(inode.direct[direct_index]);
+        const auto block_index = detail::inode_data_block_at(disk_, inode, logical_index);
+        if (!block_index.has_value()) {
+            detail::set_error(error, "internal missing data block");
+            return false;
+        }
+        auto block = disk_.read_block(*block_index);
         const auto count = std::min(contents.size() - source_offset, block.size() - within_block);
         std::memcpy(block.data() + within_block, contents.data() + source_offset, count);
-        disk_.write_block(inode.direct[direct_index], block);
+        disk_.write_block(*block_index, block);
         source_offset += count;
         file_offset += count;
     }
@@ -235,9 +216,14 @@ std::optional<std::string> FileSystem::read_file_range(const std::string& name, 
     contents.reserve(remaining);
     auto file_offset = offset;
     while (remaining > 0) {
-        const auto direct_index = file_offset / disk_.block_size();
+        const auto logical_index = static_cast<std::uint32_t>(file_offset / disk_.block_size());
         const auto within_block = file_offset % disk_.block_size();
-        const auto block = disk_.read_block(inode.direct[direct_index]);
+        const auto block_index = detail::inode_data_block_at(disk_, inode, logical_index);
+        if (!block_index.has_value()) {
+            detail::set_error(error, "internal missing data block");
+            return std::nullopt;
+        }
+        const auto block = disk_.read_block(*block_index);
         const auto count = std::min(remaining, block.size() - within_block);
         contents.append(block.data() + within_block, count);
         file_offset += count;

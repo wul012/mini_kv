@@ -47,7 +47,7 @@ Block 4..N   Inode table
 Data area    MFD block + UFD blocks + file blocks + free blocks
 ```
 
-超级块记录 magic、版本、几何信息、各表位置、MFD inode、空闲 block/inode 数和用户数。inode 固定 96 字节，包含 type、mode、uid/gid、size、ctime/atime/mtime 和八个直接块号。用户记录固定 64 字节，包含 username、uid、gid、UFD inode 和教学密码哈希。
+超级块记录 magic、版本、几何信息、各表位置、MFD inode、空闲 block/inode 数和用户数。inode 固定 96 字节，包含 type、mode、uid/gid、size、ctime/atime/mtime、八个直接块号和一个一级间接块号。用户记录固定 64 字节，包含 username、uid、gid、UFD inode 和教学密码哈希。
 
 格式化预置：
 
@@ -107,11 +107,11 @@ $ctest='D:\CLION\CLion 2025.1.1\bin\cmake\win\x64\bin\ctest.exe'
 - 用户表、目录和文件重开后仍存在。
 - 连续写、分段读、原位覆盖、append 和 EOF 位移正确。
 - range I/O 跨 512 字节块边界。
-- 空间不足与直接块超限不会破坏旧内容。
+- 空间不足与一级间接块容量超限不会破坏旧内容。
 - 全量 CTest 证明 OSFS 修改未破坏原 mini-kv 主线。
 
 ## 设计边界
 
-OSFS 完成的是课程要求中的 MFD/UFD 两级目录，不支持任意深度子目录。每个 inode 只有八个直接块，没有 EXT2 间接块；当前是单一教学 block group，没有 group descriptor；没有 fsck、崩溃日志或多进程并发。这些内容在报告和需求矩阵中标记为教学简化，不作为已完成功能。
+OSFS 完成的是课程要求中的 MFD/UFD 两级目录，不支持任意深度子目录。每个普通文件 inode 有八个直接块和一个一级间接块，容量上限是 `8 + block_size / 4` 个数据块；当前仍是单一教学 block group，没有 group descriptor、二级/三级间接块、fsck、崩溃日志或多进程并发。这些内容会在报告和需求矩阵中区分为已完成机制、教学简化或后续改进，不把尚未实现的能力伪装成已完成。
 
 最终交付入口为 `课程设计交付/v1633-osfs-final/`。`v1630-osfs-final` 只保留历史草稿，不再用于提交。

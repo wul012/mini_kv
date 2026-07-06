@@ -42,7 +42,7 @@ void test_disk_users_and_two_level_directories() {
     auto fs = minikv::osfs::FileSystem::format(path, options);
 
     const auto sb = fs.super_block();
-    assert(sb.version == 2);
+    assert(sb.version == 3);
     assert(sb.block_size == 512);
     assert(sb.block_count == 96);
     assert(sb.inode_count == 32);
@@ -183,8 +183,14 @@ void test_descriptor_offsets_and_range_io() {
            std::optional<std::string>{std::string(40, 'x')});
     assert(fs.write_file_range("blocks", 508, "boundary-write", alice->uid, &error));
     assert(fs.read_file_range("blocks", 508, 14, alice->uid, &error) == std::optional<std::string>{"boundary-write"});
-    assert(!fs.write_file_range("stream", 8 * 512, "x", alice->uid, &error));
-    assert(error == "file exceeds direct-block limit");
+    assert(fs.create_file("indirect-range", alice->uid, &error));
+    assert(fs.write_file_range("indirect-range", 8 * 512, "indirect", alice->uid, &error));
+    assert(fs.read_file_range("indirect-range", 8 * 512, 8, alice->uid, &error) ==
+           std::optional<std::string>{"indirect"});
+    const auto block_size = fs.super_block().block_size;
+    const auto max_file_size = static_cast<std::size_t>(8 + block_size / sizeof(std::uint32_t)) * block_size;
+    assert(!fs.write_file_range("stream", max_file_size, "x", alice->uid, &error));
+    assert(error == "file exceeds indirect-block limit");
     assert(fs.read_file("stream", alice->uid, &error) == std::optional<std::string>{"hello-OSFS!-append"});
 
     assert(fs.create_file("truncate", alice->uid, &error));
@@ -220,6 +226,38 @@ void test_failed_rewrite_preserves_existing_data() {
     std::filesystem::remove(path);
 }
 
+void test_indirect_blocks_persist_and_release() {
+    const auto path = unique_disk_path("indirect");
+    std::filesystem::remove(path);
+    minikv::osfs::FormatOptions options;
+    options.block_count = 192;
+    options.inode_count = 32;
+    auto fs = minikv::osfs::FileSystem::format(path, options);
+    const auto alice = fs.authenticate("alice", "alice123");
+    assert(alice.has_value());
+
+    std::string error;
+    assert(fs.create_file("large", alice->uid, &error));
+    const auto before_write = fs.super_block().free_block_count;
+    std::string payload(9 * options.block_size + 37, 'a');
+    payload[8 * options.block_size - 1] = 'D';
+    payload[8 * options.block_size] = 'I';
+    payload.back() = 'Z';
+    assert(fs.write_file("large", payload, alice->uid, &error));
+    assert(fs.super_block().free_block_count == before_write - 11);
+    assert(fs.read_file_range("large", 8 * options.block_size - 1, 2, alice->uid, &error) ==
+           std::optional<std::string>{"DI"});
+    assert(fs.read_file_range("large", payload.size() - 1, 1, alice->uid, &error) == std::optional<std::string>{"Z"});
+
+    fs = minikv::osfs::FileSystem::open(path);
+    assert(fs.authenticate("alice", "alice123").has_value());
+    assert(fs.read_file_range("large", 8 * options.block_size - 1, 2, alice->uid, &error) ==
+           std::optional<std::string>{"DI"});
+    assert(fs.delete_file("large", alice->uid, &error));
+    assert(fs.super_block().free_block_count == before_write);
+    std::filesystem::remove(path);
+}
+
 } // namespace
 
 int main() {
@@ -227,5 +265,6 @@ int main() {
     test_authenticated_command_shell();
     test_descriptor_offsets_and_range_io();
     test_failed_rewrite_preserves_existing_data();
+    test_indirect_blocks_persist_and_release();
     return 0;
 }

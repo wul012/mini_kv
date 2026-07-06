@@ -211,6 +211,159 @@ void clear_block(VirtualDisk& disk, std::uint32_t block_index) {
     disk.write_block(block_index, std::vector<char>(disk.block_size(), '\0'));
 }
 
+std::uint32_t indirect_entries_per_block(std::uint32_t block_size) {
+    return block_size / static_cast<std::uint32_t>(sizeof(std::uint32_t));
+}
+
+std::uint32_t max_file_blocks(std::uint32_t block_size) {
+    return max_direct_blocks + indirect_entries_per_block(block_size);
+}
+
+std::vector<std::uint32_t> read_indirect_block(const VirtualDisk& disk, std::uint32_t block_index) {
+    std::vector<std::uint32_t> entries(indirect_entries_per_block(disk.block_size()));
+    if (block_index == 0) {
+        return entries;
+    }
+    const auto block = disk.read_block(block_index);
+    std::memcpy(entries.data(), block.data(), entries.size() * sizeof(std::uint32_t));
+    return entries;
+}
+
+void write_indirect_block(VirtualDisk& disk, std::uint32_t block_index, const std::vector<std::uint32_t>& entries) {
+    std::vector<char> block(disk.block_size(), '\0');
+    const auto count = std::min(block.size(), entries.size() * sizeof(std::uint32_t));
+    std::memcpy(block.data(), entries.data(), count);
+    disk.write_block(block_index, block);
+}
+
+std::uint32_t inode_data_block_count(const VirtualDisk& disk, const InodeDisk& inode) {
+    std::uint32_t count = 0;
+    for (const auto block : inode.direct) {
+        if (block != 0) {
+            ++count;
+        }
+    }
+    if (inode.indirect_block != 0) {
+        const auto indirect = read_indirect_block(disk, inode.indirect_block);
+        count += static_cast<std::uint32_t>(
+            std::count_if(indirect.begin(), indirect.end(), [](const auto block) { return block != 0; }));
+    }
+    return count;
+}
+
+std::vector<std::uint32_t> inode_data_blocks(const VirtualDisk& disk, const InodeDisk& inode) {
+    std::vector<std::uint32_t> blocks;
+    for (const auto block : inode.direct) {
+        if (block != 0) {
+            blocks.push_back(block);
+        }
+    }
+    if (inode.indirect_block != 0) {
+        const auto indirect = read_indirect_block(disk, inode.indirect_block);
+        for (const auto block : indirect) {
+            if (block != 0) {
+                blocks.push_back(block);
+            }
+        }
+    }
+    return blocks;
+}
+
+std::optional<std::uint32_t> inode_data_block_at(const VirtualDisk& disk, const InodeDisk& inode,
+                                                 std::uint32_t logical_index) {
+    if (logical_index < max_direct_blocks) {
+        return inode.direct[logical_index] == 0 ? std::nullopt
+                                                : std::optional<std::uint32_t>{inode.direct[logical_index]};
+    }
+    if (inode.indirect_block == 0) {
+        return std::nullopt;
+    }
+    const auto indirect = read_indirect_block(disk, inode.indirect_block);
+    const auto indirect_index = logical_index - max_direct_blocks;
+    if (indirect_index >= indirect.size() || indirect[indirect_index] == 0) {
+        return std::nullopt;
+    }
+    return indirect[indirect_index];
+}
+
+void release_inode_storage(VirtualDisk& disk, InodeDisk& inode, std::vector<char>& block_bitmap) {
+    for (auto& direct : inode.direct) {
+        if (direct != 0) {
+            release_block(block_bitmap, direct);
+            clear_block(disk, direct);
+            direct = 0;
+        }
+    }
+    if (inode.indirect_block != 0) {
+        const auto indirect = read_indirect_block(disk, inode.indirect_block);
+        for (const auto block : indirect) {
+            if (block != 0) {
+                release_block(block_bitmap, block);
+                clear_block(disk, block);
+            }
+        }
+        release_block(block_bitmap, inode.indirect_block);
+        clear_block(disk, inode.indirect_block);
+        inode.indirect_block = 0;
+    }
+}
+
+bool ensure_inode_data_blocks(VirtualDisk& disk, const SuperBlockDisk& sb, InodeDisk& inode,
+                              std::vector<char>& block_bitmap, std::uint32_t needed_blocks, std::string* error) {
+    if (needed_blocks > max_file_blocks(disk.block_size())) {
+        set_error(error, "file exceeds indirect-block limit");
+        return false;
+    }
+    const auto current_blocks = inode_data_block_count(disk, inode);
+    if (needed_blocks <= current_blocks) {
+        return true;
+    }
+
+    const auto needs_indirect = needed_blocks > max_direct_blocks && inode.indirect_block == 0;
+    const auto additional_blocks = needed_blocks - current_blocks + (needs_indirect ? 1U : 0U);
+    if (count_free(block_bitmap, sb.data_start_block, sb.block_count) < additional_blocks) {
+        set_error(error, "no free data block");
+        return false;
+    }
+
+    std::vector<std::uint32_t> indirect;
+    if (needs_indirect) {
+        const auto block = allocate_block(sb, block_bitmap);
+        if (!block.has_value()) {
+            set_error(error, "no free data block");
+            return false;
+        }
+        inode.indirect_block = *block;
+        indirect.assign(indirect_entries_per_block(disk.block_size()), 0);
+        write_indirect_block(disk, inode.indirect_block, indirect);
+    } else if (inode.indirect_block != 0) {
+        indirect = read_indirect_block(disk, inode.indirect_block);
+    }
+
+    bool indirect_changed = false;
+    for (std::uint32_t index = current_blocks; index < needed_blocks; ++index) {
+        const auto block = allocate_block(sb, block_bitmap);
+        if (!block.has_value()) {
+            set_error(error, "no free data block");
+            return false;
+        }
+        clear_block(disk, *block);
+        if (index < max_direct_blocks) {
+            inode.direct[index] = *block;
+        } else {
+            if (indirect.empty()) {
+                indirect = read_indirect_block(disk, inode.indirect_block);
+            }
+            indirect[index - max_direct_blocks] = *block;
+            indirect_changed = true;
+        }
+    }
+    if (indirect_changed) {
+        write_indirect_block(disk, inode.indirect_block, indirect);
+    }
+    return true;
+}
+
 const UserRecordDisk* find_user_by_name(const std::vector<UserRecordDisk>& users, std::string_view username) {
     const auto found = std::find_if(users.begin(), users.end(), [username](const auto& user) {
         return user.used != 0 && username == user.username;

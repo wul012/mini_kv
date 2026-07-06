@@ -12,7 +12,7 @@
 namespace minikv::osfs::detail {
 
 constexpr std::array<char, 8> magic = {'M', 'K', 'V', 'O', 'S', 'F', 'S', '\0'};
-constexpr std::uint32_t disk_version = 2;
+constexpr std::uint32_t disk_version = 3;
 constexpr std::uint32_t block_bitmap_block = 1;
 constexpr std::uint32_t inode_bitmap_block = 2;
 constexpr std::uint32_t user_table_start = 3;
@@ -55,7 +55,8 @@ struct InodeDisk {
     std::uint64_t accessed_at;
     std::uint64_t modified_at;
     std::uint32_t direct[max_direct_blocks];
-    char reserved[20];
+    std::uint32_t indirect_block;
+    char reserved[16];
 };
 
 struct DirectoryEntryDisk {
@@ -119,6 +120,17 @@ void release_block(std::vector<char>& bitmap, std::uint32_t block);
 void release_inode(std::vector<char>& bitmap, std::uint32_t inode);
 std::uint32_t count_free(const std::vector<char>& bitmap, std::uint32_t begin, std::uint32_t end);
 void clear_block(VirtualDisk& disk, std::uint32_t block_index);
+std::uint32_t indirect_entries_per_block(std::uint32_t block_size);
+std::uint32_t max_file_blocks(std::uint32_t block_size);
+std::vector<std::uint32_t> read_indirect_block(const VirtualDisk& disk, std::uint32_t block_index);
+void write_indirect_block(VirtualDisk& disk, std::uint32_t block_index, const std::vector<std::uint32_t>& entries);
+std::uint32_t inode_data_block_count(const VirtualDisk& disk, const InodeDisk& inode);
+std::vector<std::uint32_t> inode_data_blocks(const VirtualDisk& disk, const InodeDisk& inode);
+std::optional<std::uint32_t> inode_data_block_at(const VirtualDisk& disk, const InodeDisk& inode,
+                                                 std::uint32_t logical_index);
+void release_inode_storage(VirtualDisk& disk, InodeDisk& inode, std::vector<char>& block_bitmap);
+bool ensure_inode_data_blocks(VirtualDisk& disk, const SuperBlockDisk& sb, InodeDisk& inode,
+                              std::vector<char>& block_bitmap, std::uint32_t needed_blocks, std::string* error);
 
 const UserRecordDisk* find_user_by_name(const std::vector<UserRecordDisk>& users, std::string_view username);
 const UserRecordDisk* find_user_by_uid(const std::vector<UserRecordDisk>& users, std::uint32_t uid);

@@ -157,12 +157,7 @@ bool FileSystem::delete_file(const std::string& name, std::uint32_t uid, std::st
 
     auto block_bitmap = detail::read_block_bitmap(disk_, sb);
     auto inode_bitmap = detail::read_inode_bitmap(disk_, sb);
-    for (auto& direct : inode.direct) {
-        if (direct != 0) {
-            detail::release_block(block_bitmap, direct);
-            detail::clear_block(disk_, direct);
-        }
-    }
+    detail::release_inode_storage(disk_, inode, block_bitmap);
     detail::release_inode(inode_bitmap, context->entries[*entry_index].inode);
     inode = {};
 

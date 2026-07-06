@@ -25,7 +25,7 @@ struct FormatOptions {
 };
 
 struct SuperBlock {
-    std::uint32_t version = 2;
+    std::uint32_t version = 3;
     std::uint32_t block_size = 0;
     std::uint32_t block_count = 0;
     std::uint32_t inode_count = 0;
