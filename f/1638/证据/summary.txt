@@ -1,0 +1,27 @@
+mini-kv v1638 evidence summary
+
+Scope:
+- Read the Node plans index and latest concrete plan. The latest Stage 2 operational plan is inactive/gated, so v1638 stayed on the mini-kv v1637+ Production Excellence completion brief.
+- Created an executable pre-migration baseline for the approval-contract Slice 2 trio: signed-human approval artifact, credential-handle approval, and endpoint-handle allowlist approval.
+- Migrated no formatter in this version. Builder-backed formatters remain abort/rollback and no-network.
+
+Focused validation:
+- ctest --test-dir cmake-build-v1638 -R 'runtime_receipt_json_builder_tests|signed_human_approval_artifact_contract_receipt_tests|credential_handle_approval_contract_receipt_tests|endpoint_handle_allowlist_approval_contract_receipt_tests|smokejson_command_receipt_tests|runtime_smoke_evidence_tests|release_verification_manifest_tests' --output-on-failure
+- Result: 7/7 passed, 2.31 sec.
+
+Full validation:
+- ctest --test-dir cmake-build-v1638 --output-on-failure
+- Result: 344/344 passed, 191.27 sec.
+
+Quality checks:
+- clang-format --dry-run --Werror tests/runtime_receipt_json_builder_tests.cpp passed.
+- git diff --check passed. Git emitted LF/CRLF working-copy warnings only; those are not whitespace errors.
+- Walkthrough length check: 6494 characters.
+
+Boundary:
+- No fixture rewrite.
+- No public command output change.
+- No release manifest rewrite.
+- No service startup.
+- No Node/Java repository edits.
+- No router, Store/WAL write, network access, credential value read, raw endpoint parse, rollback/deployment/LOAD/COMPACT/RESTORE/SETNXEX execution authority expansion.

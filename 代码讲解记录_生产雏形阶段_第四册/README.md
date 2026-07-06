@@ -94,3 +94,6 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1637 补充索引
 
 - v1637: [1005-version-1637-runtime-receipt-canonical-surface-and-no-network-builder.md](1005-version-1637-runtime-receipt-canonical-surface-and-no-network-builder.md) - 先把 no-network 唯一历史拼写差写成可失败的 canonical runtime surface 规则，再把 no-network receipt formatter 迁移到内部 ordered JSON builder，讲清 fixture 冻结、runtime surface 优先、字段顺序、digest、闭合边界 flags、focused tests 和 no router/no write/no WAL/no network/no credential/no execution 边界如何共同保护后续 receipts consolidation。
+## v1638 补充索引
+
+- v1638: [1006-version-1638-approval-contract-parity-baseline.md](1006-version-1638-approval-contract-parity-baseline.md) - 为审批合同 Slice 2 建立迁移前基线：credential-handle 与 endpoint-handle 证明 fixture/formatter byte parity，signed-human 把唯一 `Node v314\u0027s` 与 `Node v314's` 历史拼写差异命名为单点 canonical runtime surface waiver，并继续保护 read-only/no-router/no-write/no-WAL/no-network/no-credential/no-execution 边界。

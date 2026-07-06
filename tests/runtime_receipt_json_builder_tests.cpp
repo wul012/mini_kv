@@ -6,6 +6,8 @@
 
 #include <cassert>
 #include <filesystem>
+#include <initializer_list>
+#include <iostream>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -37,6 +39,8 @@ std::string replace_once(std::string text, std::string_view from, std::string_vi
 
 constexpr std::string_view no_network_fixture_legacy_phrase = "Node v323\\u0027s no-network fixture contract";
 constexpr std::string_view no_network_runtime_canonical_phrase = "Node v323's no-network fixture contract";
+constexpr std::string_view signed_human_fixture_legacy_phrase = "Node v314\\u0027s non-secret contract";
+constexpr std::string_view signed_human_runtime_canonical_phrase = "Node v314's non-secret contract";
 
 std::size_t count_occurrences(std::string_view text, std::string_view needle) {
     assert(!needle.empty());
@@ -104,6 +108,38 @@ std::string no_network_runtime_surface_canonical_json(std::string fixture_object
     assert(count_occurrences(fixture_object_json, no_network_runtime_canonical_phrase) == 0);
     return replace_once(std::move(fixture_object_json), no_network_fixture_legacy_phrase,
                         no_network_runtime_canonical_phrase);
+}
+
+std::string signed_human_runtime_surface_canonical_json(std::string fixture_object_json) {
+    assert(count_occurrences(fixture_object_json, "\\u0027") == 1);
+    assert(count_occurrences(fixture_object_json, signed_human_fixture_legacy_phrase) == 1);
+    assert(count_occurrences(fixture_object_json, signed_human_runtime_canonical_phrase) == 0);
+    return replace_once(std::move(fixture_object_json), signed_human_fixture_legacy_phrase,
+                        signed_human_runtime_canonical_phrase);
+}
+
+void assert_formatter_matches_fixture_object(std::string_view fixture_name, std::string_view object_field_name,
+                                             const std::string& current_json,
+                                             std::initializer_list<std::string_view> required_fragments) {
+    const auto fixture = read_fixture_text(release_fixture_path(std::string{fixture_name}));
+    const auto fixture_object = extract_json_object_field(fixture, std::string{object_field_name});
+    assert(fixture_object.has_value());
+    if (*fixture_object != current_json) {
+        std::size_t mismatch_at = 0;
+        const auto limit = std::min(fixture_object->size(), current_json.size());
+        while (mismatch_at < limit && (*fixture_object)[mismatch_at] == current_json[mismatch_at]) {
+            ++mismatch_at;
+        }
+        std::cerr << "fixture parity mismatch: " << fixture_name << " field=" << object_field_name
+                  << " fixture_size=" << fixture_object->size() << " current_size=" << current_json.size()
+                  << " mismatch_at=" << mismatch_at
+                  << " fixture_digest=" << stable_fixture_digest("fixture", *fixture_object)
+                  << " current_digest=" << stable_fixture_digest("current", current_json) << '\n';
+    }
+    assert(*fixture_object == current_json);
+    for (const auto fragment : required_fragments) {
+        assert(current_json.find(std::string{fragment}) != std::string::npos);
+    }
 }
 
 void ordered_object_preserves_scalars_and_escaping() {
@@ -237,6 +273,61 @@ void candidate_formatters_have_explicit_fixture_parity_state() {
     assert(abort_rollback_current.find("\"automatic_upstream_start\":false") != std::string::npos);
 }
 
+void approval_contract_slice_formatters_have_fixture_parity_before_builder_migration() {
+    const std::vector<std::string> read_commands = {"INFOJSON", "STORAGEJSON", "HEALTH", "STATSJSON"};
+
+    const auto signed_human_fixture = read_fixture_text(release_fixture_path(
+        "credential-resolver-signed-human-approval-artifact-contract-non-participation-receipt.json"));
+    const auto signed_human_object = extract_json_object_field(
+        signed_human_fixture, "credential_resolver_signed_human_approval_artifact_contract_non_participation_receipt");
+    assert(signed_human_object.has_value());
+    const auto signed_human_current = minikv::runtime_evidence_receipts::
+        format_credential_resolver_signed_human_approval_artifact_contract_non_participation_receipt_json(
+            read_commands);
+    assert(*signed_human_object != signed_human_current);
+    const auto signed_human_field_count = count_top_level_fields(*signed_human_object);
+    assert(signed_human_field_count == count_top_level_fields(signed_human_current));
+    assert(signed_human_field_count >= 100);
+    assert(signed_human_object->size() == signed_human_current.size() + 5);
+    assert(count_occurrences(*signed_human_object, "\\u0027") == 1);
+    assert(count_occurrences(signed_human_current, "\\u0027") == 0);
+    assert(count_occurrences(*signed_human_object, signed_human_fixture_legacy_phrase) == 1);
+    assert(count_occurrences(signed_human_current, signed_human_runtime_canonical_phrase) == 1);
+    assert(signed_human_current.find(std::string{signed_human_fixture_legacy_phrase}) == std::string::npos);
+    assert(signed_human_runtime_surface_canonical_json(*signed_human_object) == signed_human_current);
+    assert(signed_human_current.find("\"read_only\":true") != std::string::npos);
+    assert(signed_human_current.find("\"execution_allowed\":false") != std::string::npos);
+    assert(signed_human_current.find("\"credential_value_read\":false") != std::string::npos);
+    assert(signed_human_current.find("\"raw_endpoint_url_parsed\":false") != std::string::npos);
+    assert(signed_human_current.find("\"external_request_sent\":false") != std::string::npos);
+    assert(signed_human_current.find("\"approval_ledger_written\":false") != std::string::npos);
+    assert(signed_human_current.find("\"automatic_upstream_start\":false") != std::string::npos);
+    assert(signed_human_current.find(
+               "\"signed_human_approval_artifact_contract_non_participation_receipt_only\":true") != std::string::npos);
+
+    assert_formatter_matches_fixture_object(
+        "credential-resolver-credential-handle-approval-contract-non-participation-receipt.json",
+        "credential_resolver_credential_handle_approval_contract_non_participation_receipt",
+        minikv::runtime_evidence_receipts::
+            format_credential_resolver_credential_handle_approval_contract_non_participation_receipt_json(
+                read_commands),
+        {"\"read_only\":true", "\"execution_allowed\":false", "\"credential_value_read\":false",
+         "\"raw_endpoint_url_parsed\":false", "\"external_request_sent\":false", "\"approval_ledger_written\":false",
+         "\"automatic_upstream_start\":false",
+         "\"credential_handle_approval_contract_non_participation_receipt_only\":true"});
+
+    assert_formatter_matches_fixture_object(
+        "credential-resolver-endpoint-handle-allowlist-approval-contract-non-participation-receipt.json",
+        "credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt",
+        minikv::runtime_evidence_receipts::
+            format_credential_resolver_endpoint_handle_allowlist_approval_contract_non_participation_receipt_json(
+                read_commands),
+        {"\"read_only\":true", "\"execution_allowed\":false", "\"credential_value_read\":false",
+         "\"raw_endpoint_url_parsed\":false", "\"external_request_sent\":false", "\"approval_ledger_written\":false",
+         "\"automatic_upstream_start\":false",
+         "\"endpoint_handle_allowlist_approval_contract_non_participation_receipt_only\":true"});
+}
+
 } // namespace
 
 int main() {
@@ -246,5 +337,6 @@ int main() {
     extractor_fails_closed_on_ambiguous_or_malformed_input();
     frozen_fixture_subobjects_have_versioned_bytes();
     candidate_formatters_have_explicit_fixture_parity_state();
+    approval_contract_slice_formatters_have_fixture_parity_before_builder_migration();
     return 0;
 }

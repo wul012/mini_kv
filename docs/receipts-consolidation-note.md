@@ -266,3 +266,34 @@ canonical 决策保持不变：**以当前运行时 formatter 的直接 apostrop
 闭合边界 flags、top-level fields 改为 ordered builder 拼装，同时保持运行时输出、receipt digest、字段顺序、
 compact whitespace、release manifest 嵌入含义和所有 read-only/no-network/no-write/no-execution 边界不变。
 后续 slice 不得继续扩大这个兼容例外；新的 receipt 迁移必须回到普通 fixture/runtime parity 或写出单独 waiver。
+
+## 13. v1638 Slice 2 审批合同迁移前基线
+
+v1638 没有继续迁移 formatter，而是先为 Slice 2 建立迁移前的可执行基线。原因是审批合同组表面上都属于
+approval artifact 链条，但它们并非完全同构：`signed_human_approval_artifact` 是第一份签名人工审批 artifact
+合同 intake，`credential_handle_approval` 和 `endpoint_handle_allowlist_approval` 是后续两个 handle/allowlist
+审批合同；`approval_prerequisite_artifact` 与 `human_approval_artifact_review` 更接近 packet/intake 或 review
+形态，不应该和前三个混在同一刀里迁移。因此本版只选择三份字段骨架最接近的合同 receipt 做迁移前锁定：
+
+- `runtime_credential_resolver_signed_human_approval_artifact_receipts.cpp`
+- `runtime_credential_resolver_credential_handle_approval_receipts.cpp`
+- `runtime_credential_resolver_endpoint_handle_allowlist_approval_receipts.cpp`
+
+`runtime_receipt_json_builder_tests` 现在会从三份 frozen fixture 中提取对应的嵌套 receipt object，再和当前 public
+formatter 输出比较。credential-handle 与 endpoint-handle 两份是普通 byte parity：fixture 子对象必须与 formatter
+输出逐字节相等，并且继续包含 `read_only=true`、`execution_allowed=false`、`credential_value_read=false`、
+`raw_endpoint_url_parsed=false`、`external_request_sent=false`、`approval_ledger_written=false`、
+`automatic_upstream_start=false` 等闭合边界字段。
+
+signed-human 这份暴露出第二个历史拼写差异：frozen fixture 的 `boundary` 文本里是
+`Node v314\u0027s non-secret contract`，而当前 formatter 输出是直接 apostrophe 形式
+`Node v314's non-secret contract`。这与 v1637 no-network 的漂移同型：长度差正好是 5，差异只在一处
+`\u0027` 与 `'` 的原始 JSON 拼写上。v1638 没有把它说成“完全 byte parity”，也没有改 fixture 或 formatter；
+测试规则只允许把这一处历史 fixture 拼写规范化为当前 runtime canonical surface 后再比较，且同时断言字段数一致、
+legacy 拼写只出现一次、runtime 输出中 legacy 拼写出现零次、闭合边界字段全部存在。任何第二处 `\u0027`、字段增删、
+字段顺序变化、digest 漂移、network/write/WAL/credential/execution 语义变化都会失败。
+
+因此 v1638 的状态是：builder-backed formatter 仍然只有 abort/rollback 与 no-network 两份；Slice 2 的三份审批合同
+已经有迁移前 oracle。下一版如果迁移审批合同，应该先从 credential-handle 或 endpoint-handle 这种完全 byte parity
+样本开刀；signed-human 可以迁移，但必须继续使用 v1638 命名的单点 canonical spelling waiver，不能把该 waiver
+复制成宽泛规则。
