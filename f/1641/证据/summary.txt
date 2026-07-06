@@ -1,0 +1,33 @@
+mini-kv v1641 evidence summary
+
+Scope:
+- Migrate only the signed-human approval artifact contract receipt closed-boundary boolean flag block.
+- Keep the v1638 single canonical runtime-surface spelling rule: fixture text `Node v314\u0027s non-secret contract`; runtime formatter text `Node v314's non-secret contract`.
+- Do not rewrite fixtures, manifests, public command output, digest inputs, or domain sections.
+- Do not claim full signed-human formatter migration or full approval-family migration.
+
+Plan files read before this version:
+- D:\nodeproj\orderops-node\docs\plans\README.md
+- D:\nodeproj\orderops-node\docs\plans\production-excellence-node-playbook.md
+- D:\nodeproj\orderops-node\docs\plans\production-excellence-minikv-playbook.md
+- 治理计划/v1637-production-excellence-completion-brief.md
+
+Implementation:
+- src/runtime_credential_resolver_signed_human_approval_artifact_receipts.cpp now includes runtime_receipt_json_builder.hpp.
+- format_closed_boundary_flags_json now delegates ordered field assembly to append_closed_boundary_flag_fields and renders with json_object.
+- The helper still strips the object braces before embedding the fragment into the historical formatter position.
+
+Validation:
+- Focused CTest: 5/5 passed.
+- Full build: passed.
+- Full local CTest: 344/344 passed, total 183.25 seconds.
+- Walkthrough quality/docs focused CTest: 6/6 passed.
+- clang-format dry-run: passed.
+- git diff --check: passed.
+
+Archive:
+- f/1641/图片/01-focused-signed-human-boundary-tests.png
+- f/1641/图片/02-full-build-and-ctest.png
+- f/1641/图片/03-doc-format-and-boundary-closeout.png
+- f/1641/解释/说明.md
+- f/1641/证据/summary.txt
