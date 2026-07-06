@@ -66,6 +66,17 @@ struct FileStat {
     std::uint64_t modified_at = 0;
 };
 
+struct FsckCheck {
+    std::string name;
+    bool ok = false;
+    std::string detail;
+};
+
+struct FsckReport {
+    bool ok = false;
+    std::vector<FsckCheck> checks;
+};
+
 class FileSystem {
 public:
     static FileSystem format(const std::filesystem::path& path, const FormatOptions& options = {});
@@ -76,6 +87,11 @@ public:
     std::vector<UserInfo> users() const;
     std::optional<UserInfo> authenticate(const std::string& username, const std::string& password) const;
     std::optional<UserInfo> user_by_uid(std::uint32_t uid) const;
+    FsckReport check_consistency() const;
+    bool add_user(const std::string& username, const std::string& password, std::uint32_t actor_uid,
+                  std::string* error = nullptr);
+    bool change_password(const std::string& username, const std::string& password, std::uint32_t actor_uid,
+                         std::string* error = nullptr);
 
     bool create_file(const std::string& name, std::uint32_t actor_uid, std::string* error = nullptr);
     bool delete_file(const std::string& name, std::uint32_t uid, std::string* error = nullptr);

@@ -79,6 +79,11 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1633 补充索引
 
 - v1633: [1001-version-1633-osfs-coursework-final-delivery-and-quality-gate.md](1001-version-1633-osfs-coursework-final-delivery-and-quality-gate.md) - 不再新增 OSFS runtime 功能，而是在 v1631/v1632 已补齐二级目录、持久化用户、认证权限和 fd offset 后，按课程要求重建最终 DOCX/PDF、真实 CLI transcript、需求-证据矩阵、提交清单、渲染检查和 v1630 superseded 标记，把“能跑”推进到“能审、能复现、能提交”的交付闭环。
+
 ## v1634 补充索引
 
 - v1634: [1002-version-1634-osfs-single-indirect-block-capacity.md](1002-version-1634-osfs-single-indirect-block-capacity.md) - 把 OSFS 文件容量从八个直接块扩展到八个直接块加一级间接块，讲清磁盘格式 v3、inode 间接块字段、逻辑块到物理块映射、写读删释放闭环、真实 CLI 跨边界 smoke，以及不改变 KV/WAL/TCP/Node/Java 执行边界的原因。
+
+## v1635 补充索引
+
+- v1635: [1003-version-1635-osfs-fsck-user-management.md](1003-version-1635-osfs-fsck-user-management.md) - 为 OSFS 课设层补齐只读 FSCK 与落盘用户管理，讲清 `check_consistency()` 如何重算 superblock、位图、inode、MFD/UFD、用户表和直接/间接块一致性，`USERADD`/`PASSWD` 如何维护真实磁盘结构，以及测试怎样证明坏 block bitmap、root-only 用户创建、旧密码失效、Bob 越权失败、root 审查和全量 CTest 344/344 都成立。

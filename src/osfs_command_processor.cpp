@@ -69,6 +69,21 @@ bool parse_octal_mode(const std::string& text, std::uint16_t* mode) {
     return true;
 }
 
+bool has_extra_token(std::istringstream& input) {
+    std::string extra;
+    input >> extra;
+    return !extra.empty();
+}
+
+std::string format_fsck_report(const FsckReport& report) {
+    std::ostringstream out;
+    out << "FSCK " << (report.ok ? "OK" : "ERROR") << " checks=" << report.checks.size();
+    for (const auto& check : report.checks) {
+        out << '\n' << (check.ok ? "OK " : "ERROR ") << check.name << ": " << check.detail;
+    }
+    return out.str();
+}
+
 } // namespace
 
 CommandProcessor::CommandProcessor(FileSystem& fs) : fs_{fs} {}
@@ -76,7 +91,7 @@ CommandProcessor::CommandProcessor(FileSystem& fs) : fs_{fs} {}
 std::string CommandProcessor::help_text() {
     return "Commands: HELP, WHOAMI, LOGIN user password, DIR [user], CREATE name, DELETE name, STAT name, "
            "CHMOD name mode, OPEN name r|w|rw|a, READ fd [length], WRITE fd text, SEEK fd offset, TELL fd, "
-           "CLOSE fd, QUIT";
+           "CLOSE fd, FSCK, USERADD user password, PASSWD [user] password, QUIT";
 }
 
 std::string CommandProcessor::execute(std::string_view line) {
@@ -113,6 +128,40 @@ std::string CommandProcessor::execute(std::string_view line) {
     }
     if (!authenticated_) {
         return "ERR login required";
+    }
+    if (command == "FSCK") {
+        if (has_extra_token(input)) {
+            return "ERR usage: FSCK";
+        }
+        return format_fsck_report(fs_.check_consistency());
+    }
+    if (command == "USERADD") {
+        std::string user;
+        std::string password;
+        input >> user >> password;
+        if (user.empty() || password.empty() || has_extra_token(input)) {
+            return "ERR usage: USERADD user password";
+        }
+        std::string error;
+        if (!fs_.add_user(user, password, current_uid_, &error)) {
+            return require_error(error);
+        }
+        return "OK useradd " + user;
+    }
+    if (command == "PASSWD") {
+        std::string first;
+        std::string second;
+        input >> first >> second;
+        if (first.empty() || has_extra_token(input)) {
+            return "ERR usage: PASSWD [user] password";
+        }
+        const auto target = second.empty() ? current_user_ : first;
+        const auto password = second.empty() ? first : second;
+        std::string error;
+        if (!fs_.change_password(target, password, current_uid_, &error)) {
+            return require_error(error);
+        }
+        return "OK password changed " + target;
     }
     if (command == "DIR") {
         std::string username;

@@ -3,8 +3,10 @@
 #include <cassert>
 #include <chrono>
 #include <filesystem>
+#include <fstream>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace {
@@ -30,6 +32,40 @@ const minikv::osfs::UserInfo& require_user(const std::vector<minikv::osfs::UserI
     }
     assert(false && "required seeded user missing");
     return users.front();
+}
+
+void set_block_bitmap_used(const std::filesystem::path& path, std::uint32_t block_size, std::uint32_t block,
+                           bool used) {
+    constexpr std::uint32_t block_bitmap_block = 1;
+    std::fstream image{path, std::ios::binary | std::ios::in | std::ios::out};
+    assert(image);
+    const auto byte_offset = static_cast<std::streamoff>(block_bitmap_block * block_size + (block / 8));
+    image.seekg(byte_offset);
+    char byte = 0;
+    image.read(&byte, 1);
+    assert(image.gcount() == 1);
+    const auto mask = static_cast<unsigned char>(1U << (block % 8));
+    auto value = static_cast<unsigned char>(byte);
+    if (used) {
+        value = static_cast<unsigned char>(value | mask);
+    } else {
+        value = static_cast<unsigned char>(value & ~mask);
+    }
+    image.clear();
+    image.seekp(byte_offset);
+    byte = static_cast<char>(value);
+    image.write(&byte, 1);
+    assert(image);
+}
+
+bool fsck_has_failed_check(const minikv::osfs::FsckReport& report, std::string_view name,
+                           std::string_view detail_fragment) {
+    for (const auto& check : report.checks) {
+        if (check.name == name && !check.ok && check.detail.find(detail_fragment) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void test_disk_users_and_two_level_directories() {
@@ -258,6 +294,93 @@ void test_indirect_blocks_persist_and_release() {
     std::filesystem::remove(path);
 }
 
+void test_fsck_reports_ok_and_detects_corruption() {
+    const auto path = unique_disk_path("fsck");
+    std::filesystem::remove(path);
+    minikv::osfs::FormatOptions options;
+    options.block_count = 192;
+    options.inode_count = 32;
+    auto fs = minikv::osfs::FileSystem::format(path, options);
+    const auto alice = fs.authenticate("alice", "alice123");
+    assert(alice.has_value());
+
+    std::string error;
+    assert(fs.create_file("large", alice->uid, &error));
+    assert(fs.write_file("large", std::string(9 * options.block_size + 11, 'L'), alice->uid, &error));
+    const auto stat = fs.stat("large", alice->uid);
+    assert(stat.has_value());
+
+    auto report = fs.check_consistency();
+    assert(report.ok);
+    assert(report.checks.size() >= 6);
+
+    set_block_bitmap_used(path, options.block_size, stat->first_block, false);
+    fs = minikv::osfs::FileSystem::open(path);
+    report = fs.check_consistency();
+    assert(!report.ok);
+    assert(fsck_has_failed_check(report, "block bitmap", "block bitmap mismatch at block"));
+
+    minikv::osfs::CommandProcessor processor{fs};
+    assert(processor.execute("LOGIN root root") == "OK login root uid=0");
+    const auto output = processor.execute("FSCK");
+    assert(output.find("FSCK ERROR checks=") != std::string::npos);
+    assert(output.find("ERROR block bitmap: block bitmap mismatch at block") != std::string::npos);
+    std::filesystem::remove(path);
+}
+
+void test_useradd_passwd_and_fsck_command() {
+    const auto path = unique_disk_path("useradmin");
+    std::filesystem::remove(path);
+    auto fs = minikv::osfs::FileSystem::format(path);
+    minikv::osfs::CommandProcessor processor{fs};
+
+    assert(processor.execute("FSCK") == "ERR login required");
+    assert(processor.execute("LOGIN alice alice123") == "OK login alice uid=1000");
+    assert(processor.execute("USERADD carol carol123") == "ERR USERADD requires root");
+    assert(processor.execute("LOGIN root root") == "OK login root uid=0");
+    assert(processor.execute("USERADD carol carol123") == "OK useradd carol");
+    assert(processor.execute("USERADD carol other") == "ERR user already exists");
+    assert(processor.execute("PASSWD carol carol456") == "OK password changed carol");
+    const auto fsck_output = processor.execute("FSCK");
+    assert(fsck_output.find("FSCK OK checks=") != std::string::npos);
+    assert(fsck_output.find("OK user table:") != std::string::npos);
+
+    fs = minikv::osfs::FileSystem::open(path);
+    assert(fs.authenticate("carol", "carol123") == std::nullopt);
+    const auto carol = fs.authenticate("carol", "carol456");
+    assert(carol.has_value());
+
+    minikv::osfs::CommandProcessor carol_shell{fs};
+    assert(carol_shell.execute("LOGIN carol carol456") == "OK login carol uid=" + std::to_string(carol->uid));
+    assert(carol_shell.execute("CREATE diary") == "OK created diary");
+    auto fd = parse_fd(carol_shell.execute("OPEN diary w"));
+    assert(carol_shell.execute("WRITE " + std::to_string(fd) + " carol-notes") == "OK wrote 11 bytes offset=11");
+    assert(carol_shell.execute("CLOSE " + std::to_string(fd)) == "OK closed " + std::to_string(fd));
+    assert(carol_shell.execute("PASSWD carol789") == "OK password changed carol");
+
+    fs = minikv::osfs::FileSystem::open(path);
+    assert(fs.authenticate("carol", "carol456") == std::nullopt);
+    assert(fs.authenticate("carol", "carol789").has_value());
+    minikv::osfs::CommandProcessor bob_shell{fs};
+    assert(bob_shell.execute("LOGIN bob bob123") == "OK login bob uid=1001");
+    assert(bob_shell.execute("PASSWD carol blocked") == "ERR permission denied");
+    assert(bob_shell.execute("DIR carol") == "ERR permission denied");
+
+    minikv::osfs::CommandProcessor root_shell{fs};
+    assert(root_shell.execute("LOGIN root root") == "OK login root uid=0");
+    assert(root_shell.execute("DIR carol").find("diary") != std::string::npos);
+
+    std::string error;
+    assert(fs.add_user("u1", "pw", 0, &error));
+    assert(fs.add_user("u2", "pw", 0, &error));
+    assert(fs.add_user("u3", "pw", 0, &error));
+    assert(fs.add_user("u4", "pw", 0, &error));
+    assert(!fs.add_user("u5", "pw", 0, &error));
+    assert(error == "user table is full");
+    assert(fs.check_consistency().ok);
+    std::filesystem::remove(path);
+}
+
 } // namespace
 
 int main() {
@@ -266,5 +389,7 @@ int main() {
     test_descriptor_offsets_and_range_io();
     test_failed_rewrite_preserves_existing_data();
     test_indirect_blocks_persist_and_release();
+    test_fsck_reports_ok_and_detects_corruption();
+    test_useradd_passwd_and_fsck_command();
     return 0;
 }
