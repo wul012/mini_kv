@@ -3,6 +3,7 @@
 #include "minikv/osfs/virtual_disk.hpp"
 
 #include <cstdint>
+#include <cstddef>
 #include <filesystem>
 #include <optional>
 #include <string>
@@ -82,6 +83,12 @@ public:
                     std::string* error = nullptr);
     std::optional<std::string> read_file(const std::string& name, std::uint32_t uid,
                                          std::string* error = nullptr) const;
+    bool truncate_file(const std::string& name, std::uint32_t uid, std::string* error = nullptr);
+    bool write_file_range(const std::string& name, std::size_t offset, const std::string& contents, std::uint32_t uid,
+                          std::string* error = nullptr);
+    std::optional<std::string> read_file_range(const std::string& name, std::size_t offset,
+                                               std::optional<std::size_t> length, std::uint32_t uid,
+                                               std::string* error = nullptr) const;
     bool chmod(const std::string& name, std::uint16_t mode, std::uint32_t uid, std::string* error = nullptr);
 
     std::vector<DirectoryEntry> list_directory(std::uint32_t uid = 0) const;

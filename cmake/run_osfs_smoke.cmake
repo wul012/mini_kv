@@ -37,14 +37,16 @@ if(NOT osfs_output MATCHES "ERR authentication failed")
     message(FATAL_ERROR "minikv_osfs smoke did not reject the wrong password\n${osfs_output}")
 endif()
 
-if(NOT osfs_output MATCHES "course design storage layer")
-    message(FATAL_ERROR "minikv_osfs smoke did not read the written file\n${osfs_output}")
+if(NOT osfs_output MATCHES "OK wrote 7 bytes offset=7" OR
+   NOT osfs_output MATCHES "OK wrote 6 bytes offset=13" OR
+   NOT osfs_output MATCHES "fd=4 read_offset=13 write_offset=0")
+    message(FATAL_ERROR "minikv_osfs smoke did not advance descriptor offsets\n${osfs_output}")
 endif()
 
 if(NOT osfs_output MATCHES "ERR permission denied")
     message(FATAL_ERROR "minikv_osfs smoke did not enforce write permission denial\n${osfs_output}")
 endif()
 
-if(NOT osfs_output MATCHES "report [0-9]+ [0-9]+ 0600 1000 27")
+if(NOT osfs_output MATCHES "report [0-9]+ [0-9]+ 0600 1000 13")
     message(FATAL_ERROR "minikv_osfs smoke did not expose the expected directory row\n${osfs_output}")
 endif()

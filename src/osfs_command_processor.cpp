@@ -40,6 +40,20 @@ bool parse_fd(const std::string& text, int* fd) {
     }
 }
 
+bool parse_size(const std::string& text, std::size_t* value) {
+    try {
+        std::size_t parsed = 0;
+        const auto number = std::stoull(text, &parsed);
+        if (parsed != text.size()) {
+            return false;
+        }
+        *value = static_cast<std::size_t>(number);
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
 bool parse_octal_mode(const std::string& text, std::uint16_t* mode) {
     if (text.empty() || text.size() > 4) {
         return false;
@@ -61,7 +75,8 @@ CommandProcessor::CommandProcessor(FileSystem& fs) : fs_{fs} {}
 
 std::string CommandProcessor::help_text() {
     return "Commands: HELP, WHOAMI, LOGIN user password, DIR [user], CREATE name, DELETE name, STAT name, "
-           "CHMOD name mode, OPEN name r|w|rw, READ fd, WRITE fd text, CLOSE fd, QUIT";
+           "CHMOD name mode, OPEN name r|w|rw|a, READ fd [length], WRITE fd text, SEEK fd offset, TELL fd, "
+           "CLOSE fd, QUIT";
 }
 
 std::string CommandProcessor::execute(std::string_view line) {
@@ -186,7 +201,7 @@ std::string CommandProcessor::execute(std::string_view line) {
         std::string mode;
         input >> name >> mode;
         if (name.empty() || mode.empty()) {
-            return "ERR usage: OPEN name r|w|rw";
+            return "ERR usage: OPEN name r|w|rw|a";
         }
         return open_file(name, mode);
     }
@@ -204,9 +219,19 @@ std::string CommandProcessor::execute(std::string_view line) {
         input >> fd_text;
         int fd = 0;
         if (!parse_fd(fd_text, &fd)) {
-            return "ERR usage: READ fd";
+            return "ERR usage: READ fd [length]";
         }
-        return read_file(fd);
+        std::string length_text;
+        input >> length_text;
+        std::optional<std::size_t> length;
+        if (!length_text.empty()) {
+            std::size_t parsed_length = 0;
+            if (!parse_size(length_text, &parsed_length)) {
+                return "ERR usage: READ fd [length]";
+            }
+            length = parsed_length;
+        }
+        return read_file(fd, length);
     }
     if (command == "WRITE") {
         std::string fd_text;
@@ -219,6 +244,26 @@ std::string CommandProcessor::execute(std::string_view line) {
         std::getline(input, contents);
         contents = trim(contents);
         return write_file(fd, contents);
+    }
+    if (command == "SEEK") {
+        std::string fd_text;
+        std::string offset_text;
+        input >> fd_text >> offset_text;
+        int fd = 0;
+        std::size_t offset = 0;
+        if (!parse_fd(fd_text, &fd) || !parse_size(offset_text, &offset)) {
+            return "ERR usage: SEEK fd offset";
+        }
+        return seek_file(fd, offset);
+    }
+    if (command == "TELL") {
+        std::string fd_text;
+        input >> fd_text;
+        int fd = 0;
+        if (!parse_fd(fd_text, &fd)) {
+            return "ERR usage: TELL fd";
+        }
+        return tell_file(fd);
     }
 
     return "ERR unknown command";
@@ -239,11 +284,12 @@ std::string CommandProcessor::login(const std::string& user, const std::string& 
 
 std::string CommandProcessor::open_file(const std::string& name, const std::string& mode) {
     const bool readable = mode == "r" || mode == "rw";
-    const bool writable = mode == "w" || mode == "rw";
+    const bool writable = mode == "w" || mode == "rw" || mode == "a";
     if (!readable && !writable) {
-        return "ERR usage: OPEN name r|w|rw";
+        return "ERR usage: OPEN name r|w|rw|a";
     }
-    if (!fs_.stat(name, current_uid_).has_value()) {
+    const auto stat = fs_.stat(name, current_uid_);
+    if (!stat.has_value()) {
         return "ERR file not found";
     }
     if (readable && !fs_.can_read(name, current_uid_)) {
@@ -252,8 +298,15 @@ std::string CommandProcessor::open_file(const std::string& name, const std::stri
     if (writable && !fs_.can_write(name, current_uid_)) {
         return "ERR permission denied";
     }
+    if (mode == "w") {
+        std::string error;
+        if (!fs_.truncate_file(name, current_uid_, &error)) {
+            return require_error(error);
+        }
+    }
     const auto fd = next_fd_++;
-    handles_.emplace(fd, Handle{name, readable, writable});
+    const auto write_offset = mode == "a" ? static_cast<std::size_t>(stat->size) : 0;
+    handles_.emplace(fd, Handle{name, readable, writable, 0, write_offset});
     return "OK fd=" + std::to_string(fd);
 }
 
@@ -264,8 +317,8 @@ std::string CommandProcessor::close_file(int fd) {
     return "OK closed " + std::to_string(fd);
 }
 
-std::string CommandProcessor::read_file(int fd) {
-    const auto handle = handles_.find(fd);
+std::string CommandProcessor::read_file(int fd, std::optional<std::size_t> length) {
+    auto handle = handles_.find(fd);
     if (handle == handles_.end()) {
         return "ERR bad fd";
     }
@@ -273,9 +326,14 @@ std::string CommandProcessor::read_file(int fd) {
         return "ERR fd not readable";
     }
     std::string error;
-    const auto contents = fs_.read_file(handle->second.name, current_uid_, &error);
+    const auto contents =
+        fs_.read_file_range(handle->second.name, handle->second.read_offset, length, current_uid_, &error);
     if (!contents.has_value()) {
         return require_error(error);
+    }
+    handle->second.read_offset += contents->size();
+    if (contents->empty()) {
+        return "(eof)";
     }
     return *contents;
 }
@@ -289,10 +347,35 @@ std::string CommandProcessor::write_file(int fd, const std::string& contents) {
         return "ERR fd not writable";
     }
     std::string error;
-    if (!fs_.write_file(handle->second.name, contents, current_uid_, &error)) {
+    if (!fs_.write_file_range(handle->second.name, handle->second.write_offset, contents, current_uid_, &error)) {
         return require_error(error);
     }
-    return "OK wrote " + std::to_string(contents.size()) + " bytes";
+    handle->second.write_offset += contents.size();
+    return "OK wrote " + std::to_string(contents.size()) +
+           " bytes offset=" + std::to_string(handle->second.write_offset);
+}
+
+std::string CommandProcessor::seek_file(int fd, std::size_t offset) {
+    const auto handle = handles_.find(fd);
+    if (handle == handles_.end()) {
+        return "ERR bad fd";
+    }
+    if (handle->second.readable) {
+        handle->second.read_offset = offset;
+    }
+    if (handle->second.writable) {
+        handle->second.write_offset = offset;
+    }
+    return "OK seek " + std::to_string(fd) + " " + std::to_string(offset);
+}
+
+std::string CommandProcessor::tell_file(int fd) const {
+    const auto handle = handles_.find(fd);
+    if (handle == handles_.end()) {
+        return "ERR bad fd";
+    }
+    return "fd=" + std::to_string(fd) + " read_offset=" + std::to_string(handle->second.read_offset) +
+           " write_offset=" + std::to_string(handle->second.write_offset);
 }
 
 } // namespace minikv::osfs

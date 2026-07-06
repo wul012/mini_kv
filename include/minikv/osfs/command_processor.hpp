@@ -3,6 +3,8 @@
 #include "minikv/osfs/filesystem.hpp"
 
 #include <cstdint>
+#include <cstddef>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -21,13 +23,17 @@ private:
         std::string name;
         bool readable = false;
         bool writable = false;
+        std::size_t read_offset = 0;
+        std::size_t write_offset = 0;
     };
 
     std::string login(const std::string& user, const std::string& password);
     std::string open_file(const std::string& name, const std::string& mode);
     std::string close_file(int fd);
-    std::string read_file(int fd);
+    std::string read_file(int fd, std::optional<std::size_t> length);
     std::string write_file(int fd, const std::string& contents);
+    std::string seek_file(int fd, std::size_t offset);
+    std::string tell_file(int fd) const;
 
     FileSystem& fs_;
     std::string current_user_;

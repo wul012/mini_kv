@@ -119,7 +119,8 @@ void test_authenticated_command_shell() {
 
     const auto opened = processor.execute("OPEN report rw");
     const auto fd = parse_fd(opened);
-    assert(processor.execute("WRITE " + std::to_string(fd) + " operating system storage") == "OK wrote 24 bytes");
+    assert(processor.execute("WRITE " + std::to_string(fd) + " operating system storage") ==
+           "OK wrote 24 bytes offset=24");
     assert(processor.execute("READ " + std::to_string(fd)) == "operating system storage");
     assert(processor.execute("CLOSE " + std::to_string(fd)) == "OK closed " + std::to_string(fd));
     assert(processor.execute("CHMOD report 0600") == "OK chmod report 0600");
@@ -134,6 +135,67 @@ void test_authenticated_command_shell() {
     assert(processor.execute("LOGIN root root") == "OK login root uid=0");
     assert(processor.execute("DIR alice").find("report") != std::string::npos);
     assert(processor.execute("OPEN alice/report r").rfind("OK fd=", 0) == 0);
+    std::filesystem::remove(path);
+}
+
+void test_descriptor_offsets_and_range_io() {
+    const auto path = unique_disk_path("offsets");
+    std::filesystem::remove(path);
+    auto fs = minikv::osfs::FileSystem::format(path);
+    minikv::osfs::CommandProcessor processor{fs};
+    assert(processor.execute("LOGIN alice alice123") == "OK login alice uid=1000");
+    assert(processor.execute("CREATE stream") == "OK created stream");
+
+    auto fd = parse_fd(processor.execute("OPEN stream w"));
+    assert(processor.execute("WRITE " + std::to_string(fd) + " hello-") == "OK wrote 6 bytes offset=6");
+    assert(processor.execute("WRITE " + std::to_string(fd) + " world") == "OK wrote 5 bytes offset=11");
+    assert(processor.execute("TELL " + std::to_string(fd)) == "fd=3 read_offset=0 write_offset=11");
+    assert(processor.execute("CLOSE " + std::to_string(fd)) == "OK closed 3");
+
+    fd = parse_fd(processor.execute("OPEN stream r"));
+    assert(processor.execute("READ " + std::to_string(fd) + " 5") == "hello");
+    assert(processor.execute("READ " + std::to_string(fd) + " 1") == "-");
+    assert(processor.execute("TELL " + std::to_string(fd)) == "fd=4 read_offset=6 write_offset=0");
+    assert(processor.execute("READ " + std::to_string(fd)) == "world");
+    assert(processor.execute("READ " + std::to_string(fd)) == "(eof)");
+    assert(processor.execute("CLOSE " + std::to_string(fd)) == "OK closed 4");
+
+    fd = parse_fd(processor.execute("OPEN stream rw"));
+    assert(processor.execute("SEEK " + std::to_string(fd) + " 6") == "OK seek 5 6");
+    assert(processor.execute("WRITE " + std::to_string(fd) + " OSFS!") == "OK wrote 5 bytes offset=11");
+    assert(processor.execute("SEEK " + std::to_string(fd) + " 0") == "OK seek 5 0");
+    assert(processor.execute("READ " + std::to_string(fd)) == "hello-OSFS!");
+    assert(processor.execute("CLOSE " + std::to_string(fd)) == "OK closed 5");
+
+    fd = parse_fd(processor.execute("OPEN stream a"));
+    assert(processor.execute("TELL " + std::to_string(fd)) == "fd=6 read_offset=0 write_offset=11");
+    assert(processor.execute("WRITE " + std::to_string(fd) + " -append") == "OK wrote 7 bytes offset=18");
+    assert(processor.execute("CLOSE " + std::to_string(fd)) == "OK closed 6");
+
+    const auto alice = fs.authenticate("alice", "alice123");
+    assert(alice.has_value());
+    std::string error;
+    assert(fs.read_file("stream", alice->uid, &error) == std::optional<std::string>{"hello-OSFS!-append"});
+
+    assert(fs.create_file("blocks", alice->uid, &error));
+    assert(fs.write_file("blocks", std::string(700, 'x'), alice->uid, &error));
+    assert(fs.read_file_range("blocks", 500, 40, alice->uid, &error) ==
+           std::optional<std::string>{std::string(40, 'x')});
+    assert(fs.write_file_range("blocks", 508, "boundary-write", alice->uid, &error));
+    assert(fs.read_file_range("blocks", 508, 14, alice->uid, &error) == std::optional<std::string>{"boundary-write"});
+    assert(!fs.write_file_range("stream", 8 * 512, "x", alice->uid, &error));
+    assert(error == "file exceeds direct-block limit");
+    assert(fs.read_file("stream", alice->uid, &error) == std::optional<std::string>{"hello-OSFS!-append"});
+
+    assert(fs.create_file("truncate", alice->uid, &error));
+    assert(fs.write_file("truncate", "old data", alice->uid, &error));
+    fd = parse_fd(processor.execute("OPEN truncate w"));
+    assert(processor.execute("CLOSE " + std::to_string(fd)) == "OK closed 7");
+    assert(fs.read_file("truncate", alice->uid, &error) == std::optional<std::string>{""});
+
+    fs = minikv::osfs::FileSystem::open(path);
+    assert(fs.read_file("stream", alice->uid, &error) == std::optional<std::string>{"hello-OSFS!-append"});
+    assert(fs.read_file_range("blocks", 508, 14, alice->uid, &error) == std::optional<std::string>{"boundary-write"});
     std::filesystem::remove(path);
 }
 
@@ -163,6 +225,7 @@ void test_failed_rewrite_preserves_existing_data() {
 int main() {
     test_disk_users_and_two_level_directories();
     test_authenticated_command_shell();
+    test_descriptor_offsets_and_range_io();
     test_failed_rewrite_preserves_existing_data();
     return 0;
 }

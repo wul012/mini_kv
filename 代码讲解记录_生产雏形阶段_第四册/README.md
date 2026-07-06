@@ -71,3 +71,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1631 补充索引
 
 - v1631: [999-version-1631-osfs-two-level-directory-and-persistent-users.md](999-version-1631-osfs-two-level-directory-and-persistent-users.md) - 把 v1629/v1630 的单根目录草稿升级为磁盘格式 v2：增加持久化用户表、教学密码哈希、MFD、每用户独立 UFD、block/inode 双位图、空闲计数、uid/gid 和 atime；命令层强制 `LOGIN user password`，用错误密码、目录隔离、跨用户权限、root 审查和重开持久性测试证明二级目录不是输出过滤，并从一开始拆分磁盘布局、目录和文件 I/O 职责。
+
+## v1632 补充索引
+
+- v1632: [1000-version-1632-osfs-descriptor-offset-range-io.md](1000-version-1632-osfs-descriptor-offset-range-io.md) - 为每个打开句柄增加独立读写位置，新增 `READ fd [length]`、连续 `WRITE`、`SEEK/TELL` 与 `w/rw/a` 模式；底层 range I/O 直接跨数据块读取和覆盖/扩展写入，测试覆盖顺序读、原位覆盖、追加、EOF、512 字节块边界和重开持久性，不用整文件字符串拼接伪装 fd 语义。
