@@ -22,3 +22,4 @@
 4. `step04-login-mfd-ufd`：登录、MFD/UFD 二级目录隔离。已完成。
 5. `step05-permission-admin`：权限拒绝、root 管理限制。已完成。
 6. `step06-fd-persistence`：fd 偏移读写、退出重开持久化。已完成。
+7. `step07-delete-dir-write-denial`：删除文件、DIR 字段展示、写权限拒绝。已完成。
