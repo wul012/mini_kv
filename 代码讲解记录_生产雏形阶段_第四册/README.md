@@ -107,3 +107,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1641 补充索引
 
 - v1641: [1009-version-1641-signed-human-boundary-flags-builder.md](1009-version-1641-signed-human-boundary-flags-builder.md) - 把 signed-human approval artifact contract receipt 的闭合边界布尔字段群迁移到 ordered JSON builder，同时保留 v1638 命名的单点 `Node v314\u0027s` 与 `Node v314's` canonical runtime surface waiver，讲清为什么这仍只是边界 flag block 迁移，以及 focused/full CTest 如何证明 fixture、SMOKEJSON、release manifest、no-router/no-write/no-WAL/no-network/no-credential/no-execution 边界不漂移。
+
+## v1642 补充索引
+
+- v1642: [1010-version-1642-credential-handle-top-level-builder.md](1010-version-1642-credential-handle-top-level-builder.md) - 把 credential-handle approval contract receipt 从整段顶层字符串拼接迁移到 ordered JSON builder，讲清为什么 credential-handle 是 Slice 2 最干净样本、哪些嵌套对象被命名、哪些领域 helper 仍保持原样，以及 fixture byte parity、SMOKEJSON、runtime smoke、release manifest、真实 CLI smoke 和 full CTest 如何证明 no-router/no-write/no-WAL/no-network/no-credential/no-execution 边界不漂移。

@@ -1,0 +1,29 @@
+mini-kv v1642 evidence summary
+
+Scope:
+- Continue receipts consolidation Slice 2.
+- Migrate only credential-handle approval contract receipt top-level JSON assembly to ordered builder.
+- Do not rewrite fixtures, digest inputs, public formatter names, runtime commands, WAL/snapshot, TCP/RESP, credential, raw endpoint, network, write, router, restore/load/compact/SETNXEX, or execution authority.
+
+Plan files read:
+- D:\nodeproj\orderops-node\docs\plans\README.md
+- D:\nodeproj\orderops-node\docs\plans\production-excellence-node-final-push.md
+- D:\nodeproj\orderops-node\docs\plans\production-excellence-final-acceptance.md
+- D:\nodeproj\orderops-node\docs\plans2\v325-post-no-network-safety-fixture-prerequisite-closure-roadmap.md
+- D:\C\mini-kv\治理计划\v1637-production-excellence-completion-brief.md
+- D:\C\四项目理解统筹\模型使用手册\00-通用方法内核.md
+
+Verification:
+- focused CTest: runtime_receipt_json_builder_tests, credential_handle_approval_contract_receipt_tests, smokejson_command_receipt_tests, release_verification_manifest_tests, runtime_smoke_evidence_tests = 5/5 passed.
+- full local build + full CTest: 344/344 passed.
+- real CLI smoke: SMOKEJSON emitted runtime evidence and CHECKJSON LOAD data/prod.snap reported LOAD as a write command/side effect without executing it.
+- clang-format dry-run --Werror passed for the changed C++ source.
+- documentation/archive focused CTest: receipts_consolidation_note_contract, code_walkthrough_quality_gate_np*, and f_folder_explanation_quality_closeout* = 12/12 passed.
+- git diff --check passed.
+- archive inventory strict passed before adding v1642 archive files; warnings: none.
+
+Boundary result:
+- credential-handle public formatter still matches the frozen fixture subobject byte-for-byte.
+- SMOKEJSON/runtime smoke evidence/release manifest still expose the same receipt.
+- read_only remains true; execution_allowed remains false.
+- credential_value_read, raw_endpoint_url_parsed, external_request_sent, approval_ledger_written, schema_migration_executed, load_restore_compact_executed, setnxex_execution_allowed, automatic_upstream_start, audit_authoritative, and order_authoritative remain false.

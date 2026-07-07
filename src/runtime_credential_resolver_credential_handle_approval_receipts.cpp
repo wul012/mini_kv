@@ -5,6 +5,7 @@
 
 #include "minikv/version.hpp"
 
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -15,8 +16,11 @@ namespace {
 using credential_resolver_detail::DigestPart;
 using credential_resolver_detail::field_string;
 using credential_resolver_detail::receipt_digest;
+using minikv::runtime_receipt_json::json_array;
 using minikv::runtime_receipt_json::json_bool;
+using minikv::runtime_receipt_json::json_integer;
 using minikv::runtime_receipt_json::json_object;
+using minikv::runtime_receipt_json::json_string;
 using minikv::runtime_receipt_json::OrderedJsonField;
 
 constexpr std::string_view receipt_version =
@@ -259,13 +263,6 @@ void append_closed_boundary_flag_fields(std::vector<OrderedJsonField>& fields) {
     fields.push_back({"order_authoritative", json_bool(false)});
 }
 
-std::string format_closed_boundary_flags_json() {
-    std::vector<OrderedJsonField> fields;
-    append_closed_boundary_flag_fields(fields);
-    auto object_json = json_object(fields);
-    return object_json.substr(1, object_json.size() - 2);
-}
-
 } // namespace
 
 std::string credential_resolver_credential_handle_approval_contract_non_participation_receipt_digest(
@@ -302,196 +299,254 @@ std::string credential_resolver_credential_handle_approval_contract_non_particip
 
 std::string format_credential_resolver_credential_handle_approval_contract_non_participation_receipt_json(
     const std::vector<std::string>& read_commands) {
-    return "{\"receipt_version\":" + field_string(receipt_version) +
-           ",\"receipt_fixture_path\":" + field_string(receipt_fixture_path) +
-           ",\"source_contract_intake\":" + field_string(source_contract_intake) +
-           ",\"source_closure_review\":" + field_string(source_closure_review) +
-           ",\"source_prerequisite_catalog\":" + field_string(source_prerequisite_catalog) +
-           ",\"consumer_hint\":" + field_string(receipt_consumer) +
-           ",\"current_project_version\":" + field_string(version) +
-           ",\"runtime_project_version\":" + field_string(version) +
-           ",\"current_release_version\":" + field_string(receipt_release_version) +
-           ",\"current_artifact_path_hint\":" + field_string(receipt_artifact_path_hint) +
-           ",\"runtime_role\":" + field_string(runtime_role) +
-           ",\"source_node_v317_reference\":{\"source_version\":\"Node v317\""
-           ",\"profile_version\":" +
-           field_string(node_v317_profile_version) + ",\"contract_state\":" + field_string(node_v317_contract_state) +
-           ",\"governance_chain_decision\":" + field_string(node_v317_governance_chain_decision) +
-           ",\"ready_for_credential_handle_approval_contract_intake\":true"
-           ",\"credential_handle_approval_contract_intake_only\":true"
-           ",\"read_only_credential_handle_approval_contract\":true"
-           ",\"consumes_node_v316_signed_human_approval_artifact_prerequisite_closure_review\":true"
-           ",\"consumes_node_v313_prerequisite_catalog\":true"
-           ",\"target_prerequisite_id\":" +
-           field_string(node_v317_target_prerequisite_id) +
-           ",\"next_java_version\":\"Java v146\""
-           ",\"next_mini_kv_version\":\"mini-kv v139\""
-           ",\"next_node_verification_version\":\"Node v318\""
-           ",\"ready_for_parallel_java_v146_mini_kv_v139_echo\":true"
-           ",\"ready_for_node_v318_before_upstream_echo\":false"
-           ",\"credential_handle_approval_contract\":{\"contract_digest\":" +
-           field_string(node_v317_contract_digest) + ",\"contract_name\":" + field_string(node_v317_contract_name) +
-           ",\"contract_version\":" + field_string(node_v317_contract_version) +
-           ",\"contract_mode\":" + field_string(node_v317_contract_mode) +
-           ",\"source_span\":" + field_string(node_v317_source_span) +
-           ",\"target_prerequisite_id\":" + field_string(node_v317_target_prerequisite_id) +
-           ",\"purpose\":" + field_string(node_v317_purpose) + ",\"required_fields\":" + format_required_fields_json() +
-           ",\"prohibited_fields\":" + format_prohibited_fields_json() +
-           ",\"rejection_reasons\":" + format_rejection_reasons_json() +
-           ",\"no_go_boundaries\":" + format_no_go_boundaries_json() +
-           ",\"upstream_echo_requests\":" + format_upstream_echo_requests_json() +
-           ",\"required_field_count\":" + std::to_string(required_field_count) +
-           ",\"prohibited_field_count\":" + std::to_string(prohibited_field_count) +
-           ",\"rejection_reason_count\":" + std::to_string(rejection_reason_count) +
-           ",\"no_go_boundary_count\":" + std::to_string(no_go_boundary_count) +
-           ",\"upstream_echo_request_count\":" + std::to_string(upstream_echo_request_count) +
-           ",\"implementation_still_blocked\":true}"
-           ",\"prerequisite_transition\":{\"prerequisite_id\":" +
-           field_string(node_v317_target_prerequisite_id) +
-           ",\"catalog_label\":\"Credential handle approval\""
-           ",\"before_v317\":\"still-missing\""
-           ",\"after_v317\":\"contract-intake-defined\""
-           ",\"closure_requires_upstream_echo\":true"
-           ",\"completed_prerequisite_count_before_v317\":2"
-           ",\"remaining_prerequisite_count_before_v317\":4"
-           ",\"preserves_signed_human_approval_artifact_closure\":true"
-           ",\"closes_endpoint_handle_allowlist_approval\":false"
-           ",\"closes_no_network_safety_fixture\":false"
-           ",\"closes_abort_rollback_semantics\":false}"
-           ",\"necessity_proof\":{\"proof_complete\":true"
-           ",\"blocker_resolved\":\"v316 completed the signed-human-approval-artifact prerequisite and named "
-           "credential-handle-approval as the next concrete missing contract.\""
-           ",\"consumer\":\"Java v146 + mini-kv v139, then Node v318\""
-           ",\"why_v316_cannot_be_reused\":\"v316 is a closure review only; it proves the signed artifact prerequisite "
-           "is complete but does not define credential handle approval fields for upstream echo.\""
-           ",\"existing_report_reuse_decision\":\"Reuse v316 as source state and v313 as the prerequisite catalog; "
-           "create v317 only for the credential-handle approval contract intake.\""
-           ",\"stop_condition\":\"Stop if the contract requires credential values, raw endpoint URLs, provider/client "
-           "configuration, external requests, runtime shell implementation or invocation, ledger/schema writes, "
-           "mini-kv authority, or automatic upstream start.\"}"
-           ",\"summary\":{\"check_count\":" +
-           std::to_string(check_count) + ",\"passed_check_count\":" + std::to_string(check_count) +
-           ",\"source_node_v316_check_count\":" + std::to_string(source_node_v316_check_count) +
-           ",\"source_node_v316_passed_check_count\":" + std::to_string(source_node_v316_check_count) +
-           ",\"source_completed_prerequisite_count\":" + std::to_string(completed_prerequisite_count) +
-           ",\"source_remaining_prerequisite_count\":" + std::to_string(remaining_prerequisite_count) +
-           ",\"required_field_count\":" + std::to_string(required_field_count) +
-           ",\"prohibited_field_count\":" + std::to_string(prohibited_field_count) +
-           ",\"rejection_reason_count\":" + std::to_string(rejection_reason_count) +
-           ",\"no_go_boundary_count\":" + std::to_string(no_go_boundary_count) +
-           ",\"upstream_echo_request_count\":" + std::to_string(upstream_echo_request_count) +
-           ",\"production_blocker_count\":" + std::to_string(production_blocker_count) +
-           ",\"warning_count\":" + std::to_string(warning_count) +
-           ",\"recommendation_count\":" + std::to_string(recommendation_count) +
-           "}"
-           ",\"runtime_shell_implemented\":false"
-           ",\"runtime_shell_invocation_allowed\":false"
-           ",\"execution_allowed\":false"
-           ",\"connects_managed_audit\":false"
-           ",\"credential_value_read\":false"
-           ",\"raw_endpoint_url_parsed\":false"
-           ",\"external_request_sent\":false"
-           ",\"schema_migration_executed\":false"
-           ",\"approval_ledger_written\":false"
-           ",\"automatic_upstream_start\":false}"
-           ",\"source_node_v316_reference\":{\"source_version\":\"Node v316\""
-           ",\"profile_version\":" +
-           field_string(node_v316_profile_version) + ",\"review_state\":" + field_string(node_v316_review_state) +
-           ",\"ready_for_signed_human_approval_artifact_prerequisite_closure_review\":true"
-           ",\"review_digest\":" +
-           field_string(node_v316_review_digest) +
-           ",\"completed_prerequisite_count\":" + std::to_string(completed_prerequisite_count) +
-           ",\"remaining_prerequisite_count\":" + std::to_string(remaining_prerequisite_count) +
-           ",\"original_prerequisite_count\":" + std::to_string(original_prerequisite_count) +
-           ",\"next_concrete_prerequisite_id\":" + field_string(node_v317_target_prerequisite_id) +
-           ",\"next_concrete_prerequisite_contract_required\":true"
-           ",\"next_node_version_suggested\":\"Node v317\""
-           ",\"chain_continuation_allowed\":true"
-           ",\"runtime_shell_still_blocked\":true"
-           ",\"completed_prerequisite_ids\":" +
-           format_completed_prerequisites_json() +
-           ",\"remaining_prerequisite_ids\":" + format_remaining_prerequisites_json() +
-           ",\"source_check_count\":" + std::to_string(source_node_v316_check_count) +
-           ",\"source_passed_check_count\":" + std::to_string(source_node_v316_check_count) +
-           ",\"source_node_v315_check_count\":" + std::to_string(source_node_v315_check_count) +
-           ",\"source_node_v315_passed_check_count\":" + std::to_string(source_node_v315_check_count) +
-           ",\"source_production_blocker_count\":0"
-           ",\"source_warning_count\":1"
-           ",\"source_recommendation_count\":2"
-           ",\"runtime_shell_implemented\":false"
-           ",\"runtime_shell_invocation_allowed\":false"
-           ",\"execution_allowed\":false"
-           ",\"connects_managed_audit\":false"
-           ",\"credential_value_read\":false"
-           ",\"raw_endpoint_url_parsed\":false"
-           ",\"external_request_sent\":false"
-           ",\"schema_migration_executed\":false"
-           ",\"approval_ledger_written\":false"
-           ",\"automatic_upstream_start\":false}"
-           ",\"mini_kv_receipt\":{\"receipt_mode\":\"credential-handle-approval-contract-non-participation-receipt-"
-           "only\""
-           ",\"standalone_fixture_path\":" +
-           field_string(receipt_fixture_path) +
-           ",\"current_artifact_path_hint\":" + field_string(receipt_artifact_path_hint) +
-           ",\"runtime_smoke_exposes_receipt\":true"
-           ",\"release_manifest_exposes_receipt\":true"
-           ",\"verification_count\":" +
-           std::to_string(check_count) +
-           "}"
-           ",\"checks\":" +
-           format_checks_json() + ",\"summary\":{\"check_count\":" + std::to_string(check_count) +
-           ",\"passed_check_count\":" + std::to_string(check_count) +
-           ",\"source_node_v316_check_count\":" + std::to_string(source_node_v316_check_count) +
-           ",\"source_node_v316_passed_check_count\":" + std::to_string(source_node_v316_check_count) +
-           ",\"source_node_v315_check_count\":" + std::to_string(source_node_v315_check_count) +
-           ",\"source_node_v315_passed_check_count\":" + std::to_string(source_node_v315_check_count) +
-           ",\"source_completed_prerequisite_count\":" + std::to_string(completed_prerequisite_count) +
-           ",\"source_remaining_prerequisite_count\":" + std::to_string(remaining_prerequisite_count) +
-           ",\"required_field_count\":" + std::to_string(required_field_count) +
-           ",\"prohibited_field_count\":" + std::to_string(prohibited_field_count) +
-           ",\"rejection_reason_count\":" + std::to_string(rejection_reason_count) +
-           ",\"no_go_boundary_count\":" + std::to_string(no_go_boundary_count) +
-           ",\"upstream_echo_request_count\":" + std::to_string(upstream_echo_request_count) +
-           ",\"proof_complete\":true"
-           ",\"production_blocker_count\":" +
-           std::to_string(production_blocker_count) + ",\"warning_count\":" + std::to_string(warning_count) +
-           ",\"recommendation_count\":" + std::to_string(recommendation_count) +
-           "}"
-           ",\"production_blockers\":[]"
-           ",\"warnings\":[{\"code\":\"CREDENTIAL_HANDLE_CONTRACT_DOES_NOT_CLOSE_ALL_PREREQUISITES\",\"severity\":"
-           "\"warning\"},"
-           "{\"code\":\"CREDENTIAL_HANDLE_APPROVAL_IS_NOT_CREDENTIAL_RESOLUTION\",\"severity\":\"warning\"}]"
-           ",\"recommendations\":[{\"code\":\"RUN_JAVA_V146_AND_MINI_KV_V139_AFTER_V317_ARCHIVE\",\"severity\":"
-           "\"recommendation\"},"
-           "{\"code\":\"KEEP_CREDENTIAL_HANDLE_APPROVAL_NON_SECRET\",\"severity\":\"recommendation\"}]"
-           ",\"evidence_endpoints\":{\"credential_handle_approval_contract_intake_json\":" +
-           field_string(node_v317_json) +
-           ",\"credential_handle_approval_contract_intake_markdown\":" + field_string(node_v317_markdown) +
-           ",\"source_node_v316_json\":" + field_string(node_v316_json) +
-           ",\"source_node_v316_markdown\":" + field_string(node_v316_markdown) +
-           ",\"active_plan\":" + field_string(active_plan) +
-           ",\"recommended_parallel_java_v146\":\"Java v146 credential-handle approval contract echo\""
-           ",\"recommended_parallel_mini_kv_v139\":\"mini-kv v139 credential-handle approval contract "
-           "non-participation receipt\""
-           ",\"next_node_verification\":\"Node v318\"}"
-           ",\"next_required_evidence_versions\":[\"Java v146\",\"mini-kv v139\"]"
-           ",\"next_actions\":[\"Archive mini-kv v139 as a credential-handle approval contract non-participation "
-           "receipt.\","
-           "\"Keep Node v318 blocked until Java v146 and mini-kv v139 are both available.\","
-           "\"Do not store, validate, resolve, or become authority for credential handles or approval statuses from "
-           "mini-kv.\","
-           "\"Do not read credentials, parse raw endpoints, accept provider/client config, send HTTP/TCP, write "
-           "ledgers or schema state, auto-start services, or execute LOAD/COMPACT/RESTORE/SETNXEX.\"]"
-           ",\"binary_provenance_digest\":" +
-           field_string(binary_provenance_digest()) +
-           ",\"retention_check_digest\":" + field_string(retention_provenance_check_digest()) +
-           ",\"retention_replay_marker_digest\":" + field_string(retention_provenance_replay_marker_digest()) +
-           ",\"read_command_list_digest\":" + field_string(read_command_list_digest(read_commands)) +
-           ",\"receipt_digest\":" +
-           field_string(credential_resolver_credential_handle_approval_contract_non_participation_receipt_digest(
-               read_commands)) +
-           "," + format_closed_boundary_flags_json() + ",\"boundary\":" + field_string(boundary_text) +
-           ",\"node_action\":" + field_string(node_action) + "}";
+    const auto credential_handle_approval_contract = json_object({
+        {"contract_digest", json_string(node_v317_contract_digest)},
+        {"contract_name", json_string(node_v317_contract_name)},
+        {"contract_version", json_string(node_v317_contract_version)},
+        {"contract_mode", json_string(node_v317_contract_mode)},
+        {"source_span", json_string(node_v317_source_span)},
+        {"target_prerequisite_id", json_string(node_v317_target_prerequisite_id)},
+        {"purpose", json_string(node_v317_purpose)},
+        {"required_fields", format_required_fields_json()},
+        {"prohibited_fields", format_prohibited_fields_json()},
+        {"rejection_reasons", format_rejection_reasons_json()},
+        {"no_go_boundaries", format_no_go_boundaries_json()},
+        {"upstream_echo_requests", format_upstream_echo_requests_json()},
+        {"required_field_count", json_integer(required_field_count)},
+        {"prohibited_field_count", json_integer(prohibited_field_count)},
+        {"rejection_reason_count", json_integer(rejection_reason_count)},
+        {"no_go_boundary_count", json_integer(no_go_boundary_count)},
+        {"upstream_echo_request_count", json_integer(upstream_echo_request_count)},
+        {"implementation_still_blocked", json_bool(true)},
+    });
+
+    const auto prerequisite_transition = json_object({
+        {"prerequisite_id", json_string(node_v317_target_prerequisite_id)},
+        {"catalog_label", json_string("Credential handle approval")},
+        {"before_v317", json_string("still-missing")},
+        {"after_v317", json_string("contract-intake-defined")},
+        {"closure_requires_upstream_echo", json_bool(true)},
+        {"completed_prerequisite_count_before_v317", json_integer(2)},
+        {"remaining_prerequisite_count_before_v317", json_integer(4)},
+        {"preserves_signed_human_approval_artifact_closure", json_bool(true)},
+        {"closes_endpoint_handle_allowlist_approval", json_bool(false)},
+        {"closes_no_network_safety_fixture", json_bool(false)},
+        {"closes_abort_rollback_semantics", json_bool(false)},
+    });
+
+    const auto necessity_proof = json_object({
+        {"proof_complete", json_bool(true)},
+        {"blocker_resolved", json_string("v316 completed the signed-human-approval-artifact prerequisite and named "
+                                         "credential-handle-approval as the next concrete missing contract.")},
+        {"consumer", json_string("Java v146 + mini-kv v139, then Node v318")},
+        {"why_v316_cannot_be_reused",
+         json_string("v316 is a closure review only; it proves the signed artifact prerequisite is complete but does "
+                     "not define credential handle approval fields for upstream echo.")},
+        {"existing_report_reuse_decision",
+         json_string("Reuse v316 as source state and v313 as the prerequisite catalog; create v317 only for the "
+                     "credential-handle approval contract intake.")},
+        {"stop_condition",
+         json_string("Stop if the contract requires credential values, raw endpoint URLs, provider/client "
+                     "configuration, external requests, runtime shell implementation or invocation, ledger/schema "
+                     "writes, mini-kv authority, or automatic upstream start.")},
+    });
+
+    const auto source_node_v317_summary = json_object({
+        {"check_count", json_integer(check_count)},
+        {"passed_check_count", json_integer(check_count)},
+        {"source_node_v316_check_count", json_integer(source_node_v316_check_count)},
+        {"source_node_v316_passed_check_count", json_integer(source_node_v316_check_count)},
+        {"source_completed_prerequisite_count", json_integer(completed_prerequisite_count)},
+        {"source_remaining_prerequisite_count", json_integer(remaining_prerequisite_count)},
+        {"required_field_count", json_integer(required_field_count)},
+        {"prohibited_field_count", json_integer(prohibited_field_count)},
+        {"rejection_reason_count", json_integer(rejection_reason_count)},
+        {"no_go_boundary_count", json_integer(no_go_boundary_count)},
+        {"upstream_echo_request_count", json_integer(upstream_echo_request_count)},
+        {"production_blocker_count", json_integer(production_blocker_count)},
+        {"warning_count", json_integer(warning_count)},
+        {"recommendation_count", json_integer(recommendation_count)},
+    });
+
+    const auto source_node_v317_reference = json_object({
+        {"source_version", json_string("Node v317")},
+        {"profile_version", json_string(node_v317_profile_version)},
+        {"contract_state", json_string(node_v317_contract_state)},
+        {"governance_chain_decision", json_string(node_v317_governance_chain_decision)},
+        {"ready_for_credential_handle_approval_contract_intake", json_bool(true)},
+        {"credential_handle_approval_contract_intake_only", json_bool(true)},
+        {"read_only_credential_handle_approval_contract", json_bool(true)},
+        {"consumes_node_v316_signed_human_approval_artifact_prerequisite_closure_review", json_bool(true)},
+        {"consumes_node_v313_prerequisite_catalog", json_bool(true)},
+        {"target_prerequisite_id", json_string(node_v317_target_prerequisite_id)},
+        {"next_java_version", json_string("Java v146")},
+        {"next_mini_kv_version", json_string("mini-kv v139")},
+        {"next_node_verification_version", json_string("Node v318")},
+        {"ready_for_parallel_java_v146_mini_kv_v139_echo", json_bool(true)},
+        {"ready_for_node_v318_before_upstream_echo", json_bool(false)},
+        {"credential_handle_approval_contract", credential_handle_approval_contract},
+        {"prerequisite_transition", prerequisite_transition},
+        {"necessity_proof", necessity_proof},
+        {"summary", source_node_v317_summary},
+        {"runtime_shell_implemented", json_bool(false)},
+        {"runtime_shell_invocation_allowed", json_bool(false)},
+        {"execution_allowed", json_bool(false)},
+        {"connects_managed_audit", json_bool(false)},
+        {"credential_value_read", json_bool(false)},
+        {"raw_endpoint_url_parsed", json_bool(false)},
+        {"external_request_sent", json_bool(false)},
+        {"schema_migration_executed", json_bool(false)},
+        {"approval_ledger_written", json_bool(false)},
+        {"automatic_upstream_start", json_bool(false)},
+    });
+
+    const auto source_node_v316_reference = json_object({
+        {"source_version", json_string("Node v316")},
+        {"profile_version", json_string(node_v316_profile_version)},
+        {"review_state", json_string(node_v316_review_state)},
+        {"ready_for_signed_human_approval_artifact_prerequisite_closure_review", json_bool(true)},
+        {"review_digest", json_string(node_v316_review_digest)},
+        {"completed_prerequisite_count", json_integer(completed_prerequisite_count)},
+        {"remaining_prerequisite_count", json_integer(remaining_prerequisite_count)},
+        {"original_prerequisite_count", json_integer(original_prerequisite_count)},
+        {"next_concrete_prerequisite_id", json_string(node_v317_target_prerequisite_id)},
+        {"next_concrete_prerequisite_contract_required", json_bool(true)},
+        {"next_node_version_suggested", json_string("Node v317")},
+        {"chain_continuation_allowed", json_bool(true)},
+        {"runtime_shell_still_blocked", json_bool(true)},
+        {"completed_prerequisite_ids", format_completed_prerequisites_json()},
+        {"remaining_prerequisite_ids", format_remaining_prerequisites_json()},
+        {"source_check_count", json_integer(source_node_v316_check_count)},
+        {"source_passed_check_count", json_integer(source_node_v316_check_count)},
+        {"source_node_v315_check_count", json_integer(source_node_v315_check_count)},
+        {"source_node_v315_passed_check_count", json_integer(source_node_v315_check_count)},
+        {"source_production_blocker_count", json_integer(0)},
+        {"source_warning_count", json_integer(1)},
+        {"source_recommendation_count", json_integer(2)},
+        {"runtime_shell_implemented", json_bool(false)},
+        {"runtime_shell_invocation_allowed", json_bool(false)},
+        {"execution_allowed", json_bool(false)},
+        {"connects_managed_audit", json_bool(false)},
+        {"credential_value_read", json_bool(false)},
+        {"raw_endpoint_url_parsed", json_bool(false)},
+        {"external_request_sent", json_bool(false)},
+        {"schema_migration_executed", json_bool(false)},
+        {"approval_ledger_written", json_bool(false)},
+        {"automatic_upstream_start", json_bool(false)},
+    });
+
+    const auto mini_kv_receipt = json_object({
+        {"receipt_mode", json_string("credential-handle-approval-contract-non-participation-receipt-only")},
+        {"standalone_fixture_path", json_string(receipt_fixture_path)},
+        {"current_artifact_path_hint", json_string(receipt_artifact_path_hint)},
+        {"runtime_smoke_exposes_receipt", json_bool(true)},
+        {"release_manifest_exposes_receipt", json_bool(true)},
+        {"verification_count", json_integer(check_count)},
+    });
+
+    const auto summary = json_object({
+        {"check_count", json_integer(check_count)},
+        {"passed_check_count", json_integer(check_count)},
+        {"source_node_v316_check_count", json_integer(source_node_v316_check_count)},
+        {"source_node_v316_passed_check_count", json_integer(source_node_v316_check_count)},
+        {"source_node_v315_check_count", json_integer(source_node_v315_check_count)},
+        {"source_node_v315_passed_check_count", json_integer(source_node_v315_check_count)},
+        {"source_completed_prerequisite_count", json_integer(completed_prerequisite_count)},
+        {"source_remaining_prerequisite_count", json_integer(remaining_prerequisite_count)},
+        {"required_field_count", json_integer(required_field_count)},
+        {"prohibited_field_count", json_integer(prohibited_field_count)},
+        {"rejection_reason_count", json_integer(rejection_reason_count)},
+        {"no_go_boundary_count", json_integer(no_go_boundary_count)},
+        {"upstream_echo_request_count", json_integer(upstream_echo_request_count)},
+        {"proof_complete", json_bool(true)},
+        {"production_blocker_count", json_integer(production_blocker_count)},
+        {"warning_count", json_integer(warning_count)},
+        {"recommendation_count", json_integer(recommendation_count)},
+    });
+
+    const auto warnings = json_array({
+        json_object({
+            {"code", json_string("CREDENTIAL_HANDLE_CONTRACT_DOES_NOT_CLOSE_ALL_PREREQUISITES")},
+            {"severity", json_string("warning")},
+        }),
+        json_object({
+            {"code", json_string("CREDENTIAL_HANDLE_APPROVAL_IS_NOT_CREDENTIAL_RESOLUTION")},
+            {"severity", json_string("warning")},
+        }),
+    });
+
+    const auto recommendations = json_array({
+        json_object({
+            {"code", json_string("RUN_JAVA_V146_AND_MINI_KV_V139_AFTER_V317_ARCHIVE")},
+            {"severity", json_string("recommendation")},
+        }),
+        json_object({
+            {"code", json_string("KEEP_CREDENTIAL_HANDLE_APPROVAL_NON_SECRET")},
+            {"severity", json_string("recommendation")},
+        }),
+    });
+
+    const auto evidence_endpoints = json_object({
+        {"credential_handle_approval_contract_intake_json", json_string(node_v317_json)},
+        {"credential_handle_approval_contract_intake_markdown", json_string(node_v317_markdown)},
+        {"source_node_v316_json", json_string(node_v316_json)},
+        {"source_node_v316_markdown", json_string(node_v316_markdown)},
+        {"active_plan", json_string(active_plan)},
+        {"recommended_parallel_java_v146", json_string("Java v146 credential-handle approval contract echo")},
+        {"recommended_parallel_mini_kv_v139",
+         json_string("mini-kv v139 credential-handle approval contract non-participation receipt")},
+        {"next_node_verification", json_string("Node v318")},
+    });
+
+    const auto next_required_evidence_versions = json_array({
+        json_string("Java v146"),
+        json_string("mini-kv v139"),
+    });
+
+    const auto next_actions = json_array({
+        json_string("Archive mini-kv v139 as a credential-handle approval contract non-participation receipt."),
+        json_string("Keep Node v318 blocked until Java v146 and mini-kv v139 are both available."),
+        json_string("Do not store, validate, resolve, or become authority for credential handles or approval statuses "
+                    "from mini-kv."),
+        json_string("Do not read credentials, parse raw endpoints, accept provider/client config, send HTTP/TCP, write "
+                    "ledgers or schema state, auto-start services, or execute LOAD/COMPACT/RESTORE/SETNXEX."),
+    });
+
+    std::vector<OrderedJsonField> fields = {
+        {"receipt_version", json_string(receipt_version)},
+        {"receipt_fixture_path", json_string(receipt_fixture_path)},
+        {"source_contract_intake", json_string(source_contract_intake)},
+        {"source_closure_review", json_string(source_closure_review)},
+        {"source_prerequisite_catalog", json_string(source_prerequisite_catalog)},
+        {"consumer_hint", json_string(receipt_consumer)},
+        {"current_project_version", json_string(version)},
+        {"runtime_project_version", json_string(version)},
+        {"current_release_version", json_string(receipt_release_version)},
+        {"current_artifact_path_hint", json_string(receipt_artifact_path_hint)},
+        {"runtime_role", json_string(runtime_role)},
+        {"source_node_v317_reference", source_node_v317_reference},
+        {"source_node_v316_reference", source_node_v316_reference},
+        {"mini_kv_receipt", mini_kv_receipt},
+        {"checks", format_checks_json()},
+        {"summary", summary},
+        {"production_blockers", json_array({})},
+        {"warnings", warnings},
+        {"recommendations", recommendations},
+        {"evidence_endpoints", evidence_endpoints},
+        {"next_required_evidence_versions", next_required_evidence_versions},
+        {"next_actions", next_actions},
+        {"binary_provenance_digest", json_string(binary_provenance_digest())},
+        {"retention_check_digest", json_string(retention_provenance_check_digest())},
+        {"retention_replay_marker_digest", json_string(retention_provenance_replay_marker_digest())},
+        {"read_command_list_digest", json_string(read_command_list_digest(read_commands))},
+        {"receipt_digest",
+         json_string(
+             credential_resolver_credential_handle_approval_contract_non_participation_receipt_digest(read_commands))},
+    };
+    append_closed_boundary_flag_fields(fields);
+    fields.push_back({"boundary", json_string(boundary_text)});
+    fields.push_back({"node_action", json_string(node_action)});
+    return json_object(std::span<const OrderedJsonField>{fields.data(), fields.size()});
 }
 
 } // namespace minikv::runtime_evidence_receipts

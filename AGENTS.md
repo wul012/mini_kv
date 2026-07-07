@@ -18,6 +18,7 @@ Update this table instead of appending relative-time rules ("starting with the n
 
 - Progress-ledger rows: at most ~3 lines per version/milestone; details go into per-version evidence files or `治理计划/` docs, the row keeps a pointer. Never grow a row into a paragraph wall.
 - Lesson promotion: when the same deviation or workaround appears twice in the ledger, promote it into this file as a rule instead of recording it a third time.
+- Method kernel: apply the 12-rule kernel and task-brief skeleton from `D:\C\四项目理解统筹\模型使用手册\00-通用方法内核.md` (read once per session; also mirrored in the global `~/.codex/AGENTS.md`).
 
 ## Shared Four-Project Rules
 
