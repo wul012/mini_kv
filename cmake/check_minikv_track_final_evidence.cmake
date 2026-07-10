@@ -36,7 +36,7 @@ foreach(fragment IN ITEMS
         "src/shard_readiness_boundary_field_names.cpp"
         "negative_hits.warn_once_per_file"
         "No third program-level waiver is claimed"
-        "https://github.com/wul012/mini_kv/actions/runs/29095734744")
+        "https://github.com/wul012/mini_kv/actions/runs/29099882082")
     require_file_fragment("${evidence_path}" "${fragment}")
 endforeach()
 

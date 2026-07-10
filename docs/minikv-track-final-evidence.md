@@ -20,8 +20,9 @@ External verdict: PENDING
 - v1658 把 TCP 服务默认绑定从外网可见的 `0.0.0.0` 收紧为 loopback `127.0.0.1`，并用真实
   `TcpServer::Options` 断言保护该默认值。显式传入其他 host 的能力仍保留，但安全文档要求外部网络暴露
   必须另行提供认证、TLS 与防火墙。
-- 新鲜覆盖率证据来自绿色 GitHub Actions run
-  [29095734744](https://github.com/wul012/mini_kv/actions/runs/29095734744)：
+- 新鲜覆盖率证据来自 v1658 实质候选提交 `220cd327` 的绿色 GitHub Actions run
+  [29099882082](https://github.com/wul012/mini_kv/actions/runs/29099882082)：format、archive、
+  Linux、macOS、Windows、sanitizer 和 coverage 七个 jobs 全部成功，coverage 原始 TOTAL 为
   **2345 core lines / 2122 executed / 90%**。简报规定实际值比旧 floor 高至少 2 分时只升不降，因此
   v1658 将门槛从 88 收紧为 `--fail-under-line 90`。
 
@@ -29,9 +30,9 @@ External verdict: PENDING
 
 | Gate | Self-audit | Mechanical check | Reproducible evidence |
 |---|---|---|---|
-| E1 Build & CI | GREEN | `.github/workflows/ci.yml` 在 push/PR 上运行 Linux、macOS、Windows 全构建与 CTest，另有必需的 sanitizer、coverage、format、archive jobs | `gh run view 29095734744`; 本地执行本文末尾的 configure/build/CTest 命令 |
+| E1 Build & CI | GREEN | `.github/workflows/ci.yml` 在 push/PR 上运行 Linux、macOS、Windows 全构建与 CTest，另有必需的 sanitizer、coverage、format、archive jobs | `gh run view 29099882082`; 本地执行本文末尾的 configure/build/CTest 命令 |
 | E2 Static analysis | GREEN | `clang-format changed files` job 调用 `scripts/check_clang_format_changed_files.py`; `minikv_dependabot_config_tests` 防止 job 或 action 版本静默弱化 | `python scripts/check_clang_format_changed_files.py --base v1657 --head HEAD`；CI format job |
-| E3 Coverage | GREEN | Ubuntu gcovr 对 store/command/WAL/snapshot/RESP 核心集合执行全量 CTest并强制 `--fail-under-line 90`; workflow contract 固定 filter、floor 与 artifact | run 29095734744 的 `ubuntu coverage` log：2345/2122/90%；v1658 CI 必须再次通过收紧后的 floor |
+| E3 Coverage | GREEN | Ubuntu gcovr 对 store/command/WAL/snapshot/RESP 核心集合执行全量 CTest并强制 `--fail-under-line 90`; workflow contract 固定 filter、floor 与 artifact | v1658 run 29099882082 的 `ubuntu coverage` log：350/350 CTest，TOTAL 2345/2122/90%，90% floor 通过 |
 | E4 Security & config | GREEN | `minikv_track_final_evidence_contract` 对 executable/config surfaces 做高置信秘密模式扫描；TCP 默认 loopback；logger 默认 warn；`docs/SECURITY.md` 给出威胁模型和非生产边界 | `ctest -R minikv_track_final_evidence_contract`; `minikv_tcp_server_tests`; 阅读 `docs/SECURITY.md` |
 | E5 Observability | GREEN | 零依赖 logger 提供 error/warn/info/debug、UTC、thread id；TCP log 带 connection_id；HEALTH 和周期 metrics 暴露连接、命令、错误与延迟 | `minikv_log_tests`, `minikv_tcp_server_tests`, `minikv_command_tests`; CLI `HEALTH`/`STATSJSON` smoke |
 | E6 Error handling | GREEN | SIGINT/SIGTERM 置停机标志，`request_stop()` 关闭 accept 循环；请求上限、空闲/半命令超时和连接回收均有真实 socket 测试 | `minikv_tcp_server_timeout_limit_tests`, `minikv_tcp_server_tests`, WAL/snapshot corruption tests |
