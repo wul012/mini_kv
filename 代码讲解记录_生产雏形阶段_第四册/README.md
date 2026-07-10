@@ -127,3 +127,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1646 补充索引
 
 - v1646: [1014-version-1646-approval-lifecycle-three-formatter-migration.md](1014-version-1646-approval-lifecycle-three-formatter-migration.md) - 一次迁移三份已由 v1645 证明 migration-ready 的 approval lifecycle formatter，讲清命名子对象、有序顶层字段、共享 disabled-runtime-shell 边界后缀、单 family apostrophe 规则、census 5→8 ratchet，以及 focused/full CTest 与真实 CLI 如何共同证明 no router/no write/no WAL/no network/no credential/no execution。
+
+## v1647 补充索引
+
+- v1647: [1015-version-1647-post-echo-compact-repair-and-builder-migration.md](1015-version-1647-post-echo-compact-repair-and-builder-migration.md) - 先用旧测试的预期失败证明 post-echo runtime `} },` 单字节修正确实发生，再删除专属 whitespace 例外、收紧为唯一 Node v310 apostrophe 规则下的整对象 parity，最后迁移完整 formatter 并把 census 8→9；讲清为何这不是 fixture 改写或通用 whitespace waiver，以及 full CTest/CLI 如何守住 no router/no write/no WAL/no network/no credential/no execution。

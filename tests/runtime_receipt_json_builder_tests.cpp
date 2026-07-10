@@ -52,10 +52,6 @@ constexpr std::string_view human_approval_post_echo_fixture_legacy_phrase =
     "Node v310\\u0027s blocked post-echo decision gate";
 constexpr std::string_view human_approval_post_echo_runtime_canonical_phrase =
     "Node v310's blocked post-echo decision gate";
-constexpr std::string_view human_approval_post_echo_fixture_compact_transition =
-    "\"recommendation_count\":2}},\"source_node_v309_reference\"";
-constexpr std::string_view human_approval_post_echo_runtime_spaced_transition =
-    "\"recommendation_count\":2} },\"source_node_v309_reference\"";
 
 std::size_t count_occurrences(std::string_view text, std::string_view needle) {
     assert(!needle.empty());
@@ -393,7 +389,7 @@ void approval_lifecycle_candidates_have_frozen_parity_baseline() {
          "credential_resolver_human_approval_artifact_review_post_echo_decision_gate_non_participation_receipt",
          "v1645-human-approval-post-echo-fixture-object", "fnv1a64:2a534ddf7be23111", 14169, 101,
          human_approval_post_echo_fixture_legacy_phrase, human_approval_post_echo_runtime_canonical_phrase,
-         "\"human_approval_artifact_review_post_echo_decision_gate_non_participation_receipt_only\":true", false,
+         "\"human_approval_artifact_review_post_echo_decision_gate_non_participation_receipt_only\":true", true,
          minikv::runtime_evidence_receipts::
              format_credential_resolver_human_approval_artifact_review_post_echo_decision_gate_non_participation_receipt_json},
     };
@@ -430,23 +426,9 @@ void approval_lifecycle_candidates_have_frozen_parity_baseline() {
         assert(current.find(std::string{candidate.fixture_legacy_phrase}) == std::string::npos);
         const auto canonical_fixture = named_apostrophe_runtime_surface_canonical_json(
             *fixture_object, candidate.fixture_legacy_phrase, candidate.runtime_canonical_phrase);
-        if (candidate.migration_ready) {
-            assert(fixture_object->size() == current.size() + 5);
-            assert(canonical_fixture == current);
-            continue;
-        }
-
-        assert(candidate.fixture_name ==
-               "credential-resolver-human-approval-artifact-review-post-echo-decision-gate-non-participation-"
-               "receipt.json");
-        assert(fixture_object->size() == current.size() + 4);
-        assert(canonical_fixture.size() + 1 == current.size());
-        assert(count_occurrences(canonical_fixture, human_approval_post_echo_fixture_compact_transition) == 1);
-        assert(count_occurrences(canonical_fixture, human_approval_post_echo_runtime_spaced_transition) == 0);
-        assert(count_occurrences(current, human_approval_post_echo_fixture_compact_transition) == 0);
-        assert(count_occurrences(current, human_approval_post_echo_runtime_spaced_transition) == 1);
-        assert(replace_once(current, human_approval_post_echo_runtime_spaced_transition,
-                            human_approval_post_echo_fixture_compact_transition) == canonical_fixture);
+        assert(candidate.migration_ready);
+        assert(fixture_object->size() == current.size() + 5);
+        assert(canonical_fixture == current);
     }
 }
 

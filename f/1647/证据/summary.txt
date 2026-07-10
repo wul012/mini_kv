@@ -1,0 +1,28 @@
+mini-kv v1647 evidence summary
+
+Scope:
+- Correct one accidental runtime space between the Node v310 summary and reference object closures.
+- Remove the post-echo whitespace-drift exception and require ordinary whole-object parity.
+- Migrate the full post-echo formatter to ordered JSON objects/arrays and raise census floor 8 to 9.
+
+Red/green proof:
+- production-only compact correction made the unchanged old test fail at line 442 with CTest exit code 8.
+- the tightened test removes spaced/compact transition constants and the special replacement branch.
+- post-echo now allows only its named Node v310 fixture apostrophe spelling; canonical fixture equals runtime exactly.
+
+Parity and census:
+- frozen fixture remains 14169 bytes, 101 top-level fields, digest fnv1a64:2a534ddf7be23111.
+- runtime compact transition count=1; legacy spaced transition count=0.
+- sources=28; formatter owners=27; builder-backed=9; pending=18; named waiver=1.
+
+Verification:
+- full v1647 configure/build succeeded.
+- focused census/parity/domain/downstream lane = 6/6 passed.
+- first full local CTest = 345/345 passed in 182.26 seconds.
+- CLI SMOKEJSON/CHECKJSON/QUIT smoke passed; read-only and deny-execution markers present; BYE returned.
+- v1646 CI was already started and its formatting/archive jobs were green when v1647 began.
+- Chinese walkthrough contains 3,176 Chinese characters (10,487 UTF-8 text characters).
+
+Boundaries:
+- no fixture rewrite and no generic whitespace normalizer/waiver.
+- no router, Store/WAL write, HTTP/TCP, credential read, raw endpoint parse, approval ledger write, schema migration, LOAD/COMPACT/RESTORE/SETNXEX execution, auto-start, audit authority or order authority added.
