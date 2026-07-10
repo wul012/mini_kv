@@ -11,7 +11,7 @@ The core layers are:
 - CLI and TCP smoke tests that prove real binaries can expose the expected behavior.
 - CI contract tests that prevent workflow, coverage, sanitizer, format, archive-inventory, and dependency-maintenance gates from silently weakening.
 
-The current local CTest suite is larger than the original playbook number. K5 closed with 337 tests; K6 adds a focused TCP timeout/limit test, so the expected full local count becomes 338 after this version is built.
+The current default CTest inventory is 350. The original K5/K6 suite has since gained executable orientation, OSFS, receipt-parity/census, documentation-honesty, and E1-E10 final-evidence contracts. The count is a navigation aid rather than a quality claim; the focused behavior and failure condition of each gate remain the evidence.
 
 ## Fixture And Evidence Tests
 
@@ -40,6 +40,7 @@ TCP tests use real sockets so they can catch behavior that pure command tests mi
 - Sequential-connection cleanup so detached client threads do not leak active sockets.
 
 The timeout/limit test intentionally uses a short configured timeout. The default server option keeps idle timeout disabled so historical local clients and existing smoke tests are not surprised by a new default disconnect policy.
+The server host default is independently asserted as `127.0.0.1`; tests that need `localhost`, an ephemeral port, or another bind target set it explicitly.
 
 ## CI Lanes
 
@@ -47,7 +48,7 @@ GitHub Actions should keep these signals visible:
 
 - Linux, macOS, and Windows CMake build plus CTest.
 - Ubuntu sanitizer lane.
-- Ubuntu coverage lane with the frozen 88% floor for core modules.
+- Ubuntu coverage lane with a 90% floor for core modules, tightened in v1658 from the fresh 2345-line / 2122-executed / 90% CI result.
 - Changed-file clang-format gate.
 - Archive inventory warning lane.
 

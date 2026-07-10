@@ -4,6 +4,7 @@
 
 The full version history is kept in [`docs/CHANGELOG.md`](docs/CHANGELOG.md). This README keeps only the latest ten entries so the build, run, architecture, and protocol notes remain easy to scan.
 
+- v1658: prepares the E1-E10 track evidence for external review, raises the measured core coverage floor from 88% to 90%, changes the TCP server's default bind address from wildcard to loopback, and adds `minikv_track_final_evidence_contract`. The default inventory is now 350 registered CTest tests; the new gate checks the exact two program deviations, high-confidence secret patterns, safe defaults, nonblank source-size ratchet, receipt census, documentation honesty, CI lanes, and archive policy without claiming external approval or live four-project integration.
 - v1657: refreshes the project-facing documentation against the live tree after OSFS and receipt consolidation. `README.md`, `START_HERE.md`, the capability snapshot, changelog, archive-retention index, and two real OSFS execution briefs now agree on current mechanisms and boundaries. `project_docs_honesty_contract` makes the v1657 pointer, 349 registered CTest tests, OSFS implementation/test references, archive growth, and brief status fail on future drift; no runtime command, fixture, storage path, or authority changes.
 - v1656: completes receipts consolidation Stage 1 by migrating the final five sandbox-chain formatters and tightening the census to **27 builder-backed / 0 pending / 1 named no-formatter waiver** across 28 source files. Four outputs remain byte-exact, manual dry-run retains only its named three-field frozen metadata rule, session support is split from the 700-line evidence owner, real CLI boundaries pass 50/50, and full local CTest passes 348/348 without changing tests or fixtures.
 - v1655: migrates five implementation-chain receipt owners under the unchanged v1653 oracle, preserving 16889/19163/13870/15264/21562-byte exact outputs and tightening census from 20/7/1 to 25/2/1. Ordered objects and no-parameter boundary appenders replace long concatenations without opening credential, network, router, write, execution, auto-start, audit, or order authority.
@@ -13,7 +14,6 @@ The full version history is kept in [`docs/CHANGELOG.md`](docs/CHANGELOG.md). Th
 - v1651: adds the independent exact-byte oracle for the four v117-v120 legacy resolver receipts without changing production formatters. It freezes 12335/10623/11114/15160 bytes, 95/99/101/106 fields, four digests, and zero compatibility exceptions.
 - v1650: migrates the runtime-shell decision record, post-decision plan intake, and stop/prerequisite formatters, reuses only exact common family tails, preserves 14208/14084/16306-byte fixture parity, and tightens census to 14/13/1.
 - v1649: migrates the disabled runtime-shell and candidate-gate chain heads to ordered builders, extracts two exact no-parameter family appenders, preserves 12523/14936-byte parity, and tightens census to 11/16/1.
-- v1648: separates reusable test-only parity support and freezes five runtime-shell receipt outputs before production migration. The new family oracle has exact bytes, fields, digests, zero canonical exceptions, and keeps census honestly unchanged at 9/18/1.
 ## Current version
 
 Current focus is tracked by the latest entry in `## Recent versions` and by `docs/production-excellence-progress.md`.
@@ -108,6 +108,8 @@ TCP server:
 ```powershell
 .\build\Debug\minikv_server.exe 6379
 ```
+
+When the host argument is omitted, the server binds to `127.0.0.1`. Binding to `0.0.0.0` must be explicit and is unsafe without an external authentication, TLS, and firewall boundary.
 
 TCP server with WAL:
 

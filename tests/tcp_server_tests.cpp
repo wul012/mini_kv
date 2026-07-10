@@ -48,9 +48,7 @@ public:
         }
     }
 
-    ~TestNetworkRuntime() {
-        WSACleanup();
-    }
+    ~TestNetworkRuntime() { WSACleanup(); }
 };
 
 void close_test_socket(TestSocket socket) {
@@ -63,9 +61,7 @@ std::string socket_error_message(std::string_view prefix) {
     return std::string{prefix} + ": WSA error " + std::to_string(WSAGetLastError());
 }
 
-std::string address_error_message(int result) {
-    return "getaddrinfo failed: " + std::to_string(result);
-}
+std::string address_error_message(int result) { return "getaddrinfo failed: " + std::to_string(result); }
 
 #else
 using TestSocket = int;
@@ -82,22 +78,16 @@ void close_test_socket(TestSocket socket) {
     }
 }
 
-std::string socket_error_message(std::string_view prefix) {
-    return std::string{prefix} + ": " + std::strerror(errno);
-}
+std::string socket_error_message(std::string_view prefix) { return std::string{prefix} + ": " + std::strerror(errno); }
 
-std::string address_error_message(int result) {
-    return std::string{"getaddrinfo failed: "} + gai_strerror(result);
-}
+std::string address_error_message(int result) { return std::string{"getaddrinfo failed: "} + gai_strerror(result); }
 #endif
 
 class TestSocketGuard {
 public:
     explicit TestSocketGuard(TestSocket socket = invalid_test_socket) : socket_(socket) {}
 
-    ~TestSocketGuard() {
-        close_test_socket(socket_);
-    }
+    ~TestSocketGuard() { close_test_socket(socket_); }
 
     TestSocketGuard(const TestSocketGuard&) = delete;
     TestSocketGuard& operator=(const TestSocketGuard&) = delete;
@@ -112,9 +102,7 @@ public:
         return *this;
     }
 
-    TestSocket get() const {
-        return socket_;
-    }
+    TestSocket get() const { return socket_; }
 
 private:
     TestSocket release() {
@@ -139,18 +127,15 @@ public:
     TestAddrInfoGuard(const TestAddrInfoGuard&) = delete;
     TestAddrInfoGuard& operator=(const TestAddrInfoGuard&) = delete;
 
-    addrinfo* get() const {
-        return info_;
-    }
+    addrinfo* get() const { return info_; }
 
 private:
     addrinfo* info_;
 };
 
 bool contains_log(const std::vector<std::string>& logs, std::string_view needle) {
-    return std::any_of(logs.begin(), logs.end(), [needle](const std::string& line) {
-        return line.find(needle) != std::string::npos;
-    });
+    return std::any_of(logs.begin(), logs.end(),
+                       [needle](const std::string& line) { return line.find(needle) != std::string::npos; });
 }
 
 const minikv::CommandBreakdownMetrics* find_command_metrics(const minikv::CommandProcessorMetrics& metrics,
@@ -237,6 +222,9 @@ std::string exchange_inline(std::string_view host, std::uint16_t port, std::stri
 
 int main() {
     using namespace std::chrono_literals;
+
+    const minikv::TcpServer::Options secure_defaults;
+    assert(secure_defaults.host == "127.0.0.1");
 
     minikv::Store store;
     minikv::TcpServer::Options options;
@@ -374,9 +362,7 @@ int main() {
     assert(find_command_metrics(command_metrics, "HEALTH") != nullptr);
     assert(find_command_metrics(command_metrics, "QUIT") != nullptr);
 
-    const auto reset_response = exchange_inline("127.0.0.1",
-                                                bound_port,
-                                                "STATSJSON\nRESETSTATS\nSTATS\nQUIT\n");
+    const auto reset_response = exchange_inline("127.0.0.1", bound_port, "STATSJSON\nRESETSTATS\nSTATS\nQUIT\n");
     assert(reset_response.find("\"connection_stats\":{\"available\":true") != std::string::npos);
     assert(reset_response.find("\"active_connections\":1") != std::string::npos);
     assert(reset_response.find("\"total_connections\":3") != std::string::npos);
@@ -390,8 +376,7 @@ int main() {
     for (int attempt = 0; attempt < 100; ++attempt) {
         {
             std::lock_guard lock{logs_mutex};
-            reset_closed = contains_log(logs, "connection_id=3") &&
-                           contains_log(logs, "event=tcp_client_closed");
+            reset_closed = contains_log(logs, "connection_id=3") && contains_log(logs, "event=tcp_client_closed");
         }
         stats = server.connection_stats();
         if (reset_closed && stats.active_connections == 0 && stats.total_connections == 3) {

@@ -12,7 +12,7 @@ Features:
 - Runtime JSON evidence for commands and snapshots
 - Command execution audit with SMOKEJSON/INFOJSON/KEYSJSON outputs
 - Independent OSFS course-design filesystem with an on-disk image, MFD/UFD directories, persistent users, permissions, descriptor offsets, direct/single-indirect blocks, read-only FSCK, and USERADD/PASSWD
-- CMake builds with 349 registered tests across command, WAL, snapshot, RESP, TCP, OSFS, fixture, archive, and governance evidence suites
+- CMake builds with 350 registered tests across command, WAL, snapshot, RESP, TCP, OSFS, fixture, archive, and governance evidence suites
 
 ## Why it matters
 
@@ -44,11 +44,11 @@ Follow the README for detailed command usage and screenshots.
 2. Command dispatch table and planned command-family split
 3. C++20 thread-safe data structures with snapshot/recovery support
 4. OSFS MFD/UFD, indirect-block, FSCK, and user-administration mechanisms with corruption and reopen tests
-5. 349 registered tests plus runtime JSON verification
+5. 350 registered tests plus runtime JSON verification
 
 ## Latest version summary
 
-Current focus: **v1657 project-document honesty refresh**. v1656 completed the runtime receipt builder census at 28 sources / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter waiver. v1657 updates the public guides to the real post-coursework tree, records 349 registered tests, accounts for `f/1629-1636` and `课程设计交付/`, and protects the claims with `project_docs_honesty_contract`. It changes documentation and a CMake-script test only; KV, WAL, snapshot, TCP/RESP, OSFS runtime behavior, release fixtures, and no-router/no-write/no-execution boundaries remain unchanged.
+Current focus: **v1658 E1-E10 track evidence ready for external review**. v1656 closed the receipt builder census at 28 sources / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter census exemption, and v1657 reconciled project documents with the live tree. v1658 adds the 350th CTest, raises the verified core coverage floor to 90%, makes loopback the TCP server default, and publishes `docs/minikv-track-final-evidence.md`. The external verdict remains pending, and maturity remains single-project validation plus cross-project contract alignment.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
@@ -59,6 +59,7 @@ Version scheme note: the CMake project version is still `0.102.0` because severa
 - `docs/CAPABILITY-SNAPSHOT.md` — dense capability and evidence-field snapshot
 - `docs/receipts-consolidation-note.md` — v1625 necessity proof plus v1626-v1628 implementation notes for ordered JSON building, fixture-subobject parity, false shrink metric correction, and no-network drift closure
 - `docs/project-docs-honesty-matrix.md` — current requirement-to-evidence map for receipt completion, OSFS mechanisms, archive growth, and brief closure
+- `docs/minikv-track-final-evidence.md` — E1-E10 gate map, exact deviation ledger, reproduction commands, and external-review status
 - `src/osfs_*.cpp`, `include/minikv/osfs/`, and `tests/osfs_tests.cpp` — independent OSFS implementation and focused executable evidence
 - `课程设计交付/v1636-osfs-final/` — current OSFS coursework report, demo, transcript, diagrams, and requirement matrix
 - `项目通俗说明/` — Chinese project orientation guides with diagrams and input/output explanations

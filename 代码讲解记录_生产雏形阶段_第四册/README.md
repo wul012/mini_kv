@@ -171,3 +171,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1657 补充索引
 
 - v1657: [1025-version-1657-project-docs-honesty-refresh.md](1025-version-1657-project-docs-honesty-refresh.md) - 把 README、START_HERE、能力快照、changelog、archive index 与两份真实 OSFS 简报重新对齐 live tree，讲清项目文档为什么必须由源码引用、测试符号、349 条注册数和会失败的 CMake contract 约束；同时记录 `f/1629-1636`、课程交付增长与“实际只有两份 OSFS 执行简报”的计划偏差，不改运行时代码或 fixture。
+
+## v1658 补充索引
+
+- v1658: [1026-version-1658-production-excellence-track-evidence.md](1026-version-1658-production-excellence-track-evidence.md) - 对照 E1-E10 建立第 350 条终审合同，把新鲜 2345/2122/90% core coverage 收紧为 90% floor，修复 TCP server 默认 wildcard 绑定为 loopback，并机械限制高置信 secret pattern、源码 800 非空行 ratchet、27/0/1 census 与恰好两项 program deviation；真实服务器、CLI 和 350/350 CTest 证明 no router/no write/no execution 边界，外部 verdict 仍保持 pending。

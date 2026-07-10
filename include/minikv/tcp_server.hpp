@@ -34,7 +34,7 @@ public:
         using MetricsExportHandler = std::function<void(const std::string&)>;
         using StopPredicate = std::function<bool()>;
 
-        std::string host = "0.0.0.0";
+        std::string host = "127.0.0.1";
         std::uint16_t port = 6379;
         int backlog = 64;
         std::chrono::milliseconds accept_poll_interval{200};

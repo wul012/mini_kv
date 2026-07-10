@@ -1,0 +1,78 @@
+mini-kv v1658 Production Excellence track evidence summary
+date: 2026-07-10
+status: READY FOR EXTERNAL REVIEW
+external_verdict: PENDING
+
+scope
+- execution brief: 治理计划/v1637-production-excellence-completion-brief.md
+- upstream plan read-only: production-excellence-final-acceptance.md
+- latest Node plan read-only: v2187-v2189-n5-source-size-health-roadmap.md
+- maturity: single-project validation + cross-project contract alignment
+- no Node or Java repository writes
+
+implementation
+- added cmake/check_minikv_track_final_evidence.cmake
+- registered minikv_track_final_evidence_contract as CTest #5 / total 350
+- raised CI core coverage floor from 88 to 90
+- changed TcpServer::Options default host from 0.0.0.0 to 127.0.0.1
+- added real C++ assertion for the secure default
+- published docs/minikv-track-final-evidence.md
+- receipt census unchanged: 28 sources / 27 owners / 27 builder / 0 pending / 1 census exemption
+
+fresh remote baseline before v1658
+- v1656 run: https://github.com/wul012/mini_kv/actions/runs/29095734744 (success)
+- v1657 run: https://github.com/wul012/mini_kv/actions/runs/29097881334 (success)
+- coverage TOTAL: 2345 lines / 2122 executed / 90%
+- v1658 final run is recorded in docs/minikv-track-final-evidence.md after push
+
+local configure and build
+- generator: MinGW Makefiles
+- build type: Debug
+- ctest -N: Total Tests: 350
+- all-target build: success, 292.3 seconds
+
+focused verification
+- project_docs_honesty_contract: passed
+- minikv_track_final_evidence_contract: passed
+- receipt_builder_census_contract: passed
+- dependabot_config_tests: passed
+- log_tests: passed
+- tcp_server_tests: passed
+- tcp_server_timeout_limit_tests: passed
+
+full verification
+- 350/350 tests passed
+- 0 failed
+- total CTest time: 173.95 seconds
+
+real default-host server smoke
+- command shape: minikv_server.exe <ephemeral-port> (host omitted)
+- pid: 28948
+- port: 59215
+- observed local address: 127.0.0.1
+- HEALTH: OK with connection and command/latency metrics
+- QUIT: BYE
+- server process stopped after verification
+
+real CLI boundary smoke
+- SMOKEJSON: read_only=true; execution_allowed=false; write/admin/runtime_write=false
+- CHECKJSON LOAD: read_only=true; execution_allowed=false; reports predicted store replacement only
+- SIZE immediately after CHECKJSON LOAD: 0
+- SHARDJSON: readOnly=true; executionAllowed=false; activeRouterInstalled=false; writeRoutingAllowed=false
+
+program-level deviations pending external acceptance
+1. src/shard_readiness_boundary_field_names.cpp: 829 nonblank lines; exact registry-only E9 waiver
+2. gcovr negative_hits.warn_once_per_file: retained after v1620 removal experiment failed in run 27428515080
+- no third program-level waiver is claimed
+- command.cpp: 732 nonblank lines
+
+archive pre-v1658 baseline
+- f/1597-1657: 299 files / 10,584,325 bytes / 10.09 MiB
+- latest f/1657: 6 files / 82,874 bytes / 0.08 MiB
+- strict inventory warnings: none
+- final post-v1658 inventory: docs/archive-retention-index.md
+
+cleanup intent
+- delete cmake-build-v1658 and .playwright-mcp before final commit
+- no background server remains
+- keep only final screenshots, explanation, summary, walkthrough, source/tests/docs, tag and CI evidence

@@ -60,7 +60,7 @@ This protects local crash consistency around snapshot replacement. It does not p
 
 The TCP server is intended for local development, smoke tests, and controlled demos.
 
-- Binding to `127.0.0.1` is the safest default for local work.
+- The server defaults to `127.0.0.1`, so an omitted host remains loopback-only.
 - Binding to `0.0.0.0` exposes the server to the network and should be treated as unsafe without an external firewall and authentication layer.
 - Request size limits prevent unbounded request buffers.
 - Optional client idle timeout closes idle or partial-command sockets when explicitly configured.
