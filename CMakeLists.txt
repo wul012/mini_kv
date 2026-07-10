@@ -441,6 +441,13 @@ add_test(
 )
 
 add_test(
+    NAME project_docs_honesty_contract
+    COMMAND ${CMAKE_COMMAND}
+            -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_project_docs_honesty.cmake
+)
+
+add_test(
     NAME receipts_consolidation_note_contract
     COMMAND ${CMAKE_COMMAND}
             -DDOC_PATH=${CMAKE_CURRENT_SOURCE_DIR}/docs/receipts-consolidation-note.md

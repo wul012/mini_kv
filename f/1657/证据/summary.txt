@@ -1,0 +1,81 @@
+mini-kv v1657 project-document honesty refresh
+date: 2026-07-10
+
+scope:
+- reconcile README recent/current pointers with v1657 and v1656 receipt completion
+- refresh START_HERE from v1628 to the live KV + independent OSFS tree
+- add an evidence-linked OSFS section to docs/CAPABILITY-SNAPSHOT.md
+- fill the v1642-v1657 changelog gap instead of claiming an incomplete file is full history
+- remeasure archive roots and explicitly account for f/1629-1636 plus 课程设计交付/
+- mark the two real OSFS execution briefs completed and record the plan's three-vs-two count deviation
+- add project_docs_honesty_contract as a fast mechanical anti-drift CTest
+
+upstream guidance read:
+- D:/nodeproj/orderops-node/docs/plans/README.md
+- D:/nodeproj/orderops-node/docs/plans/v2187-v2189-n5-source-size-health-roadmap.md
+- D:/C/mini-kv/治理计划/v1637-production-excellence-completion-brief.md
+- scope verdict: Node N5 permits parallel mini-kv internal maintenance; no Node or Java write is required
+
+requirements-to-evidence:
+- docs/project-docs-honesty-matrix.md maps current claims to implementation, tests, status, and boundaries
+- MFD/UFD: src/osfs_filesystem.cpp + src/osfs_directory.cpp + test_disk_users_and_two_level_directories
+- users/auth: src/osfs_filesystem.cpp + src/osfs_user_admin.cpp + wrong-password/reopen/admin assertions
+- descriptor offsets: command_processor.hpp/.cpp + osfs_file_io.cpp + test_descriptor_offsets_and_range_io
+- single indirect: osfs_disk_layout.* + osfs_file_io.cpp + test_indirect_blocks_persist_and_release
+- read-only FSCK: src/osfs_fsck.cpp + clean/corrupt image assertions
+- user administration: src/osfs_user_admin.cpp + test_useradd_passwd_and_fsck_command
+
+mechanical documentation gate:
+- required project-facing documents and eight OSFS source/test paths must exist
+- README must expose v1657, 349 registered tests, and 27/0/1 receipt completion
+- START_HERE must expose current focus, independent OSFS, and 349 tests
+- capability snapshot must cite FSCK/test paths and the 8 + block_size / 4 capacity formula
+- archive index must include active-root, OSFS interval, and coursework-package measurements
+- changelog must include the formerly missing v1656 entry
+- both existing OSFS briefs must include an executed marker
+- six named OSFS mechanism tests must remain present
+
+archive remeasurement before v1657 evidence was added:
+- a 1-57: 461 files, 21,367,665 bytes, 20.38 MiB
+- b 58-62: 45 files, 3,812,703 bytes, 3.64 MiB
+- c 63-121: 336 files, 31,130,191 bytes, 29.69 MiB
+- d 122-143: 152 files, 13,506,894 bytes, 12.88 MiB
+- e 144-1596: 5,153 files, 1,065,416,900 bytes, 1,016.06 MiB
+- f 1597-1656: 293 files, 10,501,451 bytes, 10.01 MiB
+- f/1629-1636: 42 files, 3,440,216 bytes, 3.28 MiB
+- 课程设计交付/: 102 files, 5,445,971 bytes, 5.19 MiB
+- warnings: none; no path moved, renamed, deleted, or compression-replaced
+
+verification:
+- initial configure: failed in 0.4 sec because default NMake generator had no nmake executable
+- incomplete tree removed; explicit CLion MinGW Makefiles configure succeeded
+- cold all-target build exceeded the 604-sec tool window; process audit found no residual build process
+- same-tree incremental continuation completed all targets at 100% in 29.9 sec
+- ctest -N: Total Tests: 349
+- focused docs/receipts/OSFS lane: 6/6 passed, 14.27 sec
+- first post-document full local CTest: 349/349 passed, 165.03 sec
+- project_docs_honesty_contract direct and CTest forms: passed
+- walkthrough Chinese character count: 3378
+- git diff --check: passed
+- src/, tests/, fixtures/release/ diff: none
+
+real runtime smoke:
+- OSFS new image: root login, clean FSCK, USERADD docuser, PASSWD reset, docuser login,
+  CREATE/OPEN/WRITE/TELL/CLOSE/DIR, second clean FSCK, and QUIT all passed
+- OSFS reopen: new password, UFD note entry, OPEN/READ current-docs, and QUIT all passed
+- KV SMOKEJSON: read_only=true, execution_allowed=false
+- KV CHECKJSON LOAD: execution_allowed=false, wal.touches_wal=false
+- both shells exited cleanly
+
+reconciliation deviation:
+- Stage 2 says three OSFS briefs, but only two OSFS execution briefs exist in 治理计划/
+- v1637 is the Production Excellence brief, not a third OSFS execution brief
+- the two real briefs are marked executed; no historical document was fabricated
+
+deliberately unchanged:
+- all files under src/
+- all files under tests/
+- all fixtures/release/*.json bytes
+- KV/WAL/snapshot/RESP/TCP/OSFS runtime behavior
+- archive paths and course-delivery artifacts
+- router/credential/network/write/execution/auto-start/audit/order authority

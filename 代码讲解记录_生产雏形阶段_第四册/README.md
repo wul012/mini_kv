@@ -167,3 +167,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1656 补充索引
 
 - v1656: [1024-version-1656-sandbox-chain-builder-migration.md](1024-version-1656-sandbox-chain-builder-migration.md) - 完成 receipts consolidation 阶段一的最后两名 owner：迁移五份 sandbox-chain formatter，保留四份 exact parity 与一份三字段具名历史差异，把 live-read session 支撑从 evidence owner 按职责拆出，并以 27/0/1 census、真实 CLI 十项关闭边界和全量 CTest 证明没有打开 credential、router、write、WAL、network、execution、auto-start 或 authority。
+
+## v1657 补充索引
+
+- v1657: [1025-version-1657-project-docs-honesty-refresh.md](1025-version-1657-project-docs-honesty-refresh.md) - 把 README、START_HERE、能力快照、changelog、archive index 与两份真实 OSFS 简报重新对齐 live tree，讲清项目文档为什么必须由源码引用、测试符号、349 条注册数和会失败的 CMake contract 约束；同时记录 `f/1629-1636`、课程交付增长与“实际只有两份 OSFS 执行简报”的计划偏差，不改运行时代码或 fixture。

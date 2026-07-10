@@ -11,7 +11,8 @@ Features:
 - RESP protocol support
 - Runtime JSON evidence for commands and snapshots
 - Command execution audit with SMOKEJSON/INFOJSON/KEYSJSON outputs
-- CMake builds with CTest coverage across the command, WAL, snapshot, RESP, TCP, fixture, and governance evidence suites
+- Independent OSFS course-design filesystem with an on-disk image, MFD/UFD directories, persistent users, permissions, descriptor offsets, direct/single-indirect blocks, read-only FSCK, and USERADD/PASSWD
+- CMake builds with 349 registered tests across command, WAL, snapshot, RESP, TCP, OSFS, fixture, archive, and governance evidence suites
 
 ## Why it matters
 
@@ -21,6 +22,7 @@ This project demonstrates systems engineering discipline in C++:
 - Command dispatch architecture and a long-running plan to split oversized command/evidence files without changing public output
 - WAL, snapshot, restore, auto-compaction, and evidence correctness
 - CI and test coverage to ensure runtime contracts and read-only governance boundaries
+- A separate teaching filesystem that exposes disk layout, allocation, authentication, permissions, offsets, and consistency checks without pretending to be the KV engine's production storage path
 
 The README keeps the project overview and latest versions. Long history lives in `docs/CHANGELOG.md`, detailed capability notes live in `docs/CAPABILITY-SNAPSHOT.md`, and production-excellence progress is tracked in `docs/production-excellence-progress.md`.
 
@@ -41,11 +43,12 @@ Follow the README for detailed command usage and screenshots.
 1. WAL + atomic append mutation separation
 2. Command dispatch table and planned command-family split
 3. C++20 thread-safe data structures with snapshot/recovery support
-4. Full test coverage with CTest and runtime JSON verification
+4. OSFS MFD/UFD, indirect-block, FSCK, and user-administration mechanisms with corruption and reopen tests
+5. 349 registered tests plus runtime JSON verification
 
 ## Latest version summary
 
-Current focus: **v1628 runtime receipts consolidation quality correction / no-network drift closure**. This version does not migrate another receipt formatter. It corrects the false shrink metric in `docs/receipts-consolidation-note.md`: line-count shrink is a review metric, not a stop-condition, so v1627's +116 diff-line abort/rollback growth is accepted only because byte parity, boundary closure, and builder testability improved. `runtime_receipt_json_builder_tests` now drives no-network drift to ground: both objects have 118 top-level fields, and the only raw-byte delta is the single `boundary` phrase `Node v323\u0027s` in the committed fixture versus `Node v323's` in the current formatter. No semantic field, digest, no-network/no-write/WAL/credential/execution boundary, fixture, or formatter migration changes in this version.
+Current focus: **v1657 project-document honesty refresh**. v1656 completed the runtime receipt builder census at 28 sources / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter waiver. v1657 updates the public guides to the real post-coursework tree, records 349 registered tests, accounts for `f/1629-1636` and `课程设计交付/`, and protects the claims with `project_docs_honesty_contract`. It changes documentation and a CMake-script test only; KV, WAL, snapshot, TCP/RESP, OSFS runtime behavior, release fixtures, and no-router/no-write/no-execution boundaries remain unchanged.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
@@ -55,6 +58,9 @@ Version scheme note: the CMake project version is still `0.102.0` because severa
 - `docs/CHANGELOG.md` — full versioned project explanations
 - `docs/CAPABILITY-SNAPSHOT.md` — dense capability and evidence-field snapshot
 - `docs/receipts-consolidation-note.md` — v1625 necessity proof plus v1626-v1628 implementation notes for ordered JSON building, fixture-subobject parity, false shrink metric correction, and no-network drift closure
+- `docs/project-docs-honesty-matrix.md` — current requirement-to-evidence map for receipt completion, OSFS mechanisms, archive growth, and brief closure
+- `src/osfs_*.cpp`, `include/minikv/osfs/`, and `tests/osfs_tests.cpp` — independent OSFS implementation and focused executable evidence
+- `课程设计交付/v1636-osfs-final/` — current OSFS coursework report, demo, transcript, diagrams, and requirement matrix
 - `项目通俗说明/` — Chinese project orientation guides with diagrams and input/output explanations
 - `src/` — core KV engine and command handling
 - `tests/` — runtime and regression tests

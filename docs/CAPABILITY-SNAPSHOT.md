@@ -8,6 +8,8 @@ The README keeps the overview, build/run instructions, and latest version pointe
 Current focus is tracked by the latest entry in `## Recent versions` and by `docs/production-excellence-progress.md`.
 The long per-version history now lives in `docs/CHANGELOG.md`; this section keeps the stable capability snapshot.
 
+Current verified tree: v1657 documentation closure adds `project_docs_honesty_contract`, bringing the default CTest inventory to 349 registered tests. Runtime receipt consolidation completed in v1656 at 28 source files / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter waiver; the mechanical source of truth is `receipt_builder_census_contract`, not this sentence.
+
 - Thread-safe in-memory key-value store
 - Interactive command-line client
 - TCP server with inline text and RESP request support
@@ -135,3 +137,16 @@ The long per-version history now lives in `docs/CHANGELOG.md`; this section keep
 - Concurrent RESP-over-TCP raw-socket client coverage with active and peak connection checks
 - GitHub Actions CI for Linux, macOS, and Windows CMake build plus CTest
 - Dependabot maintenance for GitHub Actions updates only, with grouped minor/patch updates and semver-major auto-updates ignored
+
+## Independent OSFS course layer
+
+OSFS is a separate `minikv_osfs` coursework executable. It uses the same repository and CMake/CTest toolchain but does not serve as the in-memory KV engine's WAL, Snapshot, TCP, RESP, Node, or Java storage path.
+
+- Disk-format v3 stores a superblock, block bitmap, inode bitmap, fixed user-table region, inode table, MFD inode, per-user UFD inodes, and data blocks. Formatting/opening and seeded root/alice/bob users live in `src/osfs_filesystem.cpp`; packed records and allocation/mapping helpers live in `src/osfs_disk_layout.hpp` and `src/osfs_disk_layout.cpp`. `tests/osfs_tests.cpp::test_disk_users_and_two_level_directories` proves the user table and MFD/UFD hierarchy survive reopen.
+- Authentication reads the on-disk user table through `FileSystem::authenticate`; directory operations in `src/osfs_directory.cpp` resolve the current user's UFD, support root-qualified review, and apply owner/group/other mode bits. Wrong-password, Alice/Bob isolation, cross-user denial, chmod, owner and root behavior are asserted by `test_disk_users_and_two_level_directories` and `test_authenticated_command_shell` in `tests/osfs_tests.cpp`.
+- Each open handle stores independent `read_offset` and `write_offset` fields in `include/minikv/osfs/command_processor.hpp`. `src/osfs_command_processor.cpp` advances them through READ/WRITE, changes them through SEEK, reports them through TELL, truncates on `OPEN ... w`, preserves content for `rw`, and starts append mode at EOF. `test_descriptor_offsets_and_range_io` protects sequential reads, positioned overwrite, append, cross-block access, and persisted results.
+- File inodes address eight direct data blocks plus one single-indirect block. `src/osfs_file_io.cpp` and the mapping/allocation/release helpers in `src/osfs_disk_layout.*` enforce a maximum of `8 + block_size / 4` data blocks, account for the indirect block itself, and cover write, range read, truncate, delete, and free counters. `test_indirect_blocks_persist_and_release` proves the direct-to-indirect boundary, reopen persistence, over-limit rejection, and complete release.
+- `FileSystem::check_consistency()` in `src/osfs_fsck.cpp` is a read-only detector. It cross-checks superblock geometry, reserved/data reachability, block and inode bitmaps, direct/indirect file block counts, MFD/user/UFD alignment, directory entries, ownership, and free counters. `test_fsck_reports_ok_and_detects_corruption` first accepts a clean image, then flips a real allocated block-bitmap bit and requires FSCK to report the corruption. It does not auto-repair the image.
+- `FileSystem::add_user` and `change_password` in `src/osfs_user_admin.cpp` back the command processor's `USERADD` and `PASSWD` commands. `test_useradd_passwd_and_fsck_command` proves root-only creation, persistent UFD allocation, root reset, self-service password change, old-password rejection, wrong-user denial, full-table failure, reopen authentication, and clean FSCK. Password hashing is deterministic and teaching-oriented; it is not claimed as a production password KDF.
+- The current coursework handoff is `课程设计交付/v1636-osfs-final/`, with report, PDF, diagrams, UTF-8 transcript, executable demo, checklist, and requirement-to-evidence matrix. v1630 and v1633 packages remain superseded path-stable history. The two real execution briefs are `治理计划/v1631-osfs-coursework-completion-brief.md` and `治理计划/v1634-osfs-capacity-extension-brief.md`, both marked executed.
+- Deliberate limits remain explicit: one image, a two-level MFD/UFD directory story rather than arbitrary-depth directories, one indirect level rather than double/triple indirect blocks, read-only FSCK without repair, no journal/crash log, no concurrent multi-process filesystem protocol, and no production credential or order authority.
