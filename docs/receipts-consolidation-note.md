@@ -463,3 +463,22 @@ focused lane 6/6、full CTest 345/345 通过。真实 CLI smoke 中 compact tran
 没有新增 router、Store/WAL write、network、credential read、raw endpoint parse、approval ledger write、schema migration、
 LOAD/COMPACT/RESTORE/SETNXEX execution、auto-start、audit authority 或 order authority。post-echo 阻塞现已关闭，下一批候选
 必须重新按同构 family 建立迁移前 parity，而不能继续沿用本版的缺陷修正理由。
+
+## 23. v1648 runtime-shell 五回执迁移前基线与测试拆分
+
+v1648 不修改生产 formatter，先冻结 disabled runtime shell、candidate gate、decision record、post-decision plan intake、
+stop-or-prerequisite 五份连续回执。新 CTest 直接读取 frozen fixture 子对象并调用 public formatter，分别锁定
+12523/14936/14208/14084/16306 字节、110/114/113/113/115 个顶层字段和五个 v1648 前缀摘要。
+五组 runtime 输出均与 fixture 原始字节完全相等，fixture/runtime 的 `\\u0027` 计数均为 0，没有新 canonical waiver。
+
+通用的稳定摘要、出现次数、顶层字段计数、单次替换和具名 apostrophe canonical helper 从
+`runtime_receipt_json_builder_tests.cpp` 移入 test-only `runtime_receipt_parity_support.hpp`；原集中测试从 447 行降到
+369 行，新 family baseline 为独立 100 行测试。工具正确性、family 状态和领域 command surface 从此分开维护。
+
+focused lane 7/7、预检 full CTest 346/346 通过。builder census 保持 28 sources、27 owners、9 builder-backed、
+18 pending、1 named waiver，因为新增 parity 测试不是生产迁移。五个候选现在具备迁移前 exact baseline，但仍属于 pending；
+后续只能在测试不放宽、fixture 不改写的前提下逐批迁移并收紧 census。
+
+本版没有新增 router、Store/WAL write、network、credential read、raw endpoint parse、approval ledger/schema write、
+LOAD/COMPACT/RESTORE/SETNXEX execution、auto-start、audit authority 或 order authority。每份候选继续要求
+`read_only=true`、`execution_allowed=false`、`runtime_shell_implemented=false` 和对应 non-participation-only 标记。

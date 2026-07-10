@@ -472,6 +472,12 @@ target_include_directories(minikv_runtime_receipt_json_builder_tests
         ${PROJECT_SOURCE_DIR}/src
 )
 
+minikv_add_source_dir_test(
+    minikv_runtime_receipt_runtime_shell_family_baseline_tests
+    runtime_receipt_runtime_shell_family_baseline_tests
+    tests/runtime_receipt_runtime_shell_family_baseline_tests.cpp
+)
+
 minikv_add_linked_test(
     minikv_log_tests
     log_tests

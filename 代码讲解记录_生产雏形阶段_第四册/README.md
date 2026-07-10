@@ -131,3 +131,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1647 补充索引
 
 - v1647: [1015-version-1647-post-echo-compact-repair-and-builder-migration.md](1015-version-1647-post-echo-compact-repair-and-builder-migration.md) - 先用旧测试的预期失败证明 post-echo runtime `} },` 单字节修正确实发生，再删除专属 whitespace 例外、收紧为唯一 Node v310 apostrophe 规则下的整对象 parity，最后迁移完整 formatter 并把 census 8→9；讲清为何这不是 fixture 改写或通用 whitespace waiver，以及 full CTest/CLI 如何守住 no router/no write/no WAL/no network/no credential/no execution。
+
+## v1648 补充索引
+
+- v1648: [1016-version-1648-runtime-shell-family-parity-baseline.md](1016-version-1648-runtime-shell-family-parity-baseline.md) - 暂停生产迁移，拆出通用 parity 测试支撑并新增独立 runtime-shell 五回执家族门；冻结 12523/14936/14208/14084/16306 字节、110/114/113/113/115 个顶层字段、五个版本化摘要和整对象 exact parity，明确 census 仍为 9/18/1，不能把测试基线冒充 formatter 迁移。

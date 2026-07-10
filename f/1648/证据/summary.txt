@@ -1,0 +1,34 @@
+mini-kv v1648 evidence summary
+
+Scope:
+- Freeze exact pre-migration parity for five consecutive runtime-shell receipt formatters.
+- Extract reusable parity helpers into a test-only header and keep domain-family evidence in a separate CTest.
+- Leave all production formatters, frozen fixtures, public commands, and builder census unchanged.
+
+Frozen family matrix:
+- disabled runtime shell: 12523 bytes, 110 fields, fnv1a64:08807cb6305602e8.
+- candidate gate: 14936 bytes, 114 fields, fnv1a64:d1a2681a73de4b8e.
+- decision record: 14208 bytes, 113 fields, fnv1a64:9926939aac05efd6.
+- post-decision plan intake: 14084 bytes, 113 fields, fnv1a64:e6c73dbf0f4bc4d1.
+- stop-or-prerequisite: 16306 bytes, 115 fields, fnv1a64:b6984418a3b69de7.
+- all five runtime objects equal their fixture subobjects byte-for-byte; fixture/runtime u0027 counts are zero.
+
+Maintainability:
+- generic builder test reduced from 447 to 369 lines.
+- shared parity support is 93 lines; independent family baseline is 100 lines.
+- census remains sources=28, formatter owners=27, builder-backed=9, pending=18, named waiver=1.
+
+Verification:
+- final incremental build: no work to do after successful full-target build.
+- final focused CTest: 9/9 passed in 2.10 seconds.
+- final full CTest after docs: 346/346 passed in 108.77 seconds.
+- real CLI smoke exposed all five receipt markers; read_only markers=55; execution_allowed=false markers=81.
+- CHECKJSON classified LOAD without execution; touches_wal=false; QUIT returned BYE.
+- v1647 predecessor CI run 29064440685 completed successfully across all six jobs.
+- Chinese walkthrough contains 3308 Chinese characters.
+
+Boundaries:
+- no fixture rewrite, generic normalizer, or new canonical-spelling waiver.
+- no production formatter migration; census floor is not falsely raised.
+- no router, Store/WAL write, HTTP/TCP, credential read, raw endpoint parse, approval ledger/schema write,
+  LOAD/COMPACT/RESTORE/SETNXEX execution, auto-start, audit authority, or order authority added.
