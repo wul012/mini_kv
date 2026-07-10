@@ -155,3 +155,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1653 补充索引
 
 - v1653: [1021-version-1653-remaining-receipt-owner-baseline.md](1021-version-1653-remaining-receipt-owner-baseline.md) - 在任何剩余 production formatter 改动前，一次性冻结 9 个 pending owner 中 13 个公开 receipt formatter；记录 11 份 exact parity、1 份字段顺序历史差异和 1 份三字段 frozen metadata 历史差异，以两个单用途规则把 fixture 冻结与 canonical runtime surface 同时变成可失败的机械契约，并保持 census 18/9/1 不冒充迁移。
+
+## v1654 补充索引
+
+- v1654: [1022-version-1654-base-resolver-builder-migration.md](1022-version-1654-base-resolver-builder-migration.md) - 在 v1653 不变 oracle 下迁移基础 decision、disabled precheck、test-only shell 三份 formatter，把无大括号 common boundary fragment 收口为 37 个按历史顺序追加的 ordered fields，分别命名 decision/env handles/opt-in gates/request-response shape/fake probe 等对象；7944/10291/11201 字节和 104/118/133 字段不变，census 18/9/1→20/7/1，三个源文件均低于 800 行。

@@ -18,6 +18,48 @@ inline std::string receipt_digest(std::string_view prefix, const std::vector<Dig
     return runtime_evidence::digest(prefix, parts);
 }
 
+inline void append_common_credential_boundary_fields(std::vector<runtime_receipt_json::OrderedJsonField>& fields) {
+    using runtime_receipt_json::json_bool;
+
+    fields.push_back({"read_only", json_bool(true)});
+    fields.push_back({"execution_allowed", json_bool(false)});
+    fields.push_back({"dry_run_only", json_bool(true)});
+    fields.push_back({"credential_resolver_implemented", json_bool(false)});
+    fields.push_back({"credential_resolver_invoked", json_bool(false)});
+    fields.push_back({"secret_provider_instantiated", json_bool(false)});
+    fields.push_back({"node_auto_start_allowed", json_bool(false)});
+    fields.push_back({"java_auto_start_allowed", json_bool(false)});
+    fields.push_back({"mini_kv_auto_start_allowed", json_bool(false)});
+    fields.push_back({"external_audit_service_auto_start_allowed", json_bool(false)});
+    fields.push_back({"connection_execution_allowed", json_bool(false)});
+    fields.push_back({"write_commands_executed", json_bool(false)});
+    fields.push_back({"admin_commands_executed", json_bool(false)});
+    fields.push_back({"runtime_write_observed", json_bool(false)});
+    fields.push_back({"managed_audit_store", json_bool(false)});
+    fields.push_back({"managed_audit_storage_backend", json_bool(false)});
+    fields.push_back({"sandbox_audit_storage_backend", json_bool(false)});
+    fields.push_back({"storage_write_allowed", json_bool(false)});
+    fields.push_back({"managed_audit_write_executed", json_bool(false)});
+    fields.push_back({"production_record_written", json_bool(false)});
+    fields.push_back({"approval_ledger_write_allowed", json_bool(false)});
+    fields.push_back({"approval_ledger_write_executed", json_bool(false)});
+    fields.push_back({"sandbox_managed_audit_state_write_allowed", json_bool(false)});
+    fields.push_back({"credential_value_required", json_bool(false)});
+    fields.push_back({"credential_value_read_allowed", json_bool(false)});
+    fields.push_back({"credential_value_loaded", json_bool(false)});
+    fields.push_back({"credential_value_stored", json_bool(false)});
+    fields.push_back({"credential_value_included", json_bool(false)});
+    fields.push_back({"raw_endpoint_url_parsed", json_bool(false)});
+    fields.push_back({"raw_endpoint_url_included", json_bool(false)});
+    fields.push_back({"external_request_sent", json_bool(false)});
+    fields.push_back({"schema_rehearsal_execution_allowed", json_bool(false)});
+    fields.push_back({"schema_migration_execution_allowed", json_bool(false)});
+    fields.push_back({"restore_execution_allowed", json_bool(false)});
+    fields.push_back({"load_restore_compact_executed", json_bool(false)});
+    fields.push_back({"setnxex_execution_allowed", json_bool(false)});
+    fields.push_back({"order_authoritative", json_bool(false)});
+}
+
 inline void append_closed_runtime_shell_boundary_fields(std::vector<runtime_receipt_json::OrderedJsonField>& fields) {
     using runtime_receipt_json::json_bool;
 
@@ -88,28 +130,6 @@ inline void append_closed_runtime_shell_boundary_fields(std::vector<runtime_rece
     fields.push_back({"automatic_upstream_start", json_bool(false)});
     fields.push_back({"audit_authoritative", json_bool(false)});
     fields.push_back({"order_authoritative", json_bool(false)});
-}
-
-inline std::string format_common_credential_boundary_json() {
-    return "\"read_only\":true,\"execution_allowed\":false,\"dry_run_only\":true,"
-           "\"credential_resolver_implemented\":false,\"credential_resolver_invoked\":false,"
-           "\"secret_provider_instantiated\":false,"
-           "\"node_auto_start_allowed\":false,\"java_auto_start_allowed\":false,"
-           "\"mini_kv_auto_start_allowed\":false,\"external_audit_service_auto_start_allowed\":false,"
-           "\"connection_execution_allowed\":false,\"write_commands_executed\":false,"
-           "\"admin_commands_executed\":false,\"runtime_write_observed\":false,"
-           "\"managed_audit_store\":false,\"managed_audit_storage_backend\":false,"
-           "\"sandbox_audit_storage_backend\":false,\"storage_write_allowed\":false,"
-           "\"managed_audit_write_executed\":false,\"production_record_written\":false,"
-           "\"approval_ledger_write_allowed\":false,\"approval_ledger_write_executed\":false,"
-           "\"sandbox_managed_audit_state_write_allowed\":false,"
-           "\"credential_value_required\":false,\"credential_value_read_allowed\":false,"
-           "\"credential_value_loaded\":false,\"credential_value_stored\":false,"
-           "\"credential_value_included\":false,\"raw_endpoint_url_parsed\":false,"
-           "\"raw_endpoint_url_included\":false,\"external_request_sent\":false,"
-           "\"schema_rehearsal_execution_allowed\":false,\"schema_migration_execution_allowed\":false,"
-           "\"restore_execution_allowed\":false,\"load_restore_compact_executed\":false,"
-           "\"setnxex_execution_allowed\":false,\"order_authoritative\":false";
 }
 
 inline std::string format_no_go_conditions_json() {

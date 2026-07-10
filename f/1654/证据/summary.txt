@@ -1,0 +1,93 @@
+mini-kv v1654 base resolver builder migration
+date: 2026-07-10
+
+scope:
+- migrate credential_resolver_non_participation_receipt (base decision)
+- migrate disabled_credential_resolver_precheck_non_participation_receipt
+- migrate test_only_resolver_shell_non_participation_receipt
+- replace the shared brace-less common boundary fragment with ordered fields
+- keep all domain-specific nested objects and insertion points locally owned
+
+upstream guidance read:
+- D:/nodeproj/orderops-node/docs/plans/README.md
+- D:/nodeproj/orderops-node/docs/plans/v2187-v2189-n5-source-size-health-roadmap.md
+- D:/nodeproj/orderops-node/docs/plans/production-excellence-final-acceptance.md
+- D:/C/mini-kv/治理计划/v1637-production-excellence-completion-brief.md
+- scope verdict: Node N5 explicitly allows mini-kv parallel internal maintenance; no cross-project write is required
+
+previous-version remote gate:
+- v1653 GitHub Actions run 29089323484: completed success
+
+unchanged v1653 oracle results:
+- base decision: 7944 fixture/runtime bytes, 104/104 fields
+  fixture digest fnv1a64:20da9877c6cf8724
+  runtime digest fnv1a64:272dd84f8f36f3ea
+  exactly one named historical field-order rule; no new compatibility rule
+- disabled precheck: 10291 bytes, 118 fields, exact fixture/runtime equality
+  digest fnv1a64:0f5091489a656f50
+- test-only shell: 11201 bytes, 133 fields, exact fixture/runtime equality
+  digest fnv1a64:32ac44efd69ca3d2
+- all three contain zero \u0027 occurrences
+
+implementation structure:
+- runtime_credential_resolver_receipts.cpp:
+  named decision record, required fields, precheck, env handles, opt-in gates,
+  failure taxonomy, dry-run response shape, and checks
+- runtime_credential_resolver_test_only_shell_receipts.cpp:
+  named shell contract, request/response shapes, fake probe, and checks
+- runtime_credential_resolver_receipt_utils.hpp:
+  append_common_credential_boundary_fields appends 37 historical fields in order
+  no mode enum, version branch, boolean parameter list, or universal schema
+- the old format_common_credential_boundary_json brace-less fragment is removed
+
+mechanical census:
+- sources=28
+- formatter_owners=27
+- builder_backed=20
+- pending=7
+- named_waivers=1
+- floor tightened 18 -> 20
+
+maintainability:
+- runtime_credential_resolver_receipts.cpp: 524 -> 583 physical lines
+- runtime_credential_resolver_test_only_shell_receipts.cpp: 329 -> 361 physical lines
+- runtime_credential_resolver_receipt_utils.hpp: 122 -> 142 physical lines
+- net +111 physical lines of explicit object/field ownership
+- every touched file remains below the 800-line stop threshold
+- no companion file or naming trick was used to evade the owner census
+
+verification:
+- CMake configure: exit 0
+- all-target build: exit 0, all targets 100%, 122.0 sec
+- direct migration/census focused CTest: 5/5 passed
+- final focused CTest: 8/8 passed, 3.08 sec
+- full local CTest: 348/348 passed, 208.11 sec
+- changed C++ clang-format dry-run: passed
+- walkthrough Chinese character count: 3098
+- real CLI: 3/3 target receipts present with frozen bytes/fields
+- CHECKJSON LOAD: read_only=true, execution_allowed=false, wal.touches_wal=false
+- CLI exit: BYE
+
+closed boundaries observed in all three real runtime receipts:
+- read_only=true
+- execution_allowed=false
+- credential_value_read_allowed=false
+- managed_audit_store=false
+- storage_write_allowed=false
+- write_commands_executed=false
+- runtime_write_observed=false
+- load_restore_compact_executed=false
+- node_auto_start_allowed=false
+- order_authoritative=false
+
+deliberately unchanged:
+- tests/runtime_receipt_remaining_owner_baseline_tests.cpp
+- all domain test expectations
+- fixtures/release/*.json
+- public formatter/digest signatures and command surface
+- Store/WAL/snapshot/RESP/TCP/OSFS behavior
+- credential/network/write/execution/auto-start/authority boundaries
+
+archive rendering:
+- final PNGs are text-rendered evidence pages because no Playwright MCP browser page was available for terminal capture
+- no browser, server, or other background process was started for screenshot production

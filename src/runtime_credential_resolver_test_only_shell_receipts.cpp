@@ -1,6 +1,7 @@
 #include "minikv/runtime_evidence_receipts.hpp"
 
 #include "runtime_credential_resolver_receipt_utils.hpp"
+#include "runtime_receipt_json_builder.hpp"
 
 #include "minikv/version.hpp"
 
@@ -11,10 +12,15 @@
 namespace minikv::runtime_evidence_receipts {
 namespace {
 
+using credential_resolver_detail::append_common_credential_boundary_fields;
 using credential_resolver_detail::DigestPart;
-using credential_resolver_detail::field_string;
-using credential_resolver_detail::format_common_credential_boundary_json;
 using credential_resolver_detail::receipt_digest;
+using runtime_receipt_json::json_array;
+using runtime_receipt_json::json_bool;
+using runtime_receipt_json::json_integer;
+using runtime_receipt_json::json_object;
+using runtime_receipt_json::json_string;
+using runtime_receipt_json::OrderedJsonField;
 
 constexpr std::string_view test_only_resolver_shell_receipt_consumer =
     "Node v265 test-only resolver shell upstream echo verification";
@@ -29,32 +35,31 @@ constexpr std::string_view test_only_resolver_shell_source_verification =
 constexpr std::string_view test_only_resolver_shell_profile_version =
     "managed-audit-manual-sandbox-connection-sandbox-endpoint-credential-resolver-test-only-shell-contract.v1";
 constexpr std::string_view test_only_resolver_shell_route_path =
-    "/api/v1/audit/managed-audit-manual-sandbox-connection-sandbox-endpoint-credential-resolver-test-only-shell-contract";
+    "/api/v1/audit/"
+    "managed-audit-manual-sandbox-connection-sandbox-endpoint-credential-resolver-test-only-shell-contract";
 constexpr std::string_view test_only_resolver_shell_state =
     "sandbox-endpoint-credential-resolver-test-only-shell-contract-ready";
-constexpr std::string_view test_only_resolver_shell_mode =
-    "test-only-fake-resolver-contract";
-constexpr std::string_view test_only_resolver_shell_name =
-    "ManagedAuditSandboxEndpointCredentialResolverTestOnlyShell";
+constexpr std::string_view test_only_resolver_shell_mode = "test-only-fake-resolver-contract";
+constexpr std::string_view test_only_resolver_shell_name = "ManagedAuditSandboxEndpointCredentialResolverTestOnlyShell";
 constexpr std::string_view test_only_resolver_shell_kind = "fake-in-memory";
-constexpr std::string_view test_only_resolver_shell_probe_id =
-    "managed-audit-v264-test-only-resolver-shell-probe";
-constexpr std::string_view test_only_resolver_shell_probe_status =
-    "fake-resolver-accepted";
-constexpr std::string_view test_only_resolver_shell_probe_code =
-    "TEST_ONLY_FAKE_RESOLVER";
+constexpr std::string_view test_only_resolver_shell_probe_id = "managed-audit-v264-test-only-resolver-shell-probe";
+constexpr std::string_view test_only_resolver_shell_probe_status = "fake-resolver-accepted";
+constexpr std::string_view test_only_resolver_shell_probe_code = "TEST_ONLY_FAKE_RESOLVER";
 constexpr std::string_view test_only_resolver_shell_source_v263_state =
     "sandbox-endpoint-credential-resolver-disabled-precheck-upstream-echo-verification-ready";
 constexpr std::string_view test_only_resolver_shell_source_v263_mode =
     "java-v106-plus-mini-kv-v115-disabled-credential-resolver-precheck-upstream-echo-verification-only";
-constexpr std::string_view test_only_resolver_shell_source_span =
-    "Node v262 + Java v106 + mini-kv v115";
-constexpr std::string_view test_only_resolver_shell_runtime_role =
-    "runtime evidence provider only";
+constexpr std::string_view test_only_resolver_shell_source_span = "Node v262 + Java v106 + mini-kv v115";
+constexpr std::string_view test_only_resolver_shell_runtime_role = "runtime evidence provider only";
 constexpr std::string_view test_only_resolver_shell_boundary =
-    "test-only resolver shell non-participation receipt only; mini-kv echoes Node v264 fake resolver shell contract boundaries, does not instantiate a resolver client or secret provider, does not accept or read credential values, does not parse raw endpoint URLs, does not send external requests, does not connect managed audit, does not write storage or production records, does not execute schema migration or restore/load/compact/SETNXEX, and does not become a managed audit storage backend";
+    "test-only resolver shell non-participation receipt only; mini-kv echoes Node v264 fake resolver shell contract "
+    "boundaries, does not instantiate a resolver client or secret provider, does not accept or read credential values, "
+    "does not parse raw endpoint URLs, does not send external requests, does not connect managed audit, does not write "
+    "storage or production records, does not execute schema migration or restore/load/compact/SETNXEX, and does not "
+    "become a managed audit storage backend";
 constexpr std::string_view test_only_resolver_shell_node_action =
-    "verify mini-kv non-participation with Node v264 test-only resolver shell contract before Node v265 upstream echo verification";
+    "verify mini-kv non-participation with Node v264 test-only resolver shell contract before Node v265 upstream echo "
+    "verification";
 constexpr int test_only_resolver_shell_request_shape_field_count = 9;
 constexpr int test_only_resolver_shell_response_shape_field_count = 13;
 constexpr int test_only_resolver_shell_failure_mapping_count = 7;
@@ -117,8 +122,7 @@ std::string format_test_only_resolver_guard_conditions_json() {
 
 } // namespace
 
-std::string test_only_resolver_shell_non_participation_receipt_digest(
-    const std::vector<std::string>& read_commands) {
+std::string test_only_resolver_shell_non_participation_receipt_digest(const std::vector<std::string>& read_commands) {
     const std::vector<DigestPart> parts = {
         {std::string{version}},
         {std::string{test_only_resolver_shell_receipt_release_version}},
@@ -165,165 +169,193 @@ std::string test_only_resolver_shell_non_participation_receipt_digest(
     return receipt_digest("mini-kv-test-only-resolver-shell-non-participation", parts);
 }
 
-std::string format_test_only_resolver_shell_non_participation_receipt_json(
-    const std::vector<std::string>& read_commands) {
-    return "{\"receipt_version\":\"mini-kv-test-only-resolver-shell-non-participation-receipt.v1\","
-           "\"receipt_fixture_path\":" + field_string(test_only_resolver_shell_receipt_fixture_path) +
-           ",\"source_contract\":" + field_string(test_only_resolver_shell_source_contract) +
-           ",\"source_verification\":" + field_string(test_only_resolver_shell_source_verification) +
-           ",\"consumer_hint\":" + field_string(test_only_resolver_shell_receipt_consumer) +
-           ",\"current_project_version\":" + field_string(version) +
-           ",\"runtime_project_version\":" + field_string(version) +
-           ",\"current_release_version\":" +
-           field_string(test_only_resolver_shell_receipt_release_version) +
-           ",\"current_artifact_path_hint\":" +
-           field_string(test_only_resolver_shell_receipt_artifact_path_hint) +
-           ",\"current_runtime_fixture_release_version\":\"v102\""
-           ",\"current_runtime_fixture_artifact_path_hint\":\"c/102/\""
-           ",\"current_live_read_session_echo\":\"mini-kv-live-read-v102\""
-           ",\"runtime_role\":" + field_string(test_only_resolver_shell_runtime_role) +
-           ",\"source_contract_profile_version\":" +
-           field_string(test_only_resolver_shell_profile_version) +
-           ",\"source_contract_route_path\":" + field_string(test_only_resolver_shell_route_path) +
-           ",\"source_contract_state\":" + field_string(test_only_resolver_shell_state) +
-           ",\"source_shell_mode\":" + field_string(test_only_resolver_shell_mode) +
-           ",\"source_shell_name\":" + field_string(test_only_resolver_shell_name) +
-           ",\"source_resolver_kind\":" + field_string(test_only_resolver_shell_kind) +
-           ",\"source_ready_for_test_only_resolver_shell_contract\":true"
-           ",\"source_test_only_shell\":true"
-           ",\"source_read_only_contract\":true"
-           ",\"source_fake_resolver_only\":true"
-           ",\"source_handle_only_request\":true"
-           ",\"source_ready_for_managed_audit_sandbox_adapter_connection\":false"
-           ",\"source_ready_for_production_audit\":false"
-           ",\"source_ready_for_production_window\":false"
-           ",\"source_credential_resolver_execution_allowed\":false"
-           ",\"source_execution_allowed\":false"
-           ",\"source_connects_managed_audit\":false"
-           ",\"source_reads_managed_audit_credential\":false"
-           ",\"source_stores_managed_audit_credential\":false"
-           ",\"source_credential_value_read\":false"
-           ",\"source_credential_value_loaded\":false"
-           ",\"source_credential_value_stored\":false"
-           ",\"source_credential_value_included\":false"
-           ",\"source_raw_endpoint_url_parsed\":false"
-           ",\"source_raw_endpoint_url_included\":false"
-           ",\"source_external_request_sent\":false"
-           ",\"source_secret_provider_instantiated\":false"
-           ",\"source_resolver_client_instantiated\":false"
-           ",\"source_schema_migration_executed\":false"
-           ",\"source_automatic_upstream_start\":false"
-           ",\"source_production_record_written\":false"
-           ",\"source_request_shape_field_count\":" +
-           std::to_string(test_only_resolver_shell_request_shape_field_count) +
-           ",\"source_response_shape_field_count\":" +
-           std::to_string(test_only_resolver_shell_response_shape_field_count) +
-           ",\"source_failure_mapping_count\":" +
-           std::to_string(test_only_resolver_shell_failure_mapping_count) +
-           ",\"source_guard_condition_count\":" +
-           std::to_string(test_only_resolver_shell_guard_condition_count) +
-           ",\"source_check_count\":" + std::to_string(test_only_resolver_shell_check_count) +
-           ",\"source_passed_check_count\":" +
-           std::to_string(test_only_resolver_shell_check_count) +
-           ",\"source_production_blocker_count\":0"
-           ",\"source_warning_count\":" + std::to_string(test_only_resolver_shell_warning_count) +
-           ",\"source_recommendation_count\":" +
-           std::to_string(test_only_resolver_shell_recommendation_count) +
-           ",\"source_node_v263_ready\":true"
-           ",\"source_node_v263_verification_state\":" +
-           field_string(test_only_resolver_shell_source_v263_state) +
-           ",\"source_node_v263_verification_mode\":" +
-           field_string(test_only_resolver_shell_source_v263_mode) +
-           ",\"source_node_v263_span\":" + field_string(test_only_resolver_shell_source_span) +
-           ",\"source_node_v262_ready\":true"
-           ",\"source_java_v106_echo_ready\":true"
-           ",\"source_mini_kv_v115_non_participation_ready\":true"
-           ",\"source_disabled_precheck_aligned\":true"
-           ",\"source_required_env_handles_aligned\":true"
-           ",\"source_opt_in_gates_aligned\":true"
-           ",\"source_failure_taxonomy_aligned\":true"
-           ",\"source_dry_run_response_shape_aligned\":true"
-           ",\"source_inherited_no_go_conditions_aligned\":true"
-           ",\"source_credential_boundary_aligned\":true"
-           ",\"source_raw_endpoint_boundary_aligned\":true"
-           ",\"source_connection_boundary_aligned\":true"
-           ",\"source_write_boundary_aligned\":true"
-           ",\"source_auto_start_boundary_aligned\":true"
-           ",\"source_upstream_actions_still_disabled\":true"
-           ",\"source_node_v263_check_count\":" +
-           std::to_string(test_only_resolver_shell_source_v263_check_count) +
-           ",\"source_node_v263_passed_check_count\":" +
-           std::to_string(test_only_resolver_shell_source_v263_check_count) +
-           ",\"source_node_v263_production_blocker_count\":0"
-           ",\"resolver_shell_contract\":{\"shell_name\":" +
-           field_string(test_only_resolver_shell_name) +
-           ",\"shell_mode\":" + field_string(test_only_resolver_shell_mode) +
-           ",\"resolver_kind\":" + field_string(test_only_resolver_shell_kind) +
-           ",\"real_resolver_implemented\":false,\"real_secret_provider_allowed\":false,"
-           "\"fake_resolver_only\":true,\"test_only_shell\":true,\"read_only_contract\":true,"
-           "\"handle_only_request\":true,\"resolver_client_may_be_instantiated_for_production\":false,"
-           "\"secret_provider_may_be_instantiated\":false,\"credential_value_may_be_loaded\":false,"
-           "\"raw_endpoint_url_may_be_parsed\":false,\"external_request_may_be_sent\":false,"
-           "\"request_shape_field_count\":" +
-           std::to_string(test_only_resolver_shell_request_shape_field_count) +
-           ",\"response_shape_field_count\":" +
-           std::to_string(test_only_resolver_shell_response_shape_field_count) +
-           ",\"failure_mapping_count\":" +
-           std::to_string(test_only_resolver_shell_failure_mapping_count) +
-           ",\"guard_condition_count\":" +
-           std::to_string(test_only_resolver_shell_guard_condition_count) + "}"
-           ",\"request_shape\":{\"fields\":" + format_test_only_resolver_request_fields_json() +
-           ",\"credential_handle_only\":true,\"credential_value_accepted\":false,"
-           "\"endpoint_handle_only\":true,\"raw_endpoint_url_accepted\":false,"
-           "\"resolver_policy_handle_required\":true,\"approval_marker_required\":true,"
-           "\"approval_correlation_id_required\":true,\"dry_run_required\":true,"
-           "\"fake_resolver_only_required\":true,\"payload_may_contain_secrets\":false}"
-           ",\"response_shape\":{\"fields\":" + format_test_only_resolver_response_fields_json() +
-           ",\"fake_resolver_response_only\":true,\"fake_resolver_only\":true,"
-           "\"resolver_client_instantiated\":false,\"secret_provider_instantiated\":false,"
-           "\"credential_value_read\":false,\"credential_value_loaded\":false,"
-           "\"raw_endpoint_url_parsed\":false,\"external_request_sent\":false,"
-           "\"connects_managed_audit\":false,\"schema_migration_executed\":false,"
-           "\"production_record_written\":false}"
-           ",\"failure_mapping\":" + format_test_only_resolver_failure_mapping_json() +
-           ",\"guard_conditions\":" + format_test_only_resolver_guard_conditions_json() +
-           ",\"fake_resolver_probe\":{\"request_id\":" +
-           field_string(test_only_resolver_shell_probe_id) +
-           ",\"resolver_kind\":" + field_string(test_only_resolver_shell_kind) +
-           ",\"accepted_by_fake_resolver\":true,\"response_status\":" +
-           field_string(test_only_resolver_shell_probe_status) +
-           ",\"response_code\":" + field_string(test_only_resolver_shell_probe_code) +
-           ",\"resolver_client_instantiated\":false,\"secret_provider_instantiated\":false,"
-           "\"credential_value_read\":false,\"credential_value_loaded\":false,"
-           "\"raw_endpoint_url_parsed\":false,\"external_request_sent\":false,"
-           "\"connects_managed_audit\":false,\"schema_migration_executed\":false,"
-           "\"production_record_written\":false}"
-           ",\"checks\":{\"source_node_v263_ready\":true,"
-           "\"source_still_blocks_credential_resolution\":true,"
-           "\"source_still_blocks_credential_value\":true,"
-           "\"source_still_blocks_raw_endpoint\":true,"
-           "\"source_still_blocks_connection\":true,\"source_still_blocks_writes\":true,"
-           "\"source_still_blocks_auto_start\":true,\"fake_resolver_only\":true,"
-           "\"request_shape_handle_only\":true,\"response_shape_no_side_effects\":true,"
-           "\"failure_mapping_covers_source_taxonomy\":true,\"guard_conditions_declared\":true,"
-           "\"fake_resolver_probe_covered\":true,\"fake_resolver_probe_no_credential_read\":true,"
-           "\"fake_resolver_probe_no_external_request\":true,"
-           "\"fake_resolver_probe_no_production_write\":true,"
-           "\"upstream_actions_still_disabled\":true,\"production_audit_still_blocked\":true,"
-           "\"production_window_still_blocked\":true}"
-           ",\"next_required_echo_versions\":[\"Java v107\",\"mini-kv v116\"]"
-           ",\"binary_provenance_digest\":" + field_string(binary_provenance_digest()) +
-           ",\"retention_check_digest\":" + field_string(retention_provenance_check_digest()) +
-           ",\"retention_replay_marker_digest\":" + field_string(retention_provenance_replay_marker_digest()) +
-           ",\"read_command_list_digest\":" + field_string(read_command_list_digest(read_commands)) +
-           ",\"receipt_digest\":" +
-           field_string(test_only_resolver_shell_non_participation_receipt_digest(read_commands)) +
-           ",\"test_only_resolver_shell_contract_only\":true"
-           ",\"test_only_shell\":true,\"fake_resolver_only\":true,\"handle_only_request\":true," +
-           format_common_credential_boundary_json() +
-           ",\"resolver_client_instantiated\":false,\"fake_resolver_probe_executed\":false"
-           ",\"boundary\":" + field_string(test_only_resolver_shell_boundary) +
-           ",\"node_action\":" + field_string(test_only_resolver_shell_node_action) + "}";
+std::string
+format_test_only_resolver_shell_non_participation_receipt_json(const std::vector<std::string>& read_commands) {
+    const auto resolver_shell_contract = json_object({
+        {"shell_name", json_string(test_only_resolver_shell_name)},
+        {"shell_mode", json_string(test_only_resolver_shell_mode)},
+        {"resolver_kind", json_string(test_only_resolver_shell_kind)},
+        {"real_resolver_implemented", json_bool(false)},
+        {"real_secret_provider_allowed", json_bool(false)},
+        {"fake_resolver_only", json_bool(true)},
+        {"test_only_shell", json_bool(true)},
+        {"read_only_contract", json_bool(true)},
+        {"handle_only_request", json_bool(true)},
+        {"resolver_client_may_be_instantiated_for_production", json_bool(false)},
+        {"secret_provider_may_be_instantiated", json_bool(false)},
+        {"credential_value_may_be_loaded", json_bool(false)},
+        {"raw_endpoint_url_may_be_parsed", json_bool(false)},
+        {"external_request_may_be_sent", json_bool(false)},
+        {"request_shape_field_count", json_integer(test_only_resolver_shell_request_shape_field_count)},
+        {"response_shape_field_count", json_integer(test_only_resolver_shell_response_shape_field_count)},
+        {"failure_mapping_count", json_integer(test_only_resolver_shell_failure_mapping_count)},
+        {"guard_condition_count", json_integer(test_only_resolver_shell_guard_condition_count)},
+    });
+    const auto request_shape = json_object({
+        {"fields", format_test_only_resolver_request_fields_json()},
+        {"credential_handle_only", json_bool(true)},
+        {"credential_value_accepted", json_bool(false)},
+        {"endpoint_handle_only", json_bool(true)},
+        {"raw_endpoint_url_accepted", json_bool(false)},
+        {"resolver_policy_handle_required", json_bool(true)},
+        {"approval_marker_required", json_bool(true)},
+        {"approval_correlation_id_required", json_bool(true)},
+        {"dry_run_required", json_bool(true)},
+        {"fake_resolver_only_required", json_bool(true)},
+        {"payload_may_contain_secrets", json_bool(false)},
+    });
+    const auto response_shape = json_object({
+        {"fields", format_test_only_resolver_response_fields_json()},
+        {"fake_resolver_response_only", json_bool(true)},
+        {"fake_resolver_only", json_bool(true)},
+        {"resolver_client_instantiated", json_bool(false)},
+        {"secret_provider_instantiated", json_bool(false)},
+        {"credential_value_read", json_bool(false)},
+        {"credential_value_loaded", json_bool(false)},
+        {"raw_endpoint_url_parsed", json_bool(false)},
+        {"external_request_sent", json_bool(false)},
+        {"connects_managed_audit", json_bool(false)},
+        {"schema_migration_executed", json_bool(false)},
+        {"production_record_written", json_bool(false)},
+    });
+    const auto fake_resolver_probe = json_object({
+        {"request_id", json_string(test_only_resolver_shell_probe_id)},
+        {"resolver_kind", json_string(test_only_resolver_shell_kind)},
+        {"accepted_by_fake_resolver", json_bool(true)},
+        {"response_status", json_string(test_only_resolver_shell_probe_status)},
+        {"response_code", json_string(test_only_resolver_shell_probe_code)},
+        {"resolver_client_instantiated", json_bool(false)},
+        {"secret_provider_instantiated", json_bool(false)},
+        {"credential_value_read", json_bool(false)},
+        {"credential_value_loaded", json_bool(false)},
+        {"raw_endpoint_url_parsed", json_bool(false)},
+        {"external_request_sent", json_bool(false)},
+        {"connects_managed_audit", json_bool(false)},
+        {"schema_migration_executed", json_bool(false)},
+        {"production_record_written", json_bool(false)},
+    });
+    const auto checks = json_object({
+        {"source_node_v263_ready", json_bool(true)},
+        {"source_still_blocks_credential_resolution", json_bool(true)},
+        {"source_still_blocks_credential_value", json_bool(true)},
+        {"source_still_blocks_raw_endpoint", json_bool(true)},
+        {"source_still_blocks_connection", json_bool(true)},
+        {"source_still_blocks_writes", json_bool(true)},
+        {"source_still_blocks_auto_start", json_bool(true)},
+        {"fake_resolver_only", json_bool(true)},
+        {"request_shape_handle_only", json_bool(true)},
+        {"response_shape_no_side_effects", json_bool(true)},
+        {"failure_mapping_covers_source_taxonomy", json_bool(true)},
+        {"guard_conditions_declared", json_bool(true)},
+        {"fake_resolver_probe_covered", json_bool(true)},
+        {"fake_resolver_probe_no_credential_read", json_bool(true)},
+        {"fake_resolver_probe_no_external_request", json_bool(true)},
+        {"fake_resolver_probe_no_production_write", json_bool(true)},
+        {"upstream_actions_still_disabled", json_bool(true)},
+        {"production_audit_still_blocked", json_bool(true)},
+        {"production_window_still_blocked", json_bool(true)},
+    });
+
+    std::vector<OrderedJsonField> fields = {
+        {"receipt_version", json_string("mini-kv-test-only-resolver-shell-non-participation-receipt.v1")},
+        {"receipt_fixture_path", json_string(test_only_resolver_shell_receipt_fixture_path)},
+        {"source_contract", json_string(test_only_resolver_shell_source_contract)},
+        {"source_verification", json_string(test_only_resolver_shell_source_verification)},
+        {"consumer_hint", json_string(test_only_resolver_shell_receipt_consumer)},
+        {"current_project_version", json_string(version)},
+        {"runtime_project_version", json_string(version)},
+        {"current_release_version", json_string(test_only_resolver_shell_receipt_release_version)},
+        {"current_artifact_path_hint", json_string(test_only_resolver_shell_receipt_artifact_path_hint)},
+        {"current_runtime_fixture_release_version", json_string("v102")},
+        {"current_runtime_fixture_artifact_path_hint", json_string("c/102/")},
+        {"current_live_read_session_echo", json_string("mini-kv-live-read-v102")},
+        {"runtime_role", json_string(test_only_resolver_shell_runtime_role)},
+        {"source_contract_profile_version", json_string(test_only_resolver_shell_profile_version)},
+        {"source_contract_route_path", json_string(test_only_resolver_shell_route_path)},
+        {"source_contract_state", json_string(test_only_resolver_shell_state)},
+        {"source_shell_mode", json_string(test_only_resolver_shell_mode)},
+        {"source_shell_name", json_string(test_only_resolver_shell_name)},
+        {"source_resolver_kind", json_string(test_only_resolver_shell_kind)},
+        {"source_ready_for_test_only_resolver_shell_contract", json_bool(true)},
+        {"source_test_only_shell", json_bool(true)},
+        {"source_read_only_contract", json_bool(true)},
+        {"source_fake_resolver_only", json_bool(true)},
+        {"source_handle_only_request", json_bool(true)},
+        {"source_ready_for_managed_audit_sandbox_adapter_connection", json_bool(false)},
+        {"source_ready_for_production_audit", json_bool(false)},
+        {"source_ready_for_production_window", json_bool(false)},
+        {"source_credential_resolver_execution_allowed", json_bool(false)},
+        {"source_execution_allowed", json_bool(false)},
+        {"source_connects_managed_audit", json_bool(false)},
+        {"source_reads_managed_audit_credential", json_bool(false)},
+        {"source_stores_managed_audit_credential", json_bool(false)},
+        {"source_credential_value_read", json_bool(false)},
+        {"source_credential_value_loaded", json_bool(false)},
+        {"source_credential_value_stored", json_bool(false)},
+        {"source_credential_value_included", json_bool(false)},
+        {"source_raw_endpoint_url_parsed", json_bool(false)},
+        {"source_raw_endpoint_url_included", json_bool(false)},
+        {"source_external_request_sent", json_bool(false)},
+        {"source_secret_provider_instantiated", json_bool(false)},
+        {"source_resolver_client_instantiated", json_bool(false)},
+        {"source_schema_migration_executed", json_bool(false)},
+        {"source_automatic_upstream_start", json_bool(false)},
+        {"source_production_record_written", json_bool(false)},
+        {"source_request_shape_field_count", json_integer(test_only_resolver_shell_request_shape_field_count)},
+        {"source_response_shape_field_count", json_integer(test_only_resolver_shell_response_shape_field_count)},
+        {"source_failure_mapping_count", json_integer(test_only_resolver_shell_failure_mapping_count)},
+        {"source_guard_condition_count", json_integer(test_only_resolver_shell_guard_condition_count)},
+        {"source_check_count", json_integer(test_only_resolver_shell_check_count)},
+        {"source_passed_check_count", json_integer(test_only_resolver_shell_check_count)},
+        {"source_production_blocker_count", json_integer(0)},
+        {"source_warning_count", json_integer(test_only_resolver_shell_warning_count)},
+        {"source_recommendation_count", json_integer(test_only_resolver_shell_recommendation_count)},
+        {"source_node_v263_ready", json_bool(true)},
+        {"source_node_v263_verification_state", json_string(test_only_resolver_shell_source_v263_state)},
+        {"source_node_v263_verification_mode", json_string(test_only_resolver_shell_source_v263_mode)},
+        {"source_node_v263_span", json_string(test_only_resolver_shell_source_span)},
+        {"source_node_v262_ready", json_bool(true)},
+        {"source_java_v106_echo_ready", json_bool(true)},
+        {"source_mini_kv_v115_non_participation_ready", json_bool(true)},
+        {"source_disabled_precheck_aligned", json_bool(true)},
+        {"source_required_env_handles_aligned", json_bool(true)},
+        {"source_opt_in_gates_aligned", json_bool(true)},
+        {"source_failure_taxonomy_aligned", json_bool(true)},
+        {"source_dry_run_response_shape_aligned", json_bool(true)},
+        {"source_inherited_no_go_conditions_aligned", json_bool(true)},
+        {"source_credential_boundary_aligned", json_bool(true)},
+        {"source_raw_endpoint_boundary_aligned", json_bool(true)},
+        {"source_connection_boundary_aligned", json_bool(true)},
+        {"source_write_boundary_aligned", json_bool(true)},
+        {"source_auto_start_boundary_aligned", json_bool(true)},
+        {"source_upstream_actions_still_disabled", json_bool(true)},
+        {"source_node_v263_check_count", json_integer(test_only_resolver_shell_source_v263_check_count)},
+        {"source_node_v263_passed_check_count", json_integer(test_only_resolver_shell_source_v263_check_count)},
+        {"source_node_v263_production_blocker_count", json_integer(0)},
+        {"resolver_shell_contract", resolver_shell_contract},
+        {"request_shape", request_shape},
+        {"response_shape", response_shape},
+        {"failure_mapping", format_test_only_resolver_failure_mapping_json()},
+        {"guard_conditions", format_test_only_resolver_guard_conditions_json()},
+        {"fake_resolver_probe", fake_resolver_probe},
+        {"checks", checks},
+        {"next_required_echo_versions", json_array({json_string("Java v107"), json_string("mini-kv v116")})},
+        {"binary_provenance_digest", json_string(binary_provenance_digest())},
+        {"retention_check_digest", json_string(retention_provenance_check_digest())},
+        {"retention_replay_marker_digest", json_string(retention_provenance_replay_marker_digest())},
+        {"read_command_list_digest", json_string(read_command_list_digest(read_commands))},
+        {"receipt_digest", json_string(test_only_resolver_shell_non_participation_receipt_digest(read_commands))},
+        {"test_only_resolver_shell_contract_only", json_bool(true)},
+        {"test_only_shell", json_bool(true)},
+        {"fake_resolver_only", json_bool(true)},
+        {"handle_only_request", json_bool(true)},
+    };
+    append_common_credential_boundary_fields(fields);
+    fields.push_back({"resolver_client_instantiated", json_bool(false)});
+    fields.push_back({"fake_resolver_probe_executed", json_bool(false)});
+    fields.push_back({"boundary", json_string(test_only_resolver_shell_boundary)});
+    fields.push_back({"node_action", json_string(test_only_resolver_shell_node_action)});
+    return json_object(std::span<const OrderedJsonField>{fields.data(), fields.size()});
 }
 
 } // namespace minikv::runtime_evidence_receipts

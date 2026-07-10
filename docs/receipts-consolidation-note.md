@@ -586,3 +586,26 @@ no storage/router authority、no write、no execution、no credential 与 no aut
 基线数据不能冒充迁移，也不能提前提高 builder floor。后续按三条链分批改 production：base resolver、implementation chain、
 sandbox chain。每批只能在本 v1653 oracle 不变的前提下把对应完整 formatter 改成 ordered builder；若必须修改本测试常量、
 fixture、兼容规则或领域测试期望才能通过，则该批迁移失败并停止，而不是把差异包装成新的 waiver。
+
+## 29. v1654 base resolver 三 formatter builder 迁移
+
+v1654 消费 v1653 的完整迁移前 oracle，迁移 `runtime_credential_resolver_receipts.cpp` 中的基础 decision 与 disabled
+precheck 两份 formatter，以及 `runtime_credential_resolver_test_only_shell_receipts.cpp` 中的 test-only shell formatter。
+三个公开签名、digest 输入、fixture、领域测试和下游 SMOKEJSON/manifest 入口均不变；每完成一份 formatter 就单独重建并运行
+v1653 oracle，三份分别保持 7944/10291/11201 字节与 104/118/133 个顶层字段。
+
+旧 `format_common_credential_boundary_json` 返回无外层大括号的逗号片段，三个 formatter 都要靠调用点手工处理前后逗号。
+本版将其替换为 `append_common_credential_boundary_fields`：37 个字段以历史顺序逐项追加到
+`std::vector<OrderedJsonField>`，调用点先追加自己的 receipt-only 字段，再调用公共 appender，最后追加 family 专属字段。
+它没有布尔开关、版本分支或万能 schema，不会替不同 family 推导字段，也不能改变历史插入点。
+
+基础 decision 的 decision record、required decision fields 与 checks，disabled precheck 的 env handles、opt-in gates、
+failure taxonomy、dry-run response shape 与 checks，以及 test-only shell 的 request/response shape、fake probe 与 checks 都变成
+具名 object/array；完整历史 failure mapping 与 guard condition helper 继续作为语义完整 raw JSON value 复用。v1653 的两条历史规则
+没有扩大：基础 decision 仍只允许自己的一次字段顺序 canonicalization，另外两份仍要求 fixture/runtime raw exact equality。
+
+机械 census floor 从 18 收紧到 20，结果为 28 sources、27 formatter owners、20 builder-backed、7 pending、1 named waiver。
+源文件含空行物理行由 524→583、329→361，utils 由 122→142，合计净增 111 行；增长来自显式 nested value 与 ordered
+field ownership，三个文件都低于 800 行，没有新建大文件或用拆分文件规避 census。没有修改 fixture、public command、
+Store/WAL/snapshot/RESP/TCP/OSFS，也没有扩大 credential、raw endpoint、network、router/storage authority、write、execution、
+auto-start 或 order authority。
