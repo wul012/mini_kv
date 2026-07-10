@@ -1,0 +1,19 @@
+mini-kv v1644 evidence summary
+
+Scope:
+- Complete signed-human approval artifact receipt top-level ordered-builder migration.
+- Preserve exactly one named Node v314 fixture spelling rule in tests only.
+- Remove the signed-human boundary strip-and-splice bridge.
+- No signing, credential, raw endpoint, network, router, Store/WAL write, schema, restore/load/compact/SETNXEX, auto-start, audit/order authority, or execution expansion.
+
+Verification:
+- focused CTest = 5/5 passed: builder parity, signed-human receipt, SMOKEJSON, runtime smoke evidence, release manifest.
+- full local build succeeded; full CTest = 344/344 passed in 183.76 seconds.
+- CLI smoke: signed-human receipt present, read_only=true, execution_allowed=false; CHECKJSON classified LOAD and reported its side effect without executing it.
+- hook-fixed clang-format dry-run, git diff check and strict archive inventory passed; warnings: none.
+- documentation/archive focused CTest = 12/12 passed with the final walkthrough and four PNGs present.
+- Chinese walkthrough length = 5,861 UTF-8 characters.
+
+Structure:
+- source lines: 491 -> 545 structured expansion.
+- Slice 2 top-level approval trio complete; overall 28-file consolidation remains open.

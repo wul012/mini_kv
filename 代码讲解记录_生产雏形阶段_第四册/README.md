@@ -115,3 +115,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1643 补充索引
 
 - v1643: [1011-version-1643-endpoint-handle-top-level-builder.md](1011-version-1643-endpoint-handle-top-level-builder.md) - 完整迁移 endpoint-handle allowlist approval receipt 的顶层 JSON 组装，讲清 endpoint 专属字段为什么不能复用 credential 模板、有序嵌套对象如何消除长字符串逗号风险、旧 boundary strip-and-splice 桥接为何可以删除，以及 fixture byte parity、五条 focused surface、全量 CTest 与真实 CLI 如何共同守住 no router/no write/no WAL/no network/no credential/no execution。
+
+## v1644 补充索引
+
+- v1644: [1012-version-1644-signed-human-top-level-builder.md](1012-version-1644-signed-human-top-level-builder.md) - 完整迁移 signed-human approval artifact receipt 的顶层组装，解释命名单点 canonical fixture 规则为何只存在于测试、signed artifact 专属闭合字段如何保持本地所有权、Slice 2 三份审批合同如何结束临时 bridge 状态，以及 byte parity、digest、五条消费表面和 full CTest 如何证明没有扩大执行能力。

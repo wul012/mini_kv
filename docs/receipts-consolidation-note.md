@@ -382,3 +382,13 @@ v1643 完整迁移 `runtime_credential_resolver_endpoint_handle_allowlist_approv
 迁移后的源文件由 503 行变为 558 行。这个增长不是 stop condition，也不是以行数冒充收益：新增行来自把匿名长字符串拆成可命名、可逐字段审查的对象与数组；机械风险从“在数百段字符串中检查逗号和引号”变为“审查有序字段表”。评审指标仍是重复拼接是否消失、fixture parity 是否保持、边界是否更容易审查，而不是要求每次结构化迁移都缩短物理行数。
 
 本版结束时，28 个 runtime receipt 文件中仍有大量 formatter 未迁移，不能宣称阶段一完成。当前 builder include census 为 5 个文件；其中 abort/rollback、no-network、credential-handle 与 endpoint-handle 已完成整份顶层 builder 迁移，signed-human 只完成闭合边界区块。下一刀继续处理 signed-human 的完整顶层对象，并必须保留它自己命名的 `Node v314\\u0027s` fixture spelling 兼容规则；不得把该规则扩成通配 apostrophe 归一化。
+
+## 19. v1644 signed-human 顶层 builder 迁移
+
+v1644 完成 Slice 2 最后一份审批合同的整份顶层迁移：`runtime_credential_resolver_signed_human_approval_artifact_receipts.cpp` 不再用一条长字符串组装 public receipt。signed artifact contract、prerequisite transition、necessity proof、Node v314/v312 引用、两份 summary、warnings、recommendations、evidence endpoints 与 next actions 都成为命名 object/array，最后按历史字段顺序进入 `std::vector<OrderedJsonField>`。v1641 留下的 boundary strip-and-splice 桥接函数随之删除，闭合字段直接追加到最终顶层字段表。
+
+这次迁移没有把 v1638 的 canonical 规则扩大。冻结 fixture 仍含且只含一处命名短语 `Node v314\\u0027s non-secret contract`，runtime formatter 仍输出 `Node v314's non-secret contract`。parity harness 先断言 legacy/canonical 短语各自的出现次数，再只替换这一处命名短语后比较整份对象；任何第二处 `\\u0027`、未命名替换、字段数变化或其他字节差都会失败。builder 本身没有 normalization 分支，也不知道这一历史兼容规则。
+
+signed-human 专属边界继续由本文件逐项拥有：signing private key、signed artifact store/validate/authority/signature verify、credential value、raw endpoint、provider/client、HTTP/TCP、managed audit storage、Store/WAL write、approval ledger、schema、restore/load/compact、SETNXEX、auto-start、audit/order authority 与 execution 均保持关闭。源文件由 491 行变为 545 行；增加来自显式结构展开，不改变以 byte parity、digest 与边界为 stop condition 的规则。
+
+v1644 focused lane 中 builder parity、signed-human receipt、SMOKEJSON、runtime smoke evidence、release manifest 5/5 通过。至此 Slice 2 选定的三份审批合同都完成整份顶层 builder 迁移，v1639-v1641 的临时 boundary block 过渡状态也已消失。28 文件总 census 尚未完成；下一版不立即批量改 formatter，而是先把下一组同构 receipts 的 fixture 子对象、digest、字段数和允许的 canonical 差异冻结成可复现机械门，再决定批量迁移范围。
