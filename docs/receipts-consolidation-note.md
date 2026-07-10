@@ -522,3 +522,19 @@ lane 9/9、full CTest 346/346 通过。
 CMake census floor 从 11 收紧到 14，当前为 28 sources、27 formatter owners、14 builder-backed、13 pending、1 waiver。
 按物理行计数，三个源文件分别从 420→389、402→382、453→440，合计减少 64 行。没有新增 router、Store/WAL write、
 network、credential/raw-endpoint access、ledger/schema write、LOAD/COMPACT/RESTORE/SETNXEX execution、auto-start 或 authority。
+
+## 26. v1651 legacy resolver 四回执迁移前 exact-byte 基线
+
+v1651 不修改生产 formatter，先冻结 v117-v120 的 fake-shell archive、production-readiness blocked decision、
+pre-implementation plan intake 与 disabled implementation candidate 四份连续回执。独立 CTest 从 frozen release fixture
+提取完整子对象，再调用四个 public formatter；两侧必须逐字节相等，不设置 apostrophe、whitespace 或其他 canonical waiver。
+
+四份对象分别固定为 12335/10623/11114/15160 bytes、95/99/101/106 个顶层字段，版本化摘要分别为
+`fnv1a64:13e45250210526fe`、`fnv1a64:10793a18910b09d2`、`fnv1a64:b5bf23a427aa5aae`、
+`fnv1a64:a602d27c08315d04`。每份对象还必须保留自己的 `*_non_participation_receipt_only=true` 标记，以及
+read-only、no execution、no credential read、no raw endpoint parse、no external request、no write command、
+no load/restore/compact execution 和 no order authority 八类共同边界。若后续 builder 迁移发生漂移，测试会输出首个不同字节及两侧上下文。
+
+本版新增的是不可与生产改动互相迎合的迁移前 oracle，不是 formatter 迁移；因此 census floor 保持 14，机械结果仍为
+28 sources、27 formatter owners、14 builder-backed、13 pending、1 named waiver。没有改写 fixture、digest、manifest、
+command/router、Store/WAL/snapshot/RESP/OSFS，也没有扩大 network、credential、write、execution 或 authority 能力。

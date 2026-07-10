@@ -1,0 +1,48 @@
+mini-kv v1651 legacy resolver chain parity baseline
+date: 2026-07-10
+
+scope:
+- test-only exact-byte oracle for four v117-v120 credential-resolver receipts
+- no production formatter, fixture, digest, manifest, router, Store, WAL, snapshot, RESP, or OSFS change
+
+upstream guidance read:
+- D:/nodeproj/orderops-node/docs/plans/README.md
+- D:/nodeproj/orderops-node/docs/plans/production-excellence-node-playbook.md
+- D:/nodeproj/orderops-node/docs/plans2/v325-post-no-network-safety-fixture-prerequisite-closure-roadmap.md
+
+frozen objects:
+- fake-shell archive: 12335 bytes, 95 fields, fnv1a64:13e45250210526fe
+- blocked decision: 10623 bytes, 99 fields, fnv1a64:10793a18910b09d2
+- plan intake: 11114 bytes, 101 fields, fnv1a64:b5bf23a427aa5aae
+- disabled candidate: 15160 bytes, 106 fields, fnv1a64:a602d27c08315d04
+- fixture == runtime for all four; canonical waivers: 0
+
+mechanical census:
+- sources=28
+- formatter_owners=27
+- builder_backed=14
+- pending=13
+- named_waivers=1
+
+verification:
+- focused CTest: 10/10 passed, 2.00 sec
+- full CTest: 347/347 passed, 105.18 sec
+- real CLI: four target markers each exactly 1
+- CHECKJSON LOAD: classification only; touches_wal=false; no LOAD execution
+- CLI exit: BYE exactly 1
+
+closed boundaries observed:
+- read_only=true: 55 occurrences
+- execution_allowed=false: 81 occurrences
+- external_request_sent=false: 74 occurrences
+- write_commands_executed=false: 37 occurrences
+- credential value read, raw endpoint parse, external request, write command, load/restore/compact execution, and order authority remain disabled
+
+walkthrough:
+- 代码讲解记录_生产雏形阶段_第四册/1019-version-1651-legacy-resolver-chain-parity-baseline.md
+- Chinese character count: 3225
+
+next gate:
+- migrate the same four formatter owners without changing this baseline or frozen fixtures
+- raise the census floor only after exact-byte and downstream gates pass
+- stop for Claude review when census reaches 18 builder-backed / 9 pending / 1 waiver

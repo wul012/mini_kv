@@ -143,3 +143,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1650 补充索引
 
 - v1650: [1018-version-1650-runtime-shell-decision-chain-builder-migration.md](1018-version-1650-runtime-shell-decision-chain-builder-migration.md) - 在 v1648 exact-byte 门下迁移 decision record、post-decision plan intake 与 stop-or-prerequisite 三份连续 formatter，复用两段完全同序的 runtime-shell family 边界 helper，保留各自决策字段所有权；14208/14084/16306 字节、113/113/115 字段和三份摘要不变，census 从 11/16/1 收紧到 14/13/1。
+
+## v1651 补充索引
+
+- v1651: [1019-version-1651-legacy-resolver-chain-parity-baseline.md](1019-version-1651-legacy-resolver-chain-parity-baseline.md) - 在生产 formatter 不变的前提下，为 v117-v120 四份 legacy resolver 连续回执建立独立 exact-byte oracle；冻结 12335/10623/11114/15160 字节、95/99/101/106 个顶层字段、四个版本化摘要、零 canonical waiver 与八类关闭边界，明确本版 census 仍为 14/13/1，下一版迁移不得通过修改 fixture 或基线来放宽判定。
