@@ -159,3 +159,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1654 补充索引
 
 - v1654: [1022-version-1654-base-resolver-builder-migration.md](1022-version-1654-base-resolver-builder-migration.md) - 在 v1653 不变 oracle 下迁移基础 decision、disabled precheck、test-only shell 三份 formatter，把无大括号 common boundary fragment 收口为 37 个按历史顺序追加的 ordered fields，分别命名 decision/env handles/opt-in gates/request-response shape/fake probe 等对象；7944/10291/11201 字节和 104/118/133 字段不变，census 18/9/1→20/7/1，三个源文件均低于 800 行。
+
+## v1655 补充索引
+
+- v1655: [1023-version-1655-implementation-chain-builder-migration.md](1023-version-1655-implementation-chain-builder-migration.md) - 在 v1653 不变 oracle 下按上游状态顺序迁移 readiness、implementation plan、disabled fake harness、execution-denied 与 input-hardening 五个 owner，讲清具名 nested object、无参数 ordered boundary appender、逐 owner 重建策略和 16889/19163/13870/15264/21562 字节 exact parity；census 20/7/1→25/2/1，同时守住 no credential/no router/no write/no WAL/no network/no execution/no auto-start/no authority。

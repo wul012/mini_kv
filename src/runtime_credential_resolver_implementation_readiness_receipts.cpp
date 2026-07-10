@@ -1,5 +1,7 @@
 #include "minikv/runtime_evidence_receipts.hpp"
 
+#include "runtime_receipt_json_builder.hpp"
+
 #include "minikv/runtime_evidence.hpp"
 #include "minikv/version.hpp"
 
@@ -11,10 +13,14 @@ namespace minikv::runtime_evidence_receipts {
 namespace {
 
 using runtime_evidence::DigestPart;
+using runtime_receipt_json::json_array;
+using runtime_receipt_json::json_bool;
+using runtime_receipt_json::json_integer;
+using runtime_receipt_json::json_object;
+using runtime_receipt_json::json_string;
+using runtime_receipt_json::OrderedJsonField;
 
-std::string field_string(std::string_view value) {
-    return runtime_evidence::json_string(value);
-}
+std::string field_string(std::string_view value) { return runtime_evidence::json_string(value); }
 
 std::string receipt_digest(std::string_view prefix, const std::vector<DigestPart>& parts) {
     return runtime_evidence::digest(prefix, parts);
@@ -35,25 +41,30 @@ constexpr std::string_view readiness_profile_version =
 constexpr std::string_view readiness_review_state =
     "credential-resolver-approval-required-implementation-readiness-review-ready";
 constexpr std::string_view readiness_route_path =
-    "/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review";
+    "/api/v1/audit/"
+    "managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review";
 constexpr std::string_view readiness_source_v275_route_path =
-    "/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-approval-required-boundary-upstream-echo-verification";
-constexpr std::string_view readiness_active_plan =
-    "docs/plans2/v280-post-status-routes-quality-roadmap.md";
+    "/api/v1/audit/"
+    "managed-audit-manual-sandbox-connection-credential-resolver-approval-required-boundary-upstream-echo-verification";
+constexpr std::string_view readiness_active_plan = "docs/plans2/v280-post-status-routes-quality-roadmap.md";
 constexpr std::string_view readiness_runtime_role = "runtime evidence provider only";
 constexpr std::string_view readiness_previous_mini_kv_digest = "fnv1a64:4d759e7da4e5d5c0";
 constexpr std::string_view readiness_previous_mini_kv_release = "v121";
 constexpr std::string_view readiness_source_span = "Node v275";
 constexpr std::string_view readiness_source_v275_span = "Node v274 + Java v115 + mini-kv v121";
-constexpr std::string_view readiness_review_mode =
-    "node-v281-approval-required-implementation-readiness-review-only";
+constexpr std::string_view readiness_review_mode = "node-v281-approval-required-implementation-readiness-review-only";
 constexpr std::string_view readiness_stage = "pre-implementation-echo-ready";
-constexpr std::string_view readiness_implementation_stage =
-    "blocked-until-java-v116-mini-kv-v122-and-node-v282";
+constexpr std::string_view readiness_implementation_stage = "blocked-until-java-v116-mini-kv-v122-and-node-v282";
 constexpr std::string_view readiness_boundary =
-    "credential resolver approval-required implementation readiness non-participation receipt only; mini-kv echoes Node v281 implementation readiness review, confirms the six approval-required boundaries and eighteen required artifacts, does not implement or invoke a resolver, does not read credential values, does not parse raw endpoint URLs, does not instantiate a resolver client or secret provider, does not send external requests, does not connect managed audit, does not write storage or approval ledger records, does not execute schema migration or LOAD/COMPACT/RESTORE/SETNXEX, and does not become a managed audit storage backend or order authority";
+    "credential resolver approval-required implementation readiness non-participation receipt only; mini-kv echoes "
+    "Node v281 implementation readiness review, confirms the six approval-required boundaries and eighteen required "
+    "artifacts, does not implement or invoke a resolver, does not read credential values, does not parse raw endpoint "
+    "URLs, does not instantiate a resolver client or secret provider, does not send external requests, does not "
+    "connect managed audit, does not write storage or approval ledger records, does not execute schema migration or "
+    "LOAD/COMPACT/RESTORE/SETNXEX, and does not become a managed audit storage backend or order authority";
 constexpr std::string_view readiness_node_action =
-    "verify mini-kv v122 approval-required implementation readiness non-participation with Java v116 before Node v282 upstream echo verification";
+    "verify mini-kv v122 approval-required implementation readiness non-participation with Java v116 before Node v282 "
+    "upstream echo verification";
 
 constexpr int readiness_check_count = 21;
 constexpr int readiness_boundary_count = 6;
@@ -120,7 +131,8 @@ std::string format_boundary_readiness_json() {
            "\"implementation_disposition\":\"requires-explicit-follow-up-artifacts\","
            "\"owner\":\"operator\",\"required_artifacts\":[\"operator-identity-binding\","
            "\"approval-correlation-marker\",\"manual-window-open-marker\"],"
-           "\"java_v116_echo_hint\":\"Echo operator approval marker and manual-window evidence without executing ledger writes.\","
+           "\"java_v116_echo_hint\":\"Echo operator approval marker and manual-window evidence without executing "
+           "ledger writes.\","
            "\"mini_kv_v122_receipt_hint\":\"Confirm no auto-start and no approval side effects.\","
            "\"node_v282_verification_hint\":\"Verify operator marker completeness before any later dry-run shell.\","
            "\"prohibited_runtime_actions\":[\"execute-without-operator-marker\","
@@ -191,41 +203,66 @@ std::string format_readiness_checks_json() {
            "\"all_required_artifacts_named\":true,\"route_split_quality_line_closed\":true,"
            "\"upstream_probes_still_disabled\":true,\"upstream_actions_still_disabled\":true,"
            "\"production_audit_still_blocked\":true,\"production_window_still_blocked\":true,"
-           "\"ready_for_managed_audit_manual_sandbox_connection_credential_resolver_approval_required_implementation_readiness_review\":true}";
+           "\"ready_for_managed_audit_manual_sandbox_connection_credential_resolver_approval_required_implementation_"
+           "readiness_review\":true}";
 }
 
-std::string format_readiness_non_participation_flags_json() {
-    return "\"read_only\":true,\"execution_allowed\":false,"
-           "\"implementation_readiness_review_only\":true,"
-           "\"approval_required_implementation_readiness_non_participation_receipt_only\":true,"
-           "\"read_only_implementation_readiness_review\":true,"
-           "\"ready_for_java_v116_mini_kv_v122_echo\":true,"
-           "\"ready_for_approval_required_implementation_readiness_upstream_echo\":true,"
-           "\"ready_for_managed_audit_resolver_implementation\":false,"
-           "\"ready_for_managed_audit_sandbox_adapter_connection\":false,"
-           "\"ready_for_production_audit\":false,\"ready_for_production_window\":false,"
-           "\"ready_for_production_operations\":false,\"real_resolver_implementation_allowed\":false,"
-           "\"credential_resolver_implemented\":false,\"credential_resolver_invoked\":false,"
-           "\"resolver_client_instantiated\":false,\"secret_provider_instantiated\":false,"
-           "\"secret_provider_runtime_allowed\":false,\"credential_value_read_allowed\":false,"
-           "\"credential_value_loaded\":false,\"credential_value_stored\":false,"
-           "\"credential_value_included\":false,\"raw_endpoint_url_parse_allowed\":false,"
-           "\"raw_endpoint_url_parsed\":false,\"raw_endpoint_url_included\":false,"
-           "\"external_request_allowed\":false,\"external_request_sent\":false,"
-           "\"connects_managed_audit\":false,\"reads_managed_audit_credential\":false,"
-           "\"stores_managed_audit_credential\":false,\"managed_audit_store\":false,"
-           "\"managed_audit_storage_backend\":false,\"sandbox_audit_storage_backend\":false,"
-           "\"storage_write_allowed\":false,\"write_commands_executed\":false,"
-           "\"admin_commands_executed\":false,\"runtime_write_observed\":false,"
-           "\"approval_ledger_write_allowed\":false,\"approval_ledger_written\":false,"
-           "\"approval_ledger_write_executed\":false,\"managed_audit_write_executed\":false,"
-           "\"production_record_written\":false,\"schema_migration_allowed\":false,"
-           "\"schema_migration_executed\":false,\"schema_rehearsal_execution_allowed\":false,"
-           "\"restore_execution_allowed\":false,\"load_restore_compact_executed\":false,"
-           "\"setnxex_execution_allowed\":false,\"node_auto_start_allowed\":false,"
-           "\"java_auto_start_allowed\":false,\"mini_kv_auto_start_allowed\":false,"
-           "\"automatic_upstream_start_allowed\":false,\"automatic_upstream_start\":false,"
-           "\"audit_authoritative\":false,\"order_authoritative\":false";
+void append_readiness_non_participation_fields(std::vector<OrderedJsonField>& fields) {
+    fields.push_back({"read_only", json_bool(true)});
+    fields.push_back({"execution_allowed", json_bool(false)});
+    fields.push_back({"implementation_readiness_review_only", json_bool(true)});
+    fields.push_back({"approval_required_implementation_readiness_non_participation_receipt_only", json_bool(true)});
+    fields.push_back({"read_only_implementation_readiness_review", json_bool(true)});
+    fields.push_back({"ready_for_java_v116_mini_kv_v122_echo", json_bool(true)});
+    fields.push_back({"ready_for_approval_required_implementation_readiness_upstream_echo", json_bool(true)});
+    fields.push_back({"ready_for_managed_audit_resolver_implementation", json_bool(false)});
+    fields.push_back({"ready_for_managed_audit_sandbox_adapter_connection", json_bool(false)});
+    fields.push_back({"ready_for_production_audit", json_bool(false)});
+    fields.push_back({"ready_for_production_window", json_bool(false)});
+    fields.push_back({"ready_for_production_operations", json_bool(false)});
+    fields.push_back({"real_resolver_implementation_allowed", json_bool(false)});
+    fields.push_back({"credential_resolver_implemented", json_bool(false)});
+    fields.push_back({"credential_resolver_invoked", json_bool(false)});
+    fields.push_back({"resolver_client_instantiated", json_bool(false)});
+    fields.push_back({"secret_provider_instantiated", json_bool(false)});
+    fields.push_back({"secret_provider_runtime_allowed", json_bool(false)});
+    fields.push_back({"credential_value_read_allowed", json_bool(false)});
+    fields.push_back({"credential_value_loaded", json_bool(false)});
+    fields.push_back({"credential_value_stored", json_bool(false)});
+    fields.push_back({"credential_value_included", json_bool(false)});
+    fields.push_back({"raw_endpoint_url_parse_allowed", json_bool(false)});
+    fields.push_back({"raw_endpoint_url_parsed", json_bool(false)});
+    fields.push_back({"raw_endpoint_url_included", json_bool(false)});
+    fields.push_back({"external_request_allowed", json_bool(false)});
+    fields.push_back({"external_request_sent", json_bool(false)});
+    fields.push_back({"connects_managed_audit", json_bool(false)});
+    fields.push_back({"reads_managed_audit_credential", json_bool(false)});
+    fields.push_back({"stores_managed_audit_credential", json_bool(false)});
+    fields.push_back({"managed_audit_store", json_bool(false)});
+    fields.push_back({"managed_audit_storage_backend", json_bool(false)});
+    fields.push_back({"sandbox_audit_storage_backend", json_bool(false)});
+    fields.push_back({"storage_write_allowed", json_bool(false)});
+    fields.push_back({"write_commands_executed", json_bool(false)});
+    fields.push_back({"admin_commands_executed", json_bool(false)});
+    fields.push_back({"runtime_write_observed", json_bool(false)});
+    fields.push_back({"approval_ledger_write_allowed", json_bool(false)});
+    fields.push_back({"approval_ledger_written", json_bool(false)});
+    fields.push_back({"approval_ledger_write_executed", json_bool(false)});
+    fields.push_back({"managed_audit_write_executed", json_bool(false)});
+    fields.push_back({"production_record_written", json_bool(false)});
+    fields.push_back({"schema_migration_allowed", json_bool(false)});
+    fields.push_back({"schema_migration_executed", json_bool(false)});
+    fields.push_back({"schema_rehearsal_execution_allowed", json_bool(false)});
+    fields.push_back({"restore_execution_allowed", json_bool(false)});
+    fields.push_back({"load_restore_compact_executed", json_bool(false)});
+    fields.push_back({"setnxex_execution_allowed", json_bool(false)});
+    fields.push_back({"node_auto_start_allowed", json_bool(false)});
+    fields.push_back({"java_auto_start_allowed", json_bool(false)});
+    fields.push_back({"mini_kv_auto_start_allowed", json_bool(false)});
+    fields.push_back({"automatic_upstream_start_allowed", json_bool(false)});
+    fields.push_back({"automatic_upstream_start", json_bool(false)});
+    fields.push_back({"audit_authoritative", json_bool(false)});
+    fields.push_back({"order_authoritative", json_bool(false)});
 }
 
 } // namespace
@@ -263,129 +300,161 @@ std::string credential_resolver_approval_required_implementation_readiness_non_p
         {"false"},
         {read_command_list_digest(read_commands)},
     };
-    return receipt_digest(
-        "mini-kv-credential-resolver-approval-required-implementation-readiness-non-participation",
-        parts);
+    return receipt_digest("mini-kv-credential-resolver-approval-required-implementation-readiness-non-participation",
+                          parts);
 }
 
 std::string format_credential_resolver_approval_required_implementation_readiness_non_participation_receipt_json(
     const std::vector<std::string>& read_commands) {
-    return "{\"receipt_version\":\"mini-kv-credential-resolver-approval-required-implementation-readiness-non-participation-receipt.v1\","
-           "\"receipt_fixture_path\":" + field_string(readiness_receipt_fixture_path) +
-           ",\"source_review\":" + field_string(readiness_source_review) +
-           ",\"source_verification\":" + field_string(readiness_source_verification) +
-           ",\"consumer_hint\":" + field_string(readiness_receipt_consumer) +
-           ",\"current_project_version\":" + field_string(version) +
-           ",\"runtime_project_version\":" + field_string(version) +
-           ",\"current_release_version\":" + field_string(readiness_receipt_release_version) +
-           ",\"current_artifact_path_hint\":" + field_string(readiness_receipt_artifact_path_hint) +
-           ",\"previous_mini_kv_release_version\":" + field_string(readiness_previous_mini_kv_release) +
-           ",\"previous_mini_kv_receipt_digest\":" + field_string(readiness_previous_mini_kv_digest) +
-           ",\"current_runtime_fixture_release_version\":\"v102\""
-           ",\"current_runtime_fixture_artifact_path_hint\":\"c/102/\""
-           ",\"current_live_read_session_echo\":\"mini-kv-live-read-v102\""
-           ",\"runtime_role\":" + field_string(readiness_runtime_role) +
-           ",\"source_profile_version\":" + field_string(readiness_profile_version) +
-           ",\"source_route_path\":" + field_string(readiness_route_path) +
-           ",\"source_verification_route_path\":" + field_string(readiness_source_v275_route_path) +
-           ",\"source_review_state\":" + field_string(readiness_review_state) +
-           ",\"source_ready_for_approval_required_implementation_readiness_review\":true"
-           ",\"source_read_only_implementation_readiness_review\":true"
-           ",\"source_ready_for_java_v116_mini_kv_v122_echo\":true"
-           ",\"source_ready_for_managed_audit_resolver_implementation\":false"
-           ",\"source_ready_for_managed_audit_sandbox_adapter_connection\":false"
-           ",\"source_ready_for_production_audit\":false"
-           ",\"source_ready_for_production_window\":false"
-           ",\"source_ready_for_production_operations\":false"
-           ",\"source_real_resolver_implementation_allowed\":false"
-           ",\"source_execution_allowed\":false"
-           ",\"source_connects_managed_audit\":false"
-           ",\"source_reads_managed_audit_credential\":false"
-           ",\"source_stores_managed_audit_credential\":false"
-           ",\"source_credential_value_read\":false"
-           ",\"source_raw_endpoint_url_parsed\":false"
-           ",\"source_external_request_sent\":false"
-           ",\"source_secret_provider_instantiated\":false"
-           ",\"source_resolver_client_instantiated\":false"
-           ",\"source_schema_migration_executed\":false"
-           ",\"source_approval_ledger_written\":false"
-           ",\"source_automatic_upstream_start\":false"
-           ",\"source_node_v275\":{\"source_version\":\"Node v275\","
-           "\"verification_state\":\"credential-resolver-approval-required-boundary-upstream-echo-verification-ready\","
-           "\"ready_for_approval_required_boundary_upstream_echo_verification\":true,"
-           "\"source_span\":" + field_string(readiness_source_v275_span) +
-           ",\"source_check_count\":" + std::to_string(readiness_source_v275_check_count) +
-           ",\"source_passed_check_count\":" + std::to_string(readiness_source_v275_check_count) +
-           ",\"approval_required_boundary_count\":" + std::to_string(readiness_boundary_count) +
-           ",\"approval_required_boundary_codes\":" + format_approval_required_boundaries_json() +
-           ",\"approval_required_requirement_codes\":" + format_requirement_codes_json() +
-           ",\"approval_required_boundary_scope_aligned\":true,"
-           "\"approval_required_explanations_aligned\":true,"
-           "\"prohibited_runtime_actions_aligned\":true,"
-           "\"credential_boundary_aligned\":true,\"raw_endpoint_boundary_aligned\":true,"
-           "\"resolver_boundary_aligned\":true,\"connection_boundary_aligned\":true,"
-           "\"write_boundary_aligned\":true,\"auto_start_boundary_aligned\":true,"
-           "\"real_resolver_implementation_allowed\":false,\"execution_allowed\":false,"
-           "\"connects_managed_audit\":false,\"reads_managed_audit_credential\":false,"
-           "\"stores_managed_audit_credential\":false,\"credential_value_read\":false,"
-           "\"raw_endpoint_url_parsed\":false,\"external_request_sent\":false,"
-           "\"secret_provider_instantiated\":false,\"resolver_client_instantiated\":false,"
-           "\"schema_migration_executed\":false,\"approval_ledger_written\":false,"
-           "\"automatic_upstream_start\":false}"
-           ",\"readiness_review\":" + format_readiness_review_json() +
-           ",\"boundary_readiness\":{\"boundary_count\":" + std::to_string(readiness_boundary_count) +
-           ",\"echo_ready_boundary_count\":" + std::to_string(readiness_echo_ready_boundary_count) +
-           ",\"blocked_for_implementation_boundary_count\":" +
-           std::to_string(readiness_blocked_boundary_count) +
-           ",\"required_artifact_count\":" + std::to_string(readiness_required_artifact_count) +
-           ",\"boundary_codes\":" + format_approval_required_boundaries_json() +
-           ",\"required_artifact_codes\":" + format_required_artifact_codes_json() +
-           ",\"details\":" + format_boundary_readiness_json() + "}"
-           ",\"checks\":" + format_readiness_checks_json() +
-           ",\"summary\":{\"check_count\":" + std::to_string(readiness_check_count) +
-           ",\"passed_check_count\":" + std::to_string(readiness_check_count) +
-           ",\"source_check_count\":" + std::to_string(readiness_source_v275_check_count) +
-           ",\"source_passed_check_count\":" + std::to_string(readiness_source_v275_check_count) +
-           ",\"boundary_count\":" + std::to_string(readiness_boundary_count) +
-           ",\"echo_ready_boundary_count\":" + std::to_string(readiness_echo_ready_boundary_count) +
-           ",\"blocked_for_implementation_boundary_count\":" +
-           std::to_string(readiness_blocked_boundary_count) +
-           ",\"required_artifact_count\":" + std::to_string(readiness_required_artifact_count) +
-           ",\"java_v116_echo_hint_count\":" + std::to_string(readiness_java_v116_hint_count) +
-           ",\"mini_kv_v122_receipt_hint_count\":" +
-           std::to_string(readiness_mini_kv_v122_hint_count) +
-           ",\"production_blocker_count\":" + std::to_string(readiness_production_blocker_count) +
-           ",\"warning_count\":" + std::to_string(readiness_warning_count) +
-           ",\"recommendation_count\":" + std::to_string(readiness_recommendation_count) + "}"
-           ",\"production_blocker_codes\":[]"
-           ",\"warnings\":[{\"code\":\"IMPLEMENTATION_STILL_BLOCKED\","
-           "\"severity\":\"warning\"},{\"code\":\"ROUTE_SPLIT_QUALITY_LINE_CLOSED\","
-           "\"severity\":\"warning\"}]"
-           ",\"recommendations\":[{\"code\":\"RUN_JAVA_V116_AND_MINI_KV_V122_IN_PARALLEL\","
-           "\"severity\":\"recommendation\"},{\"code\":\"VERIFY_WITH_NODE_V282_BEFORE_IMPLEMENTATION_DRAFT\","
-           "\"severity\":\"recommendation\"}]"
-           ",\"evidence_endpoints\":{\"approval_required_implementation_readiness_review_json\":" +
-           field_string(readiness_route_path) +
-           ",\"approval_required_implementation_readiness_review_markdown\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review?format=markdown\","
-           "\"source_node_v275_json\":" + field_string(readiness_source_v275_route_path) +
-           ",\"source_node_v275_markdown\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-approval-required-boundary-upstream-echo-verification?format=markdown\","
-           "\"active_plan\":" + field_string(readiness_active_plan) +
-           ",\"recommended_parallel_java_v116\":\"Java v116 approval-required implementation readiness echo\","
-           "\"recommended_parallel_mini_kv_v122\":\"mini-kv v122 approval-required implementation non-participation readiness receipt\","
-           "\"next_node_verification_version\":\"Node v282\"}"
-           ",\"next_required_echo_versions\":[\"Java v116\",\"mini-kv v122\"]"
-           ",\"binary_provenance_digest\":" + field_string(binary_provenance_digest()) +
-           ",\"retention_check_digest\":" + field_string(retention_provenance_check_digest()) +
-           ",\"retention_replay_marker_digest\":" +
-           field_string(retention_provenance_replay_marker_digest()) +
-           ",\"read_command_list_digest\":" + field_string(read_command_list_digest(read_commands)) +
-           ",\"receipt_digest\":" +
-           field_string(
-               credential_resolver_approval_required_implementation_readiness_non_participation_receipt_digest(
-                   read_commands)) +
-           "," + format_readiness_non_participation_flags_json() +
-           ",\"boundary\":" + field_string(readiness_boundary) +
-           ",\"node_action\":" + field_string(readiness_node_action) + "}";
+    const auto source_node_v275 = json_object({
+        {"source_version", json_string("Node v275")},
+        {"verification_state",
+         json_string("credential-resolver-approval-required-boundary-upstream-echo-verification-ready")},
+        {"ready_for_approval_required_boundary_upstream_echo_verification", json_bool(true)},
+        {"source_span", json_string(readiness_source_v275_span)},
+        {"source_check_count", json_integer(readiness_source_v275_check_count)},
+        {"source_passed_check_count", json_integer(readiness_source_v275_check_count)},
+        {"approval_required_boundary_count", json_integer(readiness_boundary_count)},
+        {"approval_required_boundary_codes", format_approval_required_boundaries_json()},
+        {"approval_required_requirement_codes", format_requirement_codes_json()},
+        {"approval_required_boundary_scope_aligned", json_bool(true)},
+        {"approval_required_explanations_aligned", json_bool(true)},
+        {"prohibited_runtime_actions_aligned", json_bool(true)},
+        {"credential_boundary_aligned", json_bool(true)},
+        {"raw_endpoint_boundary_aligned", json_bool(true)},
+        {"resolver_boundary_aligned", json_bool(true)},
+        {"connection_boundary_aligned", json_bool(true)},
+        {"write_boundary_aligned", json_bool(true)},
+        {"auto_start_boundary_aligned", json_bool(true)},
+        {"real_resolver_implementation_allowed", json_bool(false)},
+        {"execution_allowed", json_bool(false)},
+        {"connects_managed_audit", json_bool(false)},
+        {"reads_managed_audit_credential", json_bool(false)},
+        {"stores_managed_audit_credential", json_bool(false)},
+        {"credential_value_read", json_bool(false)},
+        {"raw_endpoint_url_parsed", json_bool(false)},
+        {"external_request_sent", json_bool(false)},
+        {"secret_provider_instantiated", json_bool(false)},
+        {"resolver_client_instantiated", json_bool(false)},
+        {"schema_migration_executed", json_bool(false)},
+        {"approval_ledger_written", json_bool(false)},
+        {"automatic_upstream_start", json_bool(false)},
+    });
+    const auto boundary_readiness = json_object({
+        {"boundary_count", json_integer(readiness_boundary_count)},
+        {"echo_ready_boundary_count", json_integer(readiness_echo_ready_boundary_count)},
+        {"blocked_for_implementation_boundary_count", json_integer(readiness_blocked_boundary_count)},
+        {"required_artifact_count", json_integer(readiness_required_artifact_count)},
+        {"boundary_codes", format_approval_required_boundaries_json()},
+        {"required_artifact_codes", format_required_artifact_codes_json()},
+        {"details", format_boundary_readiness_json()},
+    });
+    const auto summary = json_object({
+        {"check_count", json_integer(readiness_check_count)},
+        {"passed_check_count", json_integer(readiness_check_count)},
+        {"source_check_count", json_integer(readiness_source_v275_check_count)},
+        {"source_passed_check_count", json_integer(readiness_source_v275_check_count)},
+        {"boundary_count", json_integer(readiness_boundary_count)},
+        {"echo_ready_boundary_count", json_integer(readiness_echo_ready_boundary_count)},
+        {"blocked_for_implementation_boundary_count", json_integer(readiness_blocked_boundary_count)},
+        {"required_artifact_count", json_integer(readiness_required_artifact_count)},
+        {"java_v116_echo_hint_count", json_integer(readiness_java_v116_hint_count)},
+        {"mini_kv_v122_receipt_hint_count", json_integer(readiness_mini_kv_v122_hint_count)},
+        {"production_blocker_count", json_integer(readiness_production_blocker_count)},
+        {"warning_count", json_integer(readiness_warning_count)},
+        {"recommendation_count", json_integer(readiness_recommendation_count)},
+    });
+    const auto warnings = json_array({
+        json_object({{"code", json_string("IMPLEMENTATION_STILL_BLOCKED")}, {"severity", json_string("warning")}}),
+        json_object({{"code", json_string("ROUTE_SPLIT_QUALITY_LINE_CLOSED")}, {"severity", json_string("warning")}}),
+    });
+    const auto recommendations = json_array({
+        json_object({{"code", json_string("RUN_JAVA_V116_AND_MINI_KV_V122_IN_PARALLEL")},
+                     {"severity", json_string("recommendation")}}),
+        json_object({{"code", json_string("VERIFY_WITH_NODE_V282_BEFORE_IMPLEMENTATION_DRAFT")},
+                     {"severity", json_string("recommendation")}}),
+    });
+    const auto evidence_endpoints = json_object({
+        {"approval_required_implementation_readiness_review_json", json_string(readiness_route_path)},
+        {"approval_required_implementation_readiness_review_markdown",
+         json_string("/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-approval-required-"
+                     "implementation-readiness-review?format=markdown")},
+        {"source_node_v275_json", json_string(readiness_source_v275_route_path)},
+        {"source_node_v275_markdown",
+         json_string("/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-approval-required-"
+                     "boundary-upstream-echo-verification?format=markdown")},
+        {"active_plan", json_string(readiness_active_plan)},
+        {"recommended_parallel_java_v116", json_string("Java v116 approval-required implementation readiness echo")},
+        {"recommended_parallel_mini_kv_v122",
+         json_string("mini-kv v122 approval-required implementation non-participation readiness receipt")},
+        {"next_node_verification_version", json_string("Node v282")},
+    });
+
+    std::vector<OrderedJsonField> fields = {
+        {"receipt_version",
+         json_string("mini-kv-credential-resolver-approval-required-implementation-readiness-non-participation-"
+                     "receipt.v1")},
+        {"receipt_fixture_path", json_string(readiness_receipt_fixture_path)},
+        {"source_review", json_string(readiness_source_review)},
+        {"source_verification", json_string(readiness_source_verification)},
+        {"consumer_hint", json_string(readiness_receipt_consumer)},
+        {"current_project_version", json_string(version)},
+        {"runtime_project_version", json_string(version)},
+        {"current_release_version", json_string(readiness_receipt_release_version)},
+        {"current_artifact_path_hint", json_string(readiness_receipt_artifact_path_hint)},
+        {"previous_mini_kv_release_version", json_string(readiness_previous_mini_kv_release)},
+        {"previous_mini_kv_receipt_digest", json_string(readiness_previous_mini_kv_digest)},
+        {"current_runtime_fixture_release_version", json_string("v102")},
+        {"current_runtime_fixture_artifact_path_hint", json_string("c/102/")},
+        {"current_live_read_session_echo", json_string("mini-kv-live-read-v102")},
+        {"runtime_role", json_string(readiness_runtime_role)},
+        {"source_profile_version", json_string(readiness_profile_version)},
+        {"source_route_path", json_string(readiness_route_path)},
+        {"source_verification_route_path", json_string(readiness_source_v275_route_path)},
+        {"source_review_state", json_string(readiness_review_state)},
+        {"source_ready_for_approval_required_implementation_readiness_review", json_bool(true)},
+        {"source_read_only_implementation_readiness_review", json_bool(true)},
+        {"source_ready_for_java_v116_mini_kv_v122_echo", json_bool(true)},
+        {"source_ready_for_managed_audit_resolver_implementation", json_bool(false)},
+        {"source_ready_for_managed_audit_sandbox_adapter_connection", json_bool(false)},
+        {"source_ready_for_production_audit", json_bool(false)},
+        {"source_ready_for_production_window", json_bool(false)},
+        {"source_ready_for_production_operations", json_bool(false)},
+        {"source_real_resolver_implementation_allowed", json_bool(false)},
+        {"source_execution_allowed", json_bool(false)},
+        {"source_connects_managed_audit", json_bool(false)},
+        {"source_reads_managed_audit_credential", json_bool(false)},
+        {"source_stores_managed_audit_credential", json_bool(false)},
+        {"source_credential_value_read", json_bool(false)},
+        {"source_raw_endpoint_url_parsed", json_bool(false)},
+        {"source_external_request_sent", json_bool(false)},
+        {"source_secret_provider_instantiated", json_bool(false)},
+        {"source_resolver_client_instantiated", json_bool(false)},
+        {"source_schema_migration_executed", json_bool(false)},
+        {"source_approval_ledger_written", json_bool(false)},
+        {"source_automatic_upstream_start", json_bool(false)},
+        {"source_node_v275", source_node_v275},
+        {"readiness_review", format_readiness_review_json()},
+        {"boundary_readiness", boundary_readiness},
+        {"checks", format_readiness_checks_json()},
+        {"summary", summary},
+        {"production_blocker_codes", json_array({})},
+        {"warnings", warnings},
+        {"recommendations", recommendations},
+        {"evidence_endpoints", evidence_endpoints},
+        {"next_required_echo_versions", json_array({json_string("Java v116"), json_string("mini-kv v122")})},
+        {"binary_provenance_digest", json_string(binary_provenance_digest())},
+        {"retention_check_digest", json_string(retention_provenance_check_digest())},
+        {"retention_replay_marker_digest", json_string(retention_provenance_replay_marker_digest())},
+        {"read_command_list_digest", json_string(read_command_list_digest(read_commands))},
+        {"receipt_digest",
+         json_string(credential_resolver_approval_required_implementation_readiness_non_participation_receipt_digest(
+             read_commands))},
+    };
+    append_readiness_non_participation_fields(fields);
+    fields.push_back({"boundary", json_string(readiness_boundary)});
+    fields.push_back({"node_action", json_string(readiness_node_action)});
+    return json_object(std::span<const OrderedJsonField>{fields.data(), fields.size()});
 }
 
 } // namespace minikv::runtime_evidence_receipts

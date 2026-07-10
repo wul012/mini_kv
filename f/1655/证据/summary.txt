@@ -1,0 +1,103 @@
+mini-kv v1655 implementation-chain builder migration
+date: 2026-07-10
+
+scope:
+- migrate approval-required implementation-readiness receipt owner
+- migrate implementation-plan receipt owner
+- migrate disabled-fake-harness receipt owner
+- migrate execution-denied preflight receipt owner
+- migrate input-hardening candidate-gate receipt owner
+- replace brace-less non-participation/closed-side-effect fragments with ordered field appenders
+- tighten the mechanical builder-backed owner floor from 20 to 25
+
+upstream guidance read:
+- D:/nodeproj/orderops-node/docs/plans/README.md
+- D:/nodeproj/orderops-node/docs/plans/v2187-v2189-n5-source-size-health-roadmap.md
+- D:/nodeproj/orderops-node/docs/plans/production-excellence-final-acceptance.md
+- D:/C/mini-kv/治理计划/v1637-production-excellence-completion-brief.md
+- scope verdict: Node N5 allows mini-kv parallel internal maintenance; no Node/Java write is required
+
+previous-version remote gate:
+- v1654 GitHub Actions run 29090771717: completed success
+- ubuntu, macOS, Windows, sanitizer, coverage, format, and archive inventory all succeeded
+
+unchanged v1653 oracle results:
+- readiness: 16889 bytes, 112 fields, exact fixture/runtime equality
+  digest fnv1a64:cc9b259e630b82cd
+- implementation plan: 19163 bytes, 121 fields, exact fixture/runtime equality
+  digest fnv1a64:bdea7f2634c384f0
+- disabled fake harness: 13870 bytes, 135 fields, exact fixture/runtime equality
+  digest fnv1a64:fbc65c76469b4aab
+- execution denied: 15264 bytes, 138 fields, exact fixture/runtime equality
+  digest fnv1a64:ffe9a9c891eaf2df
+- input hardening: 21562 bytes, 113 fields, exact fixture/runtime equality
+  digest fnv1a64:86f2b243c74f9386
+- no compatibility rule is used by any of these five outputs
+
+implementation structure:
+- readiness keeps Node v275/readiness/boundary tables local and appends 55 closed fields in historical order
+- implementation plan keeps seven interface-boundary families local and appends its own closed fields
+- disabled fake harness names credential/endpoint/provider/network/write/auto-start boundaries
+- execution denied preserves eight simulated attempts, eight denials, and zero actual execution attempts
+- input hardening uses one local closed-side-effect appender in Node v328, Node v329, and top-level objects
+- complete legacy domain arrays remain encoded raw JSON values; builder owns only deterministic assembly
+- no version branch, mode enum, universal schema, or boolean parameter matrix was introduced
+
+mechanical census:
+- sources=28
+- formatter_owners=27
+- builder_backed=25
+- pending=2
+- named_waivers=1
+- floor tightened 20 -> 25
+- remaining owners: runtime_evidence_receipts.cpp; runtime_sandbox_receipts.cpp
+
+maintainability:
+- implementation readiness: 391 -> 460 physical lines
+- implementation plan: 477 -> 551 physical lines
+- disabled fake harness: 442 -> 479 physical lines
+- execution denied: 423 -> 461 physical lines
+- input hardening: 441 -> 501 physical lines
+- net +278 physical lines of explicit object/field ownership
+- maximum touched owner is 551 lines, below the 800-line stop threshold
+- no companion file or naming trick was used to evade the owner census
+
+verification:
+- CMake configure/build tree: cmake-build-v1655
+- all-target build: exit 0, all targets 100%
+- incremental oracle after each owner migration: passed
+- code-focused CTest: 10/10 passed, 6.21 sec
+- final post-document focused CTest: 22/22 passed, 4.21 sec
+- first full local CTest: 348/348 passed, 195.41 sec
+- final post-document full local CTest: 348/348 passed, 106.62 sec
+- changed C++ clang-format dry-run: passed
+- git diff --check: passed
+- tests + fixtures/release diff: none
+- walkthrough Chinese character count: 3111
+- real CLI: 5/5 target receipts present; each passed 10/10 closed-boundary assertions
+- CHECKJSON LOAD: read_only=true, execution_allowed=false, wal.touches_wal=false
+- CLI exit: BYE
+
+closed boundaries observed in all five real runtime receipts:
+- read_only=true
+- execution_allowed=false
+- credential_value_read_allowed=false
+- managed_audit_store=false
+- storage_write_allowed=false
+- write_commands_executed=false
+- runtime_write_observed=false
+- load_restore_compact_executed=false
+- node_auto_start_allowed=false
+- order_authoritative=false
+
+deliberately unchanged:
+- tests/runtime_receipt_remaining_owner_baseline_tests.cpp
+- all domain test expectations
+- fixtures/release/*.json
+- public formatter/digest signatures and command surface
+- Store/WAL/snapshot/RESP/TCP/OSFS behavior
+- credential/network/router/write/execution/auto-start/authority boundaries
+
+archive rendering:
+- final PNG evidence pages are captured by Playwright MCP from local in-memory HTML pages
+- no application server or repository process is required for screenshot production
