@@ -1,0 +1,75 @@
+mini-kv v1652 legacy resolver chain builder migration
+date: 2026-07-10
+
+scope:
+- migrate four v117-v120 formatter owners to ordered JSON builders
+- name source/archive/decision/plan/interface/fake-wiring/summary/endpoint objects
+- replace four field-fragment boundary helpers with local ordered field appenders
+- keep complete historical arrays/checks helpers as trusted internal raw JSON values
+
+upstream guidance read:
+- D:/nodeproj/orderops-node/docs/plans/README.md
+- D:/nodeproj/orderops-node/docs/plans/production-excellence-node-playbook.md
+- D:/nodeproj/orderops-node/docs/plans2/v325-post-no-network-safety-fixture-prerequisite-closure-roadmap.md
+- D:/nodeproj/orderops-node/docs/plans2/v328-post-final-prerequisite-closure-roadmap.md
+- D:/nodeproj/orderops-node/docs/plans2/v330-post-candidate-gate-upstream-hardening-roadmap.md
+- D:/nodeproj/orderops-node/docs/plans2/v332-post-disabled-design-draft-candidate-archive-verification-roadmap.md
+- scope verdict: internal maintenance is allowed; no new mini-kv contract or execution capability is requested
+
+exact parity under unchanged v1651 oracle:
+- fake-shell archive: 12335 bytes, 95 fields, fnv1a64:13e45250210526fe
+- blocked decision: 10623 bytes, 99 fields, fnv1a64:10793a18910b09d2
+- plan intake: 11114 bytes, 101 fields, fnv1a64:b5bf23a427aa5aae
+- disabled candidate: 15160 bytes, 106 fields, fnv1a64:a602d27c08315d04
+- fixture == runtime for all four; canonical waivers: 0
+- no file under fixtures/release or tests changed
+
+mechanical census:
+- sources=28
+- formatter_owners=27
+- builder_backed=18
+- pending=9
+- named_waivers=1
+- CMake floor tightened: 14 -> 18
+
+maintainability:
+- archive formatter file: 311 -> 396 physical lines including blanks
+- blocked decision file: 298 -> 371 physical lines including blanks
+- plan intake file: 301 -> 390 physical lines including blanks
+- disabled candidate file: 408 -> 490 physical lines including blanks
+- total: +329 lines of explicit structured ownership; no shrink claim
+- all four files remain below 500 lines; no parameterized universal boundary schema added
+
+verification:
+- per-file migration parity/domain gates: 2/2 for each file
+- first combined migration/census gate: 6/6 passed
+- all-target build: exit 0, all targets 100%
+- final focused CTest: 10/10 passed, 2.43 sec
+- final full CTest: 347/347 passed, 162.33 sec
+- real CLI: all four target receipt markers exactly 1
+- CHECKJSON LOAD: classification only; touches_wal=false; LOAD not executed
+- CLI exit: BYE exactly 1
+
+build-wrapper deviation:
+- initial all-target command exceeded the five-minute tool call window near 91%
+- the same child build processes were allowed to finish; no concurrent second build was started
+- a short incremental all-target rerun then returned exit 0 and confirmed every target at 100%
+
+closed boundaries observed in real SMOKEJSON:
+- read_only=true: 55
+- execution_allowed=false: 81
+- credential_value_read_allowed=false: 44
+- raw_endpoint_url_parsed=false: 68
+- external_request_sent=false: 74
+- write_commands_executed=false: 37
+- load_restore_compact_executed=false: 45
+- order_authoritative=false: 47
+
+walkthrough:
+- 代码讲解记录_生产雏形阶段_第四册/1020-version-1652-legacy-resolver-chain-builder-migration.md
+- Chinese character count: 3704
+
+review checkpoint:
+- reached 18 builder-backed / 9 pending / 1 waiver
+- stop after commit, tag, push, and final CI success
+- next action belongs to independent Claude review; do not migrate another receipt before verdict

@@ -147,3 +147,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1651 补充索引
 
 - v1651: [1019-version-1651-legacy-resolver-chain-parity-baseline.md](1019-version-1651-legacy-resolver-chain-parity-baseline.md) - 在生产 formatter 不变的前提下，为 v117-v120 四份 legacy resolver 连续回执建立独立 exact-byte oracle；冻结 12335/10623/11114/15160 字节、95/99/101/106 个顶层字段、四个版本化摘要、零 canonical waiver 与八类关闭边界，明确本版 census 仍为 14/13/1，下一版迁移不得通过修改 fixture 或基线来放宽判定。
+
+## v1652 补充索引
+
+- v1652: [1020-version-1652-legacy-resolver-chain-builder-migration.md](1020-version-1652-legacy-resolver-chain-builder-migration.md) - 在 v1651 不可变 oracle 下迁移 v117-v120 四个 legacy resolver formatter，分别命名 archive/source/decision/plan/interface/fake-wiring 子对象，把无大括号边界碎片改成有序字段追加；12335/10623/11114/15160 字节、95/99/101/106 字段和四份 digest 不变，census 从 14/13/1 收紧到 review floor 18/9/1，并如实记录 329 行结构化可读性增长而非虚报 shrink。
