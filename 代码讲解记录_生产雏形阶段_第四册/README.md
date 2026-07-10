@@ -123,3 +123,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1645 补充索引
 
 - v1645: [1013-version-1645-approval-lifecycle-parity-census-gate.md](1013-version-1645-approval-lifecycle-parity-census-gate.md) - 在批量迁移前冻结四份 approval lifecycle fixture 的大小、digest、字段数和 canonical 差异，解释为何 post-echo 的额外一字节空格必须成为阻塞而不是第二个 waiver，并用 CMake census 门把 28 sources/27 formatter owners/5 builder-backed/22 pending/1 named waiver 变成可失败的 ratchet。
+
+## v1646 补充索引
+
+- v1646: [1014-version-1646-approval-lifecycle-three-formatter-migration.md](1014-version-1646-approval-lifecycle-three-formatter-migration.md) - 一次迁移三份已由 v1645 证明 migration-ready 的 approval lifecycle formatter，讲清命名子对象、有序顶层字段、共享 disabled-runtime-shell 边界后缀、单 family apostrophe 规则、census 5→8 ratchet，以及 focused/full CTest 与真实 CLI 如何共同证明 no router/no write/no WAL/no network/no credential/no execution。

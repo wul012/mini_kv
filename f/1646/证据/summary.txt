@@ -1,0 +1,34 @@
+mini-kv v1646 evidence summary
+
+Scope:
+- Migrate three v1645 migration-ready approval lifecycle formatters to ordered JSON builders.
+- Deduplicate the identical disabled-runtime-shell closed-boundary suffix used by two receipt families.
+- Raise the receipt builder census floor from 5 to 8; leave post-echo untouched and blocked.
+
+Structure:
+- approval-required boundary owns its distinct local boundary field table.
+- approval-prerequisite artifact and human approval review share one exact-order closed runtime-shell suffix.
+- named nested objects/arrays replace top-level and major nested string concatenation.
+
+Parity and census:
+- approval-required boundary remains exact fixture/runtime parity: 12949 fixture bytes, 108 fields.
+- approval-prerequisite artifact keeps only its named Node v306 apostrophe rule: 16483 bytes, 107 fields.
+- human approval review keeps only its named Node v308 apostrophe rule: 17116 bytes, 107 fields.
+- census: sources=28; formatter owners=27; builder-backed=8; pending=19; named waiver=1.
+- post-echo source, fixture baseline and migration_ready=false state are unchanged.
+
+Verification:
+- clean v1646 configure and full 1000-step build succeeded.
+- focused census/parity/domain/downstream CTest = 8/8 passed.
+- full local CTest = 345/345 passed in 186.02 seconds.
+- CLI SMOKEJSON/CHECKJSON/QUIT smoke completed and returned BYE.
+- v1645 upstream CI run 29062041517 completed successfully across all six jobs.
+- Chinese walkthrough contains 3,768 Chinese characters (11,318 UTF-8 text characters).
+
+Boundaries:
+- read_only=true; execution_allowed=false.
+- no router, Store/WAL write, HTTP/TCP, credential read, raw endpoint parse, approval ledger write, schema migration, LOAD/COMPACT/RESTORE/SETNXEX execution, auto-start, audit authority or order authority was added.
+- no committed fixture or migration expectation was changed.
+
+Next:
+- resolve the post-echo compact-whitespace drift in an isolated version before any builder migration.

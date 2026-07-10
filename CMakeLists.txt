@@ -451,7 +451,7 @@ add_test(
     NAME receipt_builder_census_contract
     COMMAND ${CMAKE_COMMAND}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-            -DMIN_BUILDER_BACKED=5
+            -DMIN_BUILDER_BACKED=8
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_receipt_builder_census.cmake
 )
 
