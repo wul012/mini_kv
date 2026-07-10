@@ -1,0 +1,26 @@
+mini-kv v1643 evidence summary
+
+Scope:
+- Complete endpoint-handle allowlist approval receipt top-level ordered-builder migration.
+- Keep endpoint/raw-endpoint/allowlist boundary ownership local to its formatter.
+- Remove the temporary boundary object strip-and-splice helper.
+- No new command, fixture rewrite, digest change, router/write/WAL/network/credential/execution capability.
+
+Plans read:
+- D:\nodeproj\orderops-node\docs\plans\README.md
+- D:\nodeproj\orderops-node\docs\plans\production-excellence-java-final-push.md
+- D:\C\mini-kv\治理计划\v1637-production-excellence-completion-brief.md
+- D:\C\四项目理解统筹\模型使用手册\00-通用方法内核.md
+
+Verification:
+- focused CTest: runtime_receipt_json_builder_tests, endpoint_handle_allowlist_approval_contract_receipt_tests, smokejson_command_receipt_tests, runtime_smoke_evidence_tests, release_verification_manifest_tests = 5/5 passed.
+- final hook-formatted full local build succeeded; full local CTest = 344/344 passed in 162.18 seconds.
+- real CLI smoke: SMOKEJSON exposed the endpoint-handle receipt and kept read_only=true/execution_allowed=false; CHECKJSON LOAD classified LOAD as a write command with store-replace side effect without executing it or touching WAL.
+- clang-format dry-run --Werror and git diff --check passed (Windows line-ending normalization warnings only).
+- strict archive inventory passed with warnings: none; f/1643 stayed below the 8 MiB per-version budget.
+- documentation/archive focused CTest = 12/12 passed after the final walkthrough and PNG archive were present.
+- walkthrough length = 7,659 UTF-8 characters; endpoint source = 558 lines after structured expansion.
+
+Boundary result:
+- endpoint formatter remains byte-identical to its frozen fixture subobject.
+- endpoint handle store/validate/resolve/authority, allowlist authority, approval-status authority, raw endpoint accept/store/parse/render, network, router, Store/WAL write, schema, restore/load/compact/SETNXEX, auto-start, audit/order authority, and execution remain closed.

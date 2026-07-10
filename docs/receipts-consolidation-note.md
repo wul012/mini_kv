@@ -370,3 +370,15 @@ v1642 继续 Slice 2，但只选择最干净的一份样本：`runtime_credentia
 验收结论：`runtime_receipt_json_builder_tests` 继续把 credential-handle public formatter 与 frozen fixture 子对象逐字节比较；`credential_handle_approval_contract_receipt_tests`、`smokejson_command_receipt_tests`、`runtime_smoke_evidence_tests` 与 `release_verification_manifest_tests` 共同证明 standalone fixture、SMOKEJSON 嵌入、runtime smoke evidence 和 release manifest 都没有漂移。完整本地构建后 full CTest 344/344 通过。真实 CLI smoke 中 `SMOKEJSON` 仍暴露 credential-handle receipt 链，`CHECKJSON LOAD data/prod.snap` 只报告 LOAD 是写命令/side effect，不执行 LOAD，也不触 Store/WAL。v1642 没有改 fixture，没有改 manifest，没有打开 router、Store/WAL write、credential read、raw endpoint parse、HTTP/TCP network、approval ledger write、schema migration、restore/load/compact/setnxex、automatic upstream start、audit authority 或 order authority。
 
 Slice 2 当前状态更新为：credential-handle approval contract 的整份 top-level formatter 已经 builder-backed；endpoint-handle 与 signed-human 仍只完成 boundary flag block builder 迁移。下一刀若继续 Slice 2，优先在 endpoint-handle 上复制 v1642 的 top-level 迁移模式，因为它也有普通 byte parity；signed-human 则必须继续保留 v1638 命名的单点 canonical spelling rule，不能把该 waiver 泛化。
+
+## 18. v1643 endpoint-handle 顶层 builder 迁移
+
+v1643 完整迁移 `runtime_credential_resolver_endpoint_handle_allowlist_approval_receipts.cpp` 的顶层 formatter。它沿用 v1642 已验证的有序组装方式，但没有把 credential-handle 字段表复制过来：endpoint-handle 自己的 `endpoint_handle_allowlist_approval_contract`、Node v320/v319 引用、raw endpoint 禁止项、allowlist authority 与 approval-status authority 边界仍由本文件逐项拥有。原先只负责边界尾部的 `format_closed_boundary_flags_json()` 桥接函数被移除，`append_closed_boundary_flag_fields(fields)` 直接把闭合字段追加到最终顶层字段表，避免先生成对象、剥掉花括号、再拼回长字符串的中间步骤。
+
+顶层顺序没有重排。`receipt_version` 到 `runtime_role` 仍在最前，随后依次是 `source_node_v320_reference`、`source_node_v319_reference`、`mini_kv_receipt`、`checks`、`summary`、blockers/warnings/recommendations、evidence endpoints、next evidence/actions、四个 provenance/read-command digest、receipt digest、闭合边界字段，最后才是 `boundary` 与 `node_action`。每个嵌套对象先由 `json_object` 独立构造，数组由 `json_array` 构造，再作为已经编码的 JSON value 放入 `OrderedJsonField`；builder 只负责确定性的转义、逗号和字段顺序，不推导业务状态。
+
+迁移没有改 fixture、digest parts、公有 formatter 名称、命令输出或 release manifest。v1638 建立的 endpoint-handle fixture/formatter 逐字节 oracle 在 v1643 focused lane 中继续直接相等，证明字段序、compact whitespace、字符串转义和全部值未漂移。endpoint 专属的 `raw_endpoint_url_accepted/stored/parse_allowed/render_allowed/parsed/rendered=false`、endpoint handle store/validate/resolve/authority=false、allowlist authority=false、approval-status authority=false 仍与 credential、network、router、Store/WAL write、schema、restore/load/compact、SETNXEX、auto-start、audit/order authority 和 execution 边界一起关闭。
+
+迁移后的源文件由 503 行变为 558 行。这个增长不是 stop condition，也不是以行数冒充收益：新增行来自把匿名长字符串拆成可命名、可逐字段审查的对象与数组；机械风险从“在数百段字符串中检查逗号和引号”变为“审查有序字段表”。评审指标仍是重复拼接是否消失、fixture parity 是否保持、边界是否更容易审查，而不是要求每次结构化迁移都缩短物理行数。
+
+本版结束时，28 个 runtime receipt 文件中仍有大量 formatter 未迁移，不能宣称阶段一完成。当前 builder include census 为 5 个文件；其中 abort/rollback、no-network、credential-handle 与 endpoint-handle 已完成整份顶层 builder 迁移，signed-human 只完成闭合边界区块。下一刀继续处理 signed-human 的完整顶层对象，并必须保留它自己命名的 `Node v314\\u0027s` fixture spelling 兼容规则；不得把该规则扩成通配 apostrophe 归一化。
