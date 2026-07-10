@@ -1,0 +1,40 @@
+mini-kv v1649 evidence summary
+
+Scope:
+- Migrate the disabled-runtime-shell and candidate-gate chain-head formatters to ordered JSON builders.
+- Replace duplicated boundary strings with two parameter-free family field appenders.
+- Keep the candidate-only runtime-prerequisite/implementation decision fields explicit between shared blocks.
+
+Exact parity:
+- disabled runtime shell: 12523 bytes, 110 fields, fnv1a64:08807cb6305602e8, exact fixture equality.
+- candidate gate: 14936 bytes, 114 fields, fnv1a64:d1a2681a73de4b8e, exact fixture equality.
+- fixture/runtime u0027 counts remain zero; no canonical or whitespace waiver exists.
+- no file under fixtures/release changed.
+
+Maintainability:
+- disabled runtime shell source: 385 to 358 lines.
+- candidate gate source: 423 to 403 lines.
+- exact shared field ownership: 91-line family-specific header.
+- no format_closed_boundary_flags_json helper or giant top-level return expression remains in either source.
+- census: sources=28, owners=27, builder-backed=11, pending=16, waiver=1; floor raised from 9 to 11.
+
+Verification:
+- v1648 predecessor CI run 29065704487 completed successfully across all six jobs.
+- exact parity/domain/census first gate: 4/4 passed.
+- downstream focused gate before docs: 8/8 passed.
+- final focused gate after docs: 9/9 passed in 1.50 seconds.
+- final full CTest after docs: 346/346 passed in 139.47 seconds.
+- real CLI exposed both receipts; read_only=55, execution_allowed=false=81,
+  runtime_shell_implemented=false=41, external_request_sent=false=74,
+  write_commands_executed=false=37.
+- CHECKJSON classified LOAD without execution; touches_wal=false; QUIT returned BYE.
+- Chinese walkthrough contains 3019 Chinese characters.
+
+Planning evidence:
+- Node plans index, latest production-excellence-node-playbook, and active v322 roadmap were read.
+- Claude checkpoint review for v1643-v1648 recorded PASS and permits frozen, homogeneous family batching.
+
+Boundaries:
+- no fixture rewrite, digest-input change, public command change, router, Store/WAL write,
+  HTTP/TCP, credential value read, raw endpoint parse, approval-ledger/schema write,
+  LOAD/COMPACT/RESTORE/SETNXEX execution, auto-start, audit authority, or order authority added.

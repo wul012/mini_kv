@@ -482,3 +482,21 @@ focused lane 7/7、预检 full CTest 346/346 通过。builder census 保持 28 s
 本版没有新增 router、Store/WAL write、network、credential read、raw endpoint parse、approval ledger/schema write、
 LOAD/COMPACT/RESTORE/SETNXEX execution、auto-start、audit authority 或 order authority。每份候选继续要求
 `read_only=true`、`execution_allowed=false`、`runtime_shell_implemented=false` 和对应 non-participation-only 标记。
+
+## 24. v1649 runtime-shell 链首双 formatter builder 迁移
+
+v1649 消费 v1648 五回执 exact baseline，只迁移 disabled runtime shell 与 candidate gate 两份链首 formatter。
+两份 public 函数的 nested source references、mini-kv receipt、summary、warnings、recommendations、endpoints、next actions
+和顶层 fields 全部改为 ordered builder；digest parts、公有签名、fixture 和下游调用不变。
+
+新增 `runtime_credential_resolver_disabled_runtime_shell_receipt_fields.hpp`，用两个无参数函数保存真正相同的
+readiness 与 non-participation tail。candidate gate 专属的 runtime prerequisite / implementation allowed 三字段仍在
+两个 helper 调用之间显式追加，不引入布尔开关式万能 schema。旧的两份 `format_closed_boundary_flags_json` 已删除。
+
+v1648 冻结门确认 disabled receipt 仍为 12523 bytes / 110 fields / `fnv1a64:08807cb6305602e8`，candidate gate
+仍为 14936 bytes / 114 fields / `fnv1a64:d1a2681a73de4b8e`，两份 runtime object 均与 fixture byte-for-byte 相等，
+没有 apostrophe/whitespace waiver。focused downstream lane 8/8、预检 full CTest 346/346 通过。
+
+CMake census floor 从 9 收紧到 11，当前为 28 sources、27 formatter owners、11 builder-backed、16 pending、1 waiver。
+两个源文件分别从 385→358、423→403 行，共同 91 行字段 header 取代重复安全尾部。没有新增 router、Store/WAL write、
+network、credential/raw-endpoint access、ledger/schema write、LOAD/COMPACT/RESTORE/SETNXEX execution、auto-start 或 authority。
