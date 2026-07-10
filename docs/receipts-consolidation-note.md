@@ -636,3 +636,43 @@ Store/WAL/snapshot/RESP/TCP/OSFS 行为未改变，credential value、raw endpoi
 connection、router/storage authority、write/admin、schema/rollback/restore/load/compact/setnxex、auto-start、audit/order authority
 仍全部关闭。阶段一现只剩 `runtime_evidence_receipts.cpp` 与 `runtime_sandbox_receipts.cpp` 两个 sandbox-chain owner；下一版必须继续
 使用 v1653 中 manual dry-run 的三字段 frozen metadata 规则，其他四份仍要求 exact parity。
+
+## 31. v1656 sandbox chain 收口与阶段一完成
+
+v1656 消费 v1653 为最后两名 owner 建立的五份冻结裁判，把 manual sandbox dry-run、manual connection precheck、
+disabled adapter client、fake transport dry-run packet 与 sandbox endpoint handle 五份 formatter 全部迁移到
+`runtime_receipt_json_builder`。迁移没有修改 public formatter 签名、digest 输入、领域测试期望或
+`fixtures/release/*.json`。manual dry-run 继续只允许自己的具名历史差异：fixture 独有
+`runtime_project_version`、`current_runtime_fixture_release_version` 与
+`current_runtime_fixture_artifact_path_hint` 三个冻结元数据字段；规则应用后其余键和值必须逐字节相等。
+另外四份对象继续要求 raw exact parity，不允许新增第二个字段、顺序、apostrophe 或 whitespace 例外。
+
+最终 oracle 固定结果为：manual dry-run fixture/runtime 分别是 3199/3060 bytes 与 56/53 fields；manual precheck
+为 4176 bytes/74 fields；disabled adapter 为 5361/92；fake transport 为 6040/92；endpoint handle 为
+6340/92。后四份 fixture/runtime 原始字节完全相等。五份 runtime object 继续同时关闭 read-only 证据之外的
+credential value read、managed-audit storage、storage/write command、runtime write、load/restore/compact execution、
+Node auto-start 与 order authority。
+
+`runtime_evidence_receipts.cpp` 原先同时持有 receipt formatter 与 live-read session/read-command digest 支撑，迁移后会逼近
+单文件风险线。本版把后者按职责拆到 `runtime_evidence_session.cpp`，保留原有 public declaration 与链接行为；拆分前先运行
+oracle，拆分后再次运行同一 oracle，证明它不是为了规避 census 而复制或移动 formatter。格式化后 receipt owner 为 700 行，
+session 支撑单元为 52 行。`runtime_sandbox_receipts.cpp` 使用一个 46 行的私有 helper header，仅共享五份对象中名称、值和顺序
+完全一致的 read-only prefix、closed write fields 与 execution tail；manual 两份仍在 evidence owner 中保有各自字段所有权，
+disabled/fake/endpoint 也在调用点明确追加专属字段。sandbox owner 最终为 704 行，没有布尔参数万能 schema，也没有 companion
+formatter 文件。
+
+机械 census floor 从 25 收紧到 27，复现结果为 28 sources、27 formatter owners、27 builder-backed、0 pending、
+1 named no-formatter waiver。唯一 waiver 仍是 `runtime_credential_resolver_execution_denied_retention_receipts.cpp`：它不定义
+public formatter，所以不应伪造 builder include 来凑数。至此 v1637 计划的 receipts consolidation 阶段一完成；任何 owner 删除
+builder include、新增未登记 formatter、放宽 floor 或引入第二个 waiver 都会使 `receipt_builder_census_contract` 失败。
+
+验证包括逐 formatter 增量 oracle、11 条 focused 行为门、all-target build、真实 CLI 和最终 full CTest。CLI 结构化解析
+`SMOKEJSON` 中五份对象，每份十项关闭边界均为预期；`CHECKJSON LOAD data/prod.snap` 继续返回
+`read_only=true`、`execution_allowed=false`、`wal.touches_wal=false`，随后 `QUIT` 返回 `BYE`。首次完整构建曾因两个被工具超时
+中断但仍存活的 `mingw32-make` 进程重叠，出现测试目标 `objects.a` 缺失；停止本轮残留进程后，用单一构建树重跑 100% 成功。
+该偏差如实归为本机并发构建问题，不冒充代码缺陷，也不从证据中删除。
+
+本版没有新增 command/router，没有打开 Store/WAL/snapshot/RESP/TCP/OSFS 行为，没有读取 credential value、解析 raw endpoint、
+发起 DNS/TLS/HTTP/TCP、建立 managed-audit connection、写 ledger/schema/storage、执行 rollback/restore/load/compact/setnxex、
+自动启动 Node/Java/mini-kv，也没有取得 audit/order authority。阶段二从此不再继续迁移 receipt，而是按 v1637 计划刷新
+README、START_HERE、capability snapshot、archive inventory 与已执行简报状态，使文档重新描述最终代码现实。

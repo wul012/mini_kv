@@ -105,6 +105,7 @@ add_library(minikv
     src/runtime_credential_resolver_receipts.cpp
     src/runtime_credential_resolver_test_only_shell_receipts.cpp
     src/runtime_evidence_receipts.cpp
+    src/runtime_evidence_session.cpp
     src/runtime_receipt_json_builder.cpp
     src/runtime_sandbox_receipts.cpp
     src/recovery_evidence.cpp
@@ -451,7 +452,7 @@ add_test(
     NAME receipt_builder_census_contract
     COMMAND ${CMAKE_COMMAND}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-            -DMIN_BUILDER_BACKED=25
+            -DMIN_BUILDER_BACKED=27
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_receipt_builder_census.cmake
 )
 

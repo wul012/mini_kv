@@ -163,3 +163,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1655 补充索引
 
 - v1655: [1023-version-1655-implementation-chain-builder-migration.md](1023-version-1655-implementation-chain-builder-migration.md) - 在 v1653 不变 oracle 下按上游状态顺序迁移 readiness、implementation plan、disabled fake harness、execution-denied 与 input-hardening 五个 owner，讲清具名 nested object、无参数 ordered boundary appender、逐 owner 重建策略和 16889/19163/13870/15264/21562 字节 exact parity；census 20/7/1→25/2/1，同时守住 no credential/no router/no write/no WAL/no network/no execution/no auto-start/no authority。
+
+## v1656 补充索引
+
+- v1656: [1024-version-1656-sandbox-chain-builder-migration.md](1024-version-1656-sandbox-chain-builder-migration.md) - 完成 receipts consolidation 阶段一的最后两名 owner：迁移五份 sandbox-chain formatter，保留四份 exact parity 与一份三字段具名历史差异，把 live-read session 支撑从 evidence owner 按职责拆出，并以 27/0/1 census、真实 CLI 十项关闭边界和全量 CTest 证明没有打开 credential、router、write、WAL、network、execution、auto-start 或 authority。

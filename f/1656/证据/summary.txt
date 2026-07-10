@@ -1,0 +1,98 @@
+mini-kv v1656 sandbox-chain receipt builder completion
+date: 2026-07-10
+
+scope:
+- migrate the final five public receipt formatters across the last two pending owners
+- preserve four raw exact fixture/runtime objects and one named three-metadata-field compatibility rule
+- split live-read session support from the evidence receipt owner before it crosses the large-file risk line
+- replace repeated sandbox boundary fragments with three no-parameter ordered-field appenders
+- tighten the mechanical builder-backed owner floor from 25 to 27 and close Stage 1 at zero pending owners
+
+upstream guidance read:
+- D:/nodeproj/orderops-node/docs/plans/README.md
+- D:/nodeproj/orderops-node/docs/plans/v2187-v2189-n5-source-size-health-roadmap.md
+- D:/C/mini-kv/治理计划/v1637-production-excellence-completion-brief.md
+- scope verdict: Node N5 permits parallel mini-kv internal maintenance; no Node or Java write is required
+
+previous-version remote gate:
+- v1655 GitHub Actions run 29093382829: completed success
+- ubuntu, macOS, Windows, sanitizer, coverage, format, and archive inventory all succeeded
+
+frozen v1653 oracle results after migration:
+- manual sandbox dry-run: fixture 3199 bytes/56 fields, runtime 3060 bytes/53 fields
+  fixture digest fnv1a64:a0f08858e298b52b; runtime digest fnv1a64:260d1f03289ad0c1
+  named rule removes exactly one occurrence of each frozen-only metadata field:
+  runtime_project_version, current_runtime_fixture_release_version,
+  current_runtime_fixture_artifact_path_hint
+- manual connection precheck: exact 4176 bytes/74 fields, digest fnv1a64:7c137ad07478a5f0
+- disabled adapter client: exact 5361 bytes/92 fields, digest fnv1a64:4a3b015e8f721809
+- fake transport dry-run packet: exact 6040 bytes/92 fields, digest fnv1a64:46b00933b662eaa0
+- sandbox endpoint handle: exact 6340 bytes/92 fields, digest fnv1a64:2b8d4e4c353af393
+- no new compatibility rule was added
+
+implementation structure:
+- runtime_evidence_receipts.cpp owns the two manual receipts and their distinct boundary appenders
+- runtime_evidence_session.cpp now owns read-command digest, live-read session hint, and uptime bucket support
+- runtime_sandbox_receipts.cpp owns disabled adapter, fake transport, and endpoint-handle domain structures
+- runtime_sandbox_receipt_utils.hpp shares only identical read-only prefix, closed-write fields, and execution tail
+- all shared appenders are no-parameter; family-specific fields remain explicit at call sites
+- stable domain arrays/objects remain raw JSON values inside the ordered top-level builder
+- no mode enum, version branch, universal schema, or boolean parameter matrix was introduced
+
+mechanical census:
+- sources=28
+- formatter_owners=27
+- builder_backed=27
+- pending=0
+- named_waivers=1
+- floor tightened 25 -> 27
+- waiver: runtime_credential_resolver_execution_denied_retention_receipts.cpp (no public formatter)
+
+maintainability:
+- runtime_evidence_receipts.cpp: 752 -> 700 physical lines
+- runtime_evidence_session.cpp: new 52-line responsibility split
+- evidence total remains 752 lines; no formatter moved to evade census
+- runtime_sandbox_receipts.cpp: 665 -> 704 physical lines
+- runtime_sandbox_receipt_utils.hpp: new 46-line exact-common-field helper
+- sandbox total grows by 85 lines because hidden string fields are now explicit and reviewable
+- both formatter owners remain below the 800-line stop threshold
+
+verification:
+- CMake build tree: cmake-build-v1656
+- first all-target attempt: failed because two timed-out cmake/mingw32-make trees were still writing the same build tree
+- process audit found the overlapping task-created build tree; it was stopped before retry
+- clean single-process all-target rebuild: exit 0, all targets 100%, 441.8 sec
+- incremental oracle after each formatter migration: passed
+- post-document focused CTest: 12/12 passed, 0.82 sec
+- final post-document full local CTest: 348/348 passed, 183.03 sec
+- changed C++ clang-format dry-run: passed
+- git diff --check: passed
+- tests + fixtures/release diff: none
+- walkthrough Chinese character count: 3101
+- real CLI: 5/5 target receipts present; each passed 10/10 closed-boundary assertions
+- CHECKJSON LOAD: read_only=true, execution_allowed=false, wal.touches_wal=false
+- CLI exit: BYE
+
+closed boundaries observed in all five real runtime receipts:
+- read_only=true
+- execution_allowed=false
+- credential_value_read_allowed=false
+- managed_audit_store=false
+- storage_write_allowed=false
+- write_commands_executed=false
+- runtime_write_observed=false
+- load_restore_compact_executed=false
+- node_auto_start_allowed=false
+- order_authoritative=false
+
+deliberately unchanged:
+- tests/runtime_receipt_remaining_owner_baseline_tests.cpp
+- all domain test expectations
+- fixtures/release/*.json
+- public formatter/digest signatures and command surface
+- Store/WAL/snapshot/RESP/TCP/OSFS behavior
+- credential/network/router/write/execution/auto-start/authority boundaries
+
+archive rendering:
+- final PNG evidence pages are captured by Playwright MCP from local in-memory HTML pages
+- no application server or repository background process is required
