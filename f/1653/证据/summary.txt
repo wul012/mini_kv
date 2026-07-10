@@ -1,0 +1,81 @@
+mini-kv v1653 remaining receipt owner migration baseline
+date: 2026-07-10
+
+scope:
+- freeze every public receipt formatter owned by the final 9 pending source files
+- group 13 formatter outputs into base-resolver (3), implementation-chain (5), and sandbox-chain (5)
+- add no production formatter migration and keep the mechanical builder census at 18/9/1
+- preserve the uncommitted Claude v1652 review addendum in the active v1637 brief
+
+upstream guidance read:
+- D:/nodeproj/orderops-node/docs/plans/README.md
+- D:/nodeproj/orderops-node/docs/plans/production-excellence-java-final-push.md (latest modified concrete plan; Java-only)
+- D:/nodeproj/orderops-node/docs/plans/production-excellence-final-acceptance.md
+- D:/C/mini-kv/治理计划/v1637-production-excellence-completion-brief.md
+- scope verdict: this is the required mini-kv receipt-completion baseline; no cross-repo write or runtime capability is requested
+
+initial diagnostic measurement:
+- 11/13 fixture/runtime objects were raw byte-for-byte equal
+- base-resolver decision receipt: 7944/7944 bytes, 104/104 fields, identical keys and values;
+  only credential_resolver_decision_only has a historical insertion-order difference
+- manual dry-run receipt: fixture 3199 bytes/56 fields, runtime 3060 bytes/53 fields;
+  fixture-only fields are runtime_project_version, current_runtime_fixture_release_version,
+  and current_runtime_fixture_artifact_path_hint; all shared keys and values are equal
+- the diagnostic executable returned non-zero before the two differences were classified; no production code was changed
+
+final baseline contract:
+- 13 fixture/runtime byte counts frozen independently
+- 13 fixture/runtime top-level field counts frozen independently
+- 26 versioned whole-object digests frozen (fixture + runtime)
+- 11 candidates require raw exact equality
+- exactly one resolver_decision_field_order rule and one frozen_runtime_metadata_fields rule are allowed
+- both rules use exact fixed fragments, are counted once, and must yield full canonical runtime byte equality
+- all fixture/runtime objects contain zero \u0027 occurrences; no apostrophe waiver was added
+
+closed boundaries required on every runtime object:
+- read_only=true
+- execution_allowed=false
+- credential_value_read_allowed=false
+- managed_audit_store=false
+- storage_write_allowed=false
+- write_commands_executed=false
+- runtime_write_observed=false
+- load_restore_compact_executed=false
+- node_auto_start_allowed=false
+- order_authoritative=false
+
+mechanical census:
+- sources=28
+- formatter_owners=27
+- builder_backed=18
+- pending=9
+- named_waivers=1
+- floor remains 18 because this version adds an oracle, not a production migration
+
+verification:
+- CMake configure: exit 0
+- all-target build: exit 0, all targets 100%
+- focused CTest: 19/19 passed, 12.46 sec
+- full local CTest: 348/348 passed, 227.97 sec
+- changed C++ clang-format dry-run: passed
+- walkthrough Chinese character count: 3814
+- real CLI SMOKEJSON: all 13 target receipt fields present
+- all 13 real runtime objects: read-only/no-store/no-write/no-execution/no-authority assertions passed
+- CHECKJSON LOAD: read_only=true, execution_allowed=false, wal.touches_wal=false
+- CLI exit: BYE
+
+files deliberately unchanged:
+- src/runtime_credential_resolver_* pending formatter implementations
+- src/runtime_evidence_receipts.cpp
+- src/runtime_sandbox_receipts.cpp
+- fixtures/release/*.json
+- public commands, Store/WAL/snapshot/RESP/TCP/OSFS behavior
+
+next migration batches under this unchanged oracle:
+- base resolver: 2 owners / 3 formatters
+- implementation chain: 5 owners / 5 formatters
+- sandbox chain: 2 owners / 5 formatters
+
+archive rendering:
+- final PNGs are text-rendered evidence pages because no Playwright MCP browser page was available for terminal capture
+- no browser/runtime process was started for screenshot production

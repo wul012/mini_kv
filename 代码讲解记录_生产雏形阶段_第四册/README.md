@@ -151,3 +151,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1652 补充索引
 
 - v1652: [1020-version-1652-legacy-resolver-chain-builder-migration.md](1020-version-1652-legacy-resolver-chain-builder-migration.md) - 在 v1651 不可变 oracle 下迁移 v117-v120 四个 legacy resolver formatter，分别命名 archive/source/decision/plan/interface/fake-wiring 子对象，把无大括号边界碎片改成有序字段追加；12335/10623/11114/15160 字节、95/99/101/106 字段和四份 digest 不变，census 从 14/13/1 收紧到 review floor 18/9/1，并如实记录 329 行结构化可读性增长而非虚报 shrink。
+
+## v1653 补充索引
+
+- v1653: [1021-version-1653-remaining-receipt-owner-baseline.md](1021-version-1653-remaining-receipt-owner-baseline.md) - 在任何剩余 production formatter 改动前，一次性冻结 9 个 pending owner 中 13 个公开 receipt formatter；记录 11 份 exact parity、1 份字段顺序历史差异和 1 份三字段 frozen metadata 历史差异，以两个单用途规则把 fixture 冻结与 canonical runtime surface 同时变成可失败的机械契约，并保持 census 18/9/1 不冒充迁移。

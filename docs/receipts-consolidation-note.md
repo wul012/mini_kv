@@ -555,3 +555,34 @@ CMake floor 从 14 收紧到 18，机械结果为 28 sources、27 formatter owne
 达到 Claude review 点。四文件含空行物理行由 311/298/301/408 变为 396/371/390/490，合计增加 329 行；这是把原超长字符串中的
 字段与边界展开为可审查结构的可读性增长，不是 shrink，所有文件仍低于 500 行。没有修改 fixture、digest 输入、public command、
 router、Store/WAL/snapshot/RESP/OSFS，也没有新增 network、credential、write、execution、auto-start 或 authority 能力。
+
+## 28. v1653 剩余 owner 全量冻结与两条历史漂移规则
+
+v1653 不迁移 production formatter，而是把 v1652 census 列出的 9 个 pending owner 继续拆成 13 个公开 receipt formatter，
+并在一个独立 CTest 中一次性建立迁移前基线。三条自然链分别是：base resolver 三份、implementation chain 五份、
+managed-audit sandbox chain 五份。测试直接读取 13 个已提交 standalone fixture，提取其中完整嵌套对象，再调用当前公开
+formatter；每份对象都冻结 fixture/runtime 字节数、顶层字段数、带 v1653 前缀的完整对象摘要和十类关闭边界。
+
+首次测量确认 11 份对象 fixture/runtime 原始字节完全相等，另外两份暴露的是早已存在、可精确命名的历史差异。第一份是
+`credential_resolver_non_participation_receipt`：两侧都有 7944 字节、104 个字段，解析后的键和值完全相同，唯一差异是
+`credential_resolver_decision_only` 在 fixture 中位于 `dry_run_only` 之后，在当前 runtime surface 中位于
+`read_only` 之前。第二份是 `manual_sandbox_dry_run_command_non_participation_receipt`：fixture 为 3199 字节/56 字段，
+当前 runtime 为 3060 字节/53 字段；fixture 独有 `runtime_project_version`、
+`current_runtime_fixture_release_version`、`current_runtime_fixture_artifact_path_hint` 三个冻结元数据字段，其余键和值一致。
+
+本版明确选择当前 formatter 输出为 canonical runtime surface，同时保持 fixture 原始字节不变。测试没有加入通用 JSON
+重排、宽松 whitespace 或字段忽略器，而是给两份对象各自绑定一个单用途枚举规则：第一条只允许替换包含固定 receipt digest
+的那一段精确字段顺序；第二条只允许各删除一次上述三个固定名称、固定值的 compact JSON 字段。规则应用后必须与 runtime
+逐字节相等，规则使用次数必须严格为 1/1，另外 11 份必须继续 raw exact equality。出现第二处顺序差、第四个 fixture-only
+字段、任何值差、字段数变化、摘要变化或新 `\u0027` 时，测试直接失败；这两条规则不能被后续 family 借用。
+
+所有 13 份 runtime object 还必须同时包含 `read_only=true`、`execution_allowed=false`、
+`credential_value_read_allowed=false`、`managed_audit_store=false`、`storage_write_allowed=false`、
+`write_commands_executed=false`、`runtime_write_observed=false`、`load_restore_compact_executed=false`、
+`node_auto_start_allowed=false` 和 `order_authoritative=false`。因此本版冻结的不是只有排版外壳，而是 read-only、
+no storage/router authority、no write、no execution、no credential 与 no auto-start 的共同安全底线。
+
+机械 census 保持 28 sources、27 formatter owners、18 builder-backed、9 pending、1 named no-formatter waiver；测试文件和
+基线数据不能冒充迁移，也不能提前提高 builder floor。后续按三条链分批改 production：base resolver、implementation chain、
+sandbox chain。每批只能在本 v1653 oracle 不变的前提下把对应完整 formatter 改成 ordered builder；若必须修改本测试常量、
+fixture、兼容规则或领域测试期望才能通过，则该批迁移失败并停止，而不是把差异包装成新的 waiver。
