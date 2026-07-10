@@ -1,0 +1,25 @@
+mini-kv v1645 evidence summary
+
+Scope:
+- No production formatter changes.
+- Freeze four approval-lifecycle fixture subobjects before batch migration.
+- Add a reproducible receipt builder census and floor ratchet.
+- Block post-echo from v1646 because it has a second, non-apostrophe whitespace drift.
+
+Baseline:
+- approval-required boundary: 12949 bytes, 108 fields, exact parity, digest fnv1a64:d401383f6006f7b0.
+- approval-prerequisite artifact: 16483 bytes, 107 fields, one named Node v306 apostrophe rule, digest fnv1a64:bae24c5eb4acc9f3.
+- human approval review: 17116 bytes, 107 fields, one named Node v308 apostrophe rule, digest fnv1a64:14567498219a39ad.
+- post-echo decision: 14169 bytes, 101 fields, one Node v310 apostrophe difference plus one blocked `} },` runtime whitespace drift, digest fnv1a64:2a534ddf7be23111.
+
+Census:
+- runtime receipt sources=28; formatter owners=27; builder-backed=5; pending=22; named no-formatter waiver=1.
+- waiver: runtime_credential_resolver_execution_denied_retention_receipts.cpp.
+
+Verification:
+- receipt_builder_census_contract + runtime_receipt_json_builder_tests = 2/2 passed.
+- full local build succeeded; full CTest = 345/345 passed in 190.24 seconds.
+- CLI smoke kept read_only=true/execution_allowed=false and only classified LOAD with its side effect.
+- hook-fixed clang-format dry-run, git diff check and strict archive inventory passed; warnings: none.
+- focused closeout CTest (note, census, parity, walkthrough and archive gates) = 14/14 passed.
+- Chinese walkthrough length = 5,635 UTF-8 characters.

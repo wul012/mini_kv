@@ -119,3 +119,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1644 补充索引
 
 - v1644: [1012-version-1644-signed-human-top-level-builder.md](1012-version-1644-signed-human-top-level-builder.md) - 完整迁移 signed-human approval artifact receipt 的顶层组装，解释命名单点 canonical fixture 规则为何只存在于测试、signed artifact 专属闭合字段如何保持本地所有权、Slice 2 三份审批合同如何结束临时 bridge 状态，以及 byte parity、digest、五条消费表面和 full CTest 如何证明没有扩大执行能力。
+
+## v1645 补充索引
+
+- v1645: [1013-version-1645-approval-lifecycle-parity-census-gate.md](1013-version-1645-approval-lifecycle-parity-census-gate.md) - 在批量迁移前冻结四份 approval lifecycle fixture 的大小、digest、字段数和 canonical 差异，解释为何 post-echo 的额外一字节空格必须成为阻塞而不是第二个 waiver，并用 CMake census 门把 28 sources/27 formatter owners/5 builder-backed/22 pending/1 named waiver 变成可失败的 ratchet。

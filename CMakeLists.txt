@@ -447,6 +447,14 @@ add_test(
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_receipts_consolidation_note.cmake
 )
 
+add_test(
+    NAME receipt_builder_census_contract
+    COMMAND ${CMAKE_COMMAND}
+            -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+            -DMIN_BUILDER_BACKED=5
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_receipt_builder_census.cmake
+)
+
 minikv_add_linked_test(
     minikv_project_orientation_examples_tests
     project_orientation_examples_tests

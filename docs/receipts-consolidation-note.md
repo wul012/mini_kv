@@ -392,3 +392,13 @@ v1644 完成 Slice 2 最后一份审批合同的整份顶层迁移：`runtime_cr
 signed-human 专属边界继续由本文件逐项拥有：signing private key、signed artifact store/validate/authority/signature verify、credential value、raw endpoint、provider/client、HTTP/TCP、managed audit storage、Store/WAL write、approval ledger、schema、restore/load/compact、SETNXEX、auto-start、audit/order authority 与 execution 均保持关闭。源文件由 491 行变为 545 行；增加来自显式结构展开，不改变以 byte parity、digest 与边界为 stop condition 的规则。
 
 v1644 focused lane 中 builder parity、signed-human receipt、SMOKEJSON、runtime smoke evidence、release manifest 5/5 通过。至此 Slice 2 选定的三份审批合同都完成整份顶层 builder 迁移，v1639-v1641 的临时 boundary block 过渡状态也已消失。28 文件总 census 尚未完成；下一版不立即批量改 formatter，而是先把下一组同构 receipts 的 fixture 子对象、digest、字段数和允许的 canonical 差异冻结成可复现机械门，再决定批量迁移范围。
+
+## 20. v1645 approval lifecycle parity 与机械 census 门
+
+v1645 不修改任何生产 formatter，先为下一批 approval lifecycle 候选建立迁移前基线。`runtime_receipt_json_builder_tests` 新增四份 fixture 子对象的版本化大小、digest、顶层字段数、公有 formatter 输出和闭合边界断言：approval-required boundary 为 12,949 字节/108 字段且与 runtime 逐字节相等；approval-prerequisite artifact 为 16,483 字节/107 字段，只有命名的 Node v306 apostrophe 差；human approval review 为 17,116 字节/107 字段，只有命名的 Node v308 apostrophe 差；post-echo decision 为 14,169 字节/101 字段，除 Node v310 apostrophe 外，runtime 在 summary 结束处还存在一处 `} },`，fixture 为 compact `}},`。
+
+前三份被标为 migration-ready。post-echo 明确标为 blocked，不允许把额外空格并入 apostrophe compatibility；测试分别断言 compact/spaced transition 的出现次数，并证明移除这一处已命名空格后才与 apostrophe-canonical fixture 相等。这是漂移诊断，不是 byte-parity waiver，也不授权 v1646 迁移 post-echo。它需要后续独立版本决定修正 runtime compact surface 还是保留兼容策略。
+
+本版同时新增 `cmake/check_receipt_builder_census.cmake` 和 `receipt_builder_census_contract`。机械口径为：`src/runtime_*_receipts.cpp` 共 28 个，其中 27 个拥有 public `format_*_receipt_json`，5 个已 builder-backed，22 个 pending；唯一 waiver 是没有 JSON formatter 的 `runtime_credential_resolver_execution_denied_retention_receipts.cpp`。CTest 固定总数、formatter owner 数、waiver 文件名和 builder floor=5；未来版本只能提高 floor，新增 receipt 或 waiver 变化必须显式修改门并接受 review。
+
+v1645 将重复的 no-network/signed-human apostrophe 规范化前置断言收敛到一个命名 helper，但每个 fixture family 仍提供独立 legacy/canonical 常量。helper 只允许 exactly-once 替换，不接受通配 apostrophe。下一版迁移范围据此确定为三份：approval-required boundary、approval-prerequisite artifact、human approval review；post-echo 被 stop condition 排除。
