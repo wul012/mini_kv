@@ -500,3 +500,25 @@ v1648 冻结门确认 disabled receipt 仍为 12523 bytes / 110 fields / `fnv1a6
 CMake census floor 从 9 收紧到 11，当前为 28 sources、27 formatter owners、11 builder-backed、16 pending、1 waiver。
 两个源文件分别从 385→358、423→403 行，共同 91 行字段 header 取代重复安全尾部。没有新增 router、Store/WAL write、
 network、credential/raw-endpoint access、ledger/schema write、LOAD/COMPACT/RESTORE/SETNXEX execution、auto-start 或 authority。
+
+## 25. v1650 runtime-shell 决策链三 formatter builder 迁移
+
+v1650 继续消费 v1648 exact-byte baseline，迁移 runtime-shell decision record、post-decision plan intake 和
+chain stop-or-prerequisite 三份连续 formatter。Node source references、mini-kv receipt、summary、warnings、
+recommendations、evidence endpoints、next actions 和顶层 fields 全部改为 ordered builder；digest parts、public signatures、
+fixture 和下游调用不变。
+
+三份 formatter 复用 v1649 的两个无参数 family helper。共享范围只包括完全同名、同值、同序的 runtime-shell readiness
+与 non-participation tail；blocked decision、selected continuation、required prerequisites 和 stop-chain 等领域字段仍在各自
+调用点显式维护。旧的三份 `format_closed_boundary_flags_json` 已删除，领域完整的 required evidence、continuation options、
+prerequisites、no-go conditions 和 checks helper 暂时保留为 raw JSON value，没有把本版扩大成无关的全文件改写。
+
+v1648 冻结门确认 decision record 仍为 14208 bytes / 113 fields / `fnv1a64:9926939aac05efd6`，post-decision
+plan intake 仍为 14084 bytes / 113 fields / `fnv1a64:e6c73dbf0f4bc4d1`，stop-or-prerequisite 仍为
+16306 bytes / 115 fields / `fnv1a64:b6984418a3b69de7`。三份 runtime object 均与 fixture byte-for-byte
+相等，fixture/runtime 的 `\u0027` 次数均为零，不存在 canonical 或 whitespace waiver。文档前 focused downstream
+lane 9/9、full CTest 346/346 通过。
+
+CMake census floor 从 11 收紧到 14，当前为 28 sources、27 formatter owners、14 builder-backed、13 pending、1 waiver。
+按物理行计数，三个源文件分别从 420→389、402→382、453→440，合计减少 64 行。没有新增 router、Store/WAL write、
+network、credential/raw-endpoint access、ledger/schema write、LOAD/COMPACT/RESTORE/SETNXEX execution、auto-start 或 authority。

@@ -139,3 +139,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1649 补充索引
 
 - v1649: [1017-version-1649-runtime-shell-chain-head-builder-migration.md](1017-version-1649-runtime-shell-chain-head-builder-migration.md) - 在 v1648 exact-byte 门下迁移 disabled runtime shell 与 candidate gate 两份链首 formatter，抽出两段无参数 family 边界 helper，保留 candidate 三字段显式插入点；fixture/digest/110 与 114 字段不变，census 从 9/18/1 收紧到 11/16/1。
+
+## v1650 补充索引
+
+- v1650: [1018-version-1650-runtime-shell-decision-chain-builder-migration.md](1018-version-1650-runtime-shell-decision-chain-builder-migration.md) - 在 v1648 exact-byte 门下迁移 decision record、post-decision plan intake 与 stop-or-prerequisite 三份连续 formatter，复用两段完全同序的 runtime-shell family 边界 helper，保留各自决策字段所有权；14208/14084/16306 字节、113/113/115 字段和三份摘要不变，census 从 11/16/1 收紧到 14/13/1。

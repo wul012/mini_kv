@@ -1,0 +1,40 @@
+mini-kv v1650 evidence summary
+
+Scope:
+- Migrate runtime-shell decision record, post-decision plan intake, and stop-or-prerequisite formatters to ordered JSON builders.
+- Reuse only the exact family readiness and non-participation tail appenders.
+- Keep blocked decision, continuation-plan, and prerequisite fields locally owned.
+
+Exact parity:
+- decision record: 14208 bytes, 113 fields, fnv1a64:9926939aac05efd6, exact fixture equality.
+- post-decision plan intake: 14084 bytes, 113 fields, fnv1a64:e6c73dbf0f4bc4d1, exact fixture equality.
+- stop-or-prerequisite: 16306 bytes, 115 fields, fnv1a64:b6984418a3b69de7, exact fixture equality.
+- fixture/runtime u0027 counts remain zero; no canonical or whitespace waiver exists.
+- no file under fixtures/release changed.
+
+Maintainability:
+- source line counts: 420->389, 402->382, 453->440; 64 physical lines removed in total.
+- three format_closed_boundary_flags_json helpers and three giant top-level return expressions removed.
+- census: sources=28, owners=27, builder-backed=14, pending=13, waiver=1; floor raised from 11 to 14.
+
+Verification:
+- first exact parity/domain/census gate: 5/5 passed.
+- downstream focused gate before docs: 9/9 passed.
+- pre-document full CTest: 346/346 passed in 191.76 seconds.
+- final focused gate after docs: 9/9 passed in 2.08 seconds.
+- final full CTest after docs: 346/346 passed in 113.67 seconds.
+- all-target build completed successfully.
+- real CLI exposed all three receipts exactly once; read_only=55, execution_allowed=false=81,
+  runtime_shell_implemented=false=41, external_request_sent=false=74,
+  write_commands_executed=false=37.
+- CHECKJSON classified LOAD without execution; touches_wal=false; QUIT returned BYE.
+- Chinese walkthrough contains 3102 Chinese characters.
+
+Planning evidence:
+- Node plans README, latest production-excellence-node-playbook, and active v322 roadmap were read.
+- Claude checkpoint review permits homogeneous batches under a frozen family gate; the next mandatory review floor remains 18 builder-backed.
+
+Boundaries:
+- no fixture rewrite, digest-input change, public command change, router, Store/WAL write,
+  HTTP/TCP, credential value read, raw endpoint parse, approval-ledger/schema write,
+  LOAD/COMPACT/RESTORE/SETNXEX execution, auto-start, audit authority, or order authority added.
