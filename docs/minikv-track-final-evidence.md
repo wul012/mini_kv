@@ -1,12 +1,19 @@
 # mini-kv Production Excellence Track Evidence (v1658)
 
-Status: READY FOR EXTERNAL REVIEW
+Status: EXTERNALLY REVIEWED
 
-External verdict: PENDING
+External verdict: **PASS - Stage-1 track CLOSED (Claude, 2026-07-11)**. Independently
+verified: CI run 29099882082 seven jobs green; `--fail-under-line 90` present in ci.yml
+(floor correctly raised 88→90); `src/command.cpp` = 732 and
+`src/shard_readiness_boundary_field_names.cpp` = 829 non-empty lines exactly as claimed;
+census contract end state 27/27/0/1 reproduced; both program-level waivers cite their
+original review records and are mechanically scoped. Maturity label stays
+`single-project validation + cross-project contract alignment` until the four-project
+capstone passes.
 
 本文件是 `治理计划/v1637-production-excellence-completion-brief.md` 阶段三的轨道证据入口。这里的
-`GREEN` 只表示 mini-kv 执行方已找到可复现的机械检查并完成本地自审，不表示 Claude 或其他外部
-评审者已经批准。对外成熟度仍严格表述为 **single-project validation + cross-project contract alignment**；
+`GREEN` 只表示 mini-kv 执行方已找到可复现的机械检查并完成本地自审；外部批准由上方独立 verdict
+记录。对外成熟度仍严格表述为 **single-project validation + cross-project contract alignment**；
 仓库没有把冻结 fixture、Node/Java 回显合同或本地 CLI smoke 冒充成真实四项目联合运行。
 
 ## Final-State Baseline
@@ -70,7 +77,7 @@ External verdict: PENDING
 |---|---|---|---|
 | 收敛全部 receipt owners | ordered JSON builder + 27 formatter owners | `receipt_builder_census_contract` + frozen family parity tests | closed in v1656 |
 | 文档对当前树诚实 | v1657 README/START_HERE/capability/changelog/archive/OSFS reconciliation | `project_docs_honesty_contract` | closed in v1657 |
-| E1-E10 逐门证据 | 本文件、CI workflow、SECURITY/TESTING、source-size/secret scan | `minikv_track_final_evidence_contract` | ready for external review in v1658 |
+| E1-E10 逐门证据 | 本文件、CI workflow、SECURITY/TESTING、source-size/secret scan | `minikv_track_final_evidence_contract` | externally reviewed PASS; Stage-1 closed in v1658 |
 | coverage 只升不降 | 90% 新鲜基线，workflow floor 90 | `minikv_dependabot_config_tests` + Ubuntu coverage job | tightened in v1658 |
 | 不夸大联合成熟度 | 明示 single-project + contract alignment | 本文件 contract 要求固定措辞 | closed locally; capstone belongs to Node program |
 
@@ -102,5 +109,5 @@ git show --check v1658
 gh run list --workflow CI --limit 3
 ```
 
-外部评审应独立执行这些命令、打开 CI coverage log 核对 TOTAL 行、确认 `v1658` tag 指向最终提交，并检查
-工作树干净。完成这些动作之前，本文件的 `External verdict` 必须保持 `PENDING`。
+Claude 已于 2026-07-11 独立核对 CI、coverage floor、源码尺寸、census 和两项 program-level waiver，
+并给出 Stage-1 track PASS。后续复核仍可重复上述命令；在四项目 capstone 通过前，成熟度措辞不得升级。

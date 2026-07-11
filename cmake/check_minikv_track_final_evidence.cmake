@@ -16,8 +16,8 @@ endfunction()
 
 set(evidence_path "docs/minikv-track-final-evidence.md")
 foreach(fragment IN ITEMS
-        "Status: READY FOR EXTERNAL REVIEW"
-        "External verdict: PENDING"
+        "Status: EXTERNALLY REVIEWED"
+        "External verdict: **PASS - Stage-1 track CLOSED (Claude, 2026-07-11)**"
         "single-project validation + cross-project contract alignment"
         "| E1 Build & CI | GREEN |"
         "| E2 Static analysis | GREEN |"

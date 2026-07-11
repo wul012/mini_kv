@@ -48,7 +48,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1658 E1-E10 track evidence ready for external review**. v1656 closed the receipt builder census at 28 sources / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter census exemption, and v1657 reconciled project documents with the live tree. v1658 adds the 350th CTest, raises the verified core coverage floor to 90%, makes loopback the TCP server default, and publishes `docs/minikv-track-final-evidence.md`. The external verdict remains pending, and maturity remains single-project validation plus cross-project contract alignment.
+Current focus: **v1658 Stage-1 track externally reviewed and closed**. v1656 closed the receipt builder census at 28 sources / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter census exemption, and v1657 reconciled project documents with the live tree. v1658 adds the 350th CTest, raises the verified core coverage floor to 90%, makes loopback the TCP server default, and publishes `docs/minikv-track-final-evidence.md`. Claude returned PASS on 2026-07-11; maturity remains single-project validation plus cross-project contract alignment until the four-project capstone passes.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
