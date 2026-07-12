@@ -1,0 +1,65 @@
+mini-kv v1662 elegance Round 2 E2-M1 pin-audit evidence summary
+date: 2026-07-12
+status: READY FOR CLAUDE REVIEW; FINAL CI PENDING
+external_verdict: PENDING
+
+scope
+- execution brief: 治理计划/elegance-round2-minikv.md
+- latest upstream plan read-only: Node docs/plans/elegance-round2-program-node.md
+- commit Claude's Round 1 PASS verdict edits, then audit Round 2 without runtime changes
+- no public header/API rename, CLI/RESP/JSON change, fixture rewrite, archive move, router, write, or execution
+
+mechanical selection
+- source baseline: files=735 / public_ids=883 / budget=40
+- selection: merge F and I, sort length descending then kind/name ascending, take 10
+- selected kinds: files=6 / public_ids=4
+- decisions: pinned=9 / safe=1
+- threshold: E2-M2 requires safe>=5
+- observed branch: close; E2-M2 NOT TRIGGERED
+
+pin evidence
+- 5 selected public header paths are pinned as include/minikv API paths
+- 4 selected identifiers are found in their declared public headers
+- the only safe candidate is a private test translation-unit path registered once in CMakeLists.txt
+- safe means technically renameable, not sufficient value for a one-file version
+
+portability
+- .gitattributes pins config/elegance-name-baseline.txt to LF
+- .gitattributes pins config/elegance-round2-pin-audit.tsv to LF
+- pin TSV parser rejects CR; historical baseline parser retains defensive CRLF normalization
+
+local verification
+- targeted census/docs contracts: 2/2 passed after the docs gate caught and repaired one stale Round 1 phrase
+- fresh MinGW Debug all-target build: success, 355.24 seconds
+- final logged full CTest: 351/351 passed, 0 failed, 186.76 seconds
+- LastTestsFailed.log after final run: absent
+- walkthrough: 3082 CJK characters before archive detail
+
+frozen fixture proof
+- tracked fixtures/release/*.json: 1514 files
+- manifest algorithm: SHA256 over sorted lines "<file-sha256>  <path>\n"
+- manifest sha256: 8eb430889b84bec547abcd4d963636666edd897379769969cf4c715af7f8e00f
+- fixtures/release diff: none
+
+real CLI proof
+- SMOKEJSON: read_only=true; execution_allowed=false; order_authoritative=false
+- SMOKEJSON diagnostics: write_commands_executed=false; admin_commands_executed=false; runtime_write_observed=false
+- CHECKJSON LOAD: read_only=true; execution_allowed=false; write_command=true; immediate SIZE=0
+- SHARDJSON: readOnly=true; executionAllowed=false; activeRouterInstalled=false; writeRoutingAllowed=false
+
+review boundary
+- docs/elegance-round2-pin-audit.md records the top 10, pin reasons, matrix, and strongest objection
+- one safe candidate is honestly retained because the authorized threshold is five
+- 735/883 ratchets remain unchanged and no waiver is added
+- no E2-M2 version is started; external Claude verdict remains pending
+
+archive inventory
+- command: python scripts/archive_inventory.py --budget-mib 8 --strict
+- active_root: range=1597-1662; files=325; bytes=000010896737
+- latest_version: path=f/1662; files=5; bytes=000000075167; budget_mib=8; warnings=none
+
+cleanup intent
+- no server/background process was started
+- close Playwright evidence page and delete .playwright-mcp
+- delete cmake-build-v1662 before candidate commit
+- keep final screenshots, explanation, summary, audit doc, walkthrough, tests/docs, commits, tag, and CI links

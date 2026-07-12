@@ -12,6 +12,7 @@
 - `v1637-production-excellence-completion-brief.md`：Production Excellence 轨道收尾简报。阶段一 receipts consolidation 已于 v1656 以 27/0/1 census 完成，阶段二文档诚实性刷新于 v1657 完成，阶段三 E1-E10 证据于 v1658 完成；Claude 于 2026-07-11 独立终审 PASS，mini-kv Stage-1 轨道关闭。成熟度仍为单项目验证加跨项目合同对齐，Stage-2 继续等待四项目 capstone。上级计划见 Node 仓库 `docs/plans/production-excellence-final-acceptance.md`。
 - `stage2-minikv-operational-brief.md`：**未激活（门控：Stage-1 终审 PASS + capstone PASS）**。Stage-2 运行实态简报：Linux 发布包与服务化、kill-9/备份恢复演练、RESP 与 OSFS fuzz、性能 SLO、14 天 soak 参与。上级计划见 Node 仓库 `docs/plans/stage2-operational-reality-program.md`。
 - `elegance-hotspot-program-minikv.md`：Production Excellence 后的有界优雅热点整治；最多 4 版，先落命名 census 与只减不增 baseline，再修复 top-5 非合同长名，最终停在 Claude review 点。
+- `elegance-round2-minikv.md`：优雅第二轮条件式收尾；最多 2 版，先机械审计剩余最长名的 pin 状态，只有安全候选达到 5 个才允许第二刀，否则在审计版诚实关闭。
 
 ## 当前硬边界
 

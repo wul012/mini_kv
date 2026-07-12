@@ -8,7 +8,7 @@ The README keeps the overview, build/run instructions, and latest version pointe
 Current focus is tracked by the latest entry in `## Recent versions` and by `docs/production-excellence-progress.md`.
 The long per-version history now lives in `docs/CHANGELOG.md`; this section keeps the stable capability snapshot.
 
-Current verified tree: v1658 completed external Stage-1 review with PASS on 2026-07-11. The bounded elegance track adds a shrink-only census in v1659, reduces filename debt 740→735 and repairs Windows CRLF parsing in v1660, then formats the five renamed translation units and freezes the 735/883 terminal baseline in v1661; the default inventory remains 351 tests. Mechanical contracts are the sources of truth; this snapshot does not claim that all naming debt or live four-project integration is complete.
+Current verified tree: v1658 completed external Stage-1 review with PASS on 2026-07-11, and Claude reviewed the first bounded elegance track as PASS on 2026-07-12. Round 2 in v1662 mechanically audits the combined 10 longest remaining names as nine public-header pins and one safe test path; because one is below the threshold of five, it closes without renaming and keeps the 735/883 ratchets unchanged. The default inventory remains 351 tests. Mechanical contracts are the sources of truth; this snapshot does not claim that all naming debt or live four-project integration is complete.
 
 - Thread-safe in-memory key-value store
 - Interactive command-line client

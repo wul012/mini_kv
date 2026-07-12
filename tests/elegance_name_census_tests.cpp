@@ -35,6 +35,29 @@ struct Census {
     std::set<std::string> ids;
 };
 
+struct RankedName {
+    char kind;
+    std::size_t length;
+    std::string name;
+};
+
+struct PinAuditRow {
+    std::size_t rank;
+    char kind;
+    std::size_t length;
+    std::string name;
+    std::string decision;
+    std::string pin;
+    std::string evidence;
+};
+
+struct AuditSummary {
+    std::size_t files;
+    std::size_t ids;
+    std::size_t pinned;
+    std::size_t safe;
+};
+
 std::string read_text(const fs::path& path) {
     std::ifstream input(path, std::ios::binary);
     if (!input) {
@@ -206,6 +229,144 @@ Census parse_baseline(std::string_view text) {
 
 Census read_baseline(const fs::path& path) { return parse_baseline(read_text(path)); }
 
+std::size_t parse_size(std::string_view value) {
+    std::size_t consumed = 0;
+    const auto parsed = std::stoull(std::string(value), &consumed);
+    if (consumed != value.size()) {
+        throw std::runtime_error("invalid number in pin audit: " + std::string(value));
+    }
+    return static_cast<std::size_t>(parsed);
+}
+
+std::vector<std::string> split_tabs(std::string_view line) {
+    std::vector<std::string> fields;
+    std::size_t start = 0;
+    while (start <= line.size()) {
+        const auto end = line.find('\t', start);
+        fields.emplace_back(line.substr(start, end == std::string_view::npos ? line.size() - start : end - start));
+        if (end == std::string_view::npos) {
+            break;
+        }
+        start = end + 1;
+    }
+    return fields;
+}
+
+std::vector<PinAuditRow> parse_pin_audit(std::string_view text) {
+    if (text.find('\r') != std::string_view::npos) {
+        throw std::runtime_error("pin audit must use LF line endings");
+    }
+    std::istringstream lines{std::string(text)};
+    std::string line;
+    if (!std::getline(lines, line) || line != "rank\tkind\tlength\tname\tdecision\tpin\tmechanical_evidence") {
+        throw std::runtime_error("invalid pin audit header");
+    }
+    std::vector<PinAuditRow> rows;
+    while (std::getline(lines, line)) {
+        if (line.empty()) {
+            continue;
+        }
+        const auto fields = split_tabs(line);
+        if (fields.size() != 7 || fields[1].size() != 1) {
+            throw std::runtime_error("invalid pin audit row: " + line);
+        }
+        rows.push_back(
+            {parse_size(fields[0]), fields[1][0], parse_size(fields[2]), fields[3], fields[4], fields[5], fields[6]});
+    }
+    return rows;
+}
+
+std::vector<RankedName> rank_baseline(const Census& baseline) {
+    std::vector<RankedName> names;
+    names.reserve(baseline.files.size() + baseline.ids.size());
+    for (const auto& file : baseline.files) {
+        names.push_back({'F', fs::path(file).stem().string().size(), file});
+    }
+    for (const auto& id : baseline.ids) {
+        names.push_back({'I', id.size(), id});
+    }
+    std::sort(names.begin(), names.end(), [](const RankedName& left, const RankedName& right) {
+        if (left.length != right.length) {
+            return left.length > right.length;
+        }
+        if (left.kind != right.kind) {
+            return left.kind < right.kind;
+        }
+        return left.name < right.name;
+    });
+    return names;
+}
+
+std::size_t count_occurrences(std::string_view text, std::string_view needle) {
+    std::size_t count = 0;
+    std::size_t offset = 0;
+    while ((offset = text.find(needle, offset)) != std::string_view::npos) {
+        ++count;
+        offset += needle.size();
+    }
+    return count;
+}
+
+AuditSummary check_pin_audit(const fs::path& root, const Census& baseline) {
+    const auto attributes = read_text(root / ".gitattributes");
+    for (const auto* rule :
+         {"config/elegance-name-baseline.txt text eol=lf", "config/elegance-round2-pin-audit.tsv text eol=lf"}) {
+        if (attributes.find(rule) == std::string::npos) {
+            throw std::runtime_error("missing LF attribute: " + std::string(rule));
+        }
+    }
+
+    const auto rows = parse_pin_audit(read_text(root / "config" / "elegance-round2-pin-audit.tsv"));
+    const auto ranked = rank_baseline(baseline);
+    if (rows.size() != 10 || ranked.size() < rows.size()) {
+        throw std::runtime_error("pin audit must contain the combined top 10 names");
+    }
+
+    AuditSummary summary{};
+    const auto cmake_text = read_text(root / "CMakeLists.txt");
+    for (std::size_t index = 0; index < rows.size(); ++index) {
+        const auto& row = rows[index];
+        const auto& expected = ranked[index];
+        if (row.rank != index + 1 || row.kind != expected.kind || row.length != expected.length ||
+            row.name != expected.name) {
+            throw std::runtime_error("pin audit ranking drift at row " + std::to_string(index + 1));
+        }
+        if (row.kind == 'F') {
+            ++summary.files;
+        } else if (row.kind == 'I') {
+            ++summary.ids;
+        } else {
+            throw std::runtime_error("invalid pin audit kind");
+        }
+        if (row.decision == "pinned") {
+            ++summary.pinned;
+            if (row.kind == 'F') {
+                if (row.pin != "public_header_path" || row.evidence != row.name ||
+                    !row.name.starts_with("include/minikv/") || !fs::exists(root / row.evidence)) {
+                    throw std::runtime_error("invalid public header path pin: " + row.name);
+                }
+            } else if (row.kind == 'I') {
+                if (row.pin != "public_header_identifier" || !fs::exists(root / row.evidence) ||
+                    read_text(root / row.evidence).find(row.name) == std::string::npos) {
+                    throw std::runtime_error("invalid public header identifier pin: " + row.name);
+                }
+            }
+        } else if (row.decision == "safe") {
+            ++summary.safe;
+            if (row.kind != 'F' || row.pin != "none" || row.evidence != "CMakeLists.txt" ||
+                !row.name.starts_with("tests/") || count_occurrences(cmake_text, row.name) != 1) {
+                throw std::runtime_error("invalid safe candidate evidence: " + row.name);
+            }
+        } else {
+            throw std::runtime_error("invalid pin audit decision: " + row.decision);
+        }
+    }
+    if (summary.files != 6 || summary.ids != 4 || summary.pinned != 9 || summary.safe != 1) {
+        throw std::runtime_error("pin audit branch drift");
+    }
+    return summary;
+}
+
 void check_crlf_baseline() {
     const auto sample = parse_baseline("# sample\r\nF|src/example.cpp\r\nI|ExampleName\r\n");
     if (sample.files != std::set<std::string>{"src/example.cpp"} ||
@@ -293,10 +454,12 @@ int main(int argc, char** argv) {
             return 2;
         }
         const Census baseline = read_baseline(baseline_path);
+        const AuditSummary audit = check_pin_audit(root, baseline);
         const bool files_ok = compare_group("file names", current.files, baseline.files, MINIKV_NAME_FILE_MAX);
         const bool ids_ok = compare_group("public identifiers", current.ids, baseline.ids, MINIKV_NAME_ID_MAX);
         std::cout << "elegance census: files=" << current.files.size() << " public_ids=" << current.ids.size()
-                  << " budget=" << kNameBudget << '\n';
+                  << " budget=" << kNameBudget << " pin_audit=" << audit.pinned << '/' << audit.safe
+                  << " branch=" << (audit.safe >= 5 ? "rename" : "close") << '\n';
         return files_ok && ids_ok ? 0 : 1;
     } catch (const std::exception& error) {
         std::cerr << "elegance census error: " << error.what() << '\n';

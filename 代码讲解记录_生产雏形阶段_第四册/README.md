@@ -187,3 +187,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1661 补充索引
 
 - v1661: [1029-version-1661-elegance-closeout.md](1029-version-1661-elegance-closeout.md) - 收口三版有界优雅计划，逐层解释 740/883→735/883、include/src/tests 终态分类、v1659 Windows CRLF 与 v1660 changed-files format 两次真实红灯如何永久修复、公共 API/测试/内部路径为何刻意保留、需求-证据矩阵与强制停止如何防止自我授奖，并把 verdict 留给 Claude。
+
+## v1662 补充索引
+
+- v1662: [1030-v1662-round2-pin-audit.md](1030-v1662-round2-pin-audit.md) - 解释如何复用既有 census 合并排序 735 个文件名与 883 个公开标识符，为什么前十自然形成 6F/4I、九个公开 header pin 与一个 safe 测试路径，TSV 和 C++ 行为如何分离，LF 属性怎样在源头关闭跨平台漂移，以及 `safe=1<5` 为什么必须诚实关闭而不能为消费版本额度凑改名。

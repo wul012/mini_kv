@@ -48,7 +48,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1661 bounded elegance program ready for Claude review**. v1659 established the census; v1660 repaired Windows CRLF parsing and renamed five private paths; v1661 formats those newly touched translation units, freezes the terminal 735/883 baseline, and documents why remaining debt needs separate authorization. No runtime contract changed, and the hard stop prevents endless cleanup.
+Current focus: **v1662 elegance Round 2 pin audit ready for Claude review**. A stable combined ranking audits the 10 longest remaining filename/public-identifier entries as 9 public-header-pinned and 1 safe private test path. Because `safe=1` is below the five-candidate threshold, E2-M2 is not triggered; the 735/883 ratchet and runtime contracts stay unchanged.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

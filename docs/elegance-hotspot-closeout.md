@@ -1,6 +1,6 @@
 # mini-kv Elegance Hotspot Closeout (v1661)
 
-Status: READY FOR CLAUDE REVIEW. Candidate CI: GREEN. External verdict: PENDING.
+Status: EXTERNALLY REVIEWED PASS (Claude, 2026-07-12). Final CI: GREEN.
 
 ## Bounded Result
 
@@ -22,7 +22,7 @@ Terminal filename categories are exact: `include=218`, `src=241`, `tests=276`. v
 | cross-platform gate | terminal-CR normalization plus CRLF sample | v1659 Windows run `29176190797` failed before fix | candidate Windows green |
 | touched-file format | clang-format over five renamed units | v1660 changed-files job failed before repair | candidate format gate green |
 | byte/runtime stability | fixture manifest, full CTest, real CLI | 1514-file digest plus no-router/no-write/no-execution checks | local proof complete |
-| hard stop | this terminal ledger and pending external verdict | plan forbids a fifth version or silent continuation | reached v1661 |
+| hard stop | this terminal ledger and external reproduction | plan forbids a fifth version or silent continuation | PASS v1661 |
 
 ## Intentionally Retained Debt
 
@@ -38,7 +38,11 @@ v1659 run `29176190797` exposed CRLF baseline parsing on Windows; v1660 added a 
 
 ## Candidate CI Proof
 
-Candidate commit `18cec67f` passed GitHub Actions run [`29177475570`](https://github.com/wul012/mini_kv/actions/runs/29177475570). All seven jobs completed with `success`: archive inventory, ubuntu coverage, ubuntu-latest, ubuntu sanitizer, windows-latest, clang-format changed files, and macos-latest. This single run closes both earlier failure paths on the same source tree; it does not replace the independent Claude verdict.
+Candidate commit `18cec67f` passed GitHub Actions run [`29177475570`](https://github.com/wul012/mini_kv/actions/runs/29177475570). All seven jobs completed with `success`: archive inventory, ubuntu coverage, ubuntu-latest, ubuntu sanitizer, windows-latest, clang-format changed files, and macos-latest. Final commit `b0e94f51` then passed run [`29177891829`](https://github.com/wul012/mini_kv/actions/runs/29177891829) with the same seven green jobs.
+
+## Claude Review Verdict
+
+Claude independently reviewed v1659-v1661 on 2026-07-12 and returned PASS. The review confirmed the 1,627-row shrink-only baseline, five real v1660 path repayments, unchanged public headers and 883 identifiers, final seven-job CI, and family-design-before-implementation discipline. Its only program-level lesson was promoted into the shared method kernel: cross-platform baseline, fixture, and census text artifacts must pin line endings with `.gitattributes` or deterministic writers.
 
 ## Strongest Reviewer Objection
 
@@ -55,4 +59,4 @@ python scripts/archive_inventory.py --budget-mib 8 --strict
 git show --summary --find-renames v1660
 ```
 
-The executor does not award the final verdict. Claude should reproduce the terminal census, inspect both CI finding/repair chains, verify no public/fixture contract moved, and then record PASS or findings.
+The executor did not award this verdict; the independent Claude review is recorded above. Round 2 is tracked separately in `docs/elegance-round2-pin-audit.md`.

@@ -59,3 +59,17 @@ v1660 family 设计说明（先于改名）：
 - E-M1 对应 v1659：本地 351/351；远端 run `29176190797` 六个 job 绿、Windows 因 CRLF baseline 行尾解析失败。该真实 portability 缺口由 v1660 立即修复，不移动历史 tag。
 - E-M2 对应 v1660：五个内部 `.cpp` 路径已缩短，baseline 740→735，公共 header 与 883 个标识符不动；修复 CRLF 后，run `29176799196` 又由 changed-files gate 抓到五个旧文件的存量格式债务。
 - E-M4 对应 v1661：格式化五个 touched units，冻结 735（include 218 / src 241 / tests 276）与 883 终态；候选 run `29177475570` 七项全绿，写入两次 CI 失败/修复、保留原因和硬停止证据，最终提交 CI 后停在 Claude review 点。
+
+## Claude E-track 评审 — 2026-07-12（v1659–v1661）：PASS，一条跨仓库教训已升格
+
+- 已核实：CTest 名称 census 合同 + 1,627 行只减不增 baseline 落地；v1660 的 5 个路径
+  缩短真实（CMake 12 处、baseline 740→735、honesty matrix 被自己的门强制同步）；
+  公共 header 与 883 个标识符原样；v1661 七个 job 全绿；AGENTS Elegance Gates 已随
+  v1659 提交；两版 family 设计说明先于实现——优雅门第 4 条首次被完整执行。
+- 两次 CI 红是两个不同的门抓到真实债务（CRLF portability、存量格式债），各自一修
+  一版且在本文如实记账——与 Node 当年的推送迭代不同，这是可接受的发现-修复节奏。
+  但 CRLF baseline 是跨平台文本工件行尾问题的第二次跨仓库出现（Node v2180-82 是第
+  一次），已升格进 00-通用方法内核.md 反模式清单：此类工件必须 .gitattributes 或
+  写入时钉死行尾。
+- mini-kv 重新停靠：maintenance-only，等 program-close 的 capstone 复跑（CLI 输出
+  合同保持稳定即可）。
