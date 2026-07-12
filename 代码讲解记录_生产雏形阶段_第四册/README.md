@@ -183,3 +183,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1660 补充索引
 
 - v1660: [1028-version-1660-top-five-paths.md](1028-version-1660-top-five-paths.md) - 按 census 稳定排序选择 compared-package intake-audit 家族五个最差且未钉住的内部 `.cpp` 路径，解释为何只改 CMake 私有装配身份而保留公共 header/namespace，预刷新 stale-baseline 红灯如何证明没有换债，以及文件 baseline 740→735、公共标识符 883 不动、fixture/CLI/no-router/no-write/no-execution 如何分层验证。
+
+## v1661 补充索引
+
+- v1661: [1029-version-1661-elegance-closeout.md](1029-version-1661-elegance-closeout.md) - 收口三版有界优雅计划，逐层解释 740/883→735/883、include/src/tests 终态分类、v1659 Windows CRLF 与 v1660 changed-files format 两次真实红灯如何永久修复、公共 API/测试/内部路径为何刻意保留、需求-证据矩阵与强制停止如何防止自我授奖，并把 verdict 留给 Claude。

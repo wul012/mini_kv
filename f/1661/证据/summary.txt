@@ -1,0 +1,64 @@
+mini-kv v1661 elegance E-M4 closeout evidence summary
+date: 2026-07-12
+status: READY FOR CLAUDE REVIEW; CANDIDATE CI PENDING
+external_verdict: PENDING
+
+scope
+- execution brief: 治理计划/elegance-hotspot-program-minikv.md
+- latest upstream plan read-only: Node docs/plans/v2194-elegance-gates-roadmap.md
+- E-M4 terminal census, retained-debt ledger, hard stop, and immediate touched-file format repair
+- no new feature, public API rename, fixture rewrite, runtime permission, or new waiver
+
+terminal census
+- budget: 40 characters
+- v1659 start: files=740 / public_ids=883
+- v1661 terminal: files=735 / public_ids=883
+- filename categories: include=218 / src=241 / tests=276
+- CMake maxima: 735 / 883
+- no baseline refresh or new violation in v1661
+
+two CI finding/repair chains
+1. v1659 run 29176190797: six jobs green; Windows CRLF baseline parse failed
+   repair: strip one terminal CR and self-test an in-memory CRLF sample every run
+2. v1660 run 29176799196: six jobs green; changed-files format gate failed
+   repair: clang-format exactly five newly touched compared_package translation units
+- historical tags were not moved; failures remain auditable
+
+formatted touched files
+- compared_package_intake_audit.cpp: 228 lines
+- compared_package_audit_stages.cpp: 131 lines
+- compared_package_audit_slots.cpp: 70 lines
+- compared_package_audit_guards.cpp: 69 lines
+- compared_package_audit_validation.cpp: 35 lines
+- clang-format dry-run --Werror: passed
+
+local verification
+- fresh MinGW Debug configure: success
+- all-target cold build: success, 440.7 seconds
+- focused contracts/family tests: 10/10 passed, 34.06 seconds
+- full CTest: 351/351 passed, 0 failed, 203.74 seconds
+- Chinese walkthrough: 3078 CJK characters before archive detail
+
+frozen fixture and runtime proof
+- tracked fixtures/release/*.json: 1514 files
+- manifest sha256: 8eb430889b84bec547abcd4d963636666edd897379769969cf4c715af7f8e00f
+- SMOKEJSON: read_only=true; execution_allowed=false; write/admin=false
+- CHECKJSON LOAD: read_only=true; execution_allowed=false; immediate SIZE=0
+- SHARDJSON: readOnly=true; executionAllowed=false; activeRouterInstalled=false; writeRoutingAllowed=false
+
+review boundary
+- docs/elegance-hotspot-closeout.md records terminal debt and retained reasons
+- strongest objection is explicit: five of 740 is a small direct reduction
+- the durable value is the cross-platform shrink-only gate and proven repayment process
+- no fourth cleanup version is started; external Claude verdict remains pending
+
+archive inventory
+- command: python scripts/archive_inventory.py --budget-mib 8 --strict
+- active_root: range=1597-1661; files=320; bytes=000010821240
+- latest_version: path=f/1661; files=5; bytes=000000056802; budget_mib=8; warnings=none
+
+cleanup intent
+- no server/background process was started
+- close Playwright evidence page and delete .playwright-mcp
+- delete cmake-build-v1661 before candidate commit
+- keep final screenshots, explanation, summary, closeout, walkthrough, source/docs, commits, tag, and CI links

@@ -1,6 +1,6 @@
 # Elegance Name Census
 
-Status: E-M1 gate shipped in v1659; E-M2 top-five cleanup and Windows CRLF portability repair are locally implemented in v1660.
+Status: terminal baseline frozen for the v1661 external review checkpoint; no further cleanup is authorized inside this program.
 
 ## Contract Definition
 
@@ -21,8 +21,11 @@ The committed baseline is exact, not merely a ceiling. A current entry absent fr
 |---|---:|---:|---|
 | v1659 | 740 | 883 | initial exact baseline and red-path proof |
 | v1660 | 735 | 883 | five longest unpinned internal `.cpp` paths renamed; CRLF baseline parsing fixed; public surface unchanged |
+| v1661 | 735 | 883 | five touched units formatted; terminal census and retained-debt rationale frozen |
 
 v1659 GitHub Actions run `29176190797` passed six jobs but failed `windows-latest`: Git checkout produced CRLF baseline lines and the parser retained each trailing carriage return. v1660 strips exactly one terminal `\r` after `std::getline` and executes an in-memory CRLF baseline sample on every run. The fix does not normalize identifiers, paths, case, or whitespace inside entries.
+
+v1660 run `29176799196` then exercised the changed-files gate on the five renamed legacy sources and correctly found pre-existing formatting debt. v1661 formats exactly those touched translation units. This changes source layout, so final evidence relies on focused/full tests, fixture manifest, and real CLI output rather than claiming final-tree Git blobs still equal v1659.
 
 The baseline lives at `config/elegance-name-baseline.txt`; the scanner and CTest entry are `tests/elegance_name_census_tests.cpp` and `elegance_name_census_contract`.
 
@@ -44,4 +47,4 @@ ctest --test-dir cmake-build-v1659 -R '^elegance_name_census_contract$' --output
 cmake-build-v1659\minikv_elegance_name_census.exe --list
 ```
 
-v1660 does not rename a public header, public symbol, CLI command, RESP/JSON key, fixture, or archived path. It shortens only five CMake-private implementation paths and lowers the filename maximum to 735 in the same commit; the 883 identifier maximum remains unchanged.
+v1660-v1661 do not rename a public header, public symbol, CLI command, RESP/JSON key, fixture, or archived path. The bounded program shortens five CMake-private implementation paths, lowers the filename maximum to 735, freezes the 883 identifier maximum, and then stops. Detailed retained reasons and review commands are in `docs/elegance-hotspot-closeout.md`.

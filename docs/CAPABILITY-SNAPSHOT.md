@@ -8,7 +8,7 @@ The README keeps the overview, build/run instructions, and latest version pointe
 Current focus is tracked by the latest entry in `## Recent versions` and by `docs/production-excellence-progress.md`.
 The long per-version history now lives in `docs/CHANGELOG.md`; this section keeps the stable capability snapshot.
 
-Current verified tree: v1658 completed external Stage-1 review with PASS on 2026-07-11 after tightening the core coverage floor to 90%, making loopback the TCP server default, and adding `minikv_track_final_evidence_contract`. The bounded elegance track then adds a shrink-only census in v1659 and reduces its filename debt from 740 to 735 in v1660 while public-header identifiers remain 883; the default inventory stays 351 tests. Runtime receipt consolidation completed in v1656 at 28 source files / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter census exemption. Mechanical CTest contracts, not these sentences, remain the sources of truth; this snapshot does not claim live four-project integration.
+Current verified tree: v1658 completed external Stage-1 review with PASS on 2026-07-11. The bounded elegance track adds a shrink-only census in v1659, reduces filename debt 740→735 and repairs Windows CRLF parsing in v1660, then formats the five renamed translation units and freezes the 735/883 terminal baseline in v1661; the default inventory remains 351 tests. Mechanical contracts are the sources of truth; this snapshot does not claim that all naming debt or live four-project integration is complete.
 
 - Thread-safe in-memory key-value store
 - Interactive command-line client

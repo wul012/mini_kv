@@ -57,5 +57,5 @@ v1660 family 设计说明（先于改名）：
 ## 执行进度
 
 - E-M1 对应 v1659：本地 351/351；远端 run `29176190797` 六个 job 绿、Windows 因 CRLF baseline 行尾解析失败。该真实 portability 缺口由 v1660 立即修复，不移动历史 tag。
-- E-M2 对应 v1660：五个 compared-package intake-audit 内部 `.cpp` 路径已缩短，文件 baseline 740→735，公共 header 与 883 个标识符不动；同时剥离 CRLF 行尾并加入每次运行的 parser 自检。
-- E-M4 下一步：冻结终态 census，写一页起点到终点及刻意保留原因，完成最终 CI 后停在 Claude review 点。
+- E-M2 对应 v1660：五个内部 `.cpp` 路径已缩短，baseline 740→735，公共 header 与 883 个标识符不动；修复 CRLF 后，run `29176799196` 又由 changed-files gate 抓到五个旧文件的存量格式债务。
+- E-M4 对应 v1661：先格式化这五个 touched units，再冻结 735（include 218 / src 241 / tests 276）与 883 终态；写入两次 CI 失败/修复、保留原因和硬停止证据，最终 CI 后停在 Claude review 点。
