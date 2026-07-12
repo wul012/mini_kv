@@ -1,0 +1,58 @@
+mini-kv v1659 elegance E-M1 evidence summary
+date: 2026-07-12
+status: LOCAL COMPLETE; REMOTE CI PENDING
+
+scope and orientation
+- execution brief: 治理计划/elegance-hotspot-program-minikv.md
+- upstream plans read-only: Node docs/plans/README.md and production-excellence-node-final-push.md
+- bounded elegance maintenance is authorized after the v1658 Stage-1 PASS
+- no Node, Java, runtime feature, public API, fixture, CLI/RESP/JSON, WAL, router, or execution change
+
+implementation
+- committed AGENTS.md Elegance Gates supplied by the external reviewer
+- added tests/elegance_name_census_tests.cpp (291 physical lines)
+- added config/elegance-name-baseline.txt
+- registered elegance_name_census_contract as CTest #8 / total 351
+- filename definition: regular-file stem under src/include/tests, budget 40
+- public identifier definition: unique identifier token in include headers after comments, literals, and include paths are removed
+- initial exact baseline and hard maxima: 740 filenames / 883 public-header identifiers
+
+mechanical red-path proof
+- temporary long filename raised the live census to 741
+- CTest failed with: file names census 741 exceeds ratchet 740
+- failure named the exact injected path
+- temporary probe was deleted in finally; the contract then passed at 740/883
+
+build and focused verification
+- MinGW Debug configure: success
+- all-target build: success, 362.7 seconds
+- focused contracts: 4/4 passed
+- clang-format --dry-run --Werror on the new C++ scanner: passed
+- walkthrough: 3134 CJK characters; new file stems are all within 40 characters
+
+full verification
+- registered tests: 351
+- passed: 351/351
+- failed: 0
+- CTest time: 198.51 seconds
+
+frozen fixture proof
+- files: 1514 tracked fixtures/release/*.json files
+- deterministic manifest sha256: 8eb430889b84bec547abcd4d963636666edd897379769969cf4c715af7f8e00f
+- no fixture file was edited
+
+real CLI boundary smoke
+- SMOKEJSON: read_only=true; execution_allowed=false; mini_kv_write_command_allowed=false; admin_commands_allowed=false
+- CHECKJSON LOAD: read_only=true; execution_allowed=false; write_command=true as predicted risk; immediate SIZE=0
+- SHARDJSON: readOnly=true; executionAllowed=false; activeRouterInstalled=false; writeRoutingAllowed=false
+
+archive inventory
+- f/ active root: versions 1597-1659 / 310 files / 10,714,659 bytes / 10.22 MiB
+- f/1659: 5 files / 54,546 bytes / 0.05 MiB; 8 MiB budget
+- strict inventory warnings: none
+
+cleanup intent
+- no server or other background process was started
+- delete cmake-build-v1659 after version closure
+- close the Playwright evidence page and remove tool temporary output
+- keep only final screenshots, explanation, summary, walkthrough, source/test/docs, commit, tag, and CI evidence

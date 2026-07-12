@@ -8,7 +8,7 @@ The README keeps the overview, build/run instructions, and latest version pointe
 Current focus is tracked by the latest entry in `## Recent versions` and by `docs/production-excellence-progress.md`.
 The long per-version history now lives in `docs/CHANGELOG.md`; this section keeps the stable capability snapshot.
 
-Current verified tree: v1658 completed external Stage-1 review with PASS on 2026-07-11 after tightening the core coverage floor to 90%, making loopback the TCP server default, and adding `minikv_track_final_evidence_contract`, bringing the default CTest inventory to 350 registered tests. Runtime receipt consolidation completed in v1656 at 28 source files / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter census exemption; the mechanical source of truth is `receipt_builder_census_contract`, not this sentence. This snapshot still does not claim live four-project integration.
+Current verified tree: v1658 completed external Stage-1 review with PASS on 2026-07-11 after tightening the core coverage floor to 90%, making loopback the TCP server default, and adding `minikv_track_final_evidence_contract`. v1659 then adds a bounded maintenance gate: 351 registered tests now include a shrink-only census over 740 long filenames and 883 public-header identifiers. Runtime receipt consolidation completed in v1656 at 28 source files / 27 formatter owners / 27 builder-backed / 0 pending / 1 named no-formatter census exemption; the mechanical sources of truth are the CTest contracts, not these sentences. This snapshot still does not claim live four-project integration.
 
 - Thread-safe in-memory key-value store
 - Interactive command-line client

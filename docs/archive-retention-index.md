@@ -1,6 +1,6 @@
 # mini-kv Archive Retention Index
 
-This index is the K5 retention ledger for the path-stable archive roots in this repository. It records the original v1620 baseline, the v1657 post-OSFS remeasurement, and the v1658 track-review evidence closeout, turning the existing policy into an operator-facing reference.
+This index is the K5 retention ledger for the path-stable archive roots in this repository. It records the original v1620 baseline, the v1657 post-OSFS remeasurement, the v1658 track-review evidence closeout, and the bounded v1659 elegance census evidence, turning the existing policy into an operator-facing reference.
 
 Historical archive roots are evidence, not cleanup candidates. Node-side governance already has hardcoded references to mini-kv archive paths and release fixtures, so every existing path below remains stable unless a separate owner-approved archival migration plan is written and reviewed.
 
@@ -13,15 +13,15 @@ Historical archive roots are evidence, not cleanup candidates. Node-side governa
 | `c/` | 63-121 | 336 | 31,130,191 | 29.69 | 64 | FROZEN |
 | `d/` | 122-143 | 152 | 13,506,894 | 12.88 | 64 | FROZEN |
 | `e/` | 144-1596 | 5,153 | 1,065,416,900 | 1,016.06 | 1,200 | FROZEN HIGH-VOLUME |
-| `f/` | 1597-1658 | 305 | 10,660,113 | 10.17 | 128 | ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN |
+| `f/` | 1597-1659 | 310 | 10,714,659 | 10.22 | 128 | ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN |
 
 Latest measured version archive:
 
 | Version archive | Files | Bytes | MiB | Budget MiB | State |
 |---|---:|---:|---:|---:|---|
-| `f/1658/` | 6 | 75,788 | 0.07 | 8 | within budget |
+| `f/1659/` | 5 | 54,546 | 0.05 | 8 | within budget |
 
-The table above is the direct output of `python scripts/archive_inventory.py --budget-mib 8 --strict` on 2026-07-10 after the six v1658 evidence files were fixed. The script emitted `warnings: none`; no historical path was moved or rewritten. The immediately preceding v1657 baseline (299 files / 10,584,325 bytes) is retained in `f/1658/证据/summary.txt` and `04-waivers-archive.png` with an explicit pre-v1658 scope.
+The table above is the direct output of `python scripts/archive_inventory.py --budget-mib 8 --strict` on 2026-07-12 after the five selective v1659 evidence files were fixed. The script emitted `warnings: none`; no historical path was moved or rewritten. The v1658 closeout inventory remains frozen in its own summary and screenshots, while v1659 records its current 54,546-byte archive in `f/1659/证据/summary.txt`.
 
 ## OSFS Coursework Growth Accounting
 

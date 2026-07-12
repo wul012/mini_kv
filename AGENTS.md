@@ -122,6 +122,25 @@ Use these rules for mini-kv versions that include implementation, tests, fixture
 - 每版应尽量包含实现、构建、测试、真实运行 smoke、归档、代码讲解和提交推送。
 - 除非遇到阻塞修复、CI 补救、安全问题或用户明确要求，否则不要扩大或压缩版本范围。
 
+## Elegance Gates（优雅门，2026-07-11 program-end review 提升）
+
+capstone 后评审的结论：四个仓库"坚固但不优雅"——名词串联式命名、生成式重复
+（28 个 receipt formatter 事后才合并）、脚手架代替设计。以下门槛在上游购买优雅。
+只约束【新增和被改动的】代码；存量违规进入只减不增的 baseline（与 800 行 ratchet
+同一套路）。每条规则最终都要落成会失败的机械检查（下一个治理版本以 CTest 合同
+落地，参照 `receipt_builder_census_contract`）；落地前作为写作规则由评审执行。
+门槛只收紧。
+
+- 命名预算：新标识符/文件名不得超过 40 字符。名字需要更多名词 = 缺一个抽象——
+  先提取并命名那个概念。存量超限名单进 baseline，只减不增；改名仅在合同允许处。
+- 三次规则：任何 family 出现第三个结构相似的文件 = STOP——先建共享 engine/builder，
+  再把第三个 case 作为数据/配置落地。
+- 生成上限：功能版本新增源码不超过 400 行（去重/重构/拆分版本豁免）。需要更多 =
+  拆版本。
+- family 设计说明：新建文件 family 之前，先在讲解中用 ≤10 行写清抽象是什么、
+  数据与行为如何分离——先于实现，与"迁移前先冻结 oracle"同一纪律。
+- 童子军规则：被改动的文件离开时必须符合本节的命名与体积预算。
+
 ## Cross-Project Plan Rule
 
 每次推进 mini-kv 自己的下一个版本前，必须先只读查看 Node 项目的最新计划指导：

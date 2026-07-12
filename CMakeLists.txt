@@ -470,6 +470,18 @@ add_test(
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_receipt_builder_census.cmake
 )
 
+minikv_add_standalone_source_dir_test(
+    minikv_elegance_name_census
+    elegance_name_census_contract
+    tests/elegance_name_census_tests.cpp
+)
+target_compile_definitions(
+    minikv_elegance_name_census
+    PRIVATE
+        MINIKV_NAME_FILE_MAX=740
+        MINIKV_NAME_ID_MAX=883
+)
+
 minikv_add_linked_test(
     minikv_project_orientation_examples_tests
     project_orientation_examples_tests

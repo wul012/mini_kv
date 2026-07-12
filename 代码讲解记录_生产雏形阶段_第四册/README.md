@@ -175,3 +175,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1658 补充索引
 
 - v1658: [1026-version-1658-production-excellence-track-evidence.md](1026-version-1658-production-excellence-track-evidence.md) - 对照 E1-E10 建立第 350 条终审合同，把新鲜 2345/2122/90% core coverage 收紧为 90% floor，修复 TCP server 默认 wildcard 绑定为 loopback，并机械限制高置信 secret pattern、源码 800 非空行 ratchet、27/0/1 census 与恰好两项 program deviation；真实服务器、CLI 和 350/350 CTest 证明 no router/no write/no execution 边界，外部 verdict 仍保持 pending。
+
+## v1659 补充索引
+
+- v1659: [1027-version-1659-name-census.md](1027-version-1659-name-census.md) - 在任何批量改名前把 40 字符预算落成独立 C++ census，解释 740 个长文件名与 883 个公共头文件可见标识符如何形成精确、只减不增的 baseline，词法清理为何排除注释/字面量/include 路径，故意注入第 741 个文件如何证明红灯路径，以及下一版为何只能改五个未被公共合同钉住的内部实现文件。
