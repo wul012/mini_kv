@@ -13,13 +13,13 @@ Historical archive roots are evidence, not cleanup candidates. Node-side governa
 | `c/` | 63-121 | 336 | 31,130,191 | 29.69 | 64 | FROZEN |
 | `d/` | 122-143 | 152 | 13,506,894 | 12.88 | 64 | FROZEN |
 | `e/` | 144-1596 | 5,153 | 1,065,416,900 | 1,016.06 | 1,200 | FROZEN HIGH-VOLUME |
-| `f/` | 1597-1661 | 320 | 10,821,240 | 10.32 | 128 | ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN |
+| `f/` | 1597-1661 | 320 | 10,821,570 | 10.32 | 128 | ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN |
 
 Latest measured version archive:
 
 | Version archive | Files | Bytes | MiB | Budget MiB | State |
 |---|---:|---:|---:|---:|---|
-| `f/1661/` | 5 | 56,802 | 0.05 | 8 | within budget |
+| `f/1661/` | 5 | 57,132 | 0.05 | 8 | within budget |
 
 The table above is the direct output of `python scripts/archive_inventory.py --budget-mib 8 --strict` on 2026-07-12 after the five selective v1661 evidence files were fixed. The script emitted `warnings: none`; no historical path was moved or rewritten. Earlier closeout and census inventories remain frozen in their own summaries, while v1661 records its current archive in `f/1661/证据/summary.txt`.
 

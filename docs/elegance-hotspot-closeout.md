@@ -1,6 +1,6 @@
 # mini-kv Elegance Hotspot Closeout (v1661)
 
-Status: READY FOR CLAUDE REVIEW. External verdict: PENDING.
+Status: READY FOR CLAUDE REVIEW. Candidate CI: GREEN. External verdict: PENDING.
 
 ## Bounded Result
 
@@ -19,8 +19,8 @@ Terminal filename categories are exact: `include=218`, `src=241`, `tests=276`. v
 | 40-character census | standalone C++ scanner over filenames and public headers | injected 741st filename fails | closed v1659 |
 | shrink-only baseline | exact key sets plus compiled maxima | new, replacement, stale, or count growth fails | terminal 735/883 |
 | top-five remediation | five concise `compared_package_*` `.cpp` paths | pre-refresh run lists five stale paths; v1660 records 100% renames | closed v1660 |
-| cross-platform gate | terminal-CR normalization plus CRLF sample | v1659 Windows run `29176190797` failed before fix | closed locally v1660 |
-| touched-file format | clang-format over five renamed units | v1660 changed-files job failed before repair | closed locally v1661 |
+| cross-platform gate | terminal-CR normalization plus CRLF sample | v1659 Windows run `29176190797` failed before fix | candidate Windows green |
+| touched-file format | clang-format over five renamed units | v1660 changed-files job failed before repair | candidate format gate green |
 | byte/runtime stability | fixture manifest, full CTest, real CLI | 1514-file digest plus no-router/no-write/no-execution checks | local proof complete |
 | hard stop | this terminal ledger and pending external verdict | plan forbids a fifth version or silent continuation | reached v1661 |
 
@@ -35,6 +35,10 @@ No archive or fixture path is counted by this scanner, and none was moved. No wi
 ## CI Findings Were Not Hidden
 
 v1659 run `29176190797` exposed CRLF baseline parsing on Windows; v1660 added a permanent in-memory CRLF sample. v1660 run `29176799196` then exposed inherited formatting debt in the five renamed files; v1661 formats them rather than bypassing the changed-files gate. Because formatting changes source bytes, final-tree stability is proved by focused/full CTest, fixture manifest, and real CLI output. The v1660 commit remains the auditable proof that the path migration itself began as five 100% renames.
+
+## Candidate CI Proof
+
+Candidate commit `18cec67f` passed GitHub Actions run [`29177475570`](https://github.com/wul012/mini_kv/actions/runs/29177475570). All seven jobs completed with `success`: archive inventory, ubuntu coverage, ubuntu-latest, ubuntu sanitizer, windows-latest, clang-format changed files, and macos-latest. This single run closes both earlier failure paths on the same source tree; it does not replace the independent Claude verdict.
 
 ## Strongest Reviewer Objection
 

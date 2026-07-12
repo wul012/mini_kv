@@ -1,6 +1,6 @@
 mini-kv v1661 elegance E-M4 closeout evidence summary
 date: 2026-07-12
-status: READY FOR CLAUDE REVIEW; CANDIDATE CI PENDING
+status: READY FOR CLAUDE REVIEW; CANDIDATE CI GREEN
 external_verdict: PENDING
 
 scope
@@ -23,6 +23,14 @@ two CI finding/repair chains
 2. v1660 run 29176799196: six jobs green; changed-files format gate failed
    repair: clang-format exactly five newly touched compared_package translation units
 - historical tags were not moved; failures remain auditable
+
+candidate remote verification
+- commit: 18cec67f
+- run: https://github.com/wul012/mini_kv/actions/runs/29177475570
+- conclusion: success; jobs=7/7
+- green jobs: archive inventory; ubuntu coverage; ubuntu-latest; ubuntu sanitizer;
+  windows-latest; clang-format changed files; macos-latest
+- external Claude verdict remains pending
 
 formatted touched files
 - compared_package_intake_audit.cpp: 228 lines
@@ -54,8 +62,8 @@ review boundary
 
 archive inventory
 - command: python scripts/archive_inventory.py --budget-mib 8 --strict
-- active_root: range=1597-1661; files=320; bytes=000010821240
-- latest_version: path=f/1661; files=5; bytes=000000056802; budget_mib=8; warnings=none
+- active_root: range=1597-1661; files=320; bytes=000010821570
+- latest_version: path=f/1661; files=5; bytes=000000057132; budget_mib=8; warnings=none
 
 cleanup intent
 - no server/background process was started
