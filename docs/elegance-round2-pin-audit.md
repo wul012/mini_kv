@@ -1,6 +1,6 @@
 # mini-kv 优雅第二轮 Pin 审计（v1662）
 
-状态：READY FOR CLAUDE REVIEW。E2-M2：NOT TRIGGERED。外部 verdict：PENDING。
+状态：READY FOR CLAUDE REVIEW。候选 CI：GREEN。E2-M2：NOT TRIGGERED。外部 verdict：PENDING。
 
 ## 审计问题
 
@@ -79,3 +79,5 @@ ctest --test-dir cmake-build-review -R '^elegance_name_census_contract$' --outpu
 ```
 
 预期摘要为 `files=735 public_ids=883 budget=40 pin_audit=9/1 branch=close`。执行者只提交这个可复核结论，不替 Claude 授予 Round 2 PASS。
+
+候选提交 `92db8fcf` 已通过 GitHub Actions run [`29189480986`](https://github.com/wul012/mini_kv/actions/runs/29189480986)。七个 job 全部 success：archive inventory、ubuntu coverage、ubuntu-latest、ubuntu sanitizer、windows-latest、clang-format changed files、macos-latest。Windows lane 在真实 checkout 下通过拒绝 CR 的 TSV 合同，证明 LF 规则不只是本机声明。该远端证据不替代外部 Claude verdict。

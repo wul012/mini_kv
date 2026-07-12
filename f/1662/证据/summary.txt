@@ -1,6 +1,6 @@
 mini-kv v1662 elegance Round 2 E2-M1 pin-audit evidence summary
 date: 2026-07-12
-status: READY FOR CLAUDE REVIEW; FINAL CI PENDING
+status: READY FOR CLAUDE REVIEW; CANDIDATE CI GREEN
 external_verdict: PENDING
 
 scope
@@ -47,6 +47,15 @@ real CLI proof
 - CHECKJSON LOAD: read_only=true; execution_allowed=false; write_command=true; immediate SIZE=0
 - SHARDJSON: readOnly=true; executionAllowed=false; activeRouterInstalled=false; writeRoutingAllowed=false
 
+candidate remote verification
+- commit: 92db8fcf
+- run: https://github.com/wul012/mini_kv/actions/runs/29189480986
+- conclusion: success; jobs=7/7
+- green jobs: archive inventory; ubuntu coverage; ubuntu-latest; ubuntu sanitizer;
+  windows-latest; clang-format changed files; macos-latest
+- Windows checkout passed the LF-pinned TSV contract
+- external Claude verdict remains pending
+
 review boundary
 - docs/elegance-round2-pin-audit.md records the top 10, pin reasons, matrix, and strongest objection
 - one safe candidate is honestly retained because the authorized threshold is five
@@ -55,8 +64,8 @@ review boundary
 
 archive inventory
 - command: python scripts/archive_inventory.py --budget-mib 8 --strict
-- active_root: range=1597-1662; files=325; bytes=000010896737
-- latest_version: path=f/1662; files=5; bytes=000000075167; budget_mib=8; warnings=none
+- active_root: range=1597-1662; files=325; bytes=000010897124
+- latest_version: path=f/1662; files=5; bytes=000000075554; budget_mib=8; warnings=none
 
 cleanup intent
 - no server/background process was started
