@@ -1,10 +1,10 @@
-# v1659 Project Documentation Honesty Matrix
+# v1660 Project Documentation Honesty Matrix
 
 This matrix is the Stage 2 requirement-to-evidence ledger for `治理计划/v1637-production-excellence-completion-brief.md`. It records what the project documents claim, where the implementation lives, which mechanical evidence protects the claim, and what remains deliberately limited.
 
 | Requirement | Current implementation evidence | Mechanical or runnable evidence | Status |
 |---|---|---|---|
-| Current delivery pointer | `README.md`, `START_HERE.md`, `docs/CHANGELOG.md`, `docs/production-excellence-progress.md` | `project_docs_honesty_contract` requires the v1659 maintenance pointer and 351-test count | v1658 external PASS retained; v1659 elegance gate active |
+| Current delivery pointer | `README.md`, `START_HERE.md`, `docs/CHANGELOG.md`, `docs/production-excellence-progress.md` | `project_docs_honesty_contract` requires the v1660 maintenance pointer and 351-test count | v1658 external PASS retained; v1660 top-five cleanup active |
 | Receipt consolidation reality | 28 receipt sources, 27 formatter owners, 27 builder-backed owners, zero pending, one named no-formatter waiver | `receipt_builder_census_contract`, `runtime_receipt_remaining_owner_baseline_tests`, `f/1656/证据/summary.txt` | complete |
 | MFD/UFD two-level directory | `src/osfs_filesystem.cpp`, `src/osfs_directory.cpp`, `src/osfs_disk_layout.*` | `tests/osfs_tests.cpp::test_disk_users_and_two_level_directories`, `osfs_cli_smoke` | complete |
 | Persistent user table and authentication | `src/osfs_filesystem.cpp`, `src/osfs_user_admin.cpp` | wrong-password, reopen, USERADD/PASSWD and permission assertions in `tests/osfs_tests.cpp` | complete; password hash remains teaching-grade, not a production KDF |
@@ -18,7 +18,7 @@ This matrix is the Stage 2 requirement-to-evidence ledger for `治理计划/v163
 
 ## Reconciliation Deviation
 
-The Stage 2 prose says “three OSFS briefs”. **Only two OSFS execution briefs exist** in the live `治理计划/` directory: the v1631 completion brief and the v1634 capacity-extension brief. `v1637-production-excellence-completion-brief.md` is the Production Excellence closeout brief, not a third OSFS execution brief. v1657 marked the two real OSFS briefs executed; v1658-v1659 retain this count correction instead of fabricating a third historical document.
+The Stage 2 prose says “three OSFS briefs”. **Only two OSFS execution briefs exist** in the live `治理计划/` directory: the v1631 completion brief and the v1634 capacity-extension brief. `v1637-production-excellence-completion-brief.md` is the Production Excellence closeout brief, not a third OSFS execution brief. v1657 marked the two real OSFS briefs executed; later maintenance versions retain this count correction instead of fabricating a third historical document.
 
 ## Boundaries
 

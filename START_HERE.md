@@ -48,7 +48,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1659 bounded elegance census active after the v1658 Stage-1 PASS**. v1658 remains the independently reviewed Production Excellence result. v1659 adds the 351st CTest and freezes 740 long filenames plus 883 public-header identifiers behind a shrink-only mechanical baseline. This maintenance work changes no CLI, RESP/JSON, fixture, storage, WAL, router, or execution contract; maturity remains single-project validation plus cross-project contract alignment until the four-project capstone passes.
+Current focus: **v1660 bounded elegance top-five cleanup after the v1658 Stage-1 PASS**. v1659 froze 740 long filenames and 883 public-header identifiers behind the 351st CTest; v1660 renames only the five worst unpinned internal implementation paths and tightens that filename debt to 735 while identifiers stay 883. Public headers, runtime bytes, fixtures, storage, WAL, router, and execution contracts remain unchanged; maturity remains single-project validation plus cross-project contract alignment.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

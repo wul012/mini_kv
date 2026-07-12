@@ -1,0 +1,59 @@
+mini-kv v1660 elegance E-M2 evidence summary
+date: 2026-07-12
+status: LOCAL COMPLETE; REMOTE CI PENDING
+
+scope
+- execution brief: 治理计划/elegance-hotspot-program-minikv.md
+- latest upstream plan read-only: Node docs/plans/v2194-elegance-gates-roadmap.md
+- E-M2 only: top-five unpinned internal paths plus immediate v1659 census portability repair
+- no public header/API, fixture, CLI/RESP/JSON, Store, WAL, router, credential, or execution change
+
+previous CI finding
+- v1659 run: https://github.com/wul012/mini_kv/actions/runs/29176190797
+- six jobs passed: ubuntu, macOS, coverage, sanitizer, clang-format, archive
+- windows-latest failed only elegance_name_census_contract
+- root cause: CRLF checkout left terminal carriage returns on baseline rows
+- v1660 fix: strip one terminal CR after getline and run an in-memory CRLF parser sample every invocation
+
+top-five internal path cleanup
+- 143 -> 33: src/compared_package_audit_validation.cpp
+- 139 -> 29: src/compared_package_audit_guards.cpp
+- 139 -> 29: src/compared_package_audit_stages.cpp
+- 138 -> 28: src/compared_package_audit_slots.cpp
+- 132 -> 29: src/compared_package_intake_audit.cpp
+- public headers/namespaces/symbols unchanged
+- all five old/new Git blobs are equal
+
+ratchet evidence
+- before refresh: expected failure listed exactly five stale old source paths and zero additions
+- after refresh: files=735 / public_ids=883 / budget=40
+- CMake hard maxima: 735 / 883
+- change from v1659: five filename debts removed; no identifier debt added or removed
+
+verification
+- all-target MinGW Debug build: success, 362.3 seconds
+- focused contracts and family tests: 10/10 passed, 29.63 seconds
+- source repair full CTest: 351/351 passed, 0 failed, 190.02 seconds
+- scanner: 305 physical lines; clang-format dry-run passed
+- Chinese walkthrough: 3440 CJK characters before final archive note
+
+frozen fixture proof
+- tracked fixtures/release/*.json: 1514 files
+- manifest sha256: 8eb430889b84bec547abcd4d963636666edd897379769969cf4c715af7f8e00f
+- same as v1659; no fixture was edited
+
+real CLI boundaries
+- SMOKEJSON: read_only=true; execution_allowed=false; write=false; admin=false
+- CHECKJSON LOAD: read_only=true; execution_allowed=false; predicted write risk only; immediate SIZE=0
+- SHARDJSON: readOnly=true; executionAllowed=false; activeRouterInstalled=false; writeRoutingAllowed=false
+
+archive inventory
+- f/ active root: versions 1597-1660 / 315 files / 10,764,438 bytes / 10.27 MiB
+- f/1660: 5 files / 49,779 bytes / 0.05 MiB; 8 MiB budget
+- strict inventory warnings: none
+
+cleanup intent
+- no server/background process was started
+- close Playwright evidence page and delete .playwright-mcp
+- delete cmake-build-v1660 before commit
+- keep only final screenshots, explanation, summary, walkthrough, source/docs, commit, tag, and CI evidence

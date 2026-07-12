@@ -28,6 +28,13 @@ verify、每版 commit/tag/push/CI 绿）。
 
 ## E-M2..E-M3 —— top-5 热点整治（1–2 版）
 
+v1660 family 设计说明（先于改名）：
+- 抽象名：`compared package intake audit`，负责比较包证据接收审计的内部实现组织。
+- 行为边界：main 聚合流程；stages、slots、guards、validation 保持现有单一职责。
+- 数据边界：公共 header、namespace、struct、函数签名与输出字段原样保留。
+- 路径边界：只把五个 CMake 私有 `.cpp` 路径缩短到 40 字符内。
+- 非目标：不合并模块、不改实现字节、不新增 wrapper、alias、waiver 或运行能力。
+
 1. 从 census 取 5 个最差且没有外部合同钉住名字的命名违规（不碰：CLI 命令名、
    RESP/JSON 输出键、公开 header 的 API、census/waiver 合同点名的文件）：提取缺失
    概念、改名、更新引用；全量 CTest 绿 + 受影响 fixture 字节不变作为证据。
@@ -49,5 +56,6 @@ verify、每版 commit/tag/push/CI 绿）。
 
 ## 执行进度
 
-- E-M1 对应 v1659：本地实现与验证完成，基线为 740 个长文件名 / 883 个公共头文件可见长标识符；351/351 CTest 与真实 CLI 边界通过，等待提交、tag、push 和远端 CI。
-- E-M2 下一步：只处理 census 中最差且未被公共合同钉住的五个内部实现文件，并在同一提交把文件 baseline 上限收紧到 735。
+- E-M1 对应 v1659：本地 351/351；远端 run `29176190797` 六个 job 绿、Windows 因 CRLF baseline 行尾解析失败。该真实 portability 缺口由 v1660 立即修复，不移动历史 tag。
+- E-M2 对应 v1660：五个 compared-package intake-audit 内部 `.cpp` 路径已缩短，文件 baseline 740→735，公共 header 与 883 个标识符不动；同时剥离 CRLF 行尾并加入每次运行的 parser 自检。
+- E-M4 下一步：冻结终态 census，写一页起点到终点及刻意保留原因，完成最终 CI 后停在 Claude review 点。

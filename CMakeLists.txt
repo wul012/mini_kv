@@ -191,11 +191,11 @@ add_library(minikv
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_blockers.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_profiles.cpp
     src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_validation.cpp
-    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit.cpp
-    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_stages.cpp
-    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_slots.cpp
-    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_guards.cpp
-    src/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_validation.cpp
+    src/compared_package_intake_audit.cpp
+    src/compared_package_audit_stages.cpp
+    src/compared_package_audit_slots.cpp
+    src/compared_package_audit_guards.cpp
+    src/compared_package_audit_validation.cpp
     src/shard_preview_candidate_request_package.cpp
     src/shard_preview_candidate_request_package_stages.cpp
     src/shard_preview_candidate_request_package_items.cpp
@@ -478,7 +478,7 @@ minikv_add_standalone_source_dir_test(
 target_compile_definitions(
     minikv_elegance_name_census
     PRIVATE
-        MINIKV_NAME_FILE_MAX=740
+        MINIKV_NAME_FILE_MAX=735
         MINIKV_NAME_ID_MAX=883
 )
 

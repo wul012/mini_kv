@@ -1,6 +1,6 @@
-# v1659 Elegance Name Census
+# Elegance Name Census
 
-Status: E-M1 locally verified; commit, tag, push, and remote CI remain required before closure.
+Status: E-M1 gate shipped in v1659; E-M2 top-five cleanup and Windows CRLF portability repair are locally implemented in v1660.
 
 ## Contract Definition
 
@@ -10,10 +10,19 @@ The committed baseline is exact, not merely a ceiling. A current entry absent fr
 
 ## E-M1 Baseline
 
-| Category | Budget | Initial count | Hard maximum | Policy |
+| Category | Budget | Initial count | Current hard maximum | Policy |
 |---|---:|---:|---:|---|
-| filename stems | 40 | 740 | 740 | exact set, shrink only |
+| filename stems | 40 | 740 | 735 | exact set, shrink only |
 | public-header identifiers | 40 | 883 | 883 | exact set, shrink only |
+
+## Ratchet History
+
+| Version | Long filenames | Public-header identifiers | Change |
+|---|---:|---:|---|
+| v1659 | 740 | 883 | initial exact baseline and red-path proof |
+| v1660 | 735 | 883 | five longest unpinned internal `.cpp` paths renamed; CRLF baseline parsing fixed; public surface unchanged |
+
+v1659 GitHub Actions run `29176190797` passed six jobs but failed `windows-latest`: Git checkout produced CRLF baseline lines and the parser retained each trailing carriage return. v1660 strips exactly one terminal `\r` after `std::getline` and executes an in-memory CRLF baseline sample on every run. The fix does not normalize identifiers, paths, case, or whitespace inside entries.
 
 The baseline lives at `config/elegance-name-baseline.txt`; the scanner and CTest entry are `tests/elegance_name_census_tests.cpp` and `elegance_name_census_contract`.
 
@@ -35,4 +44,4 @@ ctest --test-dir cmake-build-v1659 -R '^elegance_name_census_contract$' --output
 cmake-build-v1659\minikv_elegance_name_census.exe --list
 ```
 
-This version does not rename a public header, public symbol, CLI command, RESP/JSON key, fixture, or archived path. The top-five internal-file cleanup belongs to the next version and must lower the 740 maximum in the same commit.
+v1660 does not rename a public header, public symbol, CLI command, RESP/JSON key, fixture, or archived path. It shortens only five CMake-private implementation paths and lowers the filename maximum to 735 in the same commit; the 883 identifier maximum remains unchanged.

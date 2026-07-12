@@ -182,11 +182,14 @@ Census take_census(const fs::path& root) {
     return census;
 }
 
-Census read_baseline(const fs::path& path) {
+Census parse_baseline(std::string_view text) {
     Census baseline;
-    std::istringstream lines(read_text(path));
+    std::istringstream lines{std::string(text)};
     std::string line;
     while (std::getline(lines, line)) {
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
         if (line.empty() || line.starts_with('#')) {
             continue;
         }
@@ -199,6 +202,16 @@ Census read_baseline(const fs::path& path) {
         }
     }
     return baseline;
+}
+
+Census read_baseline(const fs::path& path) { return parse_baseline(read_text(path)); }
+
+void check_crlf_baseline() {
+    const auto sample = parse_baseline("# sample\r\nF|src/example.cpp\r\nI|ExampleName\r\n");
+    if (sample.files != std::set<std::string>{"src/example.cpp"} ||
+        sample.ids != std::set<std::string>{"ExampleName"}) {
+        throw std::runtime_error("CRLF baseline normalization failed");
+    }
 }
 
 void write_baseline(const fs::path& path, const Census& census) {
@@ -261,6 +274,7 @@ bool compare_group(std::string_view group, const std::set<std::string>& current,
 
 int main(int argc, char** argv) {
     try {
+        check_crlf_baseline();
         const fs::path root = MINIKV_SOURCE_DIR;
         const fs::path baseline_path = root / "config" / "elegance-name-baseline.txt";
         const Census current = take_census(root);

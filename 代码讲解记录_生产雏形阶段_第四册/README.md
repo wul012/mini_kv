@@ -179,3 +179,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1659 补充索引
 
 - v1659: [1027-version-1659-name-census.md](1027-version-1659-name-census.md) - 在任何批量改名前把 40 字符预算落成独立 C++ census，解释 740 个长文件名与 883 个公共头文件可见标识符如何形成精确、只减不增的 baseline，词法清理为何排除注释/字面量/include 路径，故意注入第 741 个文件如何证明红灯路径，以及下一版为何只能改五个未被公共合同钉住的内部实现文件。
+
+## v1660 补充索引
+
+- v1660: [1028-version-1660-top-five-paths.md](1028-version-1660-top-five-paths.md) - 按 census 稳定排序选择 compared-package intake-audit 家族五个最差且未钉住的内部 `.cpp` 路径，解释为何只改 CMake 私有装配身份而保留公共 header/namespace，预刷新 stale-baseline 红灯如何证明没有换债，以及文件 baseline 740→735、公共标识符 883 不动、fixture/CLI/no-router/no-write/no-execution 如何分层验证。
