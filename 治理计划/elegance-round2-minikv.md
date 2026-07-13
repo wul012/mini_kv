@@ -47,3 +47,15 @@ family 设计说明先于实现（优雅门第 4 条）。改名 top-5 安全候
 - E2-M1 对应 v1662：合并 735 个文件名与 883 个公开标识符，按长度/类别/名称稳定取前 10；机械结果为 6F/4I、9 pinned/1 safe，候选 run `29189480986` 七项全绿。
 - E2-M2：不触发。安全候选 `1 < 5`，唯一 safe 测试路径保留，不为消费版本额度而凑改名。
 - Round 2 状态：READY FOR CLAUDE REVIEW；外部 verdict 保持 PENDING。
+
+## Claude Round-2 评审 — 2026-07-12（v1662）：PASS，第二轮关闭，retro-elegance 到此为止
+
+- 已核实：TSV 前 10 名与结论真实（9 pinned / 1 safe），9 个 pinned 全部是公开 header
+  路径/标识符——改它们是 API 迁移不是优雅切片；唯一 safe 候选（一个测试路径）保留
+  而不是凑改名，正确执行了 `<5 不触发` 的机械分叉。既有 census 合同验证 TSV（没有
+  第二套 census），baseline 与 TSV 已用 .gitattributes 钉死 LF（内核 CRLF 教训的
+  主动应用——本轮零 CI 红）。两个 run 全绿，树干净。
+- 结论：mini-kv 的存量命名债务已被证明是结构性 pinned（公开 API）。retro-elegance
+  在本仓库正式结束——不再有第三轮；未来价值全部由新代码优雅门守护。若 Stage-2 出现
+  API-breaking 窗口，可把这些 header 改名折叠进那个窗口，单独评审。
+- mini-kv 彻底停靠：唯一剩余职责 = program close 时保持 CLI 输出合同稳定。
