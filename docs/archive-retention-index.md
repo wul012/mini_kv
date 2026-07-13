@@ -1,6 +1,6 @@
 # mini-kv Archive Retention Index
 
-This index is the K5 retention ledger for the path-stable archive roots in this repository. It records the original v1620 baseline, the v1657 post-OSFS remeasurement, the v1658 track-review evidence closeout, the bounded v1659-v1662 elegance evidence, and the selective v1663 OSFS teaching evidence.
+This index is the K5 retention ledger for the path-stable archive roots in this repository. It records the original v1620 baseline, the v1657 post-OSFS remeasurement, the v1658 track-review evidence closeout, the bounded v1659-v1662 elegance evidence, the selective v1663 OSFS teaching evidence, and the v1664 README exhibit proof.
 
 Historical archive roots are evidence, not cleanup candidates. Node-side governance already has hardcoded references to mini-kv archive paths and release fixtures, so every existing path below remains stable unless a separate owner-approved archival migration plan is written and reviewed.
 
@@ -13,15 +13,15 @@ Historical archive roots are evidence, not cleanup candidates. Node-side governa
 | `c/` | 63-121 | 336 | 31,130,191 | 29.69 | 64 | FROZEN |
 | `d/` | 122-143 | 152 | 13,506,894 | 12.88 | 64 | FROZEN |
 | `e/` | 144-1596 | 5,153 | 1,065,416,900 | 1,016.06 | 1,200 | FROZEN HIGH-VOLUME |
-| `f/` | 1597-1663 | 332 | 11,028,490 | 10.52 | 128 | ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN |
+| `f/` | 1597-1664 | 338 | 11,155,748 | 10.64 | 128 | ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN |
 
 Latest measured version archive:
 
 | Version archive | Files | Bytes | MiB | Budget MiB | State |
 |---|---:|---:|---:|---:|---|
-| `f/1663/` | 7 | 131,366 | 0.13 | 8 | within budget |
+| `f/1664/` | 6 | 127,258 | 0.12 | 8 | within budget |
 
-The table above is the direct output of `python scripts/archive_inventory.py --budget-mib 8 --strict` on 2026-07-13 after the seven selective v1663 evidence files were written. The script emitted `warnings: none`; no historical path was moved or rewritten. Earlier inventories remain frozen in their own summaries, while v1663 records its local test, tutorial, CLI, corruption and full-CTest evidence in `f/1663/证据/summary.txt`.
+The table above is the direct output of `python scripts/archive_inventory.py --budget-mib 8 --strict` on 2026-07-13 after the six selective v1664 evidence files were written. The script emitted `warnings: none`; no historical path was moved or rewritten. Earlier inventories remain frozen in their own summaries. v1664 keeps one GFM-rendered README viewport, three selected verification screenshots, one explanation and one text summary; it does not retain build binaries or raw 1,011-step/352-test logs.
 
 ## OSFS Coursework Growth Accounting
 

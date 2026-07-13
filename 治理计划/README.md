@@ -14,6 +14,7 @@
 - `elegance-hotspot-program-minikv.md`：Production Excellence 后的有界优雅热点整治；最多 4 版，先落命名 census 与只减不增 baseline，再修复 top-5 非合同长名，最终停在 Claude review 点。
 - `elegance-round2-minikv.md`：优雅第二轮条件式收尾；最多 2 版，先机械审计剩余最长名的 pin 状态，只有安全候选达到 5 个才允许第二刀，否则在审计版诚实关闭。
 - `v1663-osfs-teaching-evidence.md`：OSFS 讲解与证据加厚简报；历史版本讲解不移动，新建按机制组织的通俗教程，并补 fd 会话、组权限、目录扩容、稀疏区间和 inode 位图损坏测试，同时诚实复核 FinalShell 分段记录。
+- `readme-exhibition-brief.md`：v1664 README 展示维护简报；把 GitHub 首页从版本流水改为访客导向的能力、架构、复现和证据地图，并用现有合同钉住 352 测试、90% 核心覆盖率下限、27/0/1 receipt census、735/883 命名基线与获准的只读 capstone 成熟度标签。
 
 ## 当前硬边界
 

@@ -195,3 +195,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1663 补充索引
 
 - v1663: [1031-v1663-osfs-tutorial-resilience.md](1031-v1663-osfs-tutorial-resilience.md) - 解释为什么历史版本讲解保留而学生教程按机制重组，五个韧性测试怎样关闭 fd 会话、group 权限、UFD 扩块、稀疏区间和 inode bitmap 损坏缺口，FinalShell 预置用户 grep 偏差如何诚实复核，以及教程、机械文档门、真实 CLI 与待 Linux 实跑证据如何分层。
+
+## v1664 补充索引
+
+- v1664: [1032-v1664-readme-exhibition.md](1032-v1664-readme-exhibition.md) - 解释为什么 README 要从版本流水重构为访客证据路径，352、2345/2122/90%、27/0/1、735/883 与唯一尺寸豁免分别由哪个机械门重算，最终态 capstone 标签为何必须保留 env-gated/single-machine/read-only/no-execution 限定，以及架构图、Quickstart、证据地图和 docs honesty contract 如何共同防止首页再次漂移。

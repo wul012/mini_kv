@@ -1,0 +1,74 @@
+mini-kv v1664 README exhibition evidence
+date=2026-07-13
+scope=README visitor exhibit; docs/contract/archive closeout only
+runtime_source_changed=false
+fixture_changed=false
+public_command_changed=false
+ratchet_relaxed=false
+
+step0:
+  start_head=901408e8
+  start_remote_aligned=true
+  previous_ci_run=29220020244 success 7/7
+  stale_brief_count=351
+  current_registered_ctest=352
+
+render:
+  renderer=authenticated GitHub Markdown API mode=gfm context=wul012/mini_kv
+  browser=Playwright MCP 1440x1100
+  utf8_chinese_present=true
+  local_readme_links=all present
+
+focused_contracts:
+  project_docs_honesty_contract=pass
+  minikv_track_final_evidence_contract=pass
+  receipt_builder_census_contract=pass
+  elegance_name_census_contract=pass
+  result=4/4 pass
+  elapsed_seconds=2.58
+
+census:
+  receipt=sources 28; formatter owners 27; builder-backed 27; pending 0; waiver 1
+  elegance=filename stems 735; public-header identifiers 883; budget 40; pin audit 9/1; close
+  ctest_registered=352
+
+real_cli:
+  commands=SMOKEJSON; CHECKJSON GET demo; HEALTH; QUIT
+  smoke_read_only=true
+  smoke_execution_allowed=false
+  smoke_order_authoritative=false
+  check_write_command=false
+  check_touches_wal=false
+  health=OK
+  quit=BYE
+
+full_ctest:
+  passed=352
+  failed=0
+  elapsed_seconds=217.03
+
+archive:
+  root=f
+  range=1597-1664
+  root_files=338
+  root_bytes=11155748
+  version_files=6
+  version_bytes=127258
+  version_mib=0.12
+  budget_mib=8
+  warnings=none
+
+walkthrough:
+  path=代码讲解记录_生产雏形阶段_第四册/1032-v1664-readme-exhibition.md
+  cjk_characters=3239
+
+known_local_deviations:
+  - first configure omitted MinGW bin from PATH; scratch build deleted and clean configure repeated
+  - first CLI parser assumed JSON at line 0; final assertion selects prompt-prefixed JSON structurally
+
+boundaries:
+  default_bind=loopback
+  authentication=false
+  tls=false
+  hardened_production_database=false
+  capstone=env-gated single-machine read-only no-execution-authority

@@ -1,10 +1,12 @@
-# v1663 Project Documentation Honesty Matrix
+# v1664 Project Documentation Honesty Matrix
 
 This matrix is the Stage 2 requirement-to-evidence ledger for `治理计划/v1637-production-excellence-completion-brief.md`. It records what the project documents claim, where the implementation lives, which mechanical evidence protects the claim, and what remains deliberately limited.
 
 | Requirement | Current implementation evidence | Mechanical or runnable evidence | Status |
 |---|---|---|---|
-| Current delivery pointer | `README.md`, `START_HERE.md`, `docs/CHANGELOG.md`, `docs/production-excellence-progress.md` | `project_docs_honesty_contract` requires the v1663 tutorial pointer and 352-test count | Stage-1 and both elegance rounds externally reviewed PASS |
+| Current delivery pointer | `README.md`, `START_HERE.md`, `docs/CHANGELOG.md`, `docs/production-excellence-progress.md` | `project_docs_honesty_contract` requires the v1664 exhibit, v1663 tutorial pointer and 352-test count | Stage-1 and both elegance rounds externally reviewed PASS |
+| README visitor exhibit | Hero, metric table, architecture, Quickstart, evidence map and boundaries in `README.md` | Contract pins the exact maturity line, 352 tests, 90% floor source numbers, 27/0/1 receipt census, 735/883 name debt and security boundary | complete without runtime or fixture changes |
+| Read-only four-project capstone | Node `production-excellence-final-acceptance.md` PROGRAM CLOSE reran real Java, real mini-kv CLI and registered aiproj artifact against final track states | External run records C1-C4 pass, `read_only=true`, `execution_allowed=false`, and exact program-wide maturity label | complete only for env-gated single-machine read-only integration; no production execution authority |
 | Elegance Round 2 pin audit | `config/elegance-round2-pin-audit.tsv`, `docs/elegance-round2-pin-audit.md` | `elegance_name_census_contract` recomputes top 10 and requires 6F/4I, 9 pinned/1 safe | E2-M2 not triggered because `safe=1<5` |
 | Receipt consolidation reality | 28 receipt sources, 27 formatter owners, 27 builder-backed owners, zero pending, one named no-formatter waiver | `receipt_builder_census_contract`, `runtime_receipt_remaining_owner_baseline_tests`, `f/1656/证据/summary.txt` | complete |
 | MFD/UFD two-level directory | `src/osfs_filesystem.cpp`, `src/osfs_directory.cpp`, `src/osfs_disk_layout.*` | `tests/osfs_tests.cpp::test_disk_users_and_two_level_directories`, `osfs_cli_smoke` | complete |

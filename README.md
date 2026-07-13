@@ -1,526 +1,136 @@
 # mini-kv
 
-## Recent versions
+[![CI](https://github.com/wul012/mini_kv/actions/workflows/ci.yml/badge.svg)](https://github.com/wul012/mini_kv/actions/workflows/ci.yml)
+[![Core coverage floor](https://img.shields.io/badge/core%20coverage-90%25-brightgreen)](docs/TESTING.md)
+[![CTest](https://img.shields.io/badge/CTest-352-blue)](docs/project-docs-honesty-matrix.md)
+[![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20macOS%20%7C%20Windows-informational)](.github/workflows/ci.yml)
 
-The full version history is kept in [`docs/CHANGELOG.md`](docs/CHANGELOG.md). This README keeps only the latest ten entries so the build, run, architecture, and protocol notes remain easy to scan.
+mini-kv 是一个从零实现的 C++20 键值存储：线程安全内存 Store、WAL 崩溃恢复、Snapshot、RESP/TCP 和可机器读取的运行证据都在同一仓库内闭环。仓库还包含一个彼此独立的 OSFS 课程设计子系统，用二进制磁盘镜像展示 MFD/UFD 二级目录、inode、权限、文件描述符、一级间接块和只读 FSCK。这里的质量主张不靠版本数量或截图成立，而由 CTest、覆盖率下限、精确 census、尺寸 ratchet 和三平台 CI 机械约束。四项目 capstone 已由 Node 以真实 `minikv_cli` 新进程读取 `SMOKEJSON` 与 `CHECKJSON`，验证过程保持只读且不授予执行权。
 
-- v1663: rewrites OSFS learning material as eight mechanism-first Chinese tutorials and strengthens the executable evidence where the old version-by-version notes were weakest. A separate resilience target covers login fd invalidation, descriptor modes, group permissions, UFD block growth and slot reuse, sparse range zero-fill, and inode-bitmap corruption; focused OSFS CTest is now three targets, the default inventory is 352 registered CTest tests, and FinalShell records explicitly separate historical output from two pending indirect/FSCK adversarial demonstrations.
-- v1662: closes elegance Round 2 after a mechanically ranked pin audit finds only 1 safe candidate among the combined 10 longest filename/public-identifier entries, below the 5-candidate E2-M2 threshold. The existing census verifies the 6-file/4-identifier sample, nine public-header pins, one build-only test path, and LF attributes; 735/883 remains unchanged and no rename is performed. Claude independently reviewed the bounded second round as PASS on 2026-07-12 and closed retro-elegance work.
-- v1661: closes the first bounded mini-kv elegance hotspot program at its mandatory review point. The terminal census is 735 long filenames (218 include / 241 src / 276 tests) and 883 public-header-visible identifiers, down from 740/883 without a new waiver or public-contract rename. It also closes v1660's changed-files format finding by formatting the five renamed translation units; Claude independently reviewed the track as PASS on 2026-07-12.
-- v1660: repays the first five mechanically selected naming debts and closes the v1659 Windows CI portability finding. The five longest unpinned internal `.cpp` paths in the compared-package intake-audit family now use concise 28-33 character stems; public headers, symbols, fixtures, and runtime output stay fixed. The exact filename baseline tightens 740→735 while identifiers remain 883, and the scanner now normalizes CRLF baseline rows under an always-run parser self-check.
-- v1659: establishes the first mechanical elegance gate without changing runtime behavior. `elegance_name_census_contract` scans filenames under `src/`, `include/`, and `tests/`, plus identifiers visible in public headers after comments, literals, and include paths are removed. The shrink-only baseline starts at 740 long filenames and 883 long public-header identifiers; an injected 741st filename fails the gate. The default inventory is now 351 registered CTest tests, while Stage-1 remains the independently reviewed v1658 result.
-- v1658: closes the externally reviewed mini-kv Stage-1 track after preparing E1-E10 evidence, raising the measured core coverage floor from 88% to 90%, changing the TCP server's default bind address from wildcard to loopback, and adding `minikv_track_final_evidence_contract`. Claude independently returned PASS on 2026-07-11; the inventory reached 350 registered CTest tests, and the gate checks the exact two program deviations, high-confidence secret patterns, safe defaults, nonblank source-size ratchet, receipt census, documentation honesty, CI lanes, and archive policy without claiming live four-project integration.
-- v1657: refreshes the project-facing documentation against the live tree after OSFS and receipt consolidation. `README.md`, `START_HERE.md`, the capability snapshot, changelog, archive-retention index, and two real OSFS execution briefs now agree on current mechanisms and boundaries. `project_docs_honesty_contract` makes the v1657 pointer, 349 registered CTest tests, OSFS implementation/test references, archive growth, and brief status fail on future drift; no runtime command, fixture, storage path, or authority changes.
-- v1656: completes receipts consolidation Stage 1 by migrating the final five sandbox-chain formatters and tightening the census to **27 builder-backed / 0 pending / 1 named no-formatter waiver** across 28 source files. Four outputs remain byte-exact, manual dry-run retains only its named three-field frozen metadata rule, session support is split from the 700-line evidence owner, real CLI boundaries pass 50/50, and full local CTest passes 348/348 without changing tests or fixtures.
-- v1655: migrates five implementation-chain receipt owners under the unchanged v1653 oracle, preserving 16889/19163/13870/15264/21562-byte exact outputs and tightening census from 20/7/1 to 25/2/1. Ordered objects and no-parameter boundary appenders replace long concatenations without opening credential, network, router, write, execution, auto-start, audit, or order authority.
-- v1654: migrates the three base-resolver formatters across two owners, replaces the brace-less shared fragment with ordered field appends, preserves 7944/10291/11201-byte outputs and 104/118/133 fields, and tightens census from 18/9/1 to 20/7/1.
-## Current version
+mini-kv is a from-scratch C++20 key-value engine with a thread-safe in-memory store, crash-recoverable WAL, snapshots, RESP/TCP transport, and machine-readable runtime evidence. It also ships an independent OSFS teaching filesystem that exposes its disk layout and consistency mechanisms instead of hiding them behind mocks. Every headline metric below points to a committed check or evidence record, and the cross-project claim is limited to the reviewed, env-gated, read-only capstone.
 
-Current focus is tracked by the latest entry in `## Recent versions` and by `docs/production-excellence-progress.md`.
-The long per-version history now lives in `docs/CHANGELOG.md`, and the detailed capability/evidence field snapshot lives in `docs/CAPABILITY-SNAPSHOT.md`.
+**Maturity: single-project validation + verified read-only cross-project integration (env-gated, single machine, no execution authority).**
 
-Core surfaces:
+## 30 秒看懂
 
-- Thread-safe C++20 in-memory key-value store
-- Inline text and RESP-over-TCP server/client flows
-- WAL, snapshot, restore, and compaction evidence boundaries
-- Runtime read-only JSON evidence through INFOJSON, STATSJSON, SMOKEJSON, STORAGEJSON, COMMANDSJSON, EXPLAINJSON, and CHECKJSON
-- Independent OSFS course-design filesystem shell through `minikv_osfs`, with a binary disk image, superblock, block/inode bitmaps, persistent users, root-only user administration, read-only FSCK, MFD/UFD two-level directories, inode ownership/permissions, single-indirect file blocks, and handle-style file operations
-- OSFS final coursework artifacts live under `课程设计交付/v1636-osfs-final/`; the v1630 and v1633 packages are retained only as superseded draft/history baselines
-- CI-backed CMake/CTest matrix with sanitizer, coverage, format, and archive-inventory lanes
-- Explicit no-router, no-order-authority, no-write-expansion, and no-execution governance fields for Node/Java consumption
+| 维度 | 当前事实 | 机械证据 |
+|---|---|---|
+| 构建与测试 | **352 registered CTest tests**；Linux、macOS、Windows、sanitizer、coverage、format、archive 共七条 CI job | [`CMakeLists.txt`](CMakeLists.txt)、[CI workflow](.github/workflows/ci.yml)、`ctest --test-dir build -N` |
+| 核心覆盖率 | store/command/WAL/snapshot/RESP 集合的已测基线为 2345 行、执行 2122 行、90%；CI 强制 **90% floor** | [`docs/minikv-track-final-evidence.md`](docs/minikv-track-final-evidence.md)、[`ci.yml`](.github/workflows/ci.yml) |
+| 源码体积 | `src/` 与 `include/` 每个源码文件不超过 800 个非空物理行；仅保留一个具名 registry 豁免 | [`check_minikv_track_final_evidence.cmake`](cmake/check_minikv_track_final_evidence.cmake) |
+| Receipt 结构 | 28 个 receipt 源文件中，**27 builder-backed / 0 pending / 1 named no-formatter waiver** | [`check_receipt_builder_census.cmake`](cmake/check_receipt_builder_census.cmake)、[`docs/receipts-consolidation-note.md`](docs/receipts-consolidation-note.md) |
+| 优雅债台账 | 存量长文件名 735、公共头文件可见长标识符 883；精确 baseline 只减不增，新代码仍受 40 字符预算约束 | [`config/elegance-name-baseline.txt`](config/elegance-name-baseline.txt)、[`docs/elegance-hotspot-closeout.md`](docs/elegance-hotspot-closeout.md) |
+| OSFS 课程设计 | 磁盘镜像、持久化用户、MFD/UFD、fd 偏移、权限、直接块与一级间接块、FSCK 检错、USERADD/PASSWD | [`OSFS课程设计通俗教程/`](OSFS课程设计通俗教程/README.md)、[`tests/osfs_tests.cpp`](tests/osfs_tests.cpp)、[`tests/osfs_resilience_tests.cpp`](tests/osfs_resilience_tests.cpp) |
+| 四项目验证 | Node 启动真实 Java、执行真实 mini-kv CLI、读取 aiproj 登记产物；C1-C4 最终态复跑均通过 | [program-close evidence](https://github.com/wul012/nodeproj/blob/master/docs/plans/production-excellence-final-acceptance.md) |
 
-## Build
+## 架构
+
+```mermaid
+flowchart TB
+    subgraph KV["mini-kv engine"]
+        TCP["Inline / RESP client"] --> Parser["RESP parser + command catalog"]
+        CLI["minikv_cli"] --> Engine["Command engine"]
+        Parser --> Engine
+        Engine --> Store["Thread-safe Store + TTL"]
+        Engine --> WAL["WAL append / replay / compact"]
+        Engine --> Snapshot["Snapshot save / load"]
+        Engine --> Evidence["INFOJSON / SMOKEJSON / CHECKJSON"]
+    end
+
+    subgraph FS["Independent OSFS coursework executable"]
+        Shell["minikv_osfs"] --> MFD["MFD + persistent user table"]
+        MFD --> UFD["Per-user UFD"]
+        UFD --> Inode["inode + permissions + fd offsets"]
+        Inode --> Blocks["direct + single-indirect blocks"]
+        Fsck["read-only FSCK"] -. cross-checks .-> Blocks
+    end
+
+    Gate["CTest contracts + CI ratchets"] -. verifies .-> KV
+    Gate -. verifies .-> FS
+    Node["Node readiness:cross capstone"] -->|"fresh read-only CLI process"| CLI
+```
+
+两条子系统共享 CMake/CTest 工程，但不共享存储职责：OSFS 不是 KV 的持久化后端，KV 也不会借 OSFS 绕过 WAL、Snapshot 或权限边界。
+
+## Quickstart
+
+要求 CMake 3.20+、C++20 编译器；核心工程不依赖第三方运行库。
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --config Debug --parallel 4
+ctest --test-dir build -C Debug --output-on-failure --timeout 120
+```
+
+执行一个不写 Store、不触碰 WAL 的 CLI smoke：
+
+```bash
+printf 'SMOKEJSON\nCHECKJSON GET demo\nHEALTH\nQUIT\n' | ./build/minikv_cli
+```
+
+PowerShell / Visual Studio 多配置生成器下，可执行文件通常位于 `build\Debug\minikv_cli.exe`：
 
 ```powershell
-cmake -S . -B build
-cmake --build build
-ctest --test-dir build --output-on-failure
+"SMOKEJSON`nCHECKJSON GET demo`nHEALTH`nQUIT" | .\build\Debug\minikv_cli.exe
 ```
 
-## CI
+`SMOKEJSON` 汇总只读运行状态；`CHECKJSON GET demo` 只解释命令边界，不执行 `GET`。要观察真实写入与恢复，可在临时 WAL 上运行 `SET`、重启 CLI，再读取同一 key；完整流程见 [`docs/CAPABILITY-SNAPSHOT.md`](docs/CAPABILITY-SNAPSHOT.md)。
 
-GitHub Actions runs the same CMake build and CTest flow on Linux, macOS, and Windows:
+### 复现质量门
 
-```text
-.github/workflows/ci.yml
+```bash
+ctest --test-dir build -C Debug \
+  -R 'minikv_track_final_evidence_contract|project_docs_honesty_contract|receipt_builder_census_contract|elegance_name_census_contract' \
+  --output-on-failure
 ```
 
-Each CI job configures a Debug build, builds every target, and runs the registered CTest suite with failure output enabled. The test suite is assert-driven, so CI intentionally keeps assertions enabled.
-
-Dependabot is configured only for GitHub Actions:
-
-```text
-.github/dependabot.yml
+```bash
+python scripts/archive_inventory.py --budget-mib 8 --strict
 ```
 
-It runs weekly, groups minor and patch action updates, and ignores semver-major automatic version updates. mini-kv does not currently configure npm, Maven, pip, cargo, Docker, vcpkg, or Conan updates; those should be added only after the repository actually adopts the corresponding dependency manager.
-
-## Run
-
-CLI:
-
-```powershell
-.\build\Debug\minikv_cli.exe
-```
-
-CLI with WAL:
-
-```powershell
-.\build\Debug\minikv_cli.exe data\mini-kv.wal
-```
-
-CLI with WAL repair:
-
-```powershell
-.\build\Debug\minikv_cli.exe data\mini-kv.wal --repair-wal
-```
-
-CLI with automatic WAL compaction:
-
-```powershell
-.\build\Debug\minikv_cli.exe data\mini-kv.wal --auto-compact-wal
-```
-
-CLI with tuned WAL compaction thresholds:
-
-```powershell
-.\build\Debug\minikv_cli.exe data\mini-kv.wal --auto-compact-wal --wal-compact-min-records 4 --wal-compact-record-ratio 2 --wal-compact-min-bytes 1048576
-```
-
-OSFS course-design shell:
-
-```powershell
-.\build\Debug\minikv_osfs.exe --disk data\osfs-course.img --format --blocks 96
-# In the shell: LOGIN root root
-```
-
-OSFS script smoke:
-
-```powershell
-.\build\Debug\minikv_osfs.exe --disk data\osfs-course.img --format --blocks 96 --script tests\osfs_smoke_script.txt
-```
-
-The mechanism-first Chinese tutorial starts at [`OSFS课程设计通俗教程/README.md`](OSFS课程设计通俗教程/README.md). The concise maintainer guide remains in [`docs/osfs-course-design-guide.md`](docs/osfs-course-design-guide.md), and the current final submission package is [`课程设计交付/v1636-osfs-final/`](课程设计交付/v1636-osfs-final/README.md).
-
-TCP server:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379
-```
-
-When the host argument is omitted, the server binds to `127.0.0.1`. Binding to `0.0.0.0` must be explicit and is unsafe without an external authentication, TLS, and firewall boundary.
-
-TCP server with WAL:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 data\mini-kv.wal
-```
-
-TCP server with WAL repair:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 data\mini-kv.wal --repair-wal
-```
-
-TCP server with automatic WAL compaction:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 data\mini-kv.wal --auto-compact-wal
-```
-
-TCP server with tuned WAL compaction thresholds:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 data\mini-kv.wal --auto-compact-wal --wal-compact-min-records 4 --wal-compact-record-ratio 2 --wal-compact-min-bytes 1048576
-```
-
-TCP server with explicit limits:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 --max-request-bytes 65536 --accept-poll-ms 200
-```
-
-TCP server with periodic metrics logs:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 --metrics-interval-ms 10000
-```
-
-TCP server with metrics file export:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 --metrics-interval-ms 10000 --metrics-file data\server.metrics.log
-```
-
-TCP server with JSONL metrics file export:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 --metrics-interval-ms 10000 --metrics-file data\server.metrics.jsonl --metrics-file-format jsonl
-```
-
-TCP server with rotated metrics file export:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 127.0.0.1 --metrics-interval-ms 10000 --metrics-file data\server.metrics.log --metrics-file-max-bytes 10485760 --metrics-file-keep 5
-```
-
-TCP server bound through hostname resolution:
-
-```powershell
-.\build\Debug\minikv_server.exe 6379 localhost --max-request-bytes 65536
-```
-
-TCP client:
-
-```powershell
-.\build\Debug\minikv_client.exe 127.0.0.1 6379
-```
-
-TCP client with socket timeout:
-
-```powershell
-.\build\Debug\minikv_client.exe 127.0.0.1 6379 5000
-```
-
-TCP client that waits for a server to come online:
-
-```powershell
-.\build\Debug\minikv_client.exe 127.0.0.1 6379 5000 --connect-retries 10 --retry-delay-ms 250
-```
-
-TCP client with persistent command history:
-
-```powershell
-.\build\Debug\minikv_client.exe 127.0.0.1 6379 --history-file data\client.history
-```
-
-TCP client with persistent key completion cache:
-
-```powershell
-.\build\Debug\minikv_client.exe 127.0.0.1 6379 --key-cache-file data\client.keys
-```
-
-TCP client local history commands:
-
-```text
-:history  Show commands sent during the current client session.
-!!        Repeat the previous sent command.
-!N        Repeat history entry N, using 1-based indexing.
-```
-
-When the bundled TCP client runs in an interactive terminal, it supports Tab command completion, Up/Down history navigation, Left/Right cursor movement, Home/End, Backspace, and Delete. Tab completes command prefixes such as `PI` to `PING `, `K` to `KEYS `, `R` to `RESETSTATS `, and `:h` to `:history `; ambiguous prefixes expand only to the longest shared prefix when that prefix grows. After successful `SET` commands, the client also learns key names and can complete the key argument for `GET`, `SET`, `DEL`, `EXPIRE`, and `TTL`. When `KEYS` returns a valid `key_count=N keys=...` response, the client replaces its known-key cache with that server list. With `--key-cache-file`, those learned or refreshed key names are loaded on startup and saved after cache-changing commands, so key completion can carry across client sessions. When stdin is redirected or piped, it keeps the original line-by-line input behavior.
-
-Benchmark:
-
-```powershell
-.\build\Debug\minikv_benchmark.exe 100000 10000
-```
-
-For single-config generators, executables may be directly under `build`.
-
-## CLion
-
-Open this folder directly in CLion:
-
-```text
-D:\C\mini-kv
-```
-
-If CLion asks for a toolchain, choose one of these:
-
-- MinGW / MSYS2 UCRT64
-- Visual Studio Build Tools
-- WSL toolchain
-
-After CLion finishes loading CMake, run these targets:
-
-- `minikv_cli`
-- `minikv_server`
-- `minikv_client`
-- `minikv_benchmark`
-- `minikv_store_tests`
-- `minikv_command_tests`
-- `minikv_wal_tests`
-- `minikv_snapshot_tests`
-- `minikv_stress_tests`
-- `minikv_resp_tests`
-- `minikv_tcp_server_tests`
-- `minikv_tcp_resp_tests`
-- `minikv_tcp_resp_compat_tests`
-- `minikv_tcp_resp_concurrency_tests`
-- `minikv_client_history_tests`
-- `minikv_line_editor_tests`
-- `minikv_metrics_file_tests`
-- `minikv_recovery_evidence_tests`
-- `minikv_recovery_fixture_index_tests`
-- `minikv_ttl_token_recovery_tests`
-- `minikv_release_verification_manifest_tests`
-- `minikv_runtime_artifact_rollback_evidence_tests`
-- `minikv_runtime_artifact_bundle_manifest_tests`
-- `minikv_restore_compatibility_handoff_tests`
-- `minikv_restore_dry_run_operator_package_tests`
-- `minikv_artifact_digest_compatibility_matrix_tests`
-- `minikv_release_artifact_digest_package_tests`
-- `minikv_restore_drill_evidence_tests`
-- `minikv_restore_handoff_checklist_tests`
-- `minikv_restore_evidence_retention_tests`
-- `minikv_retained_restore_artifact_digest_tests`
-- `minikv_restore_approval_boundary_tests`
-- `minikv_restore_boundary_smoke_manifest_tests`
-- `minikv_runtime_smoke_evidence_tests`
-
-## CLI commands
-
-```text
-PING [message]
-SET key value
-SETNXEX key seconds value
-GET key
-DEL key
-EXPIRE key seconds
-TTL key
-SIZE
-KEYS [prefix]
-KEYSJSON [prefix]
-SAVE path
-LOAD path
-COMPACT
-WALINFO
-STATS
-STATSJSON
-SMOKEJSON
-RESETSTATS
-HEALTH
-INFO
-INFOJSON
-COMMANDS
-COMMANDSJSON
-EXPLAINJSON command
-CHECKJSON command
-STORAGEJSON
-HELP
-EXIT
-QUIT
-```
-
-## TCP protocol
-
-Start the server:
-
-```powershell
-.\cmake-build-debug\minikv_server.exe 6379
-```
-
-Connect with a TCP client, then send one inline command per line:
-
-```text
-SET name mini-kv
-SETNXEX idem:token 30 claimed
-PING
-GET name
-EXPIRE name 10
-TTL name
-SIZE
-KEYS
-KEYS user:
-KEYSJSON
-KEYSJSON user:
-SAVE data\mini-kv.snapshot
-DEL name
-LOAD data\mini-kv.snapshot
-COMPACT
-WALINFO
-STATS
-STATSJSON
-RESETSTATS
-HEALTH
-INFO
-INFOJSON
-COMMANDS
-COMMANDSJSON
-EXPLAINJSON SET orderops:1 value
-CHECKJSON SET orderops:1 value
-STORAGEJSON
-QUIT
-```
-
-Or use the bundled client:
-
-```powershell
-.\cmake-build-debug\minikv_client.exe 127.0.0.1 6379
-```
-
-The TCP server also accepts Redis-style RESP request arrays:
-
-```text
-*3\r\n$3\r\nSET\r\n$4\r\nname\r\n$7\r\nmini-kv\r\n
-*1\r\n$4\r\nPING\r\n
-*2\r\n$3\r\nGET\r\n$4\r\nname\r\n
-```
-
-RESP mode returns simple strings, integers, bulk strings, null bulk strings, or errors using RESP framing. Inline mode keeps the original one-line text responses.
-
-`KEYS` returns currently live key names in sorted order as `key_count=N keys=...`; expired keys are pruned before the list is produced. `KEYS prefix` returns only keys that start with that prefix as `key_count=N prefix=prefix keys=...`. The prefixed response intentionally differs from the full-list response so the bundled client does not replace its full local key cache with a filtered subset. `KEYSJSON [prefix]` returns the same live key inventory as JSON with `prefix`, `key_count`, `keys`, `truncated`, and `limit`; the default limit is `1000`, and the command never returns values. `SETNXEX key seconds value` is a short-TTL token primitive: it sets a missing or expired key with a value and positive TTL, returns `1` when the claim is accepted, returns `0` when a live token already exists, and does not make mini-kv an order-authoritative store. `STATS` returns a compact key-value status line with live key count, command counters, command latency counters, per-command breakdown, WAL maintenance details when enabled, and TCP connection counters when executed through the server. `STATSJSON` returns the same operational snapshot as one read-only JSON object, which is easier for scripts and log collectors to parse. It includes `schema_version=1`, `read_only=true`, `execution_allowed=false`, `order_authoritative=false`, `evidence_type=runtime_metrics`, and diagnostics showing `write_commands_executed=false`; latency counters remain dynamic runtime fields. `SMOKEJSON` returns a combined read-only runtime smoke object for external read adapters: it includes identity, version, storage, WAL, command metrics, connection stats, allowed real-read commands, forbidden commands (`LOAD`, `COMPACT`, `SETNXEX`, `RESTORE`), `live_read_session` fields for Node v205 execution packet preparation (`session_id_echo="mini-kv-live-read-v102"`, `server_uptime_bucket`, `read_command_list_digest="fnv1a64:5bef33f2fbe65cc5"`, `write_commands_allowed=false`, `auto_start_allowed=false`), failure taxonomy categories and stable `taxonomy_digest`, `operator_window.identity_neutral_proof=true`, CI evidence hints, artifact retention evidence, binary provenance digest `fnv1a64:d9776044d393ecbc`, retention provenance digest `fnv1a64:8cf7cc0df218035f`, replay marker digest `fnv1a64:6b9ef93f40cbd343`, command dispatch quality receipt `fnv1a64:0f2caa6931b482b8`, adapter shell non-storage guard receipt `fnv1a64:0174fa831d17cea4`, managed audit external adapter non-participation receipt `fnv1a64:9bacde73d6d07097`, managed audit sandbox adapter non-participation receipt `fnv1a64:f0cae7a4ce0674c2`, sandbox connection echo marker `fnv1a64:beb8dd6a0b102a11`, and sandbox connection no-start guard receipt `fnv1a64:69e377d01f15fd57`; diagnostics still show `write_commands_executed=false`, `admin_commands_executed=false`, and `runtime_write_observed=false`. `INFO` returns build and runtime identity as `version=... protocol=... uptime_seconds=... live_keys=... wal_enabled=... metrics_enabled=... max_request_bytes=...`; the version comes from the CMake project version generated into `minikv/version.hpp`. `INFOJSON` returns the same identity contract as read-only JSON: `schema_version`, `read_only`, `execution_allowed`, `order_authoritative`, `evidence_type`, `version`, `server.protocol`, `server.uptime_seconds`, `server.max_request_bytes`, `store.live_keys`, `wal.enabled`, `metrics.enabled`, `ci_evidence`, `artifact_retention`, managed audit receipts, `command_dispatch_quality_receipt`, `adapter_shell_non_storage_guard_receipt`, `managed_audit_external_adapter_non_participation_receipt`, `managed_audit_sandbox_adapter_non_participation_receipt`, and diagnostics. `COMMANDS` returns a compact text command catalog, and `COMMANDSJSON` returns the same catalog as `{"commands":[...]}` entries with `name`, `category`, `mutates_store`, `touches_wal`, `stable`, and `description`. Categories are `meta`, `read`, `write`, and `admin`; this is descriptive metadata, not an ACL or permission system. `EXPLAINJSON command` returns `schema_version`, `command_digest`, `command`, `category`, `mutates_store`, `touches_wal`, `key`, `requires_value`, `ttl_sensitive`, `allowed_by_parser`, `side_effects`, `side_effect_count`, and `warnings` for the supplied command line without executing it. `schema_version` is currently `1`; `command_digest` is a stable `fnv1a64:<hex>` evidence fingerprint over the normalized explain fields, not an authentication signature. `side_effects` uses stable labels such as `store_write`, `store_ttl_update`, `snapshot_file_write`, `store_replace_from_snapshot`, `wal_rewrite_when_enabled`, `metrics_reset`, `connection_close`, and `metadata_read`; `side_effect_count` mirrors the number of labels. `CHECKJSON command` wraps the same explain evidence into a read-only execution contract with `read_only=true`, `execution_allowed=false`, `checks`, `wal`, and contract warnings. Its `wal.durability` is `wal_backed`, `memory_only`, `not_wal_backed`, or `not_applicable` depending on the target command and whether this processor has a WAL. `STORAGEJSON` is also read-only and returns `schema_version`, `read_only`, `execution_allowed`, `version`, `store.live_keys`, `store.order_authoritative=false`, `wal`, `snapshot`, `side_effects`, `side_effect_count`, and `diagnostics`. Its diagnostic notes explicitly mark the evidence as `not_order_authoritative`, and the command reports WAL status without appending or compacting the WAL. `RESETSTATS` clears command execution metrics; a successful reset is not counted as a new command, so the next `STATS` or `STATSJSON` response starts from zero. `HEALTH` returns an `OK ...` line for quick liveness checks with the same WAL, command metric, and connection signals. `command_breakdown` uses `COMMAND:total/success/error/total_latency_ns/avg_latency_ns/max_latency_ns` entries separated by semicolons; unknown commands are grouped under `UNKNOWN`.
-
-`SHARDROUTE key` and `SHARDROUTEJSON key` are read-only shard route preview commands. They compute the preview slot and `shard-0` assignment used by the current single-shard readiness prototype, preserve the historical sample slots from `SHARDJSON`, and never install an active router, create shard directories, touch WAL, write storage, execute admin commands, or make mini-kv order/audit authoritative.
-
-Stable sample responses live under `fixtures/checkjson/`, `fixtures/readonly/`, `fixtures/ttl-token/`, `fixtures/release/`, and `fixtures/recovery/`.
-
-`fixtures/checkjson/set-orderops-write-contract.json` is the exact no-WAL response for `CHECKJSON SET orderops:1 value`; `fixtures/checkjson/get-orderops-read-contract.json` is the exact read-command response for `CHECKJSON GET orderops:1`, including `side_effects=["store_read"]` and `side_effect_count=1`. `fixtures/readonly/index.json` groups those CHECKJSON contracts with `INFOJSON`, `STATSJSON`, and `runtime-read-field-guide.json` evidence for Node v159 release evidence review preparation while keeping `read_only=true`, `execution_allowed=false`, and `order_authoritative=false`.
-
-`fixtures/ttl-token/index.json` documents the v61 `SETNXEX` token primitive for Node v160 readiness review, and `fixtures/ttl-token/recovery-evidence.json` documents the v62 TTL recovery boundary across WAL, Snapshot, restart, expired-token, and compaction paths.
-
-`fixtures/release/verification-manifest.json` is the v102 release verification manifest for Node v239 manual sandbox connection operator window evidence verification: it lists expected CMake configure/build, CTest, targeted tests, read-only `SMOKEJSON` live-read session hints (`session_id_echo="mini-kv-live-read-v102"`, `read_command_list_digest="fnv1a64:5bef33f2fbe65cc5"`, `write_commands_allowed=false`, `auto_start_allowed=false`), INFOJSON/SMOKEJSON CI evidence hints, artifact retention evidence, fixture inventory, version evidence, no-runtime-write boundary, failure taxonomy digest evidence, operator-window identity-neutral proof, retained restore and rollback evidence samples, runtime smoke evidence, binary provenance digest `fnv1a64:d9776044d393ecbc`, retention provenance check digest `fnv1a64:8cf7cc0df218035f`, replay marker digest `fnv1a64:6b9ef93f40cbd343`, managed audit adapter restore boundary digest `fnv1a64:1177efbaceb52c1c`, managed audit adapter non-authoritative storage digest `fnv1a64:667590b83f510a58`, command dispatch quality digest `fnv1a64:0f2caa6931b482b8`, adapter shell non-storage guard digest `fnv1a64:0174fa831d17cea4`, external adapter non-participation digest `fnv1a64:9bacde73d6d07097`, sandbox adapter non-participation digest `fnv1a64:f0cae7a4ce0674c2`, sandbox connection receipt echo marker digest `fnv1a64:beb8dd6a0b102a11`, and sandbox connection no-start guard receipt digest `fnv1a64:69e377d01f15fd57`. The connection marker consumes v95 sandbox adapter evidence (`consumed_release_version="v95"`, `consumed_artifact_path_hint="c/95/"`, `consumed_receipt_digest="fnv1a64:ceaed265f7f9560c"`) and echoes Node v228 operator packet field handles without allowing mini-kv to connect, read credential values, run schema rehearsal, write managed audit state, execute restore/load/compact, or become Java order authority.
-
-`fixtures/release/release-artifact-digest-package.json` records binary, WAL, Snapshot, and fixture digest placeholders plus restore drill commands for Node v170; it uses `CHECKJSON LOAD data/release-artifact-drill.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX release:token 30 value` only as read-only package checks, and `GET release:token` must remain `(nil)`. `fixtures/release/restore-drill-evidence.json` records the v70 restore drill target, digest comparison placeholder, operator confirmation, and CHECKJSON dry-run commands for Node v173; it uses `CHECKJSON LOAD data/restore-drill.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:drill-token 30 value` only as read-only drill checks, and `GET restore:drill-token` must remain `(nil)`. `fixtures/release/restore-handoff-checklist.json` records the v71 restore handoff checklist for Node v175; it uses `CHECKJSON LOAD data/handoff-restore.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:handoff-token 30 value` only as read-only risk confirmation, and `GET restore:handoff-token` must remain `(nil)`. `fixtures/release/restore-evidence-retention.json` records the v72 restore evidence retention fields for Node v178; it uses `CHECKJSON LOAD data/retention-restore.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:retention-token 30 value` only as retained risk evidence, and `GET restore:retention-token` must remain `(nil)`. `fixtures/release/retained-restore-artifact-digest.json` records the v73 retained restore artifact digest fields for Node v180; it uses `CHECKJSON LOAD data/retained-digest-restore.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:digest-token 30 value` only as retained digest evidence, and `GET restore:digest-token` must remain `(nil)`. `fixtures/release/restore-approval-boundary.json` records the v74 restore approval boundary fields for Node v182; it uses `CHECKJSON LOAD data/approval-boundary-restore.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:approval-token 30 value` only as approval-boundary risk evidence, and `GET restore:approval-token` must remain `(nil)`. `fixtures/release/restore-boundary-smoke-manifest.json` records the v75 real-read smoke manifest for Node v185; it uses `CHECKJSON LOAD data/real-read-boundary-restore.snap`, `CHECKJSON COMPACT`, and `CHECKJSON SETNXEX restore:real-read-token 30 value` only as real-read risk evidence, and `GET restore:real-read-token` must remain `(nil)`. `fixtures/release/runtime-smoke-evidence.json` records the v102 `SMOKEJSON` read target for Node v239 manual sandbox connection operator window evidence verification; it uses `SMOKEJSON`, `INFOJSON`, `STORAGEJSON`, `HEALTH`, and `GET restore:real-read-token` as read-only runtime evidence, adds `live_read_session` hints (`session_id_echo="mini-kv-live-read-v102"`, `read_command_list_digest="fnv1a64:5bef33f2fbe65cc5"`, `write_commands_allowed=false`, `auto_start_allowed=false`), failure taxonomy digest `fnv1a64:f92fcba55feb26a2`, operator-window/CI/artifact-retention hints, the v95 receipt chain through sandbox adapter non-participation digest `fnv1a64:f0cae7a4ce0674c2`, the v96 sandbox connection receipt echo marker digest `fnv1a64:beb8dd6a0b102a11`, and the no-start guard receipt digest `fnv1a64:69e377d01f15fd57`; `GET restore:real-read-token` must remain `(nil)` and mini-kv must not become an external adapter storage backend, sandbox audit storage backend, sandbox connection participant, credential value reader, schema rehearsal executor, local dry-run writer, managed audit writer, or Java order authority.
-
-`fixtures/release/runtime-smoke-evidence.json` and `fixtures/release/verification-manifest.json` also keep the historical managed audit adapter non-authoritative storage receipt for Node v217, the v88 command dispatch quality receipt for Node v219, the v89 adapter shell non-storage guard receipt for Node v221, the v90 external adapter non-participation receipt for Node v223, and the v95 sandbox adapter non-participation receipt for Node v225. Version 102 keeps the historical no-start guard receipt for Node v231 in the current evidence chain and updates `fixtures/release/current-runtime-fixture-rolling-guard.json` so Node v239 can accept the rolling current fixture (`0.102.0`, `v102`, `c/102/`, `mini-kv-live-read-v102`, and current receipt digests) while the historical consumed digest anchors from v84, v85, v86, v87, v88, v89, v90, v95, and v96 remain fixed; it proves the manual window is closed by default while mini-kv is not auto-started by Node, Java, or itself, does not execute sandbox connection, does not read credential values, does not run schema rehearsal, does not write managed audit state, and still leaves INFOJSON/SMOKEJSON read-only contracts, CHECKJSON/EXPLAINJSON field contracts, KEYS/STATS/HEALTH/STORAGEJSON/WALINFO response contracts, write responses, WAL append-before-mutation order, no-op miss behavior, admin handlers, snapshot, restore, and Java order authority untouched. Version 102 carries forward `fixtures/release/runtime-no-start-no-write-follow-up.json`, keeps the runtime `SMOKEJSON.runtime_no_start_no_write_follow_up` object for Node v239 evidence verification, and adds `fixtures/release/operator-window-no-start-no-write-receipt.json` plus `SMOKEJSON.operator_window_no_start_no_write_receipt` so Node can verify the Node v238 checklist echo without mini-kv auto-start, connection execution, storage writes, credential value reads, schema rehearsal, managed audit writes, restore/load/compact/SETNXEX execution, or order authority.
-
-`command_tests` compares both CHECKJSON fixtures with real command output and checks the TTL token fixture index, `readonly_fixture_tests` compares the read-only fixture package with real `CHECKJSON`, `INFOJSON`, and `STATSJSON` output plus the runtime read field guide, `recovery_evidence_tests` and `recovery_fixture_index_tests` protect restart evidence, `ttl_token_recovery_tests` exercises TTL recovery, and the release tests protect the manifest, rollback evidence, bundle manifest, restore handoff, dry-run operator package, digest matrix, release artifact digest package, restore drill evidence, restore handoff checklist, restore evidence retention, retained restore artifact digest, restore approval boundary, restore boundary smoke, runtime smoke no-execution boundaries, SMOKEJSON live-read session hints, failure taxonomy digest/sample fields, operator-window identity-neutral proof, CI evidence hints, artifact retention evidence, managed audit restore-boundary receipts, managed audit non-authoritative storage receipts, command dispatch quality receipts, adapter shell non-storage guard receipts, external adapter non-participation receipts, sandbox adapter non-participation receipts, sandbox connection echo markers, sandbox connection no-start guard receipts, and the current runtime fixture rolling guard.
-
-The server prints structured lifecycle logs using key-value fields:
-
-```text
-event=server_start host=127.0.0.1 port=6379 protocol=inline,resp max_request_bytes=65536 accept_poll_ms=200 metrics_interval_ms=0 metrics_file="none" metrics_file_format=text metrics_file_max_bytes=0 metrics_file_keep=0 auto_compact_wal=false
-event=tcp_listen host=127.0.0.1 port=6379 max_request_bytes=65536
-event=tcp_client_accepted host=127.0.0.1 port=6379 connection_id=1 active_connections=1 total_connections=1 peak_connections=1
-event=server_metrics host=127.0.0.1 port=6379 active_connections=1 total_connections=1 peak_connections=1 total_commands=10 successful_commands=9 error_commands=1 total_latency_ns=900000 avg_latency_ns=90000 max_latency_ns=250000 command_breakdown=GET:4/4/0/160000/40000/70000;PING:5/5/0/50000/10000/15000;UNKNOWN:1/0/1/690000/690000/690000 metrics_interval_ms=10000
-event=tcp_request_rejected host=127.0.0.1 port=6379 connection_id=1 reason=request_too_long pending_bytes=70000 max_request_bytes=65536
-event=tcp_client_closed host=127.0.0.1 port=6379 connection_id=1 active_connections=0 total_connections=1 peak_connections=1
-event=tcp_stop host=127.0.0.1 port=6379 active_connections=0 total_connections=1 peak_connections=1 total_commands=10 successful_commands=9 error_commands=1 total_latency_ns=900000 avg_latency_ns=90000 max_latency_ns=250000 command_breakdown=GET:4/4/0/160000/40000/70000;PING:5/5/0/50000/10000/15000;UNKNOWN:1/0/1/690000/690000/690000
-event=server_stopped host=127.0.0.1 port=6379
-```
-
-Use `Ctrl+C` or `SIGTERM` to request a graceful server stop. The accept loop wakes periodically, observes the stop request, closes the listener, and exits `server.run()`.
-
-TCP server options:
-
-```text
-minikv_server.exe [port] [host] [wal_path] [--repair-wal] [--auto-compact-wal]
-                  [--wal-compact-min-records count] [--wal-compact-record-ratio ratio]
-                  [--wal-compact-min-bytes bytes] [--max-request-bytes bytes]
-                  [--accept-poll-ms ms] [--metrics-interval-ms ms] [--metrics-file path]
-                  [--metrics-file-format text|jsonl]
-                  [--metrics-file-max-bytes bytes] [--metrics-file-keep count]
-```
-
-`--max-request-bytes` limits the buffered bytes for one pending TCP request. Inline over-limit requests return `ERR line too long`; RESP over-limit requests return `-ERR request too long`.
-`--metrics-interval-ms` enables periodic `event=server_metrics` logs. It is disabled by default and reports active, total, and peak connection counters plus command totals, error totals, latency counters, and per-command breakdown when enabled.
-`--metrics-file` writes the same periodic `event=server_metrics` lines, plus the final `event=tcp_stop` snapshot, to a dedicated file. The file is truncated when the server starts and flushed after each exported metrics line.
-`--metrics-file-format` controls only the metrics file output format. `text` is the default and preserves the existing key-value lines. `jsonl` writes one JSON object per exported metrics event with `event`, `host`, `port`, `connection_stats`, `commands`, and `metrics_interval_ms` on periodic samples. Stdout lifecycle logs stay in the original text format. The option requires `--metrics-file`.
-`--metrics-file-max-bytes` rotates the metrics file before the next exported line would exceed the configured size. `--metrics-file-keep` controls how many rotated files are retained as `<path>.1`, `<path>.2`, and so on; it defaults to 3 when a metrics file is configured and may be set to 0 to discard old metrics instead of keeping rotated files. Both options require `--metrics-file`.
-
-TCP client options:
-
-```text
-minikv_client.exe [host] [port] [timeout_ms] [--connect-retries count] [--retry-delay-ms ms]
-                  [--history-file path] [--key-cache-file path]
-```
-
-`timeout_ms` sets both receive and send socket timeouts for the bundled client.
-`--connect-retries` controls how many times the client retries after the initial connection attempt fails. `--retry-delay-ms` controls the delay between retries and defaults to 250 ms.
-The bundled client also handles local session history commands before sending data to the server: `:history`, `!!`, and `!N`. When `--history-file` is set, the client loads existing commands from that file at startup and saves the bounded history after each successful sent command.
-When `--key-cache-file` is set, the client loads remembered key names at startup, saves newly learned keys after successful `SET`, removes deleted keys after `DEL`, clears the cache after successful `LOAD`, and replaces the cache after a successful `KEYS` response.
-On an interactive terminal, the bundled client edits the current line locally with Tab completion, arrow keys, Home/End, Backspace, and Delete. Tab completes server command names including `KEYS`, `KEYSJSON`, `STATSJSON`, `SMOKEJSON`, `STORAGEJSON`, `RESETSTATS`, `COMMANDSJSON`, `EXPLAINJSON`, and `CHECKJSON`, plus local `:history`; it also completes remembered key names in the second token of `GET`, `SET`, `DEL`, `EXPIRE`, and `TTL`. Up/Down walk the same in-memory or loaded history that powers `:history`, `!!`, and `!N`. Redirected stdin still uses normal line-by-line reading for scripts and smoke tests.
-
-TTL commands:
-
-```text
-SETNXEX key seconds value  Claim a missing key with value and positive TTL, returning 1 on claim and 0 on duplicate.
-EXPIRE key seconds         Set a positive second-based expiration for an existing key.
-TTL key                    Return -2 when the key is missing, -1 when it has no expiration, or remaining seconds otherwise.
-```
-
-`SET` replaces the value and clears any existing TTL for that key. `SETNXEX` does not replace a live key; once the token expires and is pruned, the key can be claimed again. This is useful for short token experiments, not for order-authoritative storage. The server keeps all data in memory unless WAL or snapshots are used.
-
-## WAL persistence
-
-Pass a WAL path to `minikv_cli` or `minikv_server` to enable persistence. On startup, the program replays the WAL into memory. During runtime, successful write commands append records before applying the mutation:
-
-```text
-SET key value
-SETNXEX key seconds value
-DEL key
-EXPIRE key seconds
-```
-
-`EXPIRE` is persisted as an internal absolute expiration record, so expired keys do not come back after restart. `SETNXEX` uses a single internal `SETEXAT key epoch_millis value` WAL record for a successful claim, so replay can restore the value and expiration together or drop the token if the expiration time is already past. Snapshots also preserve unexpired token TTLs and skip expired token entries during restore. A restart can load a snapshot baseline and replay later WAL token claims; compacted live tokens replay from `SET` plus `EXPIREAT`, still without reviving expired tokens. New WAL records are stored as `WAL2 <checksum> <record>` lines; replay still accepts older plain `SET` / `DEL` / `EXPIREAT` lines and now accepts `SETEXAT` records. WAL replay skips malformed records, skips checksum mismatches, detects a final unterminated record as a probable partial write, and reports applied, skipped, truncated, and checksum-failed counts during startup. `COMPACT` is available when a WAL path is configured; it rewrites the log to the current live key set using checksummed `SET` and `EXPIREAT` records, dropping overwritten, deleted, and expired history. Start `minikv_cli` or `minikv_server` with `--repair-wal` to replay the recoverable records and immediately rewrite the WAL to a clean compacted WAL2 file before serving commands. Startup also reports WAL bytes, physical record count, live keys, compact thresholds, compaction counters, and whether compaction is recommended; use `WALINFO`, `STATS`, `STATSJSON`, or `HEALTH` at runtime to inspect the same maintenance signal. Start with `--auto-compact-wal` to compact automatically when the same maintenance thresholds recommend it, both after startup replay and after WAL-backed write commands. Use `--wal-compact-min-records`, `--wal-compact-record-ratio`, and `--wal-compact-min-bytes` with a WAL path to tune those thresholds. Without a WAL path, mini-kv remains an in-memory-only service.
-
-`WALINFO` includes:
-
-```text
-wal_bytes wal_records live_keys compact_recommended
-compact_min_records compact_record_ratio compact_min_bytes
-manual_compactions auto_compactions repair_compactions
-compacted_keys records_removed bytes_saved
-```
-
-## Snapshots
-
-Use snapshots to save the current in-memory dataset to a compact file and load it later:
-
-```text
-SAVE path  Save all currently live keys to a snapshot file.
-LOAD path  Replace the current in-memory dataset with a snapshot file.
-```
-
-Snapshot files preserve values and absolute expiration times. Expired keys are not saved, and expired records are skipped when loading. Corrupt snapshot files are rejected before replacing the current in-memory store. `SAVE` writes a temporary file in the target directory and then replaces the target snapshot, avoiding direct truncation of the previous snapshot while the new one is still being written. `LOAD` is a manual state replacement command; pair it with WAL intentionally if you want both baseline snapshots and later write replay.
-
-## Benchmarks and stress tests
-
-Run a quick in-process benchmark:
-
-```powershell
-.\cmake-build-debug\minikv_benchmark.exe 100000 10000
-```
-
-Arguments are optional:
-
-```text
-minikv_benchmark.exe [--evidence-json] [operations] [key_count]
-```
-
-The benchmark prints elapsed time and operations per second for direct `Store` operations and command-layer `SET` / `GET` operations. With `--evidence-json`, it emits one JSON line for CI or local smoke checks. That JSON is still a lightweight local signal: it mutates only an ephemeral in-process store, does not enable WAL, does not start networking, does not execute snapshot/restore/load/compact, does not read credentials, and does not open a managed audit connection.
-
-The stress test is registered with CTest:
-
-```powershell
-ctest --test-dir cmake-build-debug --output-on-failure
-```
-
-`stress_tests` runs multiple writer and eraser threads against one shared `Store`, then checks snapshot export/restore and final key consistency. `command_tests` verifies command parsing, command execution counters, per-command breakdown, unknown-command grouping, latency counters, full and prefix-filtered `KEYS`, bounded `KEYSJSON`, `SETNXEX` token claim/duplicate/expiry behavior, `STATS` / `STATSJSON` / `SMOKEJSON` / `STORAGEJSON` / `RESETSTATS` / `HEALTH`, injected-version `INFO` / `INFOJSON`, `COMMANDS` / `COMMANDSJSON`, `EXPLAINJSON` including schema, digest, side-effect coverage, `CHECKJSON` execution contracts, the stable CHECKJSON write/read fixture samples, INFOJSON/STATSJSON/SMOKEJSON read-only self-description fields, and connection-stat provider formatting. `readonly_fixture_tests` verifies the read-only fixture index, existing CHECKJSON fixture links, exact empty inline `INFOJSON` and `STATSJSON` sample responses, no-write boundaries, dynamic field notes, Node v159 consumer hint, runtime read diagnostics, and runtime field-guide interpretation notes. `recovery_evidence_tests` verifies the restart recovery evidence formatter, stable store digest, snapshot baseline save/load, WAL replay report, exact fixture response, and the `recovered=true` / `digests_match=true` contract. `recovery_fixture_index_tests` verifies the recovery fixture index, stable relative path, expected digest, Node v107 consumer hint, restart/replay cost fields, retention boundary fields, and read-only boundaries. `wal_tests` verifies checksummed WAL records, older plain-record replay compatibility, `SETEXAT` replay for `SETNXEX`, checksum mismatch skipping, truncated-tail detection, compacted WAL replay, WAL repair rewriting, WAL maintenance hints, automatic WAL compaction, configurable compact thresholds, compact counters, and `STATS` / `HEALTH` WAL reporting. `snapshot_tests` verifies snapshot save/load, corrupt snapshot rejection, and atomic overwrite behavior without leaving temporary snapshot files behind. `tcp_server_tests` starts servers on ephemeral ports, sends real inline TCP requests, verifies configurable request-limit rejection, covers `localhost` hostname resolution with address-family agnostic test sockets, requests stop through the server API, and checks the structured listen/accept/reject/close/stop log events plus periodic `event=server_metrics` logs, text and JSONL metrics exporter output, active, total, peak, command, error, breakdown, latency counters, `STATSJSON`, and `RESETSTATS` behavior. `tcp_resp_tests` uses a raw socket like an external client, sends pipelined RESP `PING` / `SET` / `GET` / `SIZE` / `QUIT` requests, and checks exact RESP frames. `tcp_resp_compat_tests` extends the same raw-socket coverage to null bulk replies, integer replies, command errors, protocol errors, `DEL`, `EXPIRE`, and `TTL`. `tcp_resp_concurrency_tests` holds multiple raw-socket RESP clients open at once, releases them together, verifies exact per-client responses, and checks active, total, and peak connection metrics. `client_history_tests` verifies the bundled client's local `:history`, `!!`, and `!N` behavior plus persistent history file load/save, persistent key cache load/save, duplicate filtering, capacity trimming, full cache replacement, full `KEYS` response parsing, and prefixed `KEYS` response rejection for cache refresh. `line_editor_tests` verifies the line editing buffer operations, command Tab completion including `SETNXEX`, `KEYS`, `KEYSJSON`, `INFO`, `INFOJSON`, `COMMANDS`, `COMMANDSJSON`, `EXPLAINJSON`, `CHECKJSON`, `SMOKEJSON`, and `STORAGEJSON`, key-oriented Tab completion, and Up/Down history navigation used by the interactive bundled TCP client. `metrics_file_tests` verifies metrics file truncation, max-byte rotation, retained suffix files, discard-old mode, and invalid option rejection.
-
-## RESP protocol
-
-The RESP parser handles Redis-style request arrays made of bulk strings:
-
-```text
-*3\r\n$3\r\nSET\r\n$4\r\nname\r\n$7\r\nmini-kv\r\n
-```
-
-It returns the parsed arguments and the number of bytes consumed, so the TCP server can process pipelined input. The server auto-detects RESP requests when a buffered request starts with `*`; otherwise it keeps using the inline text protocol.
-
-Protocol hardening:
-
-```text
-Maximum RESP arguments: 1024
-Maximum RESP bulk string length: 65536 bytes
-```
-
-Oversized RESP requests return a RESP error instead of waiting indefinitely for huge payloads.
-
-## Roadmap
-
-1. Node v179 has completed the production release pre-approval packet without creating an approval decision, writing an approval ledger, or executing release/deployment/rollback/restore.
-2. Java v64 and mini-kv v73 completed release operator signoff and retained restore artifact digest fixtures without executing deployment, rollback SQL, LOAD, COMPACT, SETNXEX, or restore.
-3. Node v180 completed the approval decision prerequisite gate, and Node v181 completed the approval ledger dry-run envelope without creating a real approval decision, writing the real ledger, or publishing.
-4. Java v65 and mini-kv v74 completed rollback approver and restore approval boundary fixtures before Node v182 rehearsed the release approval decision packet.
-5. Let Java v66 and mini-kv v75 progress in parallel on release approval rehearsal aggregation and restore boundary read-only smoke manifests before Node v185 performs real-read rehearsal intake.
-6. Java v67 and mini-kv v76 prepare real read adapter rehearsal evidence before Node v191 connects to Java HTTP and mini-kv TCP in a disabled-by-default read-only window.
-7. Java v68 and mini-kv v77 prepare read-only failure taxonomy evidence before Node v193 classifies real-read adapter failures.
-8. Java v69 and mini-kv v78 prepare imported-window verification hints before Node v196 consumes manual real-read window results.
-9. Java v70 and mini-kv v79 prepare operator-window identity-neutral proof before Node continues the audit handoff and CI archive manifest work.
-10. Java v71 and mini-kv v80 prepare read-only CI/evidence hints before Node v201 verifies the CI artifact manifest.
-11. Java v72 and mini-kv v81 prepare read-only artifact retention evidence before Node v203 checks cross-project CI artifact retention.
-12. Java v73 and mini-kv v82 prepare live-read friendly runtime fields before Node v205 runs the three-project real-read execution packet.
+第一条会在覆盖率配置、文档主张、receipt census、命名 baseline 或源码尺寸规则漂移时失败；第二条只清点路径稳定的历史归档，不移动或压缩证据。
+
+## 运行入口
+
+| 入口 | 用途 | 关键边界 |
+|---|---|---|
+| `minikv_cli [wal_path]` | 单进程命令行、WAL 重放与维护 | 未传 WAL 时仅内存；`LOAD`/`COMPACT` 是显式管理命令 |
+| `minikv_server [port] [host] [wal_path]` | Inline 与 RESP-over-TCP | 默认绑定 `127.0.0.1`；远程暴露必须自行提供认证、TLS 与防火墙 |
+| `minikv_client host port` | 交互式 TCP 客户端 | 支持历史、补全、超时和重试，不是安全代理 |
+| `minikv_benchmark --evidence-json` | 本地轻量 benchmark | 只操作临时内存 Store，不启用 WAL 或网络 |
+| `minikv_osfs --disk image [--format]` | OSFS 课程设计 shell | 独立磁盘镜像；教学权限与哈希模型，不是生产文件系统 |
+
+常用 KV 命令包括 `SET`、`GET`、`DEL`、`EXPIRE`、`TTL`、`SAVE`、`LOAD`、`COMPACT`、`WALINFO`、`STATSJSON`、`SMOKEJSON`、`COMMANDSJSON`、`EXPLAINJSON` 和 `CHECKJSON`。命令分类、响应字段、WAL 顺序、TCP 参数与 RESP 限制集中在 [`docs/CAPABILITY-SNAPSHOT.md`](docs/CAPABILITY-SNAPSHOT.md)，测试入口见 [`docs/TESTING.md`](docs/TESTING.md)。
+
+## 证据地图
+
+| 想核实什么 | 从这里开始 |
+|---|---|
+| E1-E10、90% floor、唯一源码尺寸豁免、外部 Stage-1 PASS | [`docs/minikv-track-final-evidence.md`](docs/minikv-track-final-evidence.md) |
+| 当前能力、命令字段与持久化细节 | [`docs/CAPABILITY-SNAPSHOT.md`](docs/CAPABILITY-SNAPSHOT.md) |
+| CI lane、sanitizer、coverage 范围与本地测试方式 | [`docs/TESTING.md`](docs/TESTING.md) |
+| 网络、密钥、输入与部署边界 | [`docs/SECURITY.md`](docs/SECURITY.md) |
+| receipt builder 迁移、字节等价和 27/0/1 census | [`docs/receipts-consolidation-note.md`](docs/receipts-consolidation-note.md) |
+| 四项目最终态只读 capstone | [Node program close](https://github.com/wul012/nodeproj/blob/master/docs/plans/production-excellence-final-acceptance.md) |
+| OSFS 从命令到磁盘的通俗机制 | [`OSFS课程设计通俗教程/README.md`](OSFS课程设计通俗教程/README.md) |
+| OSFS 报告、需求矩阵与 Linux/FinalShell 实跑 | [`课程设计交付/v1636-osfs-final/`](课程设计交付/v1636-osfs-final/README.md)、[`finalshell-分段演示记录/`](课程设计交付/v1636-osfs-final/finalshell-分段演示记录/README.md) |
+| OSFS 三阶段工作约束 | [`v1631 completion`](治理计划/v1631-osfs-coursework-completion-brief.md)、[`v1634 capacity`](治理计划/v1634-osfs-capacity-extension-brief.md)、[`v1663 teaching evidence`](治理计划/v1663-osfs-teaching-evidence.md) |
+| 历史版本与归档保留 | [`docs/CHANGELOG.md`](docs/CHANGELOG.md)、[`docs/archive-retention-index.md`](docs/archive-retention-index.md) |
+
+## 边界
+
+- mini-kv 包含真实的写命令；“只读、无执行权”描述的是 `INFOJSON`/`SMOKEJSON`/`CHECKJSON` 证据面和跨项目 capstone，不是把整个 KV 引擎说成只读。
+- TCP server 默认只监听 loopback，但协议本身没有认证或 TLS。它是学习与工程验证系统，**not a hardened production database**，不要直接暴露到不受信任网络。
+- OSFS 使用单镜像、单 MFD、每用户 UFD、直接块加一级间接块、只读 FSCK 和教学级密码哈希；它不承诺并发挂载、日志文件系统、自动修复或生产级密码保护。
+- Node 可在显式 `INTEGRATION_LIVE=1` 窗口中启动一个新的 CLI 进程并读取证据，但不能调用 mini-kv 的写、恢复、压缩或自动启动能力；mini-kv 也不拥有订单、审批、发布或审计 authority。
+- CMake 工程版本保留为 `0.102.0`，因为冻结的运行 receipt 仍引用 v102 语义；Git tag `vNNNN` 表示仓库交付节奏，两者不是同一个版本轴。
+
+## 最近版本
+
+完整历史见 [`docs/CHANGELOG.md`](docs/CHANGELOG.md)。README 只保留对当前展示面有直接解释力的三项：
+
+- v1664: 将 GitHub 首页从维护流水账改为访客展示页，把能力、边界、架构、复现命令和证据入口放进首屏阅读路径；所有数字由已有机械门或已提交报告支撑，不改运行时代码、fixture、命令输出或权限边界。
+- v1663: rewrites OSFS learning material as eight mechanism-first Chinese tutorials and adds a separate resilience target for fd sessions, permissions, UFD growth, sparse writes and bitmap corruption. The default inventory is 352 registered CTest tests; the current tree also retains all nine completed FinalShell demonstration steps without rewriting the disclosed pre-seeded-user history.
+- v1662: closes elegance Round 2 after a mechanical top-10 pin audit finds only one safe rename candidate, below the five-candidate threshold; the 735/883 shrink-only baselines remain unchanged.
+
+维护者入口：[`START_HERE.md`](START_HERE.md) · [`docs/production-excellence-progress.md`](docs/production-excellence-progress.md) · [`治理计划/README.md`](治理计划/README.md)
