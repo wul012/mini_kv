@@ -529,6 +529,12 @@ minikv_add_linked_test(
     tests/osfs_tests.cpp
 )
 
+minikv_add_linked_test(
+    minikv_osfs_resilience_tests
+    osfs_resilience_tests
+    tests/osfs_resilience_tests.cpp
+)
+
 add_test(
     NAME osfs_cli_smoke
     COMMAND ${CMAKE_COMMAND}

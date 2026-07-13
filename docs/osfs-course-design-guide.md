@@ -2,6 +2,8 @@
 
 OSFS 是 mini-kv 仓库中的独立 C++ 课程设计模块，对应《课程设计（操作系统）要求 2026》中的“实验二 Linux 二级文件系统”。它使用二进制文件模拟磁盘，实现 MFD/UFD 二级目录、持久化用户认证、root-only 用户管理、read-only FSCK、inode/块管理、单级间接块、文件描述符位移和权限控制。OSFS 复用仓库的 CMake、CTest 和 CI，不进入 KV、WAL、snapshot、restore 或 TCP/RESP 运行链路。
 
+初次学习不要从版本记录倒推机制，先读 `OSFS课程设计通俗教程/README.md`。该目录按磁盘布局、MFD/UFD、fd、间接块、FSCK 和测试证据分篇，本文件继续保留为维护者的紧凑说明。
+
 ## 选题名称
 
 ```text

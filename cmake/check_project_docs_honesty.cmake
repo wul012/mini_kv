@@ -22,25 +22,28 @@ foreach(path IN ITEMS
         "src/osfs_user_admin.cpp"
         "src/osfs_command_processor.cpp"
         "include/minikv/osfs/command_processor.hpp"
-        "tests/osfs_tests.cpp")
+        "tests/osfs_tests.cpp"
+        "tests/osfs_test_support.hpp"
+        "tests/osfs_resilience_tests.cpp")
     if(NOT EXISTS "${SOURCE_DIR}/${path}")
         message(FATAL_ERROR "documented OSFS evidence path is missing: ${path}")
     endif()
 endforeach()
 
-require_file_fragment("README.md" "- v1662:")
-require_file_fragment("README.md" "351 registered CTest tests")
+require_file_fragment("README.md" "- v1663:")
+require_file_fragment("README.md" "352 registered CTest tests")
 require_file_fragment("README.md" "27 builder-backed / 0 pending / 1 named no-formatter waiver")
-require_file_fragment("START_HERE.md" "Current focus: **v1662 elegance Round 2 pin audit ready for Claude review**")
+require_file_fragment("START_HERE.md" "Current focus: **v1663 OSFS teaching clarity and resilience evidence**")
 require_file_fragment("START_HERE.md" "Independent OSFS course-design filesystem")
-require_file_fragment("START_HERE.md" "351 registered tests")
+require_file_fragment("START_HERE.md" "352 registered tests")
+require_file_fragment("START_HERE.md" "OSFS课程设计通俗教程/")
 require_file_fragment("docs/CAPABILITY-SNAPSHOT.md" "## Independent OSFS course layer")
 require_file_fragment("docs/CAPABILITY-SNAPSHOT.md" "src/osfs_fsck.cpp")
 require_file_fragment("docs/CAPABILITY-SNAPSHOT.md" "tests/osfs_tests.cpp")
 require_file_fragment("docs/CAPABILITY-SNAPSHOT.md" "8 + block_size / 4")
-require_file_fragment("docs/archive-retention-index.md" "1597-1662")
-require_file_fragment("docs/archive-retention-index.md" "10,897,124")
-require_file_fragment("docs/archive-retention-index.md" "75,554")
+require_file_fragment("docs/archive-retention-index.md" "1597-1663")
+require_file_fragment("docs/archive-retention-index.md" "11,028,490")
+require_file_fragment("docs/archive-retention-index.md" "131,366")
 require_file_fragment("docs/archive-retention-index.md" "3,440,216")
 require_file_fragment("docs/archive-retention-index.md" "5,445,971")
 require_file_fragment("docs/project-docs-honesty-matrix.md" "Only two OSFS execution briefs exist")
@@ -56,6 +59,22 @@ require_file_fragment("docs/elegance-round2-pin-audit.md" "29189480986")
 require_file_fragment("docs/CHANGELOG.md" "- v1656:")
 require_file_fragment("治理计划/v1631-osfs-coursework-completion-brief.md" "执行状态：已执行完毕")
 require_file_fragment("治理计划/v1634-osfs-capacity-extension-brief.md" "执行状态：已执行完毕")
+require_file_fragment("治理计划/v1663-osfs-teaching-evidence.md" "需求-证据矩阵")
+require_file_fragment("代码讲解记录_生产雏形阶段_第四册/README.md" "1031-v1663-osfs-tutorial-resilience.md")
+require_file_fragment("代码讲解记录_生产雏形阶段_第四册/1031-v1663-osfs-tutorial-resilience.md" "注册测试总数从 351 变为 352")
+
+require_file_fragment("OSFS课程设计通俗教程/README.md" "## 证据强度")
+require_file_fragment("OSFS课程设计通俗教程/00-十分钟看懂OSFS.md" "不是网络路由协议 OSPF")
+require_file_fragment("OSFS课程设计通俗教程/01-CREATE到WRITE完整流程.md" "CommandProcessor::execute")
+require_file_fragment("OSFS课程设计通俗教程/02-磁盘布局与inode.md" "sizeof(InodeDisk) == 96")
+require_file_fragment("OSFS课程设计通俗教程/03-用户表与二级目录.md" "MFD 和用户表为什么要同时存在")
+require_file_fragment("OSFS课程设计通俗教程/04-文件描述符与区间读写.md" "read_offset")
+require_file_fragment("OSFS课程设计通俗教程/05-直接块与一级间接块.md" "8 + block_size / 4")
+require_file_fragment("OSFS课程设计通俗教程/06-FSCK与用户管理.md" "FSCK ERROR checks=6")
+require_file_fragment("OSFS课程设计通俗教程/07-测试地图与答辩问答.md" "osfs_resilience_tests")
+require_file_fragment("课程设计交付/v1636-osfs-final/finalshell-分段演示记录/README.md" "step08-indirect-boundary")
+require_file_fragment("课程设计交付/v1636-osfs-final/finalshell-分段演示记录/README.md" "step09-fsck-corruption")
+require_file_fragment("课程设计交付/v1636-osfs-final/finalshell-分段演示记录/00-复核说明.md" "不能用重复 USERADD 行证明创建账号成功")
 
 file(READ "${SOURCE_DIR}/tests/osfs_tests.cpp" osfs_tests)
 foreach(fragment IN ITEMS
@@ -71,4 +90,17 @@ foreach(fragment IN ITEMS
     endif()
 endforeach()
 
-message(STATUS "project docs honesty contract ok: v1662 pointers, OSFS evidence, archive growth, and bounded review state")
+file(READ "${SOURCE_DIR}/tests/osfs_resilience_tests.cpp" osfs_resilience_tests)
+foreach(fragment IN ITEMS
+        "test_login_switch_closes_descriptors"
+        "test_group_permissions_and_root_override"
+        "test_directory_growth_and_slot_reuse"
+        "test_sparse_range_write_zero_fills_gap"
+        "test_fsck_finds_inode_bitmap_corruption")
+    string(FIND "${osfs_resilience_tests}" "${fragment}" offset)
+    if(offset EQUAL -1)
+        message(FATAL_ERROR "documented OSFS resilience evidence is missing: ${fragment}")
+    endif()
+endforeach()
+
+message(STATUS "project docs honesty contract ok: v1663 tutorial, 352 tests, OSFS resilience, archive growth, and reviewed elegance state")

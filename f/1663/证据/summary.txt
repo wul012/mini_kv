@@ -1,0 +1,70 @@
+mini-kv v1663 OSFS teaching clarity and resilience evidence
+date: 2026-07-13
+
+scope
+- read Node docs/plans/README.md and latest docs/plans/elegance-round2-triage.md
+- scope is independent mini-kv documentation/test maintenance
+- no OSFS disk-format, public-command, fixture, WAL, TCP, router, write-authority, or execution-authority change
+
+step-0
+- base tag: v1662
+- base commit: 6ce7e961
+- Claude Round-2 verdict edit committed separately as 254fef5f
+- Round 2 verdict: PASS; retro-elegance closed
+
+build and focused verification
+- CMake configure: success, Debug/Ninja/CLion MinGW
+- build targets: minikv_osfs_tests, minikv_osfs_resilience_tests, minikv_osfs; 321 steps, success
+- focused CTest: 3/3 passed
+  - osfs_tests: passed
+  - osfs_resilience_tests: passed
+  - osfs_cli_smoke: passed
+
+new resilience coverage
+- login switch invalidates old descriptors and resets fd allocation
+- r/a descriptor modes reject wrong-direction access and double close
+- group read/write permissions differ from owner/root delete authority
+- ninth UFD entry grows a directory block; freed slot is reused after reopen
+- sparse write at offset 600 zero-fills the gap across a 512-byte boundary
+- independent inode-bitmap corruption produces FSCK ERROR
+
+real CLI evidence
+- v1636 demo script on current v1663 binary: exit 0
+- OK wrote 4291 bytes offset=4291
+- OK seek 6 4088
+- DIRECT8|INDIRECT-BEGIN|... returned across the direct/indirect boundary
+- FSCK OK checks=6
+- OK useradd carol
+- OK password changed carol
+- carol uid=1002
+- BYE
+
+adversarial corruption evidence
+- clean image file corrupt-me: inode=4 physical=20 size=14
+- cleared block bitmap bit for block 20 at image byte offset 514
+- FSCK ERROR checks=6 asserted
+- ERROR block bitmap: block bitmap mismatch at block 20
+- temporary image deleted after verification
+
+documentation evidence
+- OSFS课程设计通俗教程: README plus eight topic files
+- tutorial relative links: 9 markdown files, all targets exist
+- tutorial CJK total: 8,988 including README; topic files 8,209
+- tutorial maximum paragraph line: 244 characters
+- v1663 walkthrough: 3,102 Chinese characters
+- project_docs_honesty_contract: passed
+- humanizer risk phrase scan: no matches for template conclusions, vague attribution, or generic significance endings
+
+final verification
+- clang-format --dry-run --Werror: passed on all touched C++ test files
+- git diff --check: passed; only expected checkout line-ending warnings
+- registered tests: 352
+- full build: success; final incremental build reported no work to do
+- final full CTest after the naming-budget correction: 352/352 passed, 0 failed, 122.05 seconds
+
+FinalShell evidence status
+- historical Step 01-07 output retained
+- Step 04-06 pre-seeded Alice/Bob USERADD grep omission disclosed; those lines are not positive user-creation evidence
+- Step 08 direct/indirect command prepared, remote FinalShell output pending
+- Step 09 corrupted block-bitmap command prepared, remote FinalShell output pending
+- pending remote steps are not claimed as completed Linux evidence

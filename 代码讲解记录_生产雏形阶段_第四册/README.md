@@ -191,3 +191,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1662 补充索引
 
 - v1662: [1030-v1662-round2-pin-audit.md](1030-v1662-round2-pin-audit.md) - 解释如何复用既有 census 合并排序 735 个文件名与 883 个公开标识符，为什么前十自然形成 6F/4I、九个公开 header pin 与一个 safe 测试路径，TSV 和 C++ 行为如何分离，LF 属性怎样在源头关闭跨平台漂移，以及 `safe=1<5` 为什么必须诚实关闭而不能为消费版本额度凑改名。
+
+## v1663 补充索引
+
+- v1663: [1031-v1663-osfs-tutorial-resilience.md](1031-v1663-osfs-tutorial-resilience.md) - 解释为什么历史版本讲解保留而学生教程按机制重组，五个韧性测试怎样关闭 fd 会话、group 权限、UFD 扩块、稀疏区间和 inode bitmap 损坏缺口，FinalShell 预置用户 grep 偏差如何诚实复核，以及教程、机械文档门、真实 CLI 与待 Linux 实跑证据如何分层。

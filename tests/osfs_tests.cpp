@@ -1,72 +1,20 @@
 #include "minikv/osfs.hpp"
 
+#include "osfs_test_support.hpp"
+
 #include <cassert>
-#include <chrono>
 #include <filesystem>
-#include <fstream>
 #include <optional>
 #include <string>
-#include <string_view>
 #include <vector>
 
 namespace {
 
-std::filesystem::path unique_disk_path(std::string_view scenario) {
-    const auto suffix = std::chrono::system_clock::now().time_since_epoch().count();
-    return std::filesystem::temp_directory_path() /
-           ("minikv-osfs-" + std::string{scenario} + "-" + std::to_string(suffix) + ".img");
-}
-
-int parse_fd(const std::string& response) {
-    const auto marker = response.find("fd=");
-    assert(marker != std::string::npos);
-    return std::stoi(response.substr(marker + 3));
-}
-
-const minikv::osfs::UserInfo& require_user(const std::vector<minikv::osfs::UserInfo>& users,
-                                           const std::string& username) {
-    for (const auto& user : users) {
-        if (user.username == username) {
-            return user;
-        }
-    }
-    assert(false && "required seeded user missing");
-    return users.front();
-}
-
-void set_block_bitmap_used(const std::filesystem::path& path, std::uint32_t block_size, std::uint32_t block,
-                           bool used) {
-    constexpr std::uint32_t block_bitmap_block = 1;
-    std::fstream image{path, std::ios::binary | std::ios::in | std::ios::out};
-    assert(image);
-    const auto byte_offset = static_cast<std::streamoff>(block_bitmap_block * block_size + (block / 8));
-    image.seekg(byte_offset);
-    char byte = 0;
-    image.read(&byte, 1);
-    assert(image.gcount() == 1);
-    const auto mask = static_cast<unsigned char>(1U << (block % 8));
-    auto value = static_cast<unsigned char>(byte);
-    if (used) {
-        value = static_cast<unsigned char>(value | mask);
-    } else {
-        value = static_cast<unsigned char>(value & ~mask);
-    }
-    image.clear();
-    image.seekp(byte_offset);
-    byte = static_cast<char>(value);
-    image.write(&byte, 1);
-    assert(image);
-}
-
-bool fsck_has_failed_check(const minikv::osfs::FsckReport& report, std::string_view name,
-                           std::string_view detail_fragment) {
-    for (const auto& check : report.checks) {
-        if (check.name == name && !check.ok && check.detail.find(detail_fragment) != std::string::npos) {
-            return true;
-        }
-    }
-    return false;
-}
+using osfs_test::fsck_has_failed_check;
+using osfs_test::parse_fd;
+using osfs_test::require_user;
+using osfs_test::set_block_bitmap_used;
+using osfs_test::unique_disk_path;
 
 void test_disk_users_and_two_level_directories() {
     const auto path = unique_disk_path("two-level");

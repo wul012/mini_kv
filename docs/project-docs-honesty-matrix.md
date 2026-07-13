@@ -1,10 +1,10 @@
-# v1662 Project Documentation Honesty Matrix
+# v1663 Project Documentation Honesty Matrix
 
 This matrix is the Stage 2 requirement-to-evidence ledger for `治理计划/v1637-production-excellence-completion-brief.md`. It records what the project documents claim, where the implementation lives, which mechanical evidence protects the claim, and what remains deliberately limited.
 
 | Requirement | Current implementation evidence | Mechanical or runnable evidence | Status |
 |---|---|---|---|
-| Current delivery pointer | `README.md`, `START_HERE.md`, `docs/CHANGELOG.md`, `docs/production-excellence-progress.md` | `project_docs_honesty_contract` requires the v1662 review pointer and 351-test count | Stage-1 and Round 1 PASS retained; Round 2 verdict pending |
+| Current delivery pointer | `README.md`, `START_HERE.md`, `docs/CHANGELOG.md`, `docs/production-excellence-progress.md` | `project_docs_honesty_contract` requires the v1663 tutorial pointer and 352-test count | Stage-1 and both elegance rounds externally reviewed PASS |
 | Elegance Round 2 pin audit | `config/elegance-round2-pin-audit.tsv`, `docs/elegance-round2-pin-audit.md` | `elegance_name_census_contract` recomputes top 10 and requires 6F/4I, 9 pinned/1 safe | E2-M2 not triggered because `safe=1<5` |
 | Receipt consolidation reality | 28 receipt sources, 27 formatter owners, 27 builder-backed owners, zero pending, one named no-formatter waiver | `receipt_builder_census_contract`, `runtime_receipt_remaining_owner_baseline_tests`, `f/1656/证据/summary.txt` | complete |
 | MFD/UFD two-level directory | `src/osfs_filesystem.cpp`, `src/osfs_directory.cpp`, `src/osfs_disk_layout.*` | `tests/osfs_tests.cpp::test_disk_users_and_two_level_directories`, `osfs_cli_smoke` | complete |
@@ -12,6 +12,8 @@ This matrix is the Stage 2 requirement-to-evidence ledger for `治理计划/v163
 | Per-open descriptor positions | `include/minikv/osfs/command_processor.hpp`, `src/osfs_command_processor.cpp`, `src/osfs_file_io.cpp` | `test_descriptor_offsets_and_range_io` asserts READ/WRITE/SEEK/TELL offsets and persistence | complete |
 | Direct plus single-indirect file blocks | `src/osfs_disk_layout.*`, `src/osfs_file_io.cpp` | `test_indirect_blocks_persist_and_release` plus boundary/range tests | complete for `8 + block_size / 4` blocks; no double/triple indirect blocks |
 | Read-only consistency checker | `src/osfs_fsck.cpp`, `FileSystem::check_consistency()` | clean-image and deliberate bitmap-corruption assertions in `test_fsck_reports_ok_and_detects_corruption` | complete as detection; no automatic repair |
+| OSFS resilience edge cases | `tests/osfs_test_support.hpp`, `tests/osfs_resilience_tests.cpp` | separate CTest covers login fd reset, descriptor modes, group permissions, UFD growth/reuse, sparse zero-fill and inode bitmap corruption | complete for the selected high-value gaps |
+| Student-facing mechanism tutorial | `OSFS课程设计通俗教程/` | `project_docs_honesty_contract` requires all eight topics, source/test anchors and FinalShell evidence-status disclosure | complete; historical version walkthroughs remain path-stable |
 | Root user creation and password changes | `src/osfs_user_admin.cpp`, `src/osfs_command_processor.cpp` | `test_useradd_passwd_and_fsck_command` proves root-only USERADD, root reset, self-change, denial and reopen | complete |
 | OSFS final package | `课程设计交付/v1636-osfs-final/` | requirement matrix, UTF-8 transcript, demo script, DOCX/PDF and Linux run evidence retained in the repository | complete; older packages are superseded history |
 | Archive growth accounting | `scripts/archive_inventory.py`, `docs/archive-retention-index.md` | current script output plus explicit `f/1629-1636` and `课程设计交付/` measurements | complete; measurement never authorizes path movement |

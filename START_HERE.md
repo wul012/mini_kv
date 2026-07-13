@@ -12,7 +12,7 @@ Features:
 - Runtime JSON evidence for commands and snapshots
 - Command execution audit with SMOKEJSON/INFOJSON/KEYSJSON outputs
 - Independent OSFS course-design filesystem with an on-disk image, MFD/UFD directories, persistent users, permissions, descriptor offsets, direct/single-indirect blocks, read-only FSCK, and USERADD/PASSWD
-- CMake builds with 351 registered tests across command, WAL, snapshot, RESP, TCP, OSFS, fixture, archive, and governance evidence suites
+- CMake builds with 352 registered tests across command, WAL, snapshot, RESP, TCP, OSFS, fixture, archive, and governance evidence suites
 
 ## Why it matters
 
@@ -44,11 +44,11 @@ Follow the README for detailed command usage and screenshots.
 2. Command dispatch table and planned command-family split
 3. C++20 thread-safe data structures with snapshot/recovery support
 4. OSFS MFD/UFD, indirect-block, FSCK, and user-administration mechanisms with corruption and reopen tests
-5. 351 registered tests plus runtime JSON verification
+5. 352 registered tests plus runtime JSON verification
 
 ## Latest version summary
 
-Current focus: **v1662 elegance Round 2 pin audit ready for Claude review**. A stable combined ranking audits the 10 longest remaining filename/public-identifier entries as 9 public-header-pinned and 1 safe private test path. Because `safe=1` is below the five-candidate threshold, E2-M2 is not triggered; the 735/883 ratchet and runtime contracts stay unchanged.
+Current focus: **v1663 OSFS teaching clarity and resilience evidence**. The bounded elegance program is externally reviewed PASS and closed. Eight mechanism-first Chinese tutorials now connect commands, in-memory state, disk changes, source paths, outputs, and tests; a separate resilience target closes fd-session, group-permission, directory-growth, sparse-range, and inode-bitmap FSCK gaps without changing the disk format or public commands.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 
@@ -62,6 +62,7 @@ Version scheme note: the CMake project version is still `0.102.0` because severa
 - `docs/minikv-track-final-evidence.md` — E1-E10 gate map, exact deviation ledger, reproduction commands, and external-review status
 - `src/osfs_*.cpp`, `include/minikv/osfs/`, and `tests/osfs_tests.cpp` — independent OSFS implementation and focused executable evidence
 - `课程设计交付/v1636-osfs-final/` — current OSFS coursework report, demo, transcript, diagrams, and requirement matrix
+- `OSFS课程设计通俗教程/` — student-facing mechanism tutorials, end-to-end command flow, test map, and defense preparation pointers
 - `项目通俗说明/` — Chinese project orientation guides with diagrams and input/output explanations
 - `src/` — core KV engine and command handling
 - `tests/` — runtime and regression tests
