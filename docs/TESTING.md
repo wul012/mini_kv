@@ -11,7 +11,7 @@ The core layers are:
 - CLI and TCP smoke tests that prove real binaries can expose the expected behavior.
 - CI contract tests that prevent workflow, coverage, sanitizer, format, archive-inventory, and dependency-maintenance gates from silently weakening.
 
-The current default CTest inventory is 350. The original K5/K6 suite has since gained executable orientation, OSFS, receipt-parity/census, documentation-honesty, and E1-E10 final-evidence contracts. The count is a navigation aid rather than a quality claim; the focused behavior and failure condition of each gate remain the evidence.
+The current default CTest inventory is 353. The original K5/K6 suite has since gained executable orientation, OSFS, receipt-parity/census, documentation-honesty, E1-E10 final-evidence, OSFS resilience, and test-architecture contracts. The count is a navigation aid rather than a quality claim; the focused behavior and failure condition of each gate remain the evidence.
 
 ## Fixture And Evidence Tests
 

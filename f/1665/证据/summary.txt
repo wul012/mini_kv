@@ -1,0 +1,84 @@
+mini-kv v1665 test architecture evidence
+date=2026-07-19
+scope=command test decomposition; test-source ratchet; MinGW CTest runtime
+runtime_source_changed=false
+fixture_changed=false
+public_command_changed=false
+ratchet_relaxed=false
+
+step0:
+  start_head=77e31bec
+  start_tag=v1664
+  start_remote_aligned=true
+  previous_ci_run=29227615087 success 7/7
+  command_nonblank_before=3805
+  shard_nonblank_before=4328
+
+architecture:
+  manifest=config/command-test-parts.txt
+  shared_fixture=tests/command_test_suites.hpp
+  suite_parts=9
+  largest_part_nonblank=576
+  command_assert_tokens=457
+  command_response_assert_tokens=2447
+  test_source_limit=1000
+  oversized_baseline_before=2
+  oversized_baseline_after=1
+  scanner_output=test architecture: sources=353 limit=1000 oversized=1
+  red_paths=unbaselined oversized; baseline growth; stale baseline
+
+build:
+  generator=Ninja
+  compiler=MinGW GNU 13.1.0
+  build_steps=1022/1022
+  result=pass
+
+focused_ctest:
+  tests=benchmark_evidence_guard; project_docs_honesty_contract; test_architecture_contract; osfs_cli_smoke; cli_log_level_flag_smoke; server_log_level_invalid_smoke; command_tests
+  result=7/7 pass
+  elapsed_seconds=10.30
+
+full_ctest:
+  registered=353
+  passed=353
+  failed=0
+  elapsed_seconds=154.21
+
+real_cli:
+  commands=SMOKEJSON; CHECKJSON GET demo; HEALTH; QUIT
+  smoke_read_only=true
+  smoke_execution_allowed=false
+  smoke_order_authoritative=false
+  check_write_command=false
+  check_touches_wal=false
+  health=OK
+  quit=BYE
+
+hygiene:
+  changed_cpp_format=12/12 pass
+  fixture_diff=0
+  diff_check=pass excluding pre-existing user README brief
+  archive_inventory_before_v1665=warnings none
+  archive_root=f/1665
+  archive_files=6
+  archive_bytes=70632
+  archive_mib=0.07
+  archive_budget_mib=8
+  archive_warnings=none
+  walkthrough=代码讲解记录_生产雏形阶段_第四册/1033-v1665-command-test-architecture.md
+  walkthrough_cjk_characters=3103
+
+known_local_findings:
+  - isolated fixtures changed the historical state chain; final design uses one shared CommandFixture and original order
+  - four hand-written CTest entries initially lacked the MinGW runtime path; the shared helper now configures the real test process
+  - the first CLI evidence parser expected an exact HEALTH line; final parser matches the stable OK prefix and still parses both JSON objects structurally
+
+boundaries:
+  no_product_source_change=true
+  no_fixture_rewrite=true
+  no_public_command_change=true
+  no_router=true
+  no_cross_project_write=true
+  no_network_expansion=true
+  no_credential_access=true
+  no_execution_authority=true

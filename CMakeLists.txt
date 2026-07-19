@@ -416,6 +416,8 @@ if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_link_options(minikv_osfs PRIVATE -municode)
 endif()
 
+include(cmake/MinikvTesting.cmake)
+
 enable_testing()
 
 add_test(NAME benchmark_evidence_guard COMMAND minikv_benchmark --evidence-json 12 4)
@@ -424,8 +426,7 @@ set_tests_properties(benchmark_evidence_guard
     PROPERTIES
         PASS_REGULAR_EXPRESSION "\"evidence_type\":\"mini-kv-benchmark-evidence-guard\\.v1\".*\"wal_enabled\":false.*\"network_started\":false.*\"restore_executed\":false.*\"managed_audit_connection_opened\":false.*\"final_store_size\":0"
 )
-
-include(cmake/MinikvTesting.cmake)
+minikv_configure_test_runtime(benchmark_evidence_guard)
 
 minikv_add_standalone_source_dir_test(
     minikv_dependabot_config_tests
@@ -549,6 +550,7 @@ add_test(
             -DSCRIPT_PATH=${CMAKE_CURRENT_SOURCE_DIR}/tests/osfs_smoke_script.txt
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_osfs_smoke.cmake
 )
+minikv_configure_test_runtime(osfs_cli_smoke)
 
 add_test(
     NAME cli_log_level_flag_smoke
@@ -561,12 +563,14 @@ set_tests_properties(cli_log_level_flag_smoke
     PROPERTIES
         PASS_REGULAR_EXPRESSION "mini-kv CLI"
 )
+minikv_configure_test_runtime(cli_log_level_flag_smoke)
 
 add_test(NAME server_log_level_invalid_smoke COMMAND minikv_server --log-level trace)
 set_tests_properties(server_log_level_invalid_smoke
     PROPERTIES
         WILL_FAIL TRUE
 )
+minikv_configure_test_runtime(server_log_level_invalid_smoke)
 
 minikv_add_linked_test(
     minikv_store_tests
@@ -578,6 +582,10 @@ minikv_add_source_dir_test(
     minikv_command_tests
     command_tests
     tests/command_tests.cpp
+)
+minikv_add_test_parts(
+    minikv_command_tests
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/command-test-parts.txt
 )
 
 minikv_add_linked_test(

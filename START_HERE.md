@@ -12,7 +12,7 @@ Features:
 - Runtime JSON evidence for commands and snapshots
 - Command execution audit with SMOKEJSON/INFOJSON/KEYSJSON outputs
 - Independent OSFS course-design filesystem with an on-disk image, MFD/UFD directories, persistent users, permissions, descriptor offsets, direct/single-indirect blocks, read-only FSCK, and USERADD/PASSWD
-- CMake builds with 352 registered tests across command, WAL, snapshot, RESP, TCP, OSFS, fixture, archive, and governance evidence suites
+- CMake builds with 353 registered tests across command, WAL, snapshot, RESP, TCP, OSFS, fixture, archive, and governance evidence suites
 
 ## Why it matters
 
@@ -44,11 +44,11 @@ Follow the README for detailed command usage and screenshots.
 2. Command dispatch table and planned command-family split
 3. C++20 thread-safe data structures with snapshot/recovery support
 4. OSFS MFD/UFD, indirect-block, FSCK, and user-administration mechanisms with corruption and reopen tests
-5. 352 registered tests plus runtime JSON verification
+5. 353 registered tests plus runtime JSON verification
 
 ## Latest version summary
 
-Current focus: **v1663 OSFS teaching clarity and resilience evidence**. The bounded elegance program is externally reviewed PASS and closed. Eight mechanism-first Chinese tutorials now connect commands, in-memory state, disk changes, source paths, outputs, and tests; a separate resilience target closes fd-session, group-permission, directory-growth, sparse-range, and inode-bitmap FSCK gaps without changing the disk format or public commands.
+Current focus: **v1665 test architecture and command-suite decomposition**. The command regression suite now keeps its original shared state and execution order while compiling nine named parts from one manifest. A new mechanical contract rejects unregistered parts, missing entry calls, assertion loss, new test sources above 1,000 nonblank lines, and any growth of the one remaining shard-readiness baseline. Runtime commands, fixtures, WAL/snapshot behavior, and the independent OSFS layer are unchanged.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

@@ -1,3 +1,2 @@
 # path|nonblank-lines
-tests/command_tests.cpp|3805
 tests/shard_readiness_tests.cpp|4328

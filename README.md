@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/wul012/mini_kv/actions/workflows/ci.yml/badge.svg)](https://github.com/wul012/mini_kv/actions/workflows/ci.yml)
 [![Core coverage floor](https://img.shields.io/badge/core%20coverage-90%25-brightgreen)](docs/TESTING.md)
-[![CTest](https://img.shields.io/badge/CTest-352-blue)](docs/project-docs-honesty-matrix.md)
+[![CTest](https://img.shields.io/badge/CTest-353-blue)](docs/project-docs-honesty-matrix.md)
 [![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20macOS%20%7C%20Windows-informational)](.github/workflows/ci.yml)
 
 mini-kv 是一个从零实现的 C++20 键值存储：线程安全内存 Store、WAL 崩溃恢复、Snapshot、RESP/TCP 和可机器读取的运行证据都在同一仓库内闭环。仓库还包含一个彼此独立的 OSFS 课程设计子系统，用二进制磁盘镜像展示 MFD/UFD 二级目录、inode、权限、文件描述符、一级间接块和只读 FSCK。这里的质量主张不靠版本数量或截图成立，而由 CTest、覆盖率下限、精确 census、尺寸 ratchet 和三平台 CI 机械约束。四项目 capstone 已由 Node 以真实 `minikv_cli` 新进程读取 `SMOKEJSON` 与 `CHECKJSON`，验证过程保持只读且不授予执行权。
@@ -15,7 +15,7 @@ mini-kv is a from-scratch C++20 key-value engine with a thread-safe in-memory st
 
 | 维度 | 当前事实 | 机械证据 |
 |---|---|---|
-| 构建与测试 | **352 registered CTest tests**；Linux、macOS、Windows、sanitizer、coverage、format、archive 共七条 CI job | [`CMakeLists.txt`](CMakeLists.txt)、[CI workflow](.github/workflows/ci.yml)、`ctest --test-dir build -N` |
+| 构建与测试 | **353 registered CTest tests**；Linux、macOS、Windows、sanitizer、coverage、format、archive 共七条 CI job | [`CMakeLists.txt`](CMakeLists.txt)、[CI workflow](.github/workflows/ci.yml)、`ctest --test-dir build -N` |
 | 核心覆盖率 | store/command/WAL/snapshot/RESP 集合的已测基线为 2345 行、执行 2122 行、90%；CI 强制 **90% floor** | [`docs/minikv-track-final-evidence.md`](docs/minikv-track-final-evidence.md)、[`ci.yml`](.github/workflows/ci.yml) |
 | 源码体积 | `src/` 与 `include/` 每个源码文件不超过 800 个非空物理行；仅保留一个具名 registry 豁免 | [`check_minikv_track_final_evidence.cmake`](cmake/check_minikv_track_final_evidence.cmake) |
 | Receipt 结构 | 28 个 receipt 源文件中，**27 builder-backed / 0 pending / 1 named no-formatter waiver** | [`check_receipt_builder_census.cmake`](cmake/check_receipt_builder_census.cmake)、[`docs/receipts-consolidation-note.md`](docs/receipts-consolidation-note.md) |
@@ -129,8 +129,8 @@ python scripts/archive_inventory.py --budget-mib 8 --strict
 
 完整历史见 [`docs/CHANGELOG.md`](docs/CHANGELOG.md)。README 只保留对当前展示面有直接解释力的三项：
 
+- v1665: 将 3805 非空行的 command 回归测试拆成九个 manifest 管理的职责段，以共享 fixture 保留原状态链和顺序，并新增 1000 非空行体积门、457/2447 断言 census 与 MinGW CTest 运行时配置；不改产品源码、fixture 或公共输出。
 - v1664: 将 GitHub 首页从维护流水账改为访客展示页，把能力、边界、架构、复现命令和证据入口放进首屏阅读路径；所有数字由已有机械门或已提交报告支撑，不改运行时代码、fixture、命令输出或权限边界。
 - v1663: rewrites OSFS learning material as eight mechanism-first Chinese tutorials and adds a separate resilience target for fd sessions, permissions, UFD growth, sparse writes and bitmap corruption. The default inventory is 352 registered CTest tests; the current tree also retains all nine completed FinalShell demonstration steps without rewriting the disclosed pre-seeded-user history.
-- v1662: closes elegance Round 2 after a mechanical top-10 pin audit finds only one safe rename candidate, below the five-candidate threshold; the 735/883 shrink-only baselines remain unchanged.
 
 维护者入口：[`START_HERE.md`](START_HERE.md) · [`docs/production-excellence-progress.md`](docs/production-excellence-progress.md) · [`治理计划/README.md`](治理计划/README.md)

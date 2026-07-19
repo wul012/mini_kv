@@ -19,8 +19,15 @@ struct SourceSize {
     std::size_t nonblank_lines = 0;
 };
 
+struct SuitePart {
+    std::string path;
+    std::string entry;
+};
+
 using SourceSizes = std::vector<SourceSize>;
 using SizeBaseline = std::map<std::string, std::size_t>;
+using SuiteParts = std::vector<SuitePart>;
+using TokenCounts = std::map<std::string, std::size_t>;
 
 bool is_blank(std::string_view line) {
     return std::all_of(line.begin(), line.end(), [](unsigned char character) { return std::isspace(character) != 0; });
@@ -38,6 +45,24 @@ std::size_t count_nonblank_lines(const std::filesystem::path& path) {
         if (!is_blank(line)) {
             ++count;
         }
+    }
+    return count;
+}
+
+std::string read_text(const std::filesystem::path& path) {
+    std::ifstream input{path, std::ios::binary};
+    if (!input.is_open()) {
+        throw std::runtime_error{"cannot read test architecture file: " + path.generic_string()};
+    }
+    return {std::istreambuf_iterator<char>{input}, std::istreambuf_iterator<char>{}};
+}
+
+std::size_t count_occurrences(std::string_view text, std::string_view token) {
+    std::size_t count = 0;
+    std::size_t offset = 0;
+    while ((offset = text.find(token, offset)) != std::string_view::npos) {
+        ++count;
+        offset += token.size();
     }
     return count;
 }
@@ -70,6 +95,27 @@ SizeBaseline read_baseline(const std::filesystem::path& path) {
         (void)position;
     }
     return baseline;
+}
+
+SuiteParts read_suite_parts(const std::filesystem::path& path) {
+    std::ifstream input{path};
+    if (!input.is_open()) {
+        throw std::runtime_error{"cannot read test suite manifest: " + path.generic_string()};
+    }
+
+    SuiteParts parts;
+    std::string row;
+    while (std::getline(input, row)) {
+        if (row.empty() || row.front() == '#') {
+            continue;
+        }
+        const auto separator = row.find('|');
+        if (separator == std::string::npos || row.find('|', separator + 1) != std::string::npos) {
+            throw std::runtime_error{"invalid test suite manifest row: " + row};
+        }
+        parts.push_back({row.substr(0, separator), row.substr(separator + 1)});
+    }
+    return parts;
 }
 
 SourceSizes scan_test_sources(const std::filesystem::path& source_root) {
@@ -110,6 +156,39 @@ void verify_source_sizes(const SourceSizes& sources, const SizeBaseline& baselin
     }
 }
 
+void verify_suite(const std::filesystem::path& source_root, const std::filesystem::path& manifest_path,
+                  const std::filesystem::path& main_path, const TokenCounts& expected_tokens) {
+    const auto parts = read_suite_parts(source_root / manifest_path);
+    const auto main_text = read_text(source_root / main_path);
+    std::map<std::string, bool> paths;
+    std::map<std::string, bool> entries;
+    TokenCounts observed_tokens;
+
+    for (const auto& part : parts) {
+        if (part.path.empty() || part.entry.empty() || !paths.emplace(part.path, true).second ||
+            !entries.emplace(part.entry, true).second) {
+            throw std::runtime_error{"duplicate or empty test suite part: " + part.path};
+        }
+        const auto part_text = read_text(source_root / part.path);
+        const auto definition = "void " + part.entry + "(CommandFixture& fixture)";
+        const auto call = part.entry + "(fixture);";
+        if (count_occurrences(part_text, definition) != 1) {
+            throw std::runtime_error{"test suite part must define its entry exactly once: " + part.entry};
+        }
+        if (count_occurrences(main_text, call) != 1) {
+            throw std::runtime_error{"test suite main must call its entry exactly once: " + part.entry};
+        }
+        for (const auto& [token, expected] : expected_tokens) {
+            (void)expected;
+            observed_tokens[token] += count_occurrences(part_text, token);
+        }
+    }
+
+    if (observed_tokens != expected_tokens) {
+        throw std::runtime_error{"test suite assertion census changed: " + manifest_path.generic_string()};
+    }
+}
+
 void assert_failure(const SourceSizes& sources, const SizeBaseline& baseline, std::string_view expected) {
     try {
         verify_source_sizes(sources, baseline);
@@ -133,6 +212,8 @@ int main() {
     const auto baseline = read_baseline(source_root / "config" / "test-source-size-baseline.txt");
     const auto sources = scan_test_sources(source_root);
     verify_source_sizes(sources, baseline);
+    verify_suite(source_root, "config/command-test-parts.txt", "tests/command_tests.cpp",
+                 {{"assert(", 457}, {"assert_response_contains(", 2447}});
     verify_red_paths();
 
     std::cout << "test architecture: sources=" << sources.size() << " limit=" << test_source_limit

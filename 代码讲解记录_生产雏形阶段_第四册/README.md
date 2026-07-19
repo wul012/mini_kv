@@ -199,3 +199,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1664 补充索引
 
 - v1664: [1032-v1664-readme-exhibition.md](1032-v1664-readme-exhibition.md) - 解释为什么 README 要从版本流水重构为访客证据路径，352、2345/2122/90%、27/0/1、735/883 与唯一尺寸豁免分别由哪个机械门重算，最终态 capstone 标签为何必须保留 env-gated/single-machine/read-only/no-execution 限定，以及架构图、Quickstart、证据地图和 docs honesty contract 如何共同防止首页再次漂移。
+
+## v1665 补充索引
+
+- v1665: [1033-v1665-command-test-architecture.md](1033-v1665-command-test-architecture.md) - 解释为什么 4009 行命令测试不能直接切成九个独立进程，如何用共享 `CommandFixture` 保留隐含状态和原执行顺序，manifest 怎样同时驱动编译与结构检查，457/2447 断言 census 与 1000 非空行 shrink-only baseline 如何防止“拆分时漏测”，以及 MinGW CTest 运行时注入为何是环境修复而不是测试豁免。
