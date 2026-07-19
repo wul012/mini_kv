@@ -13,7 +13,7 @@ The core layers are:
 
 The current default CTest inventory is 353. The original K5/K6 suite has since gained executable orientation, OSFS, receipt-parity/census, documentation-honesty, E1-E10 final-evidence, OSFS resilience, and test-architecture contracts. The count is a navigation aid rather than a quality claim; the focused behavior and failure condition of each gate remain the evidence.
 
-The test-architecture contract scans all test translation units and enforces a 1,000-nonblank-line ceiling with an empty current waiver baseline. Command and shard-readiness suites compile from versioned manifests; every part entry must have one definition and one call in the suite graph. Exact assertion-token censuses, plus explicit dual shard fixture/runtime wrapper calls, make omitted parts and accidental migration shrinkage fail mechanically.
+The test-architecture contract scans all test translation units and enforces a 1,000-nonblank-line ceiling with an empty current waiver baseline. Command and shard-readiness suites compile from versioned manifests; every part entry must have one definition and one call in the suite graph. Exact assertion-token censuses, plus explicit dual shard fixture/runtime wrapper calls, make omitted parts and accidental migration shrinkage fail mechanically. The same contract parses all 344 `minikv_add_*_test` registrations, requires every internal target over 40 characters to belong to the 277-entry shrink-only baseline, and caps `target.length + source_path.length` at the exact current maximum of 197. Public CTest names stay independent from shorter private build identities; injected new-long-name, stale-baseline, and over-budget registrations prove all three failure paths.
 
 ## Fixture And Evidence Tests
 

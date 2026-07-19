@@ -982,7 +982,7 @@ minikv_add_linked_test(
 )
 
 minikv_add_linked_test(
-    minikv_text_package_review_closeout_audit_validation_tests
+    minikv_tp_closeout_validation_tests
     text_package_review_closeout_audit_validation_tests
     tests/shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_validation_tests.cpp
 )

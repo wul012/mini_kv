@@ -207,3 +207,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1666 补充索引
 
 - v1666: [1034-v1666-shard-test-architecture.md](1034-v1666-shard-test-architecture.md) - 解释为什么 shard 拆分同时牵涉 3710 个字段断言、双次 fixture/runtime wrapper 和 v144-v200 历史链，五个合同域与三段场景怎样保持原顺序，suite graph checker 如何防止 wrapper 内部 part 成为不可达代码，以及 4328→906、baseline 1→0 怎样把测试体积债永久变成机械红灯。
+
+## v1667 补充索引
+
+- v1667: [1035-v1667-cmake-target-path-budget.md](1035-v1667-cmake-target-path-budget.md) - 解释内部 CMake target、公开 CTest 名与源文件路径为何必须分层治理，真实对象路径警告怎样由组合长度触发，277 项 shrink-only baseline 与 197 风险分数如何只减不增，三条故障注入分别怎样拒绝新增长名、stale baseline 和 198 分路径，以及为何本版保留 v1662 文件名 stop condition、353 条测试和全部只读无执行边界。

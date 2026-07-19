@@ -48,7 +48,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1666 zero-baseline test architecture closeout**. Both former 4,000-line regression monoliths are now manifest-owned suites, and every `tests/*.cpp` file is at or below 1,000 nonblank lines with no baseline waiver. The shard wrapper still checks the frozen fixture and real `SHARDJSON` response separately; exact assertion censuses and required-call checks prevent a split from becoming silent coverage loss. Runtime commands, fixtures, WAL/snapshot behavior, and the independent OSFS layer are unchanged.
+Current focus: **v1667 CMake test target path budget**. The one internal target that produced a MinGW object-path warning is now 35 characters while its public CTest name and v1662-pinned source path remain unchanged. `test_architecture_contract` scans 344 helper registrations, freezes 277 historical targets over 40 characters, caps the platform-independent target-plus-source score at the exact current maximum of 197, and proves new-long-name, stale-baseline, and over-budget red paths. Runtime commands, fixtures, WAL/snapshot behavior, and the independent OSFS layer are unchanged.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

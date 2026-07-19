@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <set>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -13,6 +15,8 @@
 namespace {
 
 constexpr std::size_t test_source_limit = 1000;
+constexpr std::size_t test_target_name_limit = 40;
+constexpr std::size_t object_path_score_limit = 197;
 
 struct SourceSize {
     std::string path;
@@ -24,10 +28,24 @@ struct SuitePart {
     std::string entry;
 };
 
+struct CMakeTestRegistration {
+    std::string target;
+    std::string test_name;
+    std::string source;
+};
+
+struct TargetMetrics {
+    std::size_t registrations = 0;
+    std::size_t long_targets = 0;
+    std::size_t max_path_score = 0;
+};
+
 using SourceSizes = std::vector<SourceSize>;
 using SizeBaseline = std::map<std::string, std::size_t>;
 using SuiteParts = std::vector<SuitePart>;
 using TokenCounts = std::map<std::string, std::size_t>;
+using TargetBaseline = std::set<std::string>;
+using TestRegistrations = std::vector<CMakeTestRegistration>;
 
 bool is_blank(std::string_view line) {
     return std::all_of(line.begin(), line.end(), [](unsigned char character) { return std::isspace(character) != 0; });
@@ -65,6 +83,116 @@ std::size_t count_occurrences(std::string_view text, std::string_view token) {
         offset += token.size();
     }
     return count;
+}
+
+std::string trim_copy(std::string_view value) {
+    const auto first = std::find_if_not(value.begin(), value.end(),
+                                        [](unsigned char character) { return std::isspace(character) != 0; });
+    const auto last = std::find_if_not(value.rbegin(), value.rend(), [](unsigned char character) {
+                          return std::isspace(character) != 0;
+                      }).base();
+    return first < last ? std::string{first, last} : std::string{};
+}
+
+bool is_test_helper(std::string_view line) {
+    return line == "minikv_add_linked_test(" || line == "minikv_add_source_dir_test(" ||
+           line == "minikv_add_standalone_source_dir_test(";
+}
+
+TestRegistrations parse_test_registrations(std::string_view cmake_text) {
+    std::istringstream input{std::string{cmake_text}};
+    TestRegistrations registrations;
+    std::string line;
+    while (std::getline(input, line)) {
+        if (!is_test_helper(trim_copy(line))) {
+            continue;
+        }
+
+        std::vector<std::string> arguments;
+        bool closed = false;
+        while (std::getline(input, line)) {
+            auto argument = trim_copy(line);
+            if (argument == ")") {
+                closed = true;
+                break;
+            }
+            if (!argument.empty() && argument.front() != '#') {
+                if (argument.find_first_of(" \t") != std::string::npos) {
+                    throw std::runtime_error{"CMake test helper argument must occupy one line: " + argument};
+                }
+                arguments.push_back(std::move(argument));
+            }
+        }
+        if (!closed || arguments.size() != 3) {
+            throw std::runtime_error{"CMake test helper must contain target, test name, and source"};
+        }
+        registrations.push_back({std::move(arguments[0]), std::move(arguments[1]), std::move(arguments[2])});
+    }
+    return registrations;
+}
+
+TargetBaseline read_target_baseline(const std::filesystem::path& path) {
+    std::ifstream input{path};
+    if (!input.is_open()) {
+        throw std::runtime_error{"cannot read CMake target baseline: " + path.generic_string()};
+    }
+
+    TargetBaseline baseline;
+    std::string row;
+    while (std::getline(input, row)) {
+        row = trim_copy(row);
+        if (row.empty() || row.front() == '#') {
+            continue;
+        }
+        if (row.size() <= test_target_name_limit) {
+            throw std::runtime_error{"CMake target baseline contains a compliant name: " + row};
+        }
+        if (!baseline.emplace(row).second) {
+            throw std::runtime_error{"duplicate CMake target baseline name: " + row};
+        }
+    }
+    return baseline;
+}
+
+TargetMetrics verify_test_targets(const std::filesystem::path& source_root, const TestRegistrations& registrations,
+                                  const TargetBaseline& baseline) {
+    std::set<std::string> targets;
+    std::set<std::string> test_names;
+    std::set<std::string> observed_long_targets;
+    TargetMetrics metrics{registrations.size(), 0, 0};
+
+    for (const auto& registration : registrations) {
+        if (!targets.emplace(registration.target).second) {
+            throw std::runtime_error{"duplicate internal CMake test target: " + registration.target};
+        }
+        if (!test_names.emplace(registration.test_name).second) {
+            throw std::runtime_error{"duplicate public CTest name: " + registration.test_name};
+        }
+
+        const auto path_score = registration.target.size() + registration.source.size();
+        metrics.max_path_score = std::max(metrics.max_path_score, path_score);
+        if (path_score > object_path_score_limit) {
+            throw std::runtime_error{"CMake test object path score exceeds budget: " + registration.target};
+        }
+        if (!std::filesystem::is_regular_file(source_root / registration.source)) {
+            throw std::runtime_error{"CMake test source is missing: " + registration.source};
+        }
+        if (registration.target.size() > test_target_name_limit) {
+            if (!baseline.contains(registration.target)) {
+                throw std::runtime_error{"new long internal CMake test target: " + registration.target};
+            }
+            observed_long_targets.emplace(registration.target);
+        }
+    }
+
+    metrics.long_targets = observed_long_targets.size();
+    if (observed_long_targets != baseline) {
+        throw std::runtime_error{"stale internal CMake test target baseline entry"};
+    }
+    if (metrics.max_path_score < object_path_score_limit) {
+        throw std::runtime_error{"CMake test object path score budget must shrink in the same commit"};
+    }
+    return metrics;
 }
 
 SizeBaseline read_baseline(const std::filesystem::path& path) {
@@ -213,10 +341,29 @@ void assert_failure(const SourceSizes& sources, const SizeBaseline& baseline, st
     assert(false && "expected test architecture contract failure");
 }
 
-void verify_red_paths() {
+void assert_target_failure(const std::filesystem::path& source_root, const TestRegistrations& registrations,
+                           const TargetBaseline& baseline, std::string_view expected) {
+    try {
+        (void)verify_test_targets(source_root, registrations, baseline);
+    } catch (const std::runtime_error& error) {
+        assert(std::string_view{error.what()}.find(expected) != std::string_view::npos);
+        return;
+    }
+    assert(false && "expected CMake test target contract failure");
+}
+
+void verify_red_paths(const std::filesystem::path& source_root) {
     assert_failure({{"tests/new_oversized.cpp", 1001}}, {}, "without baseline");
     assert_failure({{"tests/growing.cpp", 1002}}, {{"tests/growing.cpp", 1001}}, "must shrink");
     assert_failure({{"tests/repaid.cpp", 999}}, {{"tests/repaid.cpp", 1001}}, "stale");
+
+    const std::string long_target(test_target_name_limit + 1, 't');
+    assert_target_failure(source_root, {{long_target, "synthetic_test", "tests/store_tests.cpp"}}, {},
+                          "new long internal");
+    assert_target_failure(source_root, {}, {long_target}, "stale internal");
+    const std::string risky_source(object_path_score_limit + 1 - test_target_name_limit, 's');
+    assert_target_failure(source_root, {{std::string(test_target_name_limit, 't'), "synthetic_test", risky_source}}, {},
+                          "object path score");
 }
 
 } // namespace
@@ -226,15 +373,20 @@ int main() {
     const auto baseline = read_baseline(source_root / "config" / "test-source-size-baseline.txt");
     const auto sources = scan_test_sources(source_root);
     verify_source_sizes(sources, baseline);
+    const auto target_baseline = read_target_baseline(source_root / "config" / "test-target-name-baseline.txt");
+    const auto registrations = parse_test_registrations(read_text(source_root / "CMakeLists.txt"));
+    const auto target_metrics = verify_test_targets(source_root, registrations, target_baseline);
     verify_suite(source_root, "config/command-test-parts.txt", "tests/command_tests.cpp", "CommandFixture",
                  {{"assert(", 457}, {"assert_response_contains(", 2447}});
     verify_suite(source_root, "config/shard-test-parts.txt", "tests/shard_readiness_tests.cpp", "ShardFixture",
                  {{"assert(", 8}, {"assert_contains(", 3710}, {"assert_fixture_differs_from_each(", 2}},
                  {{"assert_shard_readiness_contract(fixture, fixture.current);", 1},
                   {"assert_shard_readiness_contract(fixture, result.response);", 1}});
-    verify_red_paths();
+    verify_red_paths(source_root);
 
     std::cout << "test architecture: sources=" << sources.size() << " limit=" << test_source_limit
-              << " oversized=" << baseline.size() << '\n';
+              << " oversized=" << baseline.size() << " cmake_tests=" << target_metrics.registrations
+              << " long_targets=" << target_metrics.long_targets << " max_path_score=" << target_metrics.max_path_score
+              << '\n';
     return 0;
 }

@@ -17,6 +17,8 @@
 - `readme-exhibition-brief.md`：v1664 README 展示维护简报；把 GitHub 首页从版本流水改为访客导向的能力、架构、复现和证据地图，并用现有合同钉住 352 测试、90% 核心覆盖率下限、27/0/1 receipt census、735/883 命名基线与获准的只读 capstone 成熟度标签。
 - `v1665-test-architecture-brief.md`：v1665-v1666 测试架构收口；以 suite manifest、断言 census 和 1000 非空行 ratchet 拆解 command/shard-readiness 两个 4000 行级测试单体，产品代码与 fixture 合同保持不变。
 
+- `v1667-cmake-target-path-budget.md`：测试构建身份收口；保留 v1662 长源文件名与公开 CTest 名，只缩短触发对象路径警告的内部 target，并新增长 target shrink-only baseline、路径风险分数门和故障注入。
+
 ## 当前硬边界
 
 - 不移动、不重命名 `a/`、`b/`、`c/`、`d/`、`e/`、`f/` 下任何历史归档。
