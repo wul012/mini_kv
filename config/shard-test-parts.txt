@@ -1,0 +1,9 @@
+# source-path|entry-function
+tests/shard_contract_candidate_tests.cpp|check_shard_candidate_contract
+tests/shard_contract_governance_tests.cpp|check_shard_governance_contract
+tests/shard_contract_route_tests.cpp|check_shard_route_contract
+tests/shard_contract_history_tests.cpp|check_shard_history_contract
+tests/shard_contract_catalog_tests.cpp|check_shard_catalog_contract
+tests/shard_fixture_early_tests.cpp|run_shard_fixture_early_tests
+tests/shard_fixture_late_tests.cpp|run_shard_fixture_late_tests
+tests/shard_command_tests.cpp|run_shard_command_tests

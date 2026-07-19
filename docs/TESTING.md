@@ -13,6 +13,8 @@ The core layers are:
 
 The current default CTest inventory is 353. The original K5/K6 suite has since gained executable orientation, OSFS, receipt-parity/census, documentation-honesty, E1-E10 final-evidence, OSFS resilience, and test-architecture contracts. The count is a navigation aid rather than a quality claim; the focused behavior and failure condition of each gate remain the evidence.
 
+The test-architecture contract scans all test translation units and enforces a 1,000-nonblank-line ceiling with an empty current waiver baseline. Command and shard-readiness suites compile from versioned manifests; every part entry must have one definition and one call in the suite graph. Exact assertion-token censuses, plus explicit dual shard fixture/runtime wrapper calls, make omitted parts and accidental migration shrinkage fail mechanically.
+
 ## Fixture And Evidence Tests
 
 Fixture tests protect historical contracts. They should prefer structured checks when the fixture is JSON or table-like, and string-fragment assertions only when the output is intentionally plain text or the risk does not justify a parser.

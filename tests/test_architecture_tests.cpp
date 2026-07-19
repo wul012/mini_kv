@@ -157,12 +157,15 @@ void verify_source_sizes(const SourceSizes& sources, const SizeBaseline& baselin
 }
 
 void verify_suite(const std::filesystem::path& source_root, const std::filesystem::path& manifest_path,
-                  const std::filesystem::path& main_path, const TokenCounts& expected_tokens) {
+                  const std::filesystem::path& main_path, std::string_view fixture_type,
+                  const TokenCounts& expected_tokens, const TokenCounts& required_calls = {}) {
     const auto parts = read_suite_parts(source_root / manifest_path);
     const auto main_text = read_text(source_root / main_path);
     std::map<std::string, bool> paths;
     std::map<std::string, bool> entries;
+    std::map<std::string, std::string> part_texts;
     TokenCounts observed_tokens;
+    std::string call_graph_text = main_text;
 
     for (const auto& part : parts) {
         if (part.path.empty() || part.entry.empty() || !paths.emplace(part.path, true).second ||
@@ -170,22 +173,33 @@ void verify_suite(const std::filesystem::path& source_root, const std::filesyste
             throw std::runtime_error{"duplicate or empty test suite part: " + part.path};
         }
         const auto part_text = read_text(source_root / part.path);
-        const auto definition = "void " + part.entry + "(CommandFixture& fixture)";
-        const auto call = part.entry + "(fixture);";
-        if (count_occurrences(part_text, definition) != 1) {
-            throw std::runtime_error{"test suite part must define its entry exactly once: " + part.entry};
-        }
-        if (count_occurrences(main_text, call) != 1) {
-            throw std::runtime_error{"test suite main must call its entry exactly once: " + part.entry};
-        }
+        part_texts.emplace(part.path, part_text);
+        call_graph_text += part_text;
         for (const auto& [token, expected] : expected_tokens) {
             (void)expected;
             observed_tokens[token] += count_occurrences(part_text, token);
         }
     }
 
+    for (const auto& part : parts) {
+        const auto& part_text = part_texts.at(part.path);
+        const auto definition = "void " + part.entry + "(" + std::string{fixture_type} + "& fixture)";
+        const auto call = part.entry + "(fixture);";
+        if (count_occurrences(part_text, definition) != 1) {
+            throw std::runtime_error{"test suite part must define its entry exactly once: " + part.entry};
+        }
+        if (count_occurrences(call_graph_text, call) != 1) {
+            throw std::runtime_error{"test suite graph must call its entry exactly once: " + part.entry};
+        }
+    }
+
     if (observed_tokens != expected_tokens) {
         throw std::runtime_error{"test suite assertion census changed: " + manifest_path.generic_string()};
+    }
+    for (const auto& [call, expected] : required_calls) {
+        if (count_occurrences(call_graph_text, call) != expected) {
+            throw std::runtime_error{"test suite required call count changed: " + call};
+        }
     }
 }
 
@@ -212,8 +226,12 @@ int main() {
     const auto baseline = read_baseline(source_root / "config" / "test-source-size-baseline.txt");
     const auto sources = scan_test_sources(source_root);
     verify_source_sizes(sources, baseline);
-    verify_suite(source_root, "config/command-test-parts.txt", "tests/command_tests.cpp",
+    verify_suite(source_root, "config/command-test-parts.txt", "tests/command_tests.cpp", "CommandFixture",
                  {{"assert(", 457}, {"assert_response_contains(", 2447}});
+    verify_suite(source_root, "config/shard-test-parts.txt", "tests/shard_readiness_tests.cpp", "ShardFixture",
+                 {{"assert(", 8}, {"assert_contains(", 3710}, {"assert_fixture_differs_from_each(", 2}},
+                 {{"assert_shard_readiness_contract(fixture, fixture.current);", 1},
+                  {"assert_shard_readiness_contract(fixture, result.response);", 1}});
     verify_red_paths();
 
     std::cout << "test architecture: sources=" << sources.size() << " limit=" << test_source_limit

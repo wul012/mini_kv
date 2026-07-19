@@ -1,5 +1,8 @@
 # v1665-v1666 测试架构收口简报
 
+执行状态：v1665 已完成 command suite、MinGW CTest runtime 与版本闭环；v1666 已完成 shard
+机械拆分和 focused 验证，最终全量/归档/CI 收尾进行中。
+
 ## 背景与指令
 
 用户授权持续优化至工程上满意。v1664 后，产品源码已经受 800 非空行 ratchet 保护，
@@ -49,6 +52,11 @@
   `SHARDJSON` 命令 smoke 独立出来。
 - baseline 收紧为空；所有 `tests/*.cpp` 均不超过 1000 非空行。
 - 到此停止 retro test-split，不顺手拆 800 行以下文件。
+
+实际落点：五个 current-contract 字段域、v144-v164 与 v165-v200 两段历史 fixture、一个真实
+命令 smoke，共八个 manifest part；最大 part 906 非空行。`assert=8`、`assert_contains=3710`、
+fixture-difference helper 定义/调用共 2 次保持不变，fixture 与运行时 SHARDJSON 仍各经过一次
+完整 wrapper。体积 baseline 已收紧为空，scanner 输出 `sources=361 limit=1000 oversized=0`。
 
 ## 最终验证
 

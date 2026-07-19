@@ -203,3 +203,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1665 补充索引
 
 - v1665: [1033-v1665-command-test-architecture.md](1033-v1665-command-test-architecture.md) - 解释为什么 4009 行命令测试不能直接切成九个独立进程，如何用共享 `CommandFixture` 保留隐含状态和原执行顺序，manifest 怎样同时驱动编译与结构检查，457/2447 断言 census 与 1000 非空行 shrink-only baseline 如何防止“拆分时漏测”，以及 MinGW CTest 运行时注入为何是环境修复而不是测试豁免。
+
+## v1666 补充索引
+
+- v1666: [1034-v1666-shard-test-architecture.md](1034-v1666-shard-test-architecture.md) - 解释为什么 shard 拆分同时牵涉 3710 个字段断言、双次 fixture/runtime wrapper 和 v144-v200 历史链，五个合同域与三段场景怎样保持原顺序，suite graph checker 如何防止 wrapper 内部 part 成为不可达代码，以及 4328→906、baseline 1→0 怎样把测试体积债永久变成机械红灯。

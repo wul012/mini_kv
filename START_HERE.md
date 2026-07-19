@@ -48,7 +48,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1665 test architecture and command-suite decomposition**. The command regression suite now keeps its original shared state and execution order while compiling nine named parts from one manifest. A new mechanical contract rejects unregistered parts, missing entry calls, assertion loss, new test sources above 1,000 nonblank lines, and any growth of the one remaining shard-readiness baseline. Runtime commands, fixtures, WAL/snapshot behavior, and the independent OSFS layer are unchanged.
+Current focus: **v1666 zero-baseline test architecture closeout**. Both former 4,000-line regression monoliths are now manifest-owned suites, and every `tests/*.cpp` file is at or below 1,000 nonblank lines with no baseline waiver. The shard wrapper still checks the frozen fixture and real `SHARDJSON` response separately; exact assertion censuses and required-call checks prevent a split from becoming silent coverage loss. Runtime commands, fixtures, WAL/snapshot behavior, and the independent OSFS layer are unchanged.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

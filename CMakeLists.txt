@@ -605,6 +605,10 @@ minikv_add_source_dir_test(
     shard_readiness_tests
     tests/shard_readiness_tests.cpp
 )
+minikv_add_test_parts(
+    minikv_shard_readiness_tests
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/shard-test-parts.txt
+)
 
 minikv_add_linked_test(
     minikv_shard_readiness_post_closeout_continuity_tests

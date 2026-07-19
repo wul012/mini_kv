@@ -127,8 +127,9 @@ python scripts/archive_inventory.py --budget-mib 8 --strict
 
 ## 最近版本
 
-完整历史见 [`docs/CHANGELOG.md`](docs/CHANGELOG.md)。README 只保留对当前展示面有直接解释力的三项：
+完整历史见 [`docs/CHANGELOG.md`](docs/CHANGELOG.md)。README 只保留对当前展示面有直接解释力的四项：
 
+- v1666: 将 4328 非空行的 shard-readiness 测试拆成五个合同字段域、两段历史 fixture 和一段真实命令 smoke；同一 wrapper 仍对冻结 fixture 与运行时 SHARDJSON 各检查一次，测试源码 1000 行门的 baseline 清零。
 - v1665: 将 3805 非空行的 command 回归测试拆成九个 manifest 管理的职责段，以共享 fixture 保留原状态链和顺序，并新增 1000 非空行体积门、457/2447 断言 census 与 MinGW CTest 运行时配置；不改产品源码、fixture 或公共输出。
 - v1664: 将 GitHub 首页从维护流水账改为访客展示页，把能力、边界、架构、复现命令和证据入口放进首屏阅读路径；所有数字由已有机械门或已提交报告支撑，不改运行时代码、fixture、命令输出或权限边界。
 - v1663: rewrites OSFS learning material as eight mechanism-first Chinese tutorials and adds a separate resilience target for fd sessions, permissions, UFD growth, sparse writes and bitmap corruption. The default inventory is 352 registered CTest tests; the current tree also retains all nine completed FinalShell demonstration steps without rewriting the disclosed pre-seeded-user history.
