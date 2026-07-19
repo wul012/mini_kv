@@ -454,6 +454,12 @@ add_test(
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_minikv_track_final_evidence.cmake
 )
 
+minikv_add_standalone_source_dir_test(
+    minikv_test_architecture_tests
+    test_architecture_contract
+    tests/test_architecture_tests.cpp
+)
+
 add_test(
     NAME receipts_consolidation_note_contract
     COMMAND ${CMAKE_COMMAND}
