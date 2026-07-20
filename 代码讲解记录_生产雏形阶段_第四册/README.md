@@ -235,3 +235,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1673 补充索引
 
 - v1673: [1041-v1673-validated-test-manifest.md](1041-v1673-validated-test-manifest.md) - 解释为什么 342 条普通测试身份适合进入受校验的五列清单，而特殊 smoke、standalone 与 target override 必须保留显式行为；讲清 8+334 阶段如何保持 354 项原顺序、默认/legacy 怎样消费同一数据源、parser 红路径如何工作，以及一次旧 owner 断言失败为何进一步促成 1,090→820+280 的无豁免拆分。
+
+## v1674 补充索引
+
+- v1674: [1042-v1674-product-source-manifest.md](1042-v1674-product-source-manifest.md) - 从 Step-0 将 315 纠正为 316 开始，解释产品源码身份为何进入 LF 清单、真实 loader 如何双向核对磁盘集合、六类故障注入保护什么，以及统一测试包装器和单次源码扫描如何关闭 v1673 的 macOS 生成器漂移与 Windows 超时；最后逐项说明 9.1 分的机械证据和主动扣分。

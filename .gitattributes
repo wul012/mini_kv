@@ -2,3 +2,4 @@
 config/elegance-name-baseline.txt text eol=lf
 config/elegance-round2-pin-audit.tsv text eol=lf
 config/test-cases.txt text eol=lf
+config/product-sources.txt text eol=lf

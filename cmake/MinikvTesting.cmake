@@ -1,3 +1,18 @@
+include("${CMAKE_CURRENT_LIST_DIR}/MinikvManifest.cmake")
+
+function(minikv_add_test test_name)
+    if(NOT test_name MATCHES "^[A-Za-z0-9_]+$")
+        message(FATAL_ERROR "CTest name is not a safe tracking key: ${test_name}")
+    endif()
+    get_property(known_tests GLOBAL PROPERTY MINIKV_CTEST_NAMES)
+    if(test_name IN_LIST known_tests)
+        message(FATAL_ERROR "duplicate tracked CTest name: ${test_name}")
+    endif()
+
+    add_test(NAME ${test_name} ${ARGN})
+    set_property(GLOBAL APPEND PROPERTY MINIKV_CTEST_NAMES "${test_name}")
+endfunction()
+
 function(minikv_configure_test_runtime test_name)
     if(MINGW)
         get_filename_component(mingw_runtime_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
@@ -43,7 +58,7 @@ function(minikv_add_bundled_test target_name test_name source_file)
     target_compile_definitions(${target_name} PRIVATE "main=${entry_symbol}")
     target_link_libraries(${target_name} PRIVATE minikv)
 
-    add_test(NAME ${test_name} COMMAND minikv_test_shard_${shard_index} ${test_name})
+    minikv_add_test(${test_name} COMMAND minikv_test_shard_${shard_index} ${test_name})
     minikv_configure_test_runtime(${test_name})
 endfunction()
 
@@ -58,7 +73,7 @@ function(minikv_add_linked_test target_name test_name source_file)
 
         target_link_libraries(${target_name} PRIVATE minikv)
 
-        add_test(NAME ${test_name} COMMAND ${target_name})
+        minikv_add_test(${test_name} COMMAND ${target_name})
         minikv_configure_test_runtime(${test_name})
     endif()
 endfunction()
@@ -83,16 +98,12 @@ function(minikv_add_standalone_source_dir_test target_name test_name source_file
             MINIKV_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
     )
 
-    add_test(NAME ${test_name} COMMAND ${target_name})
+    minikv_add_test(${test_name} COMMAND ${target_name})
     minikv_configure_test_runtime(${test_name})
 endfunction()
 
 function(minikv_read_test_manifest manifest_path out_rows)
-    file(READ "${manifest_path}" manifest_hex HEX)
-    string(FIND "${manifest_hex}" "0d" cr_offset)
-    if(NOT cr_offset EQUAL -1)
-        message(FATAL_ERROR "test case manifest must use LF line endings: ${manifest_path}")
-    endif()
+    minikv_require_lf_file("${manifest_path}" "test case manifest")
 
     file(STRINGS "${manifest_path}" manifest_rows)
     set(validated_rows)

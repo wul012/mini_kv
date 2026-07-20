@@ -23,10 +23,15 @@ constexpr std::size_t evidence_command_count = 62;
 constexpr std::size_t command_core_limit = 260;
 constexpr std::size_t command_branch_limit = 12;
 constexpr std::size_t noarg_main_count = 344;
+constexpr std::size_t product_source_count = 316;
+constexpr std::size_t root_cmake_line_limit = 150;
+constexpr std::size_t cmake_module_line_limit = 500;
 
 struct SourceSize {
     std::string path;
     std::size_t nonblank_lines = 0;
+    bool has_main = false;
+    bool explicit_main_return = false;
 };
 
 struct SuitePart {
@@ -59,11 +64,25 @@ using SizeBaseline = std::map<std::string, std::size_t>;
 using SuiteParts = std::vector<SuitePart>;
 using TokenCounts = std::map<std::string, std::size_t>;
 using TargetBaseline = std::set<std::string>;
+using SourcePaths = std::set<std::string>;
 using TestRegistrations = std::vector<CMakeTestRegistration>;
 using ManifestCases = std::vector<ManifestCase>;
+using ProductSources = std::vector<std::string>;
 
 bool is_blank(std::string_view line) {
     return std::all_of(line.begin(), line.end(), [](unsigned char character) { return std::isspace(character) != 0; });
+}
+
+std::size_t count_nonblank_text(std::string_view text) {
+    std::size_t count = 0;
+    std::istringstream input{std::string{text}};
+    std::string line;
+    while (std::getline(input, line)) {
+        if (!is_blank(line)) {
+            ++count;
+        }
+    }
+    return count;
 }
 
 std::size_t count_nonblank_lines(const std::filesystem::path& path) {
@@ -78,6 +97,20 @@ std::size_t count_nonblank_lines(const std::filesystem::path& path) {
         if (!is_blank(line)) {
             ++count;
         }
+    }
+    return count;
+}
+
+std::size_t count_physical_lines(const std::filesystem::path& path) {
+    std::ifstream input{path};
+    if (!input.is_open()) {
+        throw std::runtime_error{"cannot read architecture source: " + path.generic_string()};
+    }
+
+    std::size_t count = 0;
+    std::string line;
+    while (std::getline(input, line)) {
+        ++count;
     }
     return count;
 }
@@ -167,7 +200,7 @@ bool is_safe_name(std::string_view name) {
     });
 }
 
-ManifestCases parse_case_manifest(const std::filesystem::path& source_root, std::string_view text) {
+ManifestCases parse_case_manifest(const SourcePaths& test_sources, std::string_view text) {
     if (text.find('\r') != std::string_view::npos) {
         throw std::runtime_error{"test case manifest must use LF line endings"};
     }
@@ -205,7 +238,7 @@ ManifestCases parse_case_manifest(const std::filesystem::path& source_root, std:
             test_case.source.find("../") != std::string::npos) {
             throw std::runtime_error{"invalid test case source path: " + test_case.source};
         }
-        if (!std::filesystem::is_regular_file(source_root / source_path)) {
+        if (!test_sources.contains(test_case.source)) {
             throw std::runtime_error{"test case source is missing: " + test_case.source};
         }
         if (!targets.emplace(test_case.target).second) {
@@ -217,6 +250,74 @@ ManifestCases parse_case_manifest(const std::filesystem::path& source_root, std:
         cases.push_back(std::move(test_case));
     }
     return cases;
+}
+
+const std::set<std::string>& product_main_sources() {
+    static const std::set<std::string> sources{
+        "src/main.cpp", "src/server_main.cpp", "src/client_main.cpp", "src/benchmark_main.cpp", "src/osfs_main.cpp",
+    };
+    return sources;
+}
+
+ProductSources parse_product_manifest(const std::filesystem::path& source_root, std::string_view text) {
+    if (text.find('\r') != std::string_view::npos) {
+        throw std::runtime_error{"product source manifest must use LF line endings"};
+    }
+
+    ProductSources sources;
+    std::set<std::string> seen;
+    std::istringstream input{std::string{text}};
+    std::string row;
+    while (std::getline(input, row)) {
+        const auto source = trim_copy(row);
+        const auto path = std::filesystem::path{source};
+        if (source.empty() || source != row || source.find('\\') != std::string::npos ||
+            path.parent_path().generic_string() != "src" || path.extension() != ".cpp" ||
+            !is_safe_name(path.stem().string())) {
+            throw std::runtime_error{"invalid product source path: " + source};
+        }
+        if (product_main_sources().contains(source)) {
+            throw std::runtime_error{"executable main entered product source manifest: " + source};
+        }
+        if (!std::filesystem::is_regular_file(source_root / path)) {
+            throw std::runtime_error{"product source is missing: " + source};
+        }
+        if (!seen.emplace(source).second) {
+            throw std::runtime_error{"duplicate product source: " + source};
+        }
+        sources.push_back(source);
+    }
+    return sources;
+}
+
+ProductSources discover_product_sources(const std::filesystem::path& source_root) {
+    ProductSources sources;
+    for (const auto& entry : std::filesystem::directory_iterator{source_root / "src"}) {
+        if (!entry.is_regular_file() || entry.path().extension() != ".cpp") {
+            continue;
+        }
+        const auto source = std::filesystem::relative(entry.path(), source_root).generic_string();
+        if (!product_main_sources().contains(source)) {
+            sources.push_back(source);
+        }
+    }
+    std::sort(sources.begin(), sources.end());
+    return sources;
+}
+
+void verify_product_manifest(const std::filesystem::path& source_root, const ProductSources& sources) {
+    if (sources.size() != product_source_count) {
+        throw std::runtime_error{"product source manifest census changed"};
+    }
+    if (sources.front() != "src/atomic_file_writer.cpp" || sources.back() != "src/wal.cpp") {
+        throw std::runtime_error{"product source manifest boundary order changed"};
+    }
+
+    auto sorted_manifest = sources;
+    std::sort(sorted_manifest.begin(), sorted_manifest.end());
+    if (sorted_manifest != discover_product_sources(source_root)) {
+        throw std::runtime_error{"product source manifest has an unregistered or stale source"};
+    }
 }
 
 TestRegistrations manifest_registrations(const ManifestCases& cases) {
@@ -251,7 +352,7 @@ TargetBaseline read_target_baseline(const std::filesystem::path& path) {
     return baseline;
 }
 
-TargetMetrics verify_test_targets(const std::filesystem::path& source_root, const TestRegistrations& registrations,
+TargetMetrics verify_test_targets(const SourcePaths& test_sources, const TestRegistrations& registrations,
                                   const TargetBaseline& baseline) {
     std::set<std::string> targets;
     std::set<std::string> test_names;
@@ -271,7 +372,7 @@ TargetMetrics verify_test_targets(const std::filesystem::path& source_root, cons
         if (path_score > object_path_score_limit) {
             throw std::runtime_error{"CMake test object path score exceeds budget: " + registration.target};
         }
-        if (!std::filesystem::is_regular_file(source_root / registration.source)) {
+        if (!test_sources.contains(registration.source)) {
             throw std::runtime_error{"CMake test source is missing: " + registration.source};
         }
         if (registration.target.size() > test_target_name_limit) {
@@ -351,26 +452,23 @@ std::vector<std::string> expected_ctest_order(const ManifestCases& cases) {
 }
 
 std::vector<std::string> read_ctest_order(const std::filesystem::path& path) {
+    const auto text = read_text(path);
     std::vector<std::string> names;
-    std::istringstream input{read_text(path)};
+    std::istringstream input{text};
     std::string line;
-    constexpr std::string_view bracket_prefix = "add_test([=[";
     while (std::getline(input, line)) {
         const auto trimmed = trim_copy(line);
-        if (trimmed.starts_with(bracket_prefix)) {
-            const auto end = trimmed.find("]=]", bracket_prefix.size());
-            if (end == std::string::npos) {
-                throw std::runtime_error{"malformed generated CTest registration"};
-            }
-            names.push_back(trimmed.substr(bracket_prefix.size(), end - bracket_prefix.size()));
+        if (trimmed.empty() || !is_safe_name(trimmed)) {
+            throw std::runtime_error{"malformed generated CTest name: " + trimmed};
         }
+        names.push_back(trimmed);
     }
     return names;
 }
 
 void verify_ctest_order(const ManifestCases& cases) {
     const auto expected = expected_ctest_order(cases);
-    const auto actual = read_ctest_order(std::filesystem::path{MINIKV_BINARY_DIR} / "CTestTestfile.cmake");
+    const auto actual = read_ctest_order(std::filesystem::path{MINIKV_BINARY_DIR} / "minikv-ctest-names.txt");
     if (actual != expected) {
         throw std::runtime_error{"generated CTest name/order drift"};
     }
@@ -427,6 +525,8 @@ SuiteParts read_suite_parts(const std::filesystem::path& path) {
     return parts;
 }
 
+bool has_explicit_main_return(std::string_view source_text);
+
 SourceSizes scan_test_sources(const std::filesystem::path& source_root) {
     SourceSizes sources;
     const auto test_root = source_root / "tests";
@@ -434,14 +534,23 @@ SourceSizes scan_test_sources(const std::filesystem::path& source_root) {
         if (!entry.is_regular_file() || entry.path().extension() != ".cpp") {
             continue;
         }
-        sources.push_back(SourceSize{
-            std::filesystem::relative(entry.path(), source_root).generic_string(),
-            count_nonblank_lines(entry.path()),
-        });
+        const auto source_text = read_text(entry.path());
+        const bool has_main = count_occurrences(source_text, "int main()") != 0;
+        sources.push_back(SourceSize{std::filesystem::relative(entry.path(), source_root).generic_string(),
+                                     count_nonblank_text(source_text), has_main,
+                                     !has_main || has_explicit_main_return(source_text)});
     }
     std::sort(sources.begin(), sources.end(),
               [](const SourceSize& left, const SourceSize& right) { return left.path < right.path; });
     return sources;
+}
+
+SourcePaths collect_source_paths(const SourceSizes& sources) {
+    SourcePaths paths;
+    for (const auto& source : sources) {
+        paths.emplace(source.path);
+    }
+    return paths;
 }
 
 bool has_explicit_main_return(std::string_view source_text) {
@@ -459,15 +568,14 @@ bool has_explicit_main_return(std::string_view source_text) {
     return previous == "return 0;" && current == "}";
 }
 
-void verify_explicit_main_returns(const std::filesystem::path& source_root, const SourceSizes& sources) {
+void verify_explicit_main_returns(const SourceSizes& sources) {
     std::size_t observed = 0;
     for (const auto& source : sources) {
-        const auto source_text = read_text(source_root / source.path);
-        if (count_occurrences(source_text, "int main()") == 0) {
+        if (!source.has_main) {
             continue;
         }
         ++observed;
-        if (!has_explicit_main_return(source_text)) {
+        if (!source.explicit_main_return) {
             throw std::runtime_error{"no-argument test main must end with explicit return 0: " + source.path};
         }
     }
@@ -554,10 +662,10 @@ void assert_failure(const SourceSizes& sources, const SizeBaseline& baseline, st
     assert(false && "expected test architecture contract failure");
 }
 
-void assert_target_failure(const std::filesystem::path& source_root, const TestRegistrations& registrations,
+void assert_target_failure(const SourcePaths& test_sources, const TestRegistrations& registrations,
                            const TargetBaseline& baseline, std::string_view expected) {
     try {
-        (void)verify_test_targets(source_root, registrations, baseline);
+        (void)verify_test_targets(test_sources, registrations, baseline);
     } catch (const std::runtime_error& error) {
         assert(std::string_view{error.what()}.find(expected) != std::string_view::npos);
         return;
@@ -565,10 +673,9 @@ void assert_target_failure(const std::filesystem::path& source_root, const TestR
     assert(false && "expected CMake test target contract failure");
 }
 
-void assert_manifest_failure(const std::filesystem::path& source_root, std::string_view text,
-                             std::string_view expected) {
+void assert_manifest_failure(const SourcePaths& test_sources, std::string_view text, std::string_view expected) {
     try {
-        (void)parse_case_manifest(source_root, text);
+        (void)parse_case_manifest(test_sources, text);
     } catch (const std::runtime_error& error) {
         assert(std::string_view{error.what()}.find(expected) != std::string_view::npos);
         return;
@@ -576,29 +683,52 @@ void assert_manifest_failure(const std::filesystem::path& source_root, std::stri
     assert(false && "expected test case manifest contract failure");
 }
 
-void verify_red_paths(const std::filesystem::path& source_root) {
+void assert_product_manifest_failure(const std::filesystem::path& source_root, std::string_view text,
+                                     bool require_complete, std::string_view expected) {
+    try {
+        const auto sources = parse_product_manifest(source_root, text);
+        if (require_complete) {
+            verify_product_manifest(source_root, sources);
+        }
+    } catch (const std::runtime_error& error) {
+        assert(std::string_view{error.what()}.find(expected) != std::string_view::npos);
+        return;
+    }
+    assert(false && "expected product source manifest contract failure");
+}
+
+void verify_red_paths(const std::filesystem::path& source_root, const SourcePaths& test_sources) {
     assert_failure({{"tests/new_oversized.cpp", 1001}}, {}, "without baseline");
     assert_failure({{"tests/growing.cpp", 1002}}, {{"tests/growing.cpp", 1001}}, "must shrink");
     assert_failure({{"tests/repaid.cpp", 999}}, {{"tests/repaid.cpp", 1001}}, "stale");
 
     const std::string long_target(test_target_name_limit + 1, 't');
-    assert_target_failure(source_root, {{long_target, "synthetic_test", "tests/store_tests.cpp"}}, {},
+    assert_target_failure(test_sources, {{long_target, "synthetic_test", "tests/store_tests.cpp"}}, {},
                           "new long internal");
-    assert_target_failure(source_root, {}, {long_target}, "stale internal");
+    assert_target_failure(test_sources, {}, {long_target}, "stale internal");
     const std::string risky_source(object_path_score_limit + 1 - test_target_name_limit, 's');
-    assert_target_failure(source_root, {{std::string(test_target_name_limit, 't'), "synthetic_test", risky_source}}, {},
-                          "object path score");
+    assert_target_failure(test_sources, {{std::string(test_target_name_limit, 't'), "synthetic_test", risky_source}},
+                          {}, "object path score");
 
     constexpr std::string_view valid = "pre_smoke|linked|target_a|test_a|tests/store_tests.cpp\n";
-    assert_manifest_failure(source_root, std::string{valid} + "\r", "LF line endings");
-    assert_manifest_failure(source_root, "late|linked|target_a|test_a|tests/store_tests.cpp\n", "unknown test case");
-    assert_manifest_failure(source_root, "main|dynamic|target_a|test_a|tests/store_tests.cpp\n", "unknown test case");
-    assert_manifest_failure(source_root, "main|linked|target_a|test_a\n", "five nonempty columns");
-    assert_manifest_failure(source_root, "main|linked|target_a|test_a|tests/missing_case.cpp\n", "source is missing");
-    assert_manifest_failure(source_root, std::string{valid} + "main|linked|target_a|test_b|tests/store_tests.cpp\n",
+    assert_manifest_failure(test_sources, std::string{valid} + "\r", "LF line endings");
+    assert_manifest_failure(test_sources, "late|linked|target_a|test_a|tests/store_tests.cpp\n", "unknown test case");
+    assert_manifest_failure(test_sources, "main|dynamic|target_a|test_a|tests/store_tests.cpp\n", "unknown test case");
+    assert_manifest_failure(test_sources, "main|linked|target_a|test_a\n", "five nonempty columns");
+    assert_manifest_failure(test_sources, "main|linked|target_a|test_a|tests/missing_case.cpp\n", "source is missing");
+    assert_manifest_failure(test_sources, std::string{valid} + "main|linked|target_a|test_b|tests/store_tests.cpp\n",
                             "duplicate test case target");
-    assert_manifest_failure(source_root, std::string{valid} + "main|linked|target_b|test_a|tests/store_tests.cpp\n",
+    assert_manifest_failure(test_sources, std::string{valid} + "main|linked|target_b|test_a|tests/store_tests.cpp\n",
                             "duplicate public CTest name");
+
+    constexpr std::string_view product_source = "src/store.cpp\n";
+    assert_product_manifest_failure(source_root, std::string{product_source} + "\r", false, "LF line endings");
+    assert_product_manifest_failure(source_root, "src/store.c\n", false, "invalid product source path");
+    assert_product_manifest_failure(source_root, "src/main.cpp\n", false, "executable main");
+    assert_product_manifest_failure(source_root, "src/not_real.cpp\n", false, "source is missing");
+    assert_product_manifest_failure(source_root, std::string{product_source} + std::string{product_source}, false,
+                                    "duplicate product source");
+    assert_product_manifest_failure(source_root, product_source, true, "census changed");
 }
 
 void require_fragment(std::string_view text, std::string_view fragment, std::string_view source) {
@@ -615,7 +745,8 @@ void verify_link_shards(const std::filesystem::path& source_root, std::string_vi
 
     const auto helper_text = read_text(source_root / "cmake" / "MinikvTesting.cmake");
     require_fragment(helper_text, "function(minikv_read_test_manifest", "MinikvTesting.cmake");
-    require_fragment(helper_text, "test case manifest must use LF line endings", "MinikvTesting.cmake");
+    require_fragment(helper_text, "minikv_require_lf_file(\"${manifest_path}\" \"test case manifest\")",
+                     "MinikvTesting.cmake");
     require_fragment(helper_text, "test case manifest census changed", "MinikvTesting.cmake");
     require_fragment(helper_text, "function(minikv_register_test_group", "MinikvTesting.cmake");
     require_fragment(helper_text, "string(SHA256 case_digest", "MinikvTesting.cmake");
@@ -632,11 +763,43 @@ void verify_link_shards(const std::filesystem::path& source_root, std::string_vi
     require_fragment(suite_text, "minikv_register_test_group(\"${minikv_test_manifest}\" main)",
                      "MinikvTestSuite.cmake");
     require_fragment(suite_text, "minikv_finalize_test_bundle()", "MinikvTestSuite.cmake");
+    require_fragment(suite_text, "get_property(minikv_ctest_names GLOBAL PROPERTY MINIKV_CTEST_NAMES)",
+                     "MinikvTestSuite.cmake");
+    require_fragment(suite_text, "minikv-ctest-names.txt", "MinikvTestSuite.cmake");
+    require_fragment(suite_text, "test_architecture_contract PROPERTIES TIMEOUT 300", "MinikvTestSuite.cmake");
 
     const auto runner_text = read_text(source_root / "cmake" / "minikv_test_runner.cpp.in");
     require_fragment(runner_text, "if (argc != 2)", "minikv_test_runner.cpp.in");
     require_fragment(runner_text, "return test.entry();", "minikv_test_runner.cpp.in");
     require_fragment(runner_text, "unknown bundled test case", "minikv_test_runner.cpp.in");
+}
+
+void verify_product_wiring(const std::filesystem::path& source_root, std::string_view cmake_text) {
+    require_fragment(cmake_text, "include(cmake/MinikvSources.cmake)", "CMakeLists.txt");
+    require_fragment(cmake_text, "minikv_read_product_sources(", "CMakeLists.txt");
+    require_fragment(cmake_text, "add_library(minikv ${MINIKV_PRODUCT_SOURCES})", "CMakeLists.txt");
+
+    const auto module_path = source_root / "cmake" / "MinikvSources.cmake";
+    const auto module_text = read_text(module_path);
+    require_fragment(module_text, "function(minikv_read_product_sources", "MinikvSources.cmake");
+    require_fragment(module_text, "minikv_require_lf_file(\"${manifest_path}\" \"product source manifest\")",
+                     "MinikvSources.cmake");
+    require_fragment(module_text, "duplicate product source", "MinikvSources.cmake");
+    require_fragment(module_text, "product source manifest has an unregistered or stale source", "MinikvSources.cmake");
+
+    if (count_physical_lines(source_root / "CMakeLists.txt") > root_cmake_line_limit) {
+        throw std::runtime_error{"root CMakeLists.txt exceeded its line ratchet"};
+    }
+    const auto manifest_module = read_text(source_root / "cmake" / "MinikvManifest.cmake");
+    require_fragment(manifest_module, "string(REGEX MATCHALL \"..\" file_bytes", "MinikvManifest.cmake");
+    require_fragment(manifest_module, "if(\"0d\" IN_LIST file_bytes)", "MinikvManifest.cmake");
+
+    for (const auto* relative : {"cmake/MinikvManifest.cmake", "cmake/MinikvSources.cmake", "cmake/MinikvTesting.cmake",
+                                 "cmake/MinikvTestSuite.cmake"}) {
+        if (count_physical_lines(source_root / relative) > cmake_module_line_limit) {
+            throw std::runtime_error{"CMake module exceeded its line budget: " + std::string{relative}};
+        }
+    }
 }
 
 void verify_evidence_dispatch(const std::filesystem::path& source_root) {
@@ -665,19 +828,24 @@ int main() {
     const std::filesystem::path source_root{MINIKV_SOURCE_DIR};
     const auto baseline = read_baseline(source_root / "config" / "test-source-size-baseline.txt");
     const auto sources = scan_test_sources(source_root);
+    const auto test_sources = collect_source_paths(sources);
     verify_source_sizes(sources, baseline);
-    verify_explicit_main_returns(source_root, sources);
+    verify_explicit_main_returns(sources);
     const auto target_baseline = read_target_baseline(source_root / "config" / "test-target-name-baseline.txt");
     const auto cmake_text = read_text(source_root / "CMakeLists.txt");
     const auto suite_text = read_text(source_root / "cmake" / "MinikvTestSuite.cmake");
     const auto manifest_text = read_text(source_root / "config" / "test-cases.txt");
-    const auto manifest_cases = parse_case_manifest(source_root, manifest_text);
+    const auto manifest_cases = parse_case_manifest(test_sources, manifest_text);
     verify_manifest_census(manifest_cases);
+    const auto product_text = read_text(source_root / "config" / "product-sources.txt");
+    const auto product_sources = parse_product_manifest(source_root, product_text);
+    verify_product_manifest(source_root, product_sources);
     auto registrations = manifest_registrations(manifest_cases);
     const auto standalone = parse_test_registrations(suite_text);
     registrations.insert(registrations.end(), standalone.begin(), standalone.end());
-    const auto target_metrics = verify_test_targets(source_root, registrations, target_baseline);
+    const auto target_metrics = verify_test_targets(test_sources, registrations, target_baseline);
     verify_link_shards(source_root, cmake_text);
+    verify_product_wiring(source_root, cmake_text);
     verify_ctest_order(manifest_cases);
     verify_evidence_dispatch(source_root);
     verify_suite(source_root, "config/command-test-parts.txt", "tests/command_tests.cpp", "CommandFixture",
@@ -686,13 +854,15 @@ int main() {
                  {{"assert(", 8}, {"assert_contains(", 3710}, {"assert_fixture_differs_from_each(", 2}},
                  {{"assert_shard_readiness_contract(fixture, fixture.current);", 1},
                   {"assert_shard_readiness_contract(fixture, result.response);", 1}});
-    verify_red_paths(source_root);
+    verify_red_paths(source_root, test_sources);
 
     std::cout << "test architecture: sources=" << sources.size() << " limit=" << test_source_limit
               << " oversized=" << baseline.size() << " cmake_tests=" << target_metrics.registrations
               << " long_targets=" << target_metrics.long_targets << " max_path_score=" << target_metrics.max_path_score
               << " manifest_cases=" << manifest_cases.size() << " linked_cases=" << linked_test_count
               << " shards=" << test_shard_count << " evidence_commands=" << evidence_command_count
+              << " product_sources=" << product_sources.size()
+              << " root_cmake_lines=" << count_physical_lines(source_root / "CMakeLists.txt")
               << " explicit_mains=" << noarg_main_count << '\n';
     return 0;
 }

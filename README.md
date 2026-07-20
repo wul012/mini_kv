@@ -131,9 +131,9 @@ python scripts/archive_inventory.py --budget-mib 8 --strict
 
 完整历史见 [`docs/CHANGELOG.md`](docs/CHANGELOG.md)。README 只保留对当前展示面有直接解释力的四项：
 
+- v1674: 把 `minikv` 静态库的 316 个产品翻译单元从根 CMake 迁入 LF 清单，配置阶段双向核对磁盘集合并拒绝重复、main 混入、错误扩展名、缺失或未登记源码；根脚本从 436 降到 127 行，新增 CMake 模块最大 62 行。统一测试包装器同时导出生成器无关的 354 项有序名称，修复 v1673 在 macOS 上解析生成器文本、在 Windows 上重复磁盘扫描超时的问题，产品源码、fixture 与公共运行合同不变。
 - v1673: 把根 CMake 中 342 条普通测试身份迁入五列 LF manifest，根脚本从 2,597 降到 436 行；默认 8-shard 与 legacy 拓扑生成的 354 个 CTest 名称/顺序都与旧 oracle 字节相同，parser 会拒绝 CRLF、未知 kind、重复 target/name、缺失 source 和列数漂移。迁移触发的测试体积门还把 1,090 行 release 验证拆成 820+280 行，而不是新增豁免。
 - v1672: 把 `command.cpp` 中 62 个同构无参数只读 evidence 分支改为编译期固定表，旧文件从 732 降到 258 个非空行；迁移前后 159 行、2,093,273 字节真实 CLI 输出 SHA-256 相同，并让 bundled、legacy、standalone 测试在 Release 下也显式启用断言。
 - v1671: 保留 354 个 CTest 名称、顺序和一例一进程语义，把 342 个普通测试的最终链接稳定收口到 8 个 runner；核心 touch 后 executable link 347→13、增量时间 56.87→21.36 秒，全部测试 exe 由 345 个/3,983,351,060 字节降到 11 个/415,219,566 字节，coverage/sanitizer 与显式 legacy 配置仍使用一测试一 exe。
-- v1670: 以私有 `AtomicFileWriter` 统一 WAL compact 与 Snapshot save 的同目录临时文件、flush/close、平台替换和失败清理；新增成功、放弃、坏流、父目录、replace 失败和 owner 集成证据，第 354 个 CTest 机械拒绝重复实现回流。
 
 维护者入口：[`START_HERE.md`](START_HERE.md) · [`docs/production-excellence-progress.md`](docs/production-excellence-progress.md) · [`治理计划/README.md`](治理计划/README.md)

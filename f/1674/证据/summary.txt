@@ -1,0 +1,61 @@
+mini-kv v1674 本地证据摘要
+日期：2026-07-20
+
+一、范围与现实对账
+- 本版只改构建/测试控制面、机械门、测试与文档；git diff -- src include fixtures 的结果为 0。
+- 计划初稿的 315 是算术记录错误：v1671 为 315，v1672 合法新增
+  src/command_evidence_dispatch.cpp 后，磁盘与旧根 CMake 都是 316。本版以双向集合为准，
+  没有删除源码来迎合计划数字。
+- v1673 CI run 29735574520 暴露两项跨平台问题：macOS 不能依赖生成器私有
+  CTestTestfile.cmake 文本语法，Windows 下重复文件系统探测触发 120 秒超时。
+  v1674 改为注册时追踪名称，并把架构扫描合并为一次读取。
+
+二、产品源码清单
+- config/product-sources.txt：316 行、22154 字节、LF-only。
+- before / manifest / after 的 SHA-256 完全相同：
+  104129F378751931893EBCE12C628945A4AB4B17ADD4D60FE7B1C1CA80414BFE
+- 清单只接受 src/[A-Za-z0-9_]+.cpp，排除五个 executable main，并与磁盘
+  src/*.cpp 减去 mains 的集合双向相等。
+- 根 CMakeLists.txt 为 127 物理行、98 非空行；参与模块最大为
+  cmake/MinikvTesting.cmake 的 257 物理行，满足 150/500 收紧门。
+
+三、失败关闭证据
+- CRLF -> product source manifest must use LF line endings
+- duplicate -> duplicate product source
+- wrong extension -> invalid product source path
+- executable main -> executable main must not enter product source manifest
+- missing file -> product source is missing
+- disk-only source -> product source manifest has an unregistered or stale source
+- 可复现总入口：
+  ctest --test-dir b1674 -C Debug -R test_architecture_contract --output-on-failure
+  该合同在临时目录注入红路径，错误输入必须失败，合法输入必须通过。
+
+四、测试拓扑与跨配置一致性
+- default 与 MINIKV_BUNDLE_TESTS=OFF legacy 均生成 354 个名称，逐行顺序一致。
+- LF 规范化名称序列 SHA-256：
+  f4ecf10465a185e4a3c04d5b0e0292ea47aba0a8d48e5992c7eb8d9159a3310e
+- legacy Release 选择性冷构建与 architecture/command/release/no-network 4/4 通过。
+- 最终本地命令：
+  cmake -S . -B b1674 -G Ninja -DCMAKE_BUILD_TYPE=Debug
+  cmake --build b1674 -j 8
+  ctest --test-dir b1674 -C Debug --output-on-failure -j 8
+- 最终结果：354/354，0 failed，CTest real time 37.71 秒。
+
+五、真实 CLI / WAL smoke
+- 临时 WAL 上执行 SET v1674_probe elegance，第一次 GET 返回 elegance。
+- 执行 CHECKJSON SET v1674_probe changed；其 read_only=true、
+  execution_allowed=false。第二次 GET 仍返回 elegance，WALINFO 仍只有 1 条记录。
+- SMOKEJSON 顶层 read_only=true，execution_allowed=false，
+  restore_execution_allowed=false，order_authoritative=false。
+- no-network receipt 的 http_request_sent、tcp_connection_attempted、
+  network_socket_opened、dns_lookup_allowed、tls_handshake_allowed、
+  write_commands_executed 全为 false。
+- 退出并用同一 WAL 重开后仍读取 elegance；只读重开前后 WAL 均为 48 字节，
+  SHA-256 均为 9D6C2BA424A6E9FC331EC7F6E1F70F9BDE0BEA4788FF5F7704AA1BA2FB0A4551。
+
+六、评分状态
+- 本地合同、安全、架构、机械门和文档证据已经闭环，对应 8.1 分。
+- 只有 v1674 精确 commit 的七条 GitHub Actions job 全部 success，跨平台项才增加
+  1.0 分并使候选总分达到 9.1/10.0；CI 未全绿时禁止宣布到点。
+- 该分数保留历史长名 family、277 个长 target 和教学系统边界的主动扣分，
+  不等于外部 review，也不声称没有存量债务。

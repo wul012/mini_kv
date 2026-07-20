@@ -808,12 +808,16 @@ void verify_release_inputs() {
 
     const auto cmake_lists = read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "CMakeLists.txt");
     assert_contains(cmake_lists, "project(mini_kv VERSION 0.102.0");
-    assert_contains(cmake_lists, "src/command_contracts.cpp");
-    assert_contains(cmake_lists, "src/command_response_formatters.cpp");
-    assert_contains(cmake_lists, "src/managed_audit_receipts.cpp");
-    assert_contains(cmake_lists, "src/runtime_evidence_receipts.cpp");
-    assert_contains(cmake_lists, "src/runtime_sandbox_receipts.cpp");
-    assert_contains(cmake_lists, "src/runtime_credential_resolver_approval_boundary_receipts.cpp");
+    assert_contains(cmake_lists, "include(cmake/MinikvSources.cmake)");
+    assert_contains(cmake_lists, "add_library(minikv ${MINIKV_PRODUCT_SOURCES})");
+    const auto product_sources =
+        read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "config/product-sources.txt");
+    assert_contains(product_sources, "src/command_contracts.cpp");
+    assert_contains(product_sources, "src/command_response_formatters.cpp");
+    assert_contains(product_sources, "src/managed_audit_receipts.cpp");
+    assert_contains(product_sources, "src/runtime_evidence_receipts.cpp");
+    assert_contains(product_sources, "src/runtime_sandbox_receipts.cpp");
+    assert_contains(product_sources, "src/runtime_credential_resolver_approval_boundary_receipts.cpp");
     const auto test_manifest = read_file_text(std::filesystem::path{MINIKV_SOURCE_DIR} / "config/test-cases.txt");
     assert_contains(test_manifest, "minikv_release_verification_manifest_tests");
     assert_contains(test_manifest, "minikv_runtime_artifact_rollback_evidence_tests");

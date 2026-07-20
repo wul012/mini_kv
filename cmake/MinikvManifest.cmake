@@ -1,0 +1,12 @@
+function(minikv_require_lf_file file_path label)
+    if(NOT EXISTS "${file_path}")
+        message(FATAL_ERROR "${label} is missing: ${file_path}")
+    endif()
+
+    file(READ "${file_path}" file_hex HEX)
+    string(TOLOWER "${file_hex}" file_hex)
+    string(REGEX MATCHALL ".." file_bytes "${file_hex}")
+    if("0d" IN_LIST file_bytes)
+        message(FATAL_ERROR "${label} must use LF line endings: ${file_path}")
+    endif()
+endfunction()

@@ -1,6 +1,6 @@
 set(minikv_test_manifest "${CMAKE_CURRENT_SOURCE_DIR}/config/test-cases.txt")
 
-add_test(NAME benchmark_evidence_guard COMMAND minikv_benchmark --evidence-json 12 4)
+minikv_add_test(benchmark_evidence_guard COMMAND minikv_benchmark --evidence-json 12 4)
 set_tests_properties(benchmark_evidence_guard
     PROPERTIES
         PASS_REGULAR_EXPRESSION "\"evidence_type\":\"mini-kv-benchmark-evidence-guard\\.v1\".*\"wal_enabled\":false.*\"network_started\":false.*\"restore_executed\":false.*\"managed_audit_connection_opened\":false.*\"final_store_size\":0"
@@ -13,22 +13,22 @@ minikv_add_standalone_source_dir_test(
     tests/dependabot_config_tests.cpp
 )
 
-add_test(
-    NAME project_orientation_doc_contract
+minikv_add_test(
+    project_orientation_doc_contract
     COMMAND ${CMAKE_COMMAND}
             -DDOC_PATH=${CMAKE_CURRENT_SOURCE_DIR}/项目通俗说明/mini-kv-项目机制与价值说明.md
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_project_orientation_doc.cmake
 )
 
-add_test(
-    NAME project_docs_honesty_contract
+minikv_add_test(
+    project_docs_honesty_contract
     COMMAND ${CMAKE_COMMAND}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_project_docs_honesty.cmake
 )
 
-add_test(
-    NAME minikv_track_final_evidence_contract
+minikv_add_test(
+    minikv_track_final_evidence_contract
     COMMAND ${CMAKE_COMMAND}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_minikv_track_final_evidence.cmake
@@ -44,16 +44,16 @@ target_compile_definitions(minikv_test_architecture_tests
         MINIKV_BINARY_DIR="${PROJECT_BINARY_DIR}"
 )
 
-add_test(
-    NAME receipts_consolidation_note_contract
+minikv_add_test(
+    receipts_consolidation_note_contract
     COMMAND ${CMAKE_COMMAND}
             -DDOC_PATH=${CMAKE_CURRENT_SOURCE_DIR}/docs/receipts-consolidation-note.md
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_receipts_consolidation_note.cmake
 )
 
-add_test(
-    NAME receipt_builder_census_contract
+minikv_add_test(
+    receipt_builder_census_contract
     COMMAND ${CMAKE_COMMAND}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
             -DMIN_BUILDER_BACKED=27
@@ -80,8 +80,8 @@ target_include_directories(minikv_runtime_receipt_json_builder_tests
         ${PROJECT_SOURCE_DIR}/src
 )
 
-add_test(
-    NAME osfs_cli_smoke
+minikv_add_test(
+    osfs_cli_smoke
     COMMAND ${CMAKE_COMMAND}
             -DOSFS_PATH=$<TARGET_FILE:minikv_osfs>
             -DDISK_PATH=${CMAKE_CURRENT_BINARY_DIR}/osfs-cli-smoke.img
@@ -90,8 +90,8 @@ add_test(
 )
 minikv_configure_test_runtime(osfs_cli_smoke)
 
-add_test(
-    NAME cli_log_level_flag_smoke
+minikv_add_test(
+    cli_log_level_flag_smoke
     COMMAND ${CMAKE_COMMAND}
             -DCLI_PATH=$<TARGET_FILE:minikv_cli>
             -DINPUT_PATH=${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_quit_input.txt
@@ -103,7 +103,7 @@ set_tests_properties(cli_log_level_flag_smoke
 )
 minikv_configure_test_runtime(cli_log_level_flag_smoke)
 
-add_test(NAME server_log_level_invalid_smoke COMMAND minikv_server --log-level trace)
+minikv_add_test(server_log_level_invalid_smoke COMMAND minikv_server --log-level trace)
 set_tests_properties(server_log_level_invalid_smoke
     PROPERTIES
         WILL_FAIL TRUE
@@ -128,3 +128,8 @@ minikv_add_test_parts(
 target_include_directories(minikv_atomic_file_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
 
 minikv_finalize_test_bundle()
+
+get_property(minikv_ctest_names GLOBAL PROPERTY MINIKV_CTEST_NAMES)
+list(JOIN minikv_ctest_names "\n" minikv_ctest_names_text)
+file(WRITE "${PROJECT_BINARY_DIR}/minikv-ctest-names.txt" "${minikv_ctest_names_text}\n")
+set_tests_properties(test_architecture_contract PROPERTIES TIMEOUT 300)
