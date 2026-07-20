@@ -323,7 +323,6 @@ AuditSummary check_pin_audit(const fs::path& root, const Census& baseline) {
     }
 
     AuditSummary summary{};
-    const auto cmake_text = read_text(root / "CMakeLists.txt");
     for (std::size_t index = 0; index < rows.size(); ++index) {
         const auto& row = rows[index];
         const auto& expected = ranked[index];
@@ -353,8 +352,8 @@ AuditSummary check_pin_audit(const fs::path& root, const Census& baseline) {
             }
         } else if (row.decision == "safe") {
             ++summary.safe;
-            if (row.kind != 'F' || row.pin != "none" || row.evidence != "CMakeLists.txt" ||
-                !row.name.starts_with("tests/") || count_occurrences(cmake_text, row.name) != 1) {
+            if (row.kind != 'F' || row.pin != "none" || row.evidence != "config/test-cases.txt" ||
+                !row.name.starts_with("tests/") || count_occurrences(read_text(root / row.evidence), row.name) != 1) {
                 throw std::runtime_error("invalid safe candidate evidence: " + row.name);
             }
         } else {

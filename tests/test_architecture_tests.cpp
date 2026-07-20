@@ -40,6 +40,14 @@ struct CMakeTestRegistration {
     std::string source;
 };
 
+struct ManifestCase {
+    std::string phase;
+    std::string kind;
+    std::string target;
+    std::string test_name;
+    std::string source;
+};
+
 struct TargetMetrics {
     std::size_t registrations = 0;
     std::size_t long_targets = 0;
@@ -52,6 +60,7 @@ using SuiteParts = std::vector<SuitePart>;
 using TokenCounts = std::map<std::string, std::size_t>;
 using TargetBaseline = std::set<std::string>;
 using TestRegistrations = std::vector<CMakeTestRegistration>;
+using ManifestCases = std::vector<ManifestCase>;
 
 bool is_blank(std::string_view line) {
     return std::all_of(line.begin(), line.end(), [](unsigned char character) { return std::isspace(character) != 0; });
@@ -137,6 +146,88 @@ TestRegistrations parse_test_registrations(std::string_view cmake_text) {
     return registrations;
 }
 
+std::vector<std::string> split_row(std::string_view row) {
+    std::vector<std::string> columns;
+    std::size_t begin = 0;
+    while (begin <= row.size()) {
+        const auto separator = row.find('|', begin);
+        columns.emplace_back(
+            row.substr(begin, separator == std::string_view::npos ? row.size() - begin : separator - begin));
+        if (separator == std::string_view::npos) {
+            break;
+        }
+        begin = separator + 1;
+    }
+    return columns;
+}
+
+bool is_safe_name(std::string_view name) {
+    return !name.empty() && std::all_of(name.begin(), name.end(), [](unsigned char character) {
+        return std::isalnum(character) != 0 || character == '_';
+    });
+}
+
+ManifestCases parse_case_manifest(const std::filesystem::path& source_root, std::string_view text) {
+    if (text.find('\r') != std::string_view::npos) {
+        throw std::runtime_error{"test case manifest must use LF line endings"};
+    }
+
+    ManifestCases cases;
+    std::set<std::string> targets;
+    std::set<std::string> test_names;
+    std::istringstream input{std::string{text}};
+    std::string row;
+    while (std::getline(input, row)) {
+        row = trim_copy(row);
+        if (row.empty() || row.front() == '#') {
+            continue;
+        }
+
+        auto columns = split_row(row);
+        if (columns.size() != 5 ||
+            std::any_of(columns.begin(), columns.end(), [](const auto& value) { return value.empty(); })) {
+            throw std::runtime_error{"test case manifest row must have five nonempty columns: " + row};
+        }
+
+        ManifestCase test_case{std::move(columns[0]), std::move(columns[1]), std::move(columns[2]),
+                               std::move(columns[3]), std::move(columns[4])};
+        if (test_case.phase != "pre_smoke" && test_case.phase != "main") {
+            throw std::runtime_error{"unknown test case manifest phase: " + test_case.phase};
+        }
+        if (test_case.kind != "linked" && test_case.kind != "source_dir") {
+            throw std::runtime_error{"unknown test case manifest kind: " + test_case.kind};
+        }
+        if (!is_safe_name(test_case.target) || !is_safe_name(test_case.test_name)) {
+            throw std::runtime_error{"test case manifest names must be safe identifiers"};
+        }
+        const auto source_path = std::filesystem::path{test_case.source};
+        if (!test_case.source.starts_with("tests/") || source_path.extension() != ".cpp" ||
+            test_case.source.find("../") != std::string::npos) {
+            throw std::runtime_error{"invalid test case source path: " + test_case.source};
+        }
+        if (!std::filesystem::is_regular_file(source_root / source_path)) {
+            throw std::runtime_error{"test case source is missing: " + test_case.source};
+        }
+        if (!targets.emplace(test_case.target).second) {
+            throw std::runtime_error{"duplicate test case target: " + test_case.target};
+        }
+        if (!test_names.emplace(test_case.test_name).second) {
+            throw std::runtime_error{"duplicate public CTest name: " + test_case.test_name};
+        }
+        cases.push_back(std::move(test_case));
+    }
+    return cases;
+}
+
+TestRegistrations manifest_registrations(const ManifestCases& cases) {
+    TestRegistrations registrations;
+    registrations.reserve(cases.size());
+    for (const auto& test_case : cases) {
+        registrations.push_back({test_case.target, test_case.test_name, test_case.source});
+    }
+    return registrations;
+}
+
 TargetBaseline read_target_baseline(const std::filesystem::path& path) {
     std::ifstream input{path};
     if (!input.is_open()) {
@@ -199,6 +290,90 @@ TargetMetrics verify_test_targets(const std::filesystem::path& source_root, cons
         throw std::runtime_error{"CMake test object path score budget must shrink in the same commit"};
     }
     return metrics;
+}
+
+void verify_manifest_census(const ManifestCases& cases) {
+    std::size_t pre_smoke = 0;
+    std::size_t main = 0;
+    std::size_t linked = 0;
+    std::size_t source_dir = 0;
+    bool main_started = false;
+    for (const auto& test_case : cases) {
+        if (test_case.phase == "pre_smoke") {
+            if (main_started) {
+                throw std::runtime_error{"pre_smoke test case appears after main phase"};
+            }
+            ++pre_smoke;
+        } else {
+            main_started = true;
+            ++main;
+        }
+        if (test_case.kind == "linked") {
+            ++linked;
+        } else {
+            ++source_dir;
+        }
+    }
+
+    if (cases.size() != linked_test_count || pre_smoke != 8 || main != 334 || linked != 245 || source_dir != 97) {
+        throw std::runtime_error{"test case manifest census changed"};
+    }
+    if (cases.front().test_name != "project_orientation_examples_tests" ||
+        cases.back().test_name != "input_hardening_candidate_gate_receipt_tests") {
+        throw std::runtime_error{"test case manifest boundary order changed"};
+    }
+}
+
+std::vector<std::string> expected_ctest_order(const ManifestCases& cases) {
+    std::vector<std::string> names{
+        "benchmark_evidence_guard",
+        "dependabot_config_tests",
+        "project_orientation_doc_contract",
+        "project_docs_honesty_contract",
+        "minikv_track_final_evidence_contract",
+        "test_architecture_contract",
+        "receipts_consolidation_note_contract",
+        "receipt_builder_census_contract",
+        "elegance_name_census_contract",
+    };
+    for (const auto& test_case : cases) {
+        if (test_case.phase == "pre_smoke") {
+            names.push_back(test_case.test_name);
+        }
+    }
+    names.insert(names.end(), {"osfs_cli_smoke", "cli_log_level_flag_smoke", "server_log_level_invalid_smoke"});
+    for (const auto& test_case : cases) {
+        if (test_case.phase == "main") {
+            names.push_back(test_case.test_name);
+        }
+    }
+    return names;
+}
+
+std::vector<std::string> read_ctest_order(const std::filesystem::path& path) {
+    std::vector<std::string> names;
+    std::istringstream input{read_text(path)};
+    std::string line;
+    constexpr std::string_view bracket_prefix = "add_test([=[";
+    while (std::getline(input, line)) {
+        const auto trimmed = trim_copy(line);
+        if (trimmed.starts_with(bracket_prefix)) {
+            const auto end = trimmed.find("]=]", bracket_prefix.size());
+            if (end == std::string::npos) {
+                throw std::runtime_error{"malformed generated CTest registration"};
+            }
+            names.push_back(trimmed.substr(bracket_prefix.size(), end - bracket_prefix.size()));
+        }
+    }
+    return names;
+}
+
+void verify_ctest_order(const ManifestCases& cases) {
+    const auto expected = expected_ctest_order(cases);
+    const auto actual = read_ctest_order(std::filesystem::path{MINIKV_BINARY_DIR} / "CTestTestfile.cmake");
+    if (actual != expected) {
+        throw std::runtime_error{"generated CTest name/order drift"};
+    }
 }
 
 SizeBaseline read_baseline(const std::filesystem::path& path) {
@@ -390,6 +565,17 @@ void assert_target_failure(const std::filesystem::path& source_root, const TestR
     assert(false && "expected CMake test target contract failure");
 }
 
+void assert_manifest_failure(const std::filesystem::path& source_root, std::string_view text,
+                             std::string_view expected) {
+    try {
+        (void)parse_case_manifest(source_root, text);
+    } catch (const std::runtime_error& error) {
+        assert(std::string_view{error.what()}.find(expected) != std::string_view::npos);
+        return;
+    }
+    assert(false && "expected test case manifest contract failure");
+}
+
 void verify_red_paths(const std::filesystem::path& source_root) {
     assert_failure({{"tests/new_oversized.cpp", 1001}}, {}, "without baseline");
     assert_failure({{"tests/growing.cpp", 1002}}, {{"tests/growing.cpp", 1001}}, "must shrink");
@@ -402,6 +588,17 @@ void verify_red_paths(const std::filesystem::path& source_root) {
     const std::string risky_source(object_path_score_limit + 1 - test_target_name_limit, 's');
     assert_target_failure(source_root, {{std::string(test_target_name_limit, 't'), "synthetic_test", risky_source}}, {},
                           "object path score");
+
+    constexpr std::string_view valid = "pre_smoke|linked|target_a|test_a|tests/store_tests.cpp\n";
+    assert_manifest_failure(source_root, std::string{valid} + "\r", "LF line endings");
+    assert_manifest_failure(source_root, "late|linked|target_a|test_a|tests/store_tests.cpp\n", "unknown test case");
+    assert_manifest_failure(source_root, "main|dynamic|target_a|test_a|tests/store_tests.cpp\n", "unknown test case");
+    assert_manifest_failure(source_root, "main|linked|target_a|test_a\n", "five nonempty columns");
+    assert_manifest_failure(source_root, "main|linked|target_a|test_a|tests/missing_case.cpp\n", "source is missing");
+    assert_manifest_failure(source_root, std::string{valid} + "main|linked|target_a|test_b|tests/store_tests.cpp\n",
+                            "duplicate test case target");
+    assert_manifest_failure(source_root, std::string{valid} + "main|linked|target_b|test_a|tests/store_tests.cpp\n",
+                            "duplicate public CTest name");
 }
 
 void require_fragment(std::string_view text, std::string_view fragment, std::string_view source) {
@@ -411,18 +608,16 @@ void require_fragment(std::string_view text, std::string_view fragment, std::str
 }
 
 void verify_link_shards(const std::filesystem::path& source_root, std::string_view cmake_text) {
-    const auto linked_calls = count_occurrences(cmake_text, "minikv_add_linked_test(") +
-                              count_occurrences(cmake_text, "minikv_add_source_dir_test(");
-    if (linked_calls != linked_test_count) {
-        throw std::runtime_error{"linked-test census changed without updating the shard contract"};
-    }
-
     require_fragment(cmake_text, "option(MINIKV_BUNDLE_TESTS", "CMakeLists.txt");
     require_fragment(cmake_text, "set(MINIKV_TEST_SHARD_COUNT 8)", "CMakeLists.txt");
     require_fragment(cmake_text, "instrumented lanes require MINIKV_BUNDLE_TESTS=OFF", "CMakeLists.txt");
-    require_fragment(cmake_text, "minikv_finalize_test_bundle()", "CMakeLists.txt");
+    require_fragment(cmake_text, "include(cmake/MinikvTestSuite.cmake)", "CMakeLists.txt");
 
     const auto helper_text = read_text(source_root / "cmake" / "MinikvTesting.cmake");
+    require_fragment(helper_text, "function(minikv_read_test_manifest", "MinikvTesting.cmake");
+    require_fragment(helper_text, "test case manifest must use LF line endings", "MinikvTesting.cmake");
+    require_fragment(helper_text, "test case manifest census changed", "MinikvTesting.cmake");
+    require_fragment(helper_text, "function(minikv_register_test_group", "MinikvTesting.cmake");
     require_fragment(helper_text, "string(SHA256 case_digest", "MinikvTesting.cmake");
     require_fragment(helper_text, "add_library(${target_name} OBJECT", "MinikvTesting.cmake");
     require_fragment(helper_text, "main=${entry_symbol}", "MinikvTesting.cmake");
@@ -430,6 +625,13 @@ void verify_link_shards(const std::filesystem::path& source_root, std::string_vi
     require_fragment(helper_text, "minikv_enable_test_assertions(${target_name})", "MinikvTesting.cmake");
     require_fragment(helper_text, "target_compile_options(${target_name} PRIVATE -UNDEBUG)", "MinikvTesting.cmake");
     require_fragment(helper_text, "minikv_test_shard_${shard_index}", "MinikvTesting.cmake");
+
+    const auto suite_text = read_text(source_root / "cmake" / "MinikvTestSuite.cmake");
+    require_fragment(suite_text, "minikv_register_test_group(\"${minikv_test_manifest}\" pre_smoke)",
+                     "MinikvTestSuite.cmake");
+    require_fragment(suite_text, "minikv_register_test_group(\"${minikv_test_manifest}\" main)",
+                     "MinikvTestSuite.cmake");
+    require_fragment(suite_text, "minikv_finalize_test_bundle()", "MinikvTestSuite.cmake");
 
     const auto runner_text = read_text(source_root / "cmake" / "minikv_test_runner.cpp.in");
     require_fragment(runner_text, "if (argc != 2)", "minikv_test_runner.cpp.in");
@@ -467,9 +669,16 @@ int main() {
     verify_explicit_main_returns(source_root, sources);
     const auto target_baseline = read_target_baseline(source_root / "config" / "test-target-name-baseline.txt");
     const auto cmake_text = read_text(source_root / "CMakeLists.txt");
-    const auto registrations = parse_test_registrations(cmake_text);
+    const auto suite_text = read_text(source_root / "cmake" / "MinikvTestSuite.cmake");
+    const auto manifest_text = read_text(source_root / "config" / "test-cases.txt");
+    const auto manifest_cases = parse_case_manifest(source_root, manifest_text);
+    verify_manifest_census(manifest_cases);
+    auto registrations = manifest_registrations(manifest_cases);
+    const auto standalone = parse_test_registrations(suite_text);
+    registrations.insert(registrations.end(), standalone.begin(), standalone.end());
     const auto target_metrics = verify_test_targets(source_root, registrations, target_baseline);
     verify_link_shards(source_root, cmake_text);
+    verify_ctest_order(manifest_cases);
     verify_evidence_dispatch(source_root);
     verify_suite(source_root, "config/command-test-parts.txt", "tests/command_tests.cpp", "CommandFixture",
                  {{"assert(", 463}, {"assert_response_contains(", 2447}});
@@ -482,7 +691,8 @@ int main() {
     std::cout << "test architecture: sources=" << sources.size() << " limit=" << test_source_limit
               << " oversized=" << baseline.size() << " cmake_tests=" << target_metrics.registrations
               << " long_targets=" << target_metrics.long_targets << " max_path_score=" << target_metrics.max_path_score
-              << " linked_cases=" << linked_test_count << " shards=" << test_shard_count
-              << " evidence_commands=" << evidence_command_count << " explicit_mains=" << noarg_main_count << '\n';
+              << " manifest_cases=" << manifest_cases.size() << " linked_cases=" << linked_test_count
+              << " shards=" << test_shard_count << " evidence_commands=" << evidence_command_count
+              << " explicit_mains=" << noarg_main_count << '\n';
     return 0;
 }

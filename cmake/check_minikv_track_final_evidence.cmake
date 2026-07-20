@@ -68,9 +68,9 @@ require_file_fragment("docs/SECURITY.md" "not a hardened production database")
 require_file_fragment("docs/SECURITY.md" "Do not place it directly on an untrusted network.")
 require_file_fragment("docs/CHANGELOG.md" "Git delivery tags: `vNNNN`")
 require_file_fragment("docs/project-docs-honesty-matrix.md" "project_docs_honesty_contract")
-require_file_fragment("CMakeLists.txt" "-DMIN_BUILDER_BACKED=27")
-require_file_fragment("CMakeLists.txt" "NAME receipt_builder_census_contract")
-require_file_fragment("CMakeLists.txt" "NAME project_docs_honesty_contract")
+require_file_fragment("cmake/MinikvTestSuite.cmake" "-DMIN_BUILDER_BACKED=27")
+require_file_fragment("cmake/MinikvTestSuite.cmake" "NAME receipt_builder_census_contract")
+require_file_fragment("cmake/MinikvTestSuite.cmake" "NAME project_docs_honesty_contract")
 require_file_fragment("scripts/archive_inventory.py" "budget-mib")
 require_file_fragment("docs/archive-retention-index.md" "ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN")
 
@@ -80,6 +80,7 @@ file(GLOB_RECURSE secret_scan_files
     "${SOURCE_DIR}/src/*.cpp"
     "${SOURCE_DIR}/src/*.hpp"
     "${SOURCE_DIR}/include/*.hpp"
+    "${SOURCE_DIR}/cmake/*.cmake"
     "${SOURCE_DIR}/.github/*.yml"
     "${SOURCE_DIR}/.github/*.yaml"
 )

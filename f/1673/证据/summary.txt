@@ -1,0 +1,50 @@
+[version]
+v1673 validated test manifest
+
+[scope]
+- 342 ordinary linked/source-dir registrations moved from repeated root-CMake calls to config/test-cases.txt
+- phases: pre_smoke=8, main=334
+- kinds: linked=245, source_dir=97
+- three standalone tests, nine special tests and target-specific behavior remain explicit
+- CMakeLists.txt: 2597 physical lines before, 436 after
+- MinikvTestSuite.cmake: 130 physical lines after release-test target source wiring
+
+[public test oracle]
+- v1672 ordered names: 354
+- v1673 default ordered names: 354, byte-equal
+- v1673 legacy ordered names: 354, byte-equal
+- first: benchmark_evidence_guard
+- last: input_hardening_candidate_gate_receipt_tests
+- SHA256: f4ecf10465a185e4a3c04d5b0e0292ea47aba0a8d48e5992c7eb8d9159a3310e
+
+[manifest validation]
+- real CMake checker accepted the 342-row source manifest
+- real CMake checker rejected CRLF, unknown kind, duplicate target and missing source
+- C++ architecture red paths also cover unknown phase, malformed columns, duplicate CTest name and invalid source path
+- generated CTestTestfile.cmake order is compared against the manifest-derived 354-name sequence
+
+[topologies and tests]
+- default topology configured as 342 cases / 8 stable shards
+- legacy focused: 4/4 passed (architecture, command parts, release manifest, no-network)
+- first full default run: 353/354; stale root-CMake ownership assertion found
+- focused repair: 3/3 passed after all target assertions followed their new manifest owner
+- pre-document full default run: 354/354 passed in 66.80 seconds
+- release legacy focused verification: 3/3 passed in 11.15 seconds
+- post-document final verification: 354/354 passed in 36.63 seconds
+
+[scout-rule repayment]
+- formatted release_verification_manifest_tests.cpp reached 1090 nonblank lines and was rejected
+- split result: release_manifest_checks.cpp=820, release_verification_manifest_tests.cpp=280
+- new size baseline or waiver: 0
+
+[boundaries]
+- product src/include changes: 0
+- fixture changes: 0
+- public CTest name/order changes: 0
+- command/output/WAL/snapshot/restore/RESP/TCP/OSFS behavior changes: 0
+- router/write/network/credential/execution/order authority added: 0
+
+[documentation]
+- Chinese walkthrough: 1041-v1673-validated-test-manifest.md
+- walkthrough Chinese-character census: 3318
+- v1672 CI run 29733051543: success, all seven jobs

@@ -231,3 +231,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1672 补充索引
 
 - v1672: [1040-v1672-evidence-command-table.md](1040-v1672-evidence-command-table.md) - 解释 62 个无参数只读 formatter 怎样从 `command.cpp` 条件长链变成编译期数据表，为什么参数校验仍先于 formatter 调用，如何用 catalog/唯一性/体积 ratchet 与 2,093,273 字节 CLI oracle 证明合同不变，以及 Release 下断言失效为何需要在测试 target 创建层统一修复。
+
+## v1673 补充索引
+
+- v1673: [1041-v1673-validated-test-manifest.md](1041-v1673-validated-test-manifest.md) - 解释为什么 342 条普通测试身份适合进入受校验的五列清单，而特殊 smoke、standalone 与 target override 必须保留显式行为；讲清 8+334 阶段如何保持 354 项原顺序、默认/legacy 怎样消费同一数据源、parser 红路径如何工作，以及一次旧 owner 断言失败为何进一步促成 1,090→820+280 的无豁免拆分。
