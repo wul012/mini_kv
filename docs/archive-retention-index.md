@@ -1,6 +1,6 @@
 # mini-kv Archive Retention Index
 
-This index is the K5 retention ledger for the path-stable archive roots in this repository. It records the original v1620 baseline, the v1657 post-OSFS remeasurement, the v1658 track-review evidence closeout, the bounded v1659-v1662 elegance evidence, the selective v1663 OSFS teaching evidence, the v1664 README exhibit proof, and the v1665-v1667 test/build-architecture proof.
+This index is the K5 retention ledger for the path-stable archive roots in this repository. It records the original v1620 baseline, the v1657 post-OSFS remeasurement, the v1658 track-review evidence closeout, the bounded v1659-v1662 elegance evidence, the selective v1663 OSFS teaching evidence, the v1664 README exhibit proof, the v1665-v1667 test/build-architecture proof, and the v1668 receipt-profile evidence.
 
 Historical archive roots are evidence, not cleanup candidates. Node-side governance already has hardcoded references to mini-kv archive paths and release fixtures, so every existing path below remains stable unless a separate owner-approved archival migration plan is written and reviewed.
 
@@ -13,15 +13,15 @@ Historical archive roots are evidence, not cleanup candidates. Node-side governa
 | `c/` | 63-121 | 336 | 31,130,191 | 29.69 | 64 | FROZEN |
 | `d/` | 122-143 | 152 | 13,506,894 | 12.88 | 64 | FROZEN |
 | `e/` | 144-1596 | 5,153 | 1,065,416,900 | 1,016.06 | 1,200 | FROZEN HIGH-VOLUME |
-| `f/` | 1597-1667 | 356 | 11,407,953 | 10.88 | 128 | ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN |
+| `f/` | 1597-1668 | 362 | 11,472,975 | 10.94 | 128 | ACTIVE ROOT; EXISTING VERSION DIRECTORIES FROZEN |
 
 Latest measured version archive:
 
 | Version archive | Files | Bytes | MiB | Budget MiB | State |
 |---|---:|---:|---:|---:|---|
-| `f/1667/` | 6 | 91,785 | 0.09 | 8 | within budget |
+| `f/1668/` | 6 | 65,022 | 0.06 | 8 | within budget |
 
-The table above is the direct output of `python scripts/archive_inventory.py --budget-mib 8 --strict` on 2026-07-19 after the six selective v1667 evidence files were written. The script emitted `warnings: none`; no historical path was moved or rewritten. Earlier inventories remain frozen in their own summaries. v1667 keeps four selected configure/contract/build-test/CLI screenshots, one explanation and one text summary; it does not retain build binaries, the raw 1,062-line build output, the raw 712-line CTest output or the full SMOKEJSON object.
+The table above is the direct output of `python scripts/archive_inventory.py` on 2026-07-20 after the six selective v1668 evidence files were written. The script emitted `warnings: none`; no historical path was moved or rewritten. Earlier inventories remain frozen in their own summaries. v1668 keeps four selected census/build-test/full-CTest/CLI screenshots, one explanation and one text summary; it does not retain build binaries, the raw 712-line CTest output or the full SMOKEJSON object.
 
 ## OSFS Coursework Growth Accounting
 

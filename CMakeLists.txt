@@ -474,6 +474,8 @@ add_test(
     COMMAND ${CMAKE_COMMAND}
             -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
             -DMIN_BUILDER_BACKED=27
+            -DEXPECTED_MANUAL_FIELD_PUSHES=814
+            -DEXPECTED_LOCAL_DIGEST_WRAPPERS=6
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/check_receipt_builder_census.cmake
 )
 

@@ -211,3 +211,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1667 补充索引
 
 - v1667: [1035-v1667-cmake-target-path-budget.md](1035-v1667-cmake-target-path-budget.md) - 解释内部 CMake target、公开 CTest 名与源文件路径为何必须分层治理，真实对象路径警告怎样由组合长度触发，277 项 shrink-only baseline 与 197 风险分数如何只减不增，三条故障注入分别怎样拒绝新增长名、stale baseline 和 198 分路径，以及为何本版保留 v1662 文件名 stop condition、353 条测试和全部只读无执行边界。
+
+## v1668 补充索引
+
+- v1668: [1036-v1668-receipt-field-profiles.md](1036-v1668-receipt-field-profiles.md) - 解释为什么 27/0/1 owner 完成并不代表内部重复已经消失，`BooleanField` 如何把有序边界数据与唯一追加行为分开，四个 helper family 怎样在不改插入点、fixture、digest 和兼容规则的前提下把手工追加 1056→814，以及 813/815 双故障注入为什么同时拒绝实现回流与 stale baseline。

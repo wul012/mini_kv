@@ -43,4 +43,15 @@ std::string json_array(std::initializer_list<std::string> values_json) {
     return json_array(std::span<const std::string>{values_json.begin(), values_json.size()});
 }
 
+void append_boolean_fields(std::vector<OrderedJsonField>& target, std::span<const BooleanField> profile) {
+    target.reserve(target.size() + profile.size());
+    for (const auto& field : profile) {
+        target.push_back({field.name, json_bool(field.value)});
+    }
+}
+
+void append_boolean_fields(std::vector<OrderedJsonField>& target, std::initializer_list<BooleanField> profile) {
+    append_boolean_fields(target, std::span<const BooleanField>{profile.begin(), profile.size()});
+}
+
 } // namespace minikv::runtime_receipt_json

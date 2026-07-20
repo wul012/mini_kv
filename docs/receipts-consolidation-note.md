@@ -676,3 +676,24 @@ builder include、新增未登记 formatter、放宽 floor 或引入第二个 wa
 发起 DNS/TLS/HTTP/TCP、建立 managed-audit connection、写 ledger/schema/storage、执行 rollback/restore/load/compact/setnxex、
 自动启动 Node/Java/mini-kv，也没有取得 audit/order authority。阶段二从此不再继续迁移 receipt，而是按 v1637 计划刷新
 README、START_HERE、capability snapshot、archive inventory 与已执行简报状态，使文档重新描述最终代码现实。
+
+## 32. v1668 有序 Boolean profile 与实现重复棘轮
+
+Stage 1 的 27/0/1 census 只能回答“formatter 是否使用 ordered builder”，不能回答 builder 内部是否仍靠大量重复的
+`fields.push_back(...)` 表达同一组关闭边界。v1668 因此先复算实现层：28 个 receipt `.cpp` owner 加私有 receipt
+support header 共 31 个文件，起点为 1056 次手工字段追加和 6 个本地 `receipt_digest` 包装器。前四个稳定共享 helper
+单独占 242 次追加，适合先做一刀能够证明价值、又不触碰公共 receipt 合同的重构。
+
+`runtime_receipt_json_builder` 新增 `BooleanField`，它只保存字段名和布尔值；`append_boolean_fields` 只负责按输入顺序
+编码并追加到 `OrderedJsonField`。formatter 仍决定 profile 放在哪个插入点，nested object、metadata、digest 和最终
+rendering 仍由原 owner 持有。credential common boundary、disabled runtime-shell、sandbox closed-side-effect、manual
+evidence 两组边界分别变成具名 `constexpr` profile；不存在 receipt 类型枚举、版本分支或会推导领域语义的万能 schema。
+
+迁移后手工追加精确下降为 814，digest wrapper 保持 6。`receipt_builder_census_contract` 对这两个数字实行双向精确门：
+高于 baseline 表示重复回流，低于 baseline 表示代码已经变好但维护者忘记同步收紧门，二者都失败。单独用 813 和 815
+执行脚本分别验证“实现增长”和“baseline 松弛”红灯。builder 单测固定 profile 中 true/false 编码及其前后插入顺序；
+runtime-shell、legacy resolver 与 remaining-owner oracle 继续保护字段顺序、兼容规则、digest 和完整运行时输出。
+
+本版没有修改 `fixtures/release/*.json`、public header、命令注册、Store/WAL/snapshot/RESP/TCP/OSFS，也没有新增
+router、write、network、credential read、execution、auto-start 或 authority。它不是第二套 receipt engine，而是把旧 engine
+中重复的边界数据与唯一追加行为分开，为后续逐步清除剩余命令式字段和 6 个本地 digest 包装器建立可收紧的机械起点。

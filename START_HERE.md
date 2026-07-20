@@ -48,7 +48,7 @@ Follow the README for detailed command usage and screenshots.
 
 ## Latest version summary
 
-Current focus: **v1667 CMake test target path budget**. The one internal target that produced a MinGW object-path warning is now 35 characters while its public CTest name and v1662-pinned source path remain unchanged. `test_architecture_contract` scans 344 helper registrations, freezes 277 historical targets over 40 characters, caps the platform-independent target-plus-source score at the exact current maximum of 197, and proves new-long-name, stale-baseline, and over-budget red paths. Runtime commands, fixtures, WAL/snapshot behavior, and the independent OSFS layer are unchanged.
+Current focus: **v1668 receipt Boolean field profiles**. `runtime_receipt_json_builder` now separates ordered Boolean boundary data from append behavior, and four shared families consume that abstraction without changing field order or values. `receipt_builder_census_contract` still protects 27/0/1 owner adoption and now also freezes exactly 814 manual field appends plus 6 local digest wrappers; both growth and a stale loose baseline fail. Runtime commands, fixtures, WAL/snapshot behavior, and the independent OSFS layer are unchanged.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

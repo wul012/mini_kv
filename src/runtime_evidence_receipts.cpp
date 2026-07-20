@@ -262,55 +262,63 @@ constexpr int manual_sandbox_precheck_item_count = 7;
 constexpr int manual_sandbox_precheck_required_operator_field_count = 6;
 constexpr int manual_sandbox_precheck_timeout_budget_ms = 15000;
 
+constexpr runtime_receipt_json::BooleanField manual_dry_run_boundary_profile[] = {
+    {"read_only", true},
+    {"execution_allowed", false},
+    {"dry_run_only", true},
+    {"node_auto_start_allowed", false},
+    {"java_auto_start_allowed", false},
+    {"mini_kv_auto_start_allowed", false},
+    {"connection_execution_allowed", false},
+    {"write_commands_executed", false},
+    {"admin_commands_executed", false},
+    {"runtime_write_observed", false},
+    {"managed_audit_store", false},
+    {"storage_write_allowed", false},
+    {"managed_audit_write_executed", false},
+    {"sandbox_managed_audit_state_write_allowed", false},
+    {"credential_value_read_allowed", false},
+    {"schema_rehearsal_execution_allowed", false},
+    {"schema_migration_execution_allowed", false},
+    {"restore_execution_allowed", false},
+    {"load_restore_compact_executed", false},
+    {"setnxex_execution_allowed", false},
+    {"order_authoritative", false},
+};
+
+constexpr runtime_receipt_json::BooleanField manual_precheck_boundary_profile[] = {
+    {"read_only", true},
+    {"execution_allowed", false},
+    {"dry_run_only", true},
+    {"node_auto_start_allowed", false},
+    {"java_auto_start_allowed", false},
+    {"mini_kv_auto_start_allowed", false},
+    {"connection_execution_allowed", false},
+    {"write_commands_executed", false},
+    {"admin_commands_executed", false},
+    {"runtime_write_observed", false},
+    {"managed_audit_store", false},
+    {"managed_audit_storage_backend", false},
+    {"sandbox_audit_storage_backend", false},
+    {"storage_write_allowed", false},
+    {"managed_audit_write_executed", false},
+    {"sandbox_managed_audit_state_write_allowed", false},
+    {"credential_value_required", false},
+    {"credential_value_read_allowed", false},
+    {"schema_rehearsal_execution_allowed", false},
+    {"schema_migration_execution_allowed", false},
+    {"restore_execution_allowed", false},
+    {"load_restore_compact_executed", false},
+    {"setnxex_execution_allowed", false},
+    {"order_authoritative", false},
+};
+
 void append_manual_dry_run_boundary_fields(std::vector<OrderedJsonField>& fields) {
-    fields.push_back({"read_only", json_bool(true)});
-    fields.push_back({"execution_allowed", json_bool(false)});
-    fields.push_back({"dry_run_only", json_bool(true)});
-    fields.push_back({"node_auto_start_allowed", json_bool(false)});
-    fields.push_back({"java_auto_start_allowed", json_bool(false)});
-    fields.push_back({"mini_kv_auto_start_allowed", json_bool(false)});
-    fields.push_back({"connection_execution_allowed", json_bool(false)});
-    fields.push_back({"write_commands_executed", json_bool(false)});
-    fields.push_back({"admin_commands_executed", json_bool(false)});
-    fields.push_back({"runtime_write_observed", json_bool(false)});
-    fields.push_back({"managed_audit_store", json_bool(false)});
-    fields.push_back({"storage_write_allowed", json_bool(false)});
-    fields.push_back({"managed_audit_write_executed", json_bool(false)});
-    fields.push_back({"sandbox_managed_audit_state_write_allowed", json_bool(false)});
-    fields.push_back({"credential_value_read_allowed", json_bool(false)});
-    fields.push_back({"schema_rehearsal_execution_allowed", json_bool(false)});
-    fields.push_back({"schema_migration_execution_allowed", json_bool(false)});
-    fields.push_back({"restore_execution_allowed", json_bool(false)});
-    fields.push_back({"load_restore_compact_executed", json_bool(false)});
-    fields.push_back({"setnxex_execution_allowed", json_bool(false)});
-    fields.push_back({"order_authoritative", json_bool(false)});
+    runtime_receipt_json::append_boolean_fields(fields, manual_dry_run_boundary_profile);
 }
 
 void append_manual_precheck_boundary_fields(std::vector<OrderedJsonField>& fields) {
-    fields.push_back({"read_only", json_bool(true)});
-    fields.push_back({"execution_allowed", json_bool(false)});
-    fields.push_back({"dry_run_only", json_bool(true)});
-    fields.push_back({"node_auto_start_allowed", json_bool(false)});
-    fields.push_back({"java_auto_start_allowed", json_bool(false)});
-    fields.push_back({"mini_kv_auto_start_allowed", json_bool(false)});
-    fields.push_back({"connection_execution_allowed", json_bool(false)});
-    fields.push_back({"write_commands_executed", json_bool(false)});
-    fields.push_back({"admin_commands_executed", json_bool(false)});
-    fields.push_back({"runtime_write_observed", json_bool(false)});
-    fields.push_back({"managed_audit_store", json_bool(false)});
-    fields.push_back({"managed_audit_storage_backend", json_bool(false)});
-    fields.push_back({"sandbox_audit_storage_backend", json_bool(false)});
-    fields.push_back({"storage_write_allowed", json_bool(false)});
-    fields.push_back({"managed_audit_write_executed", json_bool(false)});
-    fields.push_back({"sandbox_managed_audit_state_write_allowed", json_bool(false)});
-    fields.push_back({"credential_value_required", json_bool(false)});
-    fields.push_back({"credential_value_read_allowed", json_bool(false)});
-    fields.push_back({"schema_rehearsal_execution_allowed", json_bool(false)});
-    fields.push_back({"schema_migration_execution_allowed", json_bool(false)});
-    fields.push_back({"restore_execution_allowed", json_bool(false)});
-    fields.push_back({"load_restore_compact_executed", json_bool(false)});
-    fields.push_back({"setnxex_execution_allowed", json_bool(false)});
-    fields.push_back({"order_authoritative", json_bool(false)});
+    runtime_receipt_json::append_boolean_fields(fields, manual_precheck_boundary_profile);
 }
 
 } // namespace

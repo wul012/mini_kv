@@ -14,6 +14,8 @@
 
 namespace {
 
+using minikv::runtime_receipt_json::append_boolean_fields;
+using minikv::runtime_receipt_json::BooleanField;
 using minikv::runtime_receipt_json::json_array;
 using minikv::runtime_receipt_json::json_bool;
 using minikv::runtime_receipt_json::json_integer;
@@ -108,6 +110,23 @@ void nested_raw_values_are_not_double_escaped() {
 
     assert(output == "{\"nested\":{\"read_only\":true,\"execution_allowed\":false},"
                      "\"values\":[\"alpha\",{\"read_only\":true,\"execution_allowed\":false},[0,false]]}");
+}
+
+void boolean_profiles_preserve_order_and_values() {
+    constexpr BooleanField profile[] = {
+        {"read_only", true},
+        {"execution_allowed", false},
+        {"write_allowed", false},
+    };
+    std::vector<OrderedJsonField> fields = {
+        {"kind", json_string("non-participation")},
+    };
+
+    append_boolean_fields(fields, profile);
+    fields.push_back({"boundary", json_string("closed")});
+
+    assert(json_object(fields) == "{\"kind\":\"non-participation\",\"read_only\":true,\"execution_allowed\":false,"
+                                  "\"write_allowed\":false,\"boundary\":\"closed\"}");
 }
 
 void extractor_handles_nested_objects_and_escaped_strings() {
@@ -359,6 +378,7 @@ void approval_lifecycle_candidates_have_frozen_parity_baseline() {
 int main() {
     ordered_object_preserves_scalars_and_escaping();
     nested_raw_values_are_not_double_escaped();
+    boolean_profiles_preserve_order_and_values();
     extractor_handles_nested_objects_and_escaped_strings();
     extractor_fails_closed_on_ambiguous_or_malformed_input();
     frozen_fixture_subobjects_have_versioned_bytes();

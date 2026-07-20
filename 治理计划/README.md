@@ -18,6 +18,7 @@
 - `v1665-test-architecture-brief.md`：v1665-v1666 测试架构收口；以 suite manifest、断言 census 和 1000 非空行 ratchet 拆解 command/shard-readiness 两个 4000 行级测试单体，产品代码与 fixture 合同保持不变。
 
 - `v1667-cmake-target-path-budget.md`：测试构建身份收口；保留 v1662 长源文件名与公开 CTest 名，只缩短触发对象路径警告的内部 target，并新增长 target shrink-only baseline、路径风险分数门和故障注入。
+- `v1668-receipt-field-profiles.md`：三分优雅提升计划的第一阶段；把 receipt 共享布尔边界从逐字段命令式追加改为有序数据 profile，并以精确 manual-push/digest-wrapper ratchet 阻止重复回流，外部 JSON、digest 与 fixture 字节保持不变。
 
 ## 当前硬边界
 

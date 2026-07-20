@@ -1,0 +1,30 @@
+mini-kv v1668 receipt Boolean profile evidence
+
+implementation:
+- receipt sources/owners/builder/pending/waiver = 28/27/27/0/1
+- implementation files = 31
+- manual fields.push_back calls = 1056 -> 814
+- local receipt_digest wrappers = 6
+- BooleanField profiles migrated in four shared helper families
+
+verification:
+- clang-format dry-run: PASS
+- focused receipt gates: 5/5 PASS
+- deliberate census red paths: 813 regression PASS, 815 stale-baseline PASS
+- all-target build: PASS, exit 0, 606.1 sec
+- full CTest: 353/353 PASS, 0 failed, 153.88 sec
+- real CLI structured boundary assertions: PASS
+- fixtures/release diff: empty
+- include/minikv public-header diff: empty
+
+runtime boundaries:
+- read_only=true
+- execution_allowed=false
+- restore_execution_allowed=false
+- order_authoritative=false
+- write/admin/runtime-write observed=false
+- CHECKJSON LOAD wal.touches_wal=false
+
+archive:
+- 4 selective Playwright MCP screenshots
+- no build binaries or raw large logs retained
