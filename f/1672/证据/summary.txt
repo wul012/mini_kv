@@ -1,0 +1,55 @@
+mini-kv v1672 evidence command table - local closeout evidence
+Date: 2026-07-20
+
+[scope]
+- New private abstraction: EvidenceCommand { name, std::string (*)() formatter }
+- Table entries: 62 no-argument read-only evidence commands
+- Stateful commands retained by CommandProcessor: STATS/STATSJSON/SMOKEJSON/STORAGEJSON/HEALTH/INFO/INFOJSON
+- Key-bearing commands retained by CommandProcessor: SHARDROUTE/SHARDROUTEJSON/SHARDROUTEVERIFYJSON/SHARDROUTEVERIFYREPORTJSON
+- Public headers changed: 0
+- Frozen fixtures changed: 0
+- Runtime authority added: none
+
+[architecture]
+- command.cpp nonblank lines: 732 -> 258
+- command.cpp command-comparison branches: approximately 74 -> 12
+- command_evidence_dispatch.cpp physical lines: 268
+- Evidence table entries: 62 total / 62 unique / 62 command-catalog members
+- Compile-time gates: exact size 62 and unique names
+- Mechanical ratchets: command.cpp <=260 nonblank, <=12 command branches, exactly 62 table entries
+
+[before/after real CLI oracle]
+- Input: 62 table commands in historical order plus QUIT
+- Input bytes: 3,463
+- Input SHA-256: 2e0b69c14ceaa1097b9b601a1133743248008525c94174e1c645822330d7455c
+- v1671 output: 159 lines / 2,093,273 bytes
+- v1672 output: 159 lines / 2,093,273 bytes
+- Both output SHA-256: b60a2ff0106c8803f879feb4034eed00c35b6bb319169382c5a577339c52f5b4
+- Byte-oracle result: identical
+
+[test assertion safety]
+- Discovery: CMAKE_BUILD_TYPE=Release defines NDEBUG and previously disabled standard assert in test targets
+- Repair: MinikvTesting.cmake applies /UNDEBUG on MSVC and -UNDEBUG elsewhere
+- Covered creation paths: bundled object tests, legacy executable tests, standalone tests
+- Release red-to-green representative set: osfs_tests, osfs_resilience_tests, command_tests, test_architecture_contract = 4/4
+- Product executables are not modified by the assertion option
+
+[verification before final archive gate]
+- Legacy focused CTest: 2/2, then Release representative CTest 4/4
+- Standard default CTest prefinal: 354/354 passed in 133.36 seconds
+- Full final CTest after walkthrough/archive material was stable: 354/354 passed in 142.78 seconds
+- Ordered CTest-name oracle: 354 names, SHA256 f4ecf10465a185e4a3c04d5b0e0292ea47aba0a8d48e5992c7eb8d9159a3310e
+- Changed C++ clang-format: 5/5 passed locally
+- git diff --check: passed locally
+
+[boundaries]
+- no router added
+- no write command added
+- no WAL/snapshot/restore behavior changed
+- no network or credential access added
+- no execution authority or order authority added
+- Node/Java files untouched
+
+[remote policy]
+- v1671 CI run 29728780530: success (all seven jobs)
+- v1672 push only needs a quick queued/started check because v1674 is the final batch watch point

@@ -67,6 +67,7 @@ add_library(minikv
     src/command_catalog.cpp
     src/command_contracts.cpp
     src/command_dispatch.cpp
+    src/command_evidence_dispatch.cpp
     src/command_expiry_ops.cpp
     src/command_introspection_ops.cpp
     src/command_parse_helpers.cpp

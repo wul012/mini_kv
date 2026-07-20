@@ -1,9 +1,25 @@
 #include "command_test_suites.hpp"
 
+#include "../src/command_evidence_dispatch.hpp"
+#include "minikv/command_catalog.hpp"
+
+#include <set>
+
 namespace minikv::command_test {
 
 void run_command_core_tests(CommandFixture& fixture) {
     using namespace std::chrono_literals;
+
+    const auto evidence_commands = command_internal::evidence_commands();
+    assert(evidence_commands.size() == 62);
+    std::set<std::string_view> evidence_names;
+    for (const auto& entry : evidence_commands) {
+        assert(entry.format != nullptr);
+        assert(command_catalog::is_known(entry.name));
+        assert(evidence_names.emplace(entry.name).second);
+        assert(command_internal::find_evidence_command(entry.name) == &entry);
+    }
+    assert(command_internal::find_evidence_command("UNKNOWN") == nullptr);
 
     auto& store = fixture.store;
     auto& processor = fixture.processor;

@@ -8,6 +8,14 @@ function(minikv_configure_test_runtime test_name)
     endif()
 endfunction()
 
+function(minikv_enable_test_assertions target_name)
+    if(MSVC)
+        target_compile_options(${target_name} PRIVATE /UNDEBUG)
+    else()
+        target_compile_options(${target_name} PRIVATE -UNDEBUG)
+    endif()
+endfunction()
+
 function(minikv_add_bundled_test target_name test_name source_file)
     if(NOT test_name MATCHES "^[A-Za-z0-9_]+$")
         message(FATAL_ERROR "bundled CTest name is not a safe runner key: ${test_name}")
@@ -31,6 +39,7 @@ function(minikv_add_bundled_test target_name test_name source_file)
     add_library(${target_name} OBJECT
         ${source_file}
     )
+    minikv_enable_test_assertions(${target_name})
     target_compile_definitions(${target_name} PRIVATE "main=${entry_symbol}")
     target_link_libraries(${target_name} PRIVATE minikv)
 
@@ -45,6 +54,7 @@ function(minikv_add_linked_test target_name test_name source_file)
         add_executable(${target_name}
             ${source_file}
         )
+        minikv_enable_test_assertions(${target_name})
 
         target_link_libraries(${target_name} PRIVATE minikv)
 
@@ -66,6 +76,7 @@ function(minikv_add_standalone_source_dir_test target_name test_name source_file
     add_executable(${target_name}
         ${source_file}
     )
+    minikv_enable_test_assertions(${target_name})
 
     target_compile_definitions(${target_name}
         PRIVATE

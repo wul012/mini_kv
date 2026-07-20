@@ -19,6 +19,9 @@ constexpr std::size_t test_target_name_limit = 40;
 constexpr std::size_t object_path_score_limit = 197;
 constexpr std::size_t linked_test_count = 342;
 constexpr std::size_t test_shard_count = 8;
+constexpr std::size_t evidence_command_count = 62;
+constexpr std::size_t command_core_limit = 260;
+constexpr std::size_t command_branch_limit = 12;
 constexpr std::size_t noarg_main_count = 344;
 
 struct SourceSize {
@@ -424,12 +427,34 @@ void verify_link_shards(const std::filesystem::path& source_root, std::string_vi
     require_fragment(helper_text, "add_library(${target_name} OBJECT", "MinikvTesting.cmake");
     require_fragment(helper_text, "main=${entry_symbol}", "MinikvTesting.cmake");
     require_fragment(helper_text, "add_executable(${target_name}", "MinikvTesting.cmake legacy path");
+    require_fragment(helper_text, "minikv_enable_test_assertions(${target_name})", "MinikvTesting.cmake");
+    require_fragment(helper_text, "target_compile_options(${target_name} PRIVATE -UNDEBUG)", "MinikvTesting.cmake");
     require_fragment(helper_text, "minikv_test_shard_${shard_index}", "MinikvTesting.cmake");
 
     const auto runner_text = read_text(source_root / "cmake" / "minikv_test_runner.cpp.in");
     require_fragment(runner_text, "if (argc != 2)", "minikv_test_runner.cpp.in");
     require_fragment(runner_text, "return test.entry();", "minikv_test_runner.cpp.in");
     require_fragment(runner_text, "unknown bundled test case", "minikv_test_runner.cpp.in");
+}
+
+void verify_evidence_dispatch(const std::filesystem::path& source_root) {
+    const auto command_text = read_text(source_root / "src" / "command.cpp");
+    const auto dispatch_text = read_text(source_root / "src" / "command_evidence_dispatch.cpp");
+    const auto command_lines = count_nonblank_lines(source_root / "src" / "command.cpp");
+    const auto branches = count_occurrences(command_text, "if (command ==");
+    const auto entries = count_occurrences(dispatch_text, "EvidenceCommand{");
+
+    if (command_lines > command_core_limit) {
+        throw std::runtime_error{"command.cpp grew past the orchestration budget"};
+    }
+    if (branches > command_branch_limit) {
+        throw std::runtime_error{"command.cpp evidence if-chain regrew"};
+    }
+    if (entries != evidence_command_count) {
+        throw std::runtime_error{"evidence command table census changed"};
+    }
+    require_fragment(dispatch_text, "static_assert(commands.size() == 62)", "command evidence dispatch");
+    require_fragment(dispatch_text, "static_assert(unique_names())", "command evidence dispatch");
 }
 
 } // namespace
@@ -445,8 +470,9 @@ int main() {
     const auto registrations = parse_test_registrations(cmake_text);
     const auto target_metrics = verify_test_targets(source_root, registrations, target_baseline);
     verify_link_shards(source_root, cmake_text);
+    verify_evidence_dispatch(source_root);
     verify_suite(source_root, "config/command-test-parts.txt", "tests/command_tests.cpp", "CommandFixture",
-                 {{"assert(", 457}, {"assert_response_contains(", 2447}});
+                 {{"assert(", 463}, {"assert_response_contains(", 2447}});
     verify_suite(source_root, "config/shard-test-parts.txt", "tests/shard_readiness_tests.cpp", "ShardFixture",
                  {{"assert(", 8}, {"assert_contains(", 3710}, {"assert_fixture_differs_from_each(", 2}},
                  {{"assert_shard_readiness_contract(fixture, fixture.current);", 1},
@@ -457,6 +483,6 @@ int main() {
               << " oversized=" << baseline.size() << " cmake_tests=" << target_metrics.registrations
               << " long_targets=" << target_metrics.long_targets << " max_path_score=" << target_metrics.max_path_score
               << " linked_cases=" << linked_test_count << " shards=" << test_shard_count
-              << " explicit_mains=" << noarg_main_count << '\n';
+              << " evidence_commands=" << evidence_command_count << " explicit_mains=" << noarg_main_count << '\n';
     return 0;
 }

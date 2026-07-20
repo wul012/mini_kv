@@ -22,6 +22,7 @@
 - `v1669-approval-profile-unification.md`：提取三份 approval contract receipt 的共同有序边界区段，保留局部插入点，并把重复 digest 转发器从 6 收口到唯一 canonical wrapper。
 - `v1670-atomic-file-writer.md`：统一 WAL compact 与 Snapshot save 的临时文件、flush/close、原子替换和失败清理协议，并用独立故障测试保护旧目标不被失败写覆盖。
 - `v1671-test-link-shards.md`：把 342 个重复链接 `minikv` 的测试 executable 改为独立 object target 加 8 个稳定哈希 link shard，保留 354 个 CTest 名、测试进程隔离和 instrumented lane 旧拓扑，并用真实核心 touch 对比链接次数、时间与磁盘体积。
+- `v1672-v1674-nine-point-program.md`：九分优雅收口的有界三版计划；依次数据化只读 evidence 命令分派、342 项普通测试注册和 314 项产品源 ownership，并用根 CMake 体积、manifest 红路径、输出字节与七条 CI 定义到点条件。
 
 ## 当前硬边界
 

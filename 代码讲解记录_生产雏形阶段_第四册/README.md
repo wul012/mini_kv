@@ -227,3 +227,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1671 补充索引
 
 - v1671: [1039-v1671-test-link-shards.md](1039-v1671-test-link-shards.md) - 从 342 个普通测试重复链接同一静态库的量化基线出发，解释 object target 与 8 个稳定 shard runner 如何分离编译身份和最终链接身份，为什么 354 个 CTest 仍逐项同名同序且一例一进程，instrumented lane 为何保留 legacy 拓扑，以及 108 个显式返回和 changed-files 格式清偿如何由机械门长期保护。
+
+## v1672 补充索引
+
+- v1672: [1040-v1672-evidence-command-table.md](1040-v1672-evidence-command-table.md) - 解释 62 个无参数只读 formatter 怎样从 `command.cpp` 条件长链变成编译期数据表，为什么参数校验仍先于 formatter 调用，如何用 catalog/唯一性/体积 ratchet 与 2,093,273 字节 CLI oracle 证明合同不变，以及 Release 下断言失效为何需要在测试 target 创建层统一修复。

@@ -132,6 +132,7 @@ python scripts/archive_inventory.py --budget-mib 8 --strict
 完整历史见 [`docs/CHANGELOG.md`](docs/CHANGELOG.md)。README 只保留对当前展示面有直接解释力的四项：
 
 - v1671: 保留 354 个 CTest 名称、顺序和一例一进程语义，把 342 个普通测试的最终链接稳定收口到 8 个 runner；核心 touch 后 executable link 347→13、增量时间 56.87→21.36 秒，全部测试 exe 由 345 个/3,983,351,060 字节降到 11 个/415,219,566 字节，coverage/sanitizer 与显式 legacy 配置仍使用一测试一 exe。
+- v1672: 把 `command.cpp` 中 62 个同构无参数只读 evidence 分支改为编译期固定表，旧文件从 732 降到 258 个非空行；迁移前后 159 行、2,093,273 字节真实 CLI 输出 SHA-256 相同，并让 bundled、legacy、standalone 测试在 Release 下也显式启用断言。
 - v1670: 以私有 `AtomicFileWriter` 统一 WAL compact 与 Snapshot save 的同目录临时文件、flush/close、平台替换和失败清理；新增成功、放弃、坏流、父目录、replace 失败和 owner 集成证据，第 354 个 CTest 机械拒绝重复实现回流。
 - v1669: 将三份连续 approval receipt 的 201 个重复字段追加改为六段具名 profile，同时删除五个一行式 digest 转发器；精确门收紧到 613/1，四组上下界故障注入、57 项 receipt 组合测试与原有字节 oracle 全部通过。
 - v1668: 为 receipt builder 增加有序 `BooleanField` profile，把四个重复边界族的 242 次命令式追加改为数据声明；新增 814 个手工追加与 6 个本地 digest 包装器的精确 shrink-only 门，增长和 baseline 未及时收紧都会失败。
