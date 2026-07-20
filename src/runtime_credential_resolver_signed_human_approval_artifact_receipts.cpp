@@ -1,5 +1,6 @@
 #include "minikv/runtime_evidence_receipts.hpp"
 
+#include "runtime_approval_receipt_profiles.hpp"
 #include "runtime_receipt_json_builder.hpp"
 #include "runtime_credential_resolver_receipt_utils.hpp"
 
@@ -22,6 +23,9 @@ using minikv::runtime_receipt_json::json_integer;
 using minikv::runtime_receipt_json::json_object;
 using minikv::runtime_receipt_json::json_string;
 using minikv::runtime_receipt_json::OrderedJsonField;
+using runtime_receipt_json::append_boolean_fields;
+
+namespace approval_profile = approval_receipt_profile;
 
 constexpr std::string_view receipt_version =
     "mini-kv-credential-resolver-signed-human-approval-artifact-contract-non-participation-receipt.v1";
@@ -181,8 +185,7 @@ std::string format_checks_json() {
 }
 
 void append_closed_boundary_flag_fields(std::vector<OrderedJsonField>& fields) {
-    fields.push_back({"read_only", json_bool(true)});
-    fields.push_back({"execution_allowed", json_bool(false)});
+    append_boolean_fields(fields, approval_profile::read_only_profile);
     fields.push_back({"signed_human_approval_artifact_contract_non_participation_receipt_only", json_bool(true)});
     fields.push_back({"signed_human_approval_artifact_contract_intake_only", json_bool(true)});
     fields.push_back({"read_only_artifact_contract", json_bool(true)});
@@ -192,76 +195,16 @@ void append_closed_boundary_flag_fields(std::vector<OrderedJsonField>& fields) {
     fields.push_back(
         {"ready_for_node_v315_signed_human_approval_artifact_contract_upstream_echo_verification", json_bool(true)});
     fields.push_back({"ready_for_node_v315_before_upstream_echo", json_bool(false)});
-    fields.push_back({"ready_for_disabled_runtime_shell_implementation", json_bool(false)});
-    fields.push_back({"ready_for_disabled_runtime_shell_invocation", json_bool(false)});
-    fields.push_back({"ready_for_managed_audit_resolver_implementation", json_bool(false)});
-    fields.push_back({"ready_for_managed_audit_sandbox_adapter_connection", json_bool(false)});
-    fields.push_back({"ready_for_production_audit", json_bool(false)});
-    fields.push_back({"ready_for_production_window", json_bool(false)});
-    fields.push_back({"ready_for_production_operations", json_bool(false)});
-    fields.push_back({"runtime_shell_implemented", json_bool(false)});
-    fields.push_back({"runtime_shell_enabled", json_bool(false)});
-    fields.push_back({"runtime_shell_invocation_allowed", json_bool(false)});
-    fields.push_back({"runtime_shell_implementation_allowed", json_bool(false)});
-    fields.push_back({"real_resolver_implementation_allowed", json_bool(false)});
-    fields.push_back({"credential_resolver_implemented", json_bool(false)});
-    fields.push_back({"credential_resolver_invoked", json_bool(false)});
-    fields.push_back({"resolver_client_instantiated", json_bool(false)});
-    fields.push_back({"secret_provider_instantiated", json_bool(false)});
-    fields.push_back({"fake_secret_provider_instantiated", json_bool(false)});
-    fields.push_back({"fake_resolver_client_instantiated", json_bool(false)});
-    fields.push_back({"provider_client_instantiation_allowed", json_bool(false)});
-    fields.push_back({"credential_value_accepted", json_bool(false)});
-    fields.push_back({"credential_value_read_allowed", json_bool(false)});
-    fields.push_back({"credential_value_read", json_bool(false)});
-    fields.push_back({"credential_value_provided", json_bool(false)});
-    fields.push_back({"credential_value_loaded", json_bool(false)});
-    fields.push_back({"credential_value_stored", json_bool(false)});
-    fields.push_back({"credential_value_included", json_bool(false)});
-    fields.push_back({"credential_value_rendered", json_bool(false)});
-    fields.push_back({"raw_endpoint_url_accepted", json_bool(false)});
-    fields.push_back({"raw_endpoint_url_parse_allowed", json_bool(false)});
-    fields.push_back({"raw_endpoint_url_render_allowed", json_bool(false)});
-    fields.push_back({"raw_endpoint_url_parsed", json_bool(false)});
-    fields.push_back({"raw_endpoint_url_rendered", json_bool(false)});
+    append_boolean_fields(fields, approval_profile::readiness_profile);
+    append_boolean_fields(fields, approval_profile::credential_value_profile);
+    append_boolean_fields(fields, approval_profile::raw_endpoint_acceptance);
+    append_boolean_fields(fields, approval_profile::raw_endpoint_processing);
     fields.push_back({"signing_private_key_accepted", json_bool(false)});
     fields.push_back({"signed_human_approval_artifact_stored", json_bool(false)});
     fields.push_back({"signed_human_approval_artifact_validated", json_bool(false)});
     fields.push_back({"signed_human_approval_artifact_authoritative", json_bool(false)});
     fields.push_back({"signed_artifact_signature_verified", json_bool(false)});
-    fields.push_back({"external_request_payload_accepted", json_bool(false)});
-    fields.push_back({"external_request_allowed", json_bool(false)});
-    fields.push_back({"external_request_sent", json_bool(false)});
-    fields.push_back({"http_tcp_dial_allowed", json_bool(false)});
-    fields.push_back({"connects_managed_audit", json_bool(false)});
-    fields.push_back({"reads_managed_audit_credential", json_bool(false)});
-    fields.push_back({"stores_managed_audit_credential", json_bool(false)});
-    fields.push_back({"managed_audit_store", json_bool(false)});
-    fields.push_back({"managed_audit_storage_backend", json_bool(false)});
-    fields.push_back({"sandbox_audit_storage_backend", json_bool(false)});
-    fields.push_back({"storage_write_allowed", json_bool(false)});
-    fields.push_back({"write_commands_executed", json_bool(false)});
-    fields.push_back({"admin_commands_executed", json_bool(false)});
-    fields.push_back({"runtime_write_observed", json_bool(false)});
-    fields.push_back({"approval_ledger_write_allowed", json_bool(false)});
-    fields.push_back({"approval_ledger_written", json_bool(false)});
-    fields.push_back({"approval_ledger_write_executed", json_bool(false)});
-    fields.push_back({"managed_audit_write_executed", json_bool(false)});
-    fields.push_back({"production_record_written", json_bool(false)});
-    fields.push_back({"schema_migration_allowed", json_bool(false)});
-    fields.push_back({"schema_migration_executed", json_bool(false)});
-    fields.push_back({"schema_rehearsal_execution_allowed", json_bool(false)});
-    fields.push_back({"schema_migration_execution_allowed", json_bool(false)});
-    fields.push_back({"restore_execution_allowed", json_bool(false)});
-    fields.push_back({"load_restore_compact_executed", json_bool(false)});
-    fields.push_back({"setnxex_execution_allowed", json_bool(false)});
-    fields.push_back({"node_auto_start_allowed", json_bool(false)});
-    fields.push_back({"java_auto_start_allowed", json_bool(false)});
-    fields.push_back({"mini_kv_auto_start_allowed", json_bool(false)});
-    fields.push_back({"automatic_upstream_start_allowed", json_bool(false)});
-    fields.push_back({"automatic_upstream_start", json_bool(false)});
-    fields.push_back({"audit_authoritative", json_bool(false)});
-    fields.push_back({"order_authoritative", json_bool(false)});
+    append_boolean_fields(fields, approval_profile::external_effects_profile);
 }
 
 } // namespace

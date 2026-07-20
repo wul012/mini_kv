@@ -24,10 +24,6 @@ using sandbox_receipt_detail::append_closed_execution_tail;
 using sandbox_receipt_detail::append_closed_write_fields;
 using sandbox_receipt_detail::append_read_only_prefix;
 
-std::string receipt_digest(std::string_view prefix, const std::vector<DigestPart>& parts) {
-    return runtime_evidence::digest(prefix, parts);
-}
-
 constexpr std::string_view disabled_adapter_client_receipt_consumer =
     "Node v254 disabled adapter client upstream echo verification";
 constexpr std::string_view disabled_adapter_client_receipt_fixture_path =
@@ -200,7 +196,7 @@ std::string disabled_adapter_client_non_participation_receipt_digest(const std::
         {"false"},
         {read_command_list_digest(read_commands)},
     };
-    return receipt_digest("mini-kv-disabled-adapter-client-non-participation", parts);
+    return runtime_evidence::digest("mini-kv-disabled-adapter-client-non-participation", parts);
 }
 
 std::string
@@ -362,7 +358,7 @@ fake_transport_dry_run_packet_non_participation_receipt_digest(const std::vector
         {"false"},
         {read_command_list_digest(read_commands)},
     };
-    return receipt_digest("mini-kv-fake-transport-dry-run-packet-non-participation", parts);
+    return runtime_evidence::digest("mini-kv-fake-transport-dry-run-packet-non-participation", parts);
 }
 
 std::string
@@ -551,7 +547,7 @@ std::string sandbox_endpoint_handle_non_participation_receipt_digest(const std::
         {"false"},
         {read_command_list_digest(read_commands)},
     };
-    return receipt_digest("mini-kv-sandbox-endpoint-handle-non-participation", parts);
+    return runtime_evidence::digest("mini-kv-sandbox-endpoint-handle-non-participation", parts);
 }
 
 std::string

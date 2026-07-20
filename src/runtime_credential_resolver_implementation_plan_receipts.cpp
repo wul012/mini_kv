@@ -20,10 +20,6 @@ using runtime_receipt_json::json_object;
 using runtime_receipt_json::json_string;
 using runtime_receipt_json::OrderedJsonField;
 
-std::string receipt_digest(std::string_view prefix, const std::vector<DigestPart>& parts) {
-    return runtime_evidence::digest(prefix, parts);
-}
-
 constexpr std::string_view plan_receipt_consumer =
     "Node v284 credential resolver implementation plan upstream echo verification";
 constexpr std::string_view plan_receipt_fixture_path =
@@ -353,7 +349,7 @@ std::string credential_resolver_implementation_plan_non_participation_receipt_di
         {"false"},
         {read_command_list_digest(read_commands)},
     };
-    return receipt_digest("mini-kv-credential-resolver-implementation-plan-non-participation", parts);
+    return runtime_evidence::digest("mini-kv-credential-resolver-implementation-plan-non-participation", parts);
 }
 
 std::string format_credential_resolver_implementation_plan_non_participation_receipt_json(

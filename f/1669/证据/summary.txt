@@ -1,0 +1,43 @@
+mini-kv v1669 approval profile unification evidence
+
+implementation:
+- three approval owners consume six ordered Boolean profiles
+- 201 repeated fields.push_back calls replaced by declarative data
+- manual receipt field pushes = 814 -> 613
+- local receipt_digest wrappers = 6 -> 1 canonical family helper
+- new private profile header = 79 nonblank lines, filename length 37
+- no fixture, public-header, command, compatibility-rule or test-expectation change
+
+verification:
+- clang-format and git diff --check: PASS
+- exact approval/remaining-owner/SMOKEJSON gates: 5/5 PASS
+- receipt/release/runtime focused set: 57/57 PASS
+- deliberate red paths: pushes 612/614 and wrappers 0/2 all rejected
+- all-target build: PASS, exit 0
+- final full CTest: 353/353 PASS, 0 failed, 240.39 sec
+- real CLI structured boundary assertions: PASS
+- fixtures/release diff: empty
+- include/minikv public-header diff: empty
+
+runtime boundaries:
+- read_only=true
+- execution_allowed=false
+- restore_execution_allowed=false
+- order_authoritative=false
+- 37 write/admin/runtime-write signals each present and all false
+- CHECKJSON LOAD wal.touches_wal=false
+- QUIT returns BYE
+
+verification deviation:
+- an accidentally overlapping all-target build instance hit a Windows file lock;
+  the duplicate exited, the original completed, and a single-instance incremental
+  all-target build then returned exit 0. This was a local orchestration issue,
+  not a source or test failure.
+- the first CLI assertion script looked for three nested execution signals at the
+  top level; the same raw output was then traversed structurally and all 111
+  occurrences were confirmed false.
+
+archive:
+- 4 selective Playwright MCP screenshots
+- no build binaries, raw 457,958-character SMOKEJSON, or 712-line CTest log retained
+- remote CI is recorded after commit/tag/push

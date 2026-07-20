@@ -21,10 +21,6 @@ using runtime_receipt_json::json_object;
 using runtime_receipt_json::json_string;
 using runtime_receipt_json::OrderedJsonField;
 
-std::string receipt_digest(std::string_view prefix, const std::vector<DigestPart>& parts) {
-    return runtime_evidence::digest(prefix, parts);
-}
-
 constexpr std::string_view approval_boundary_receipt_consumer =
     "Node v275 credential resolver approval-required boundary upstream echo verification";
 constexpr std::string_view approval_boundary_receipt_fixture_path =
@@ -248,7 +244,7 @@ std::string credential_resolver_approval_required_boundary_non_participation_rec
         {"false"},
         {read_command_list_digest(read_commands)},
     };
-    return receipt_digest("mini-kv-credential-resolver-approval-required-boundary-non-participation", parts);
+    return runtime_evidence::digest("mini-kv-credential-resolver-approval-required-boundary-non-participation", parts);
 }
 
 std::string format_credential_resolver_approval_required_boundary_non_participation_receipt_json(

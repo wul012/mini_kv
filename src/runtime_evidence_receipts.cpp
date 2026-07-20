@@ -27,10 +27,6 @@ std::string field_string(std::string_view value) { return runtime_evidence::json
 
 std::string field_bool(bool value) { return runtime_evidence::json_bool(value); }
 
-std::string receipt_digest(std::string_view prefix, const std::vector<DigestPart>& parts) {
-    return runtime_evidence::digest(prefix, parts);
-}
-
 struct SmokeFailureTaxonomyEntry {
     std::string_view id;
     std::string_view source;
@@ -338,7 +334,7 @@ std::string smoke_failure_taxonomy_digest() {
         parts.push_back({"false"});
         parts.push_back({bool_part(entry.write_risk)});
     }
-    return receipt_digest("mini-kv-smoke-failure-taxonomy", parts);
+    return runtime_evidence::digest("mini-kv-smoke-failure-taxonomy", parts);
 }
 
 std::string format_smoke_failure_taxonomy_json() {
@@ -411,7 +407,7 @@ std::string binary_provenance_digest() {
         {bool_part(runtime_binary_provenance_hint.load_restore_compact_executed)},
         {bool_part(runtime_binary_provenance_hint.production_binary_claimed)},
     };
-    return receipt_digest("mini-kv-binary-provenance", parts);
+    return runtime_evidence::digest("mini-kv-binary-provenance", parts);
 }
 
 std::string format_runtime_binary_provenance_hint_json() {
@@ -442,7 +438,7 @@ std::string retention_provenance_check_digest() {
         {bool_part(runtime_retention_provenance_check.execution_allowed)},
         {bool_part(runtime_retention_provenance_check.managed_audit_write_executed)},
     };
-    return receipt_digest("mini-kv-retention-provenance-check", parts);
+    return runtime_evidence::digest("mini-kv-retention-provenance-check", parts);
 }
 
 std::string format_runtime_retention_provenance_check_json() {
@@ -477,7 +473,7 @@ std::string retention_provenance_replay_marker_digest() {
         {bool_part(runtime_retention_provenance_replay_marker.replay_executed)},
         {bool_part(runtime_retention_provenance_replay_marker.managed_audit_write_executed)},
     };
-    return receipt_digest("mini-kv-retention-provenance-replay-marker", parts);
+    return runtime_evidence::digest("mini-kv-retention-provenance-replay-marker", parts);
 }
 
 std::string format_runtime_retention_provenance_replay_marker_json() {
@@ -538,7 +534,7 @@ manual_sandbox_dry_run_command_non_participation_receipt_digest(const std::vecto
         {"false"},
         {read_command_list_digest(read_commands)},
     };
-    return receipt_digest("mini-kv-manual-sandbox-dry-run-command-non-participation", parts);
+    return runtime_evidence::digest("mini-kv-manual-sandbox-dry-run-command-non-participation", parts);
 }
 
 std::string
@@ -635,7 +631,7 @@ manual_sandbox_connection_precheck_non_participation_receipt_digest(const std::v
         {"false"},
         {read_command_list_digest(read_commands)},
     };
-    return receipt_digest("mini-kv-manual-sandbox-connection-precheck-non-participation", parts);
+    return runtime_evidence::digest("mini-kv-manual-sandbox-connection-precheck-non-participation", parts);
 }
 
 std::string format_manual_sandbox_connection_precheck_non_participation_receipt_json(

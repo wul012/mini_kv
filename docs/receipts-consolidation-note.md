@@ -697,3 +697,26 @@ runtime-shell、legacy resolver 与 remaining-owner oracle 继续保护字段顺
 本版没有修改 `fixtures/release/*.json`、public header、命令注册、Store/WAL/snapshot/RESP/TCP/OSFS，也没有新增
 router、write、network、credential read、execution、auto-start 或 authority。它不是第二套 receipt engine，而是把旧 engine
 中重复的边界数据与唯一追加行为分开，为后续逐步清除剩余命令式字段和 6 个本地 digest 包装器建立可收紧的机械起点。
+
+## 33. v1669 approval profile 分段复用与 digest 单点收口
+
+v1669 沿用 v1668 的有序 `BooleanField` 表达，但没有继续横向扫描所有 owner。它选择 signed-human、credential-handle 与
+endpoint-allowlist 三份相邻 approval contract receipt，因为三者各自保留独立合同，却共享 read-only、runtime readiness、
+credential-value 禁止、raw-endpoint 禁止和 external-effects 禁止等连续区段。迁移前这三个 owner 合计重复 201 次
+`fields.push_back(...)`；局部 contract 标识、Node 版本、审批对象字段和 compatibility rule 则明确不进入共享表。
+
+新的私有 `runtime_approval_receipt_profiles.hpp` 将稳定数据拆成六个具名 profile。分段不是装饰：endpoint owner 的
+`raw_endpoint_url_stored=false` 必须继续位于 acceptance 与 processing 之间，signed artifact 的签名字段以及 credential/endpoint
+handle 的局部状态也必须留在历史插入点。formatter 按原顺序穿插 profile 与局部字段，因此它们仍是三个清楚的领域 owner，
+而不是一个靠 receipt-kind 分支驱动的万能模板。原有 exact/canonical oracle 对完整字节、字段顺序、字段数和 digest 继续裁决。
+
+本版同时检查六个 `receipt_digest` 定义的真实调用关系。`runtime_credential_resolver_receipt_utils.hpp` 中的一份 canonical helper
+被二十多个 credential-resolver formatter 使用，保留它能集中表达该 family 的 digest 入口；其余五份局部 helper 都只是
+一行调用 `runtime_evidence::digest`，没有新增语义。后五个 owner 改为直接调用底层实现，避免无意义转发，但没有为了追求零
+wrapper 而触碰稳定消费者。精确 baseline 因而从 6 收紧为 1，不是 0。
+
+实现 census 最终从 814/6 收紧为 613/1。预期 612 会报告 manual push regression，614 会报告 stale baseline；预期 wrapper
+为 0 会报告 regression，2 会要求收紧。这四条红路证明两个数字既不能放宽，也不能落后于真实改进。三个 approval 具名测试、
+remaining-owner baseline、SMOKEJSON、release manifest、runtime smoke 与全部 receipt 组合共 57 项通过；测试期望与
+`fixtures/release` 均未修改。没有打开 router、write、WAL、network、credential value、restore/load/compact、auto-start、audit
+或 order authority，KV 与独立 OSFS 的功能行为也不变。

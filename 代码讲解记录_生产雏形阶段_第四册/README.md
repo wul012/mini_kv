@@ -215,3 +215,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1668 补充索引
 
 - v1668: [1036-v1668-receipt-field-profiles.md](1036-v1668-receipt-field-profiles.md) - 解释为什么 27/0/1 owner 完成并不代表内部重复已经消失，`BooleanField` 如何把有序边界数据与唯一追加行为分开，四个 helper family 怎样在不改插入点、fixture、digest 和兼容规则的前提下把手工追加 1056→814，以及 813/815 双故障注入为什么同时拒绝实现回流与 stale baseline。
+
+## v1669 补充索引
+
+- v1669: [1037-v1669-approval-profile-unification.md](1037-v1669-approval-profile-unification.md) - 解释三份 approval formatter 为什么只能共享稳定事实而不能合成万能模板，六段 profile 如何保留 endpoint stored 字段的历史插入点，digest wrapper 为什么从 6 收口到有真实共享面的 1 而非追求归零，以及 612/614、0/2 四条红路怎样保护 613/1 精确账本。
