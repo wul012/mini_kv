@@ -1,84 +1,20 @@
 #include "minikv/snapshot.hpp"
 
+#include "atomic_file_writer.hpp"
+
 #include <chrono>
 #include <fstream>
 #include <iomanip>
 #include <optional>
 #include <string>
 #include <string_view>
-#include <system_error>
 #include <utility>
 #include <vector>
-
-#ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <windows.h>
-#endif
 
 namespace minikv {
 namespace {
 
 constexpr std::string_view snapshot_header = "MINIKV_SNAPSHOT 1";
-
-class TempSnapshotFile {
-public:
-    explicit TempSnapshotFile(std::filesystem::path path) : path_(std::move(path)) {}
-
-    ~TempSnapshotFile() {
-        if (!active_) {
-            return;
-        }
-
-        std::error_code error;
-        std::filesystem::remove(path_, error);
-    }
-
-    TempSnapshotFile(const TempSnapshotFile&) = delete;
-    TempSnapshotFile& operator=(const TempSnapshotFile&) = delete;
-
-    const std::filesystem::path& path() const {
-        return path_;
-    }
-
-    void release() {
-        active_ = false;
-    }
-
-private:
-    std::filesystem::path path_;
-    bool active_ = true;
-};
-
-std::filesystem::path make_temp_snapshot_path(const std::filesystem::path& path) {
-    const auto parent = path.parent_path();
-    const std::string filename = path.filename().empty() ? "snapshot" : path.filename().string();
-    const auto stamp = std::chrono::steady_clock::now().time_since_epoch().count();
-
-    for (int attempt = 0; attempt < 100; ++attempt) {
-        auto candidate = parent / (filename + ".tmp." + std::to_string(stamp) + "." + std::to_string(attempt));
-        std::error_code error;
-        if (!std::filesystem::exists(candidate, error)) {
-            return candidate;
-        }
-    }
-
-    return parent / (filename + ".tmp." + std::to_string(stamp) + ".fallback");
-}
-
-bool replace_file_atomically(const std::filesystem::path& source, const std::filesystem::path& target) {
-#ifdef _WIN32
-    return MoveFileExW(source.c_str(), target.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
-#else
-    std::error_code error;
-    std::filesystem::rename(source, target, error);
-    return !error;
-#endif
-}
 
 std::string format_expires_at(std::optional<Store::TimePoint> expires_at) {
     if (!expires_at.has_value()) {
@@ -115,19 +51,11 @@ bool parse_expires_at(const std::string& text, std::optional<Store::TimePoint>& 
 bool SnapshotFile::save(const Store& store, const std::filesystem::path& path, std::size_t* saved) {
     const auto items = store.snapshot_items();
 
-    if (path.has_parent_path()) {
-        std::error_code error;
-        std::filesystem::create_directories(path.parent_path(), error);
-        if (error) {
-            return false;
-        }
-    }
-
-    TempSnapshotFile temp_file{make_temp_snapshot_path(path)};
-    std::ofstream output{temp_file.path(), std::ios::trunc};
-    if (!output) {
+    detail::AtomicFileWriter output_file{path};
+    if (!output_file.ready()) {
         return false;
     }
+    auto& output = output_file.stream();
 
     output << snapshot_header << '\n';
     for (const auto& item : items) {
@@ -135,20 +63,9 @@ bool SnapshotFile::save(const Store& store, const std::filesystem::path& path, s
                << std::quoted(item.value) << '\n';
     }
 
-    output.flush();
-    if (!output) {
+    if (!output_file.commit()) {
         return false;
     }
-
-    output.close();
-    if (!output) {
-        return false;
-    }
-
-    if (!replace_file_atomically(temp_file.path(), path)) {
-        return false;
-    }
-    temp_file.release();
 
     if (saved != nullptr) {
         *saved = items.size();

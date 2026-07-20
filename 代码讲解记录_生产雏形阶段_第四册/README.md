@@ -219,3 +219,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1669 补充索引
 
 - v1669: [1037-v1669-approval-profile-unification.md](1037-v1669-approval-profile-unification.md) - 解释三份 approval formatter 为什么只能共享稳定事实而不能合成万能模板，六段 profile 如何保留 endpoint stored 字段的历史插入点，digest wrapper 为什么从 6 收口到有真实共享面的 1 而非追求归零，以及 612/614、0/2 四条红路怎样保护 613/1 精确账本。
+
+## v1670 补充索引
+
+- v1670: [1038-v1670-atomic-file-writer.md](1038-v1670-atomic-file-writer.md) - 从 WAL compact 与 Snapshot save 的重复提交协议出发，讲清私有 `AtomicFileWriter` 的状态机、同目录临时路径、平台替换、失败清理和 owner 边界，并解释为什么单文件原子替换仍不能被包装成多文件事务或完整掉电耐久承诺。

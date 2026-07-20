@@ -89,6 +89,14 @@ int main() {
     assert(replaced.get("name") == std::optional<std::string>{"new"});
     assert(replaced.get("extra") == std::optional<std::string>{"value"});
 
+    const auto directory_target = atomic_dir / "directory-target";
+    std::filesystem::create_directory(directory_target);
+    saved = 73;
+    assert(!minikv::SnapshotFile::save(second_snapshot, directory_target, &saved));
+    assert(saved == 73);
+    assert(std::filesystem::is_directory(directory_target));
+    assert(!has_temp_snapshot());
+
     std::filesystem::remove_all(atomic_dir);
 
     return 0;

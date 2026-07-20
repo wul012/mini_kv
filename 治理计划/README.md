@@ -20,6 +20,7 @@
 - `v1667-cmake-target-path-budget.md`：测试构建身份收口；保留 v1662 长源文件名与公开 CTest 名，只缩短触发对象路径警告的内部 target，并新增长 target shrink-only baseline、路径风险分数门和故障注入。
 - `v1668-receipt-field-profiles.md`：三分优雅提升计划的第一阶段；把 receipt 共享布尔边界从逐字段命令式追加改为有序数据 profile，并以精确 manual-push/digest-wrapper ratchet 阻止重复回流，外部 JSON、digest 与 fixture 字节保持不变。
 - `v1669-approval-profile-unification.md`：提取三份 approval contract receipt 的共同有序边界区段，保留局部插入点，并把重复 digest 转发器从 6 收口到唯一 canonical wrapper。
+- `v1670-atomic-file-writer.md`：统一 WAL compact 与 Snapshot save 的临时文件、flush/close、原子替换和失败清理协议，并用独立故障测试保护旧目标不被失败写覆盖。
 
 ## 当前硬边界
 

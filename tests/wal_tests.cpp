@@ -180,6 +180,15 @@ int main() {
     const auto compact_path =
         std::filesystem::temp_directory_path() / ("minikv-wal-compact-test-" + std::to_string(suffix) + ".wal");
     std::filesystem::remove(compact_path);
+    const auto has_temp_wal = [&]() {
+        const auto prefix = compact_path.filename().string() + ".compact.tmp.";
+        for (const auto& entry : std::filesystem::directory_iterator(compact_path.parent_path())) {
+            if (entry.path().filename().string().rfind(prefix, 0) == 0) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     {
         minikv::Store store;
@@ -204,6 +213,7 @@ int main() {
         result = processor.execute("COMPACT");
         assert(result.response == "OK compacted 2");
     }
+    assert(!has_temp_wal());
 
     {
         std::ifstream input{compact_path};
@@ -244,6 +254,25 @@ int main() {
     }
 
     std::filesystem::remove(compact_path);
+
+    const auto compact_failure_root =
+        std::filesystem::temp_directory_path() / ("minikv-wal-compact-failure-" + std::to_string(suffix));
+    const auto compact_directory_target = compact_failure_root / "directory-target";
+    std::filesystem::remove_all(compact_failure_root);
+    std::filesystem::create_directories(compact_directory_target);
+    {
+        minikv::Store store;
+        assert(store.set("stable", "value"));
+        minikv::WriteAheadLog wal{compact_directory_target};
+        std::size_t compacted = 91;
+        assert(!wal.compact(store, &compacted));
+        assert(compacted == 91);
+        assert(std::filesystem::is_directory(compact_directory_target));
+    }
+    for (const auto& entry : std::filesystem::directory_iterator(compact_failure_root)) {
+        assert(entry.path().filename().string().find(".compact.tmp.") == std::string::npos);
+    }
+    std::filesystem::remove_all(compact_failure_root);
 
     const auto repair_path =
         std::filesystem::temp_directory_path() / ("minikv-wal-repair-test-" + std::to_string(suffix) + ".wal");
@@ -511,9 +540,8 @@ int main() {
 
     std::filesystem::remove(custom_compact_path);
 
-    const auto concurrent_compact_path =
-        std::filesystem::temp_directory_path() /
-        ("minikv-wal-concurrent-auto-compact-test-" + std::to_string(suffix) + ".wal");
+    const auto concurrent_compact_path = std::filesystem::temp_directory_path() /
+                                         ("minikv-wal-concurrent-auto-compact-test-" + std::to_string(suffix) + ".wal");
     std::filesystem::remove(concurrent_compact_path);
 
     {

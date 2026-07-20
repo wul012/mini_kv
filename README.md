@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/wul012/mini_kv/actions/workflows/ci.yml/badge.svg)](https://github.com/wul012/mini_kv/actions/workflows/ci.yml)
 [![Core coverage floor](https://img.shields.io/badge/core%20coverage-90%25-brightgreen)](docs/TESTING.md)
-[![CTest](https://img.shields.io/badge/CTest-353-blue)](docs/project-docs-honesty-matrix.md)
+[![CTest](https://img.shields.io/badge/CTest-354-blue)](docs/project-docs-honesty-matrix.md)
 [![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20macOS%20%7C%20Windows-informational)](.github/workflows/ci.yml)
 
 mini-kv 是一个从零实现的 C++20 键值存储：线程安全内存 Store、WAL 崩溃恢复、Snapshot、RESP/TCP 和可机器读取的运行证据都在同一仓库内闭环。仓库还包含一个彼此独立的 OSFS 课程设计子系统，用二进制磁盘镜像展示 MFD/UFD 二级目录、inode、权限、文件描述符、一级间接块和只读 FSCK。这里的质量主张不靠版本数量或截图成立，而由 CTest、覆盖率下限、精确 census、尺寸 ratchet 和三平台 CI 机械约束。四项目 capstone 已由 Node 以真实 `minikv_cli` 新进程读取 `SMOKEJSON` 与 `CHECKJSON`，验证过程保持只读且不授予执行权。
@@ -15,8 +15,8 @@ mini-kv is a from-scratch C++20 key-value engine with a thread-safe in-memory st
 
 | 维度 | 当前事实 | 机械证据 |
 |---|---|---|
-| 构建与测试 | **353 registered CTest tests**；Linux、macOS、Windows、sanitizer、coverage、format、archive 共七条 CI job | [`CMakeLists.txt`](CMakeLists.txt)、[CI workflow](.github/workflows/ci.yml)、`ctest --test-dir build -N` |
-| 核心覆盖率 | store/command/WAL/snapshot/RESP 集合的已测基线为 2345 行、执行 2122 行、90%；CI 强制 **90% floor** | [`docs/minikv-track-final-evidence.md`](docs/minikv-track-final-evidence.md)、[`ci.yml`](.github/workflows/ci.yml) |
+| 构建与测试 | **354 registered CTest tests**；Linux、macOS、Windows、sanitizer、coverage、format、archive 共七条 CI job | [`CMakeLists.txt`](CMakeLists.txt)、[CI workflow](.github/workflows/ci.yml)、`ctest --test-dir build -N` |
+| 核心覆盖率 | v1658 reviewed baseline 为 2345 行、执行 2122 行、90%；当前 filter 另含 atomic-file writer，CI 继续强制 **90% floor** | [`docs/minikv-track-final-evidence.md`](docs/minikv-track-final-evidence.md)、[`ci.yml`](.github/workflows/ci.yml) |
 | 源码体积 | `src/` 与 `include/` 每个源码文件不超过 800 个非空物理行；仅保留一个具名 registry 豁免 | [`check_minikv_track_final_evidence.cmake`](cmake/check_minikv_track_final_evidence.cmake) |
 | Receipt 结构 | 28 个 receipt 源文件中，**27 builder-backed / 0 pending / 1 named no-formatter waiver**；两轮共享布尔 profile 把手工字段追加从 1056 降到 613，本地 digest 转发器从 6 收口到 1，并由精确棘轮保护 | [`check_receipt_builder_census.cmake`](cmake/check_receipt_builder_census.cmake)、[`docs/receipts-consolidation-note.md`](docs/receipts-consolidation-note.md) |
 | 优雅债台账 | 存量长文件名 735、公共头文件可见长标识符 883、CMake 测试 target 长名 277；baseline 只减不增，测试对象路径风险分数上限为 197 | [`config/elegance-name-baseline.txt`](config/elegance-name-baseline.txt)、[`config/test-target-name-baseline.txt`](config/test-target-name-baseline.txt)、[`test_architecture_tests.cpp`](tests/test_architecture_tests.cpp) |
@@ -129,9 +129,9 @@ python scripts/archive_inventory.py --budget-mib 8 --strict
 
 完整历史见 [`docs/CHANGELOG.md`](docs/CHANGELOG.md)。README 只保留对当前展示面有直接解释力的四项：
 
+- v1670: 以私有 `AtomicFileWriter` 统一 WAL compact 与 Snapshot save 的同目录临时文件、flush/close、平台替换和失败清理；新增成功、放弃、坏流、父目录、replace 失败和 owner 集成证据，第 354 个 CTest 机械拒绝重复实现回流。
 - v1669: 将三份连续 approval receipt 的 201 个重复字段追加改为六段具名 profile，同时删除五个一行式 digest 转发器；精确门收紧到 613/1，四组上下界故障注入、57 项 receipt 组合测试与原有字节 oracle 全部通过。
 - v1668: 为 receipt builder 增加有序 `BooleanField` profile，把四个重复边界族的 242 次命令式追加改为数据声明；新增 814 个手工追加与 6 个本地 digest 包装器的精确 shrink-only 门，增长和 baseline 未及时收紧都会失败。
 - v1667: 保留公开 CTest 名与 v1662 已冻结的长测试源路径，只缩短触发 MinGW 对象路径警告的内部构建 target；新增 277 项 shrink-only baseline、197 路径风险分数门和三条故障注入，干净 CMake 配置不再产生该警告。
-- v1666: 将 4328 非空行的 shard-readiness 测试拆成五个合同字段域、两段历史 fixture 和一段真实命令 smoke；同一 wrapper 仍对冻结 fixture 与运行时 SHARDJSON 各检查一次，测试源码 1000 行门的 baseline 清零。
 
 维护者入口：[`START_HERE.md`](START_HERE.md) · [`docs/production-excellence-progress.md`](docs/production-excellence-progress.md) · [`治理计划/README.md`](治理计划/README.md)

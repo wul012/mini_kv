@@ -1,0 +1,54 @@
+mini-kv v1670 atomic file writer evidence
+
+implementation:
+- one private AtomicFileWriter owns same-directory temp lifecycle, flush/close,
+  Windows/POSIX target replacement, one-shot commit state and failure cleanup
+- WAL compact and Snapshot save keep separate serialization, counters, formats and APIs
+- old TempWalFile/TempSnapshotFile, both path factories, local replace helper and
+  owner-side MoveFileExW references = 0; owner AtomicFileWriter uses = 2
+- new private writer = 119 nonblank lines; touched production sources =
+  642 -> 612 nonblank lines, net -30
+- direct test target = 145 nonblank lines; touched tests net +179 nonblank lines
+- no fixture, public-header, command-response, WAL2 or Snapshot format change
+
+verification:
+- clang-format dry-run and git diff --check: PASS
+- clean all-target build: PASS, 1056 build steps, 628.9 sec
+- focused docs/architecture/persistence/recovery set: 17/17 PASS
+- final full CTest: 354/354 PASS, 0 failed, 180.07 sec
+- real CLI: SAVE 2, LOAD 2, COMPACT 2, reopen replay 2, alpha=one,
+  beta=two, skipped/truncated/checksum-failed=0, temp survivors=0
+- project docs honesty contract: PASS
+- walkthrough 1038: 3956 Chinese characters before final full verify
+- fixtures/release diff: empty
+- include/minikv public-header diff: empty
+
+failure coverage:
+- successful replacement and repeated-commit rejection
+- scope abandonment and bad-stream cleanup
+- automatic parent creation and parent-file blocking
+- target-directory replacement failure with old target retained
+- process/clock/sequence temp-path uniqueness
+- WAL compact and Snapshot save owner-level failure sentinels
+- source-ownership ratchet rejects duplicated temp/replace helpers
+
+honest boundary:
+- atomic means same-directory replacement of one target path
+- it is not a multi-file transaction
+- it does not claim POSIX fsync-plus-directory-sync durability
+- it changes no router, network, write authority, order authority or restore gate
+
+verification deviations:
+- the first CLI assertion expected bare value lines and rejected the real
+  interactive prefix `mini-kv>`; corrected prompt-aware assertions passed on a
+  fresh directory without changing product code
+- the first full-CTest command wrapper timed out while its child continued;
+  an explicit long-timeout run then completed 354/354. This was local command
+  orchestration overlap, not a source or test failure
+
+archive:
+- 4 selective Playwright MCP screenshots
+- strict inventory: f/1670 = 6 files / 97,469 bytes; f/ = 374 files /
+  11,632,858 bytes; warnings = none
+- no build binaries, raw 720-line CTest log, smoke files or temporary HTML retained
+- remote CI is recorded after commit/tag/push

@@ -49,6 +49,7 @@ configure_file(
 )
 
 add_library(minikv
+    src/atomic_file_writer.cpp
     src/client_history.cpp
     src/command.cpp
     src/command_catalog.cpp
@@ -2200,6 +2201,13 @@ minikv_add_linked_test(
     snapshot_tests
     tests/snapshot_tests.cpp
 )
+
+minikv_add_source_dir_test(
+    minikv_atomic_file_tests
+    atomic_file_tests
+    tests/atomic_file_writer_tests.cpp
+)
+target_include_directories(minikv_atomic_file_tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
 
 minikv_add_linked_test(
     minikv_stress_tests
