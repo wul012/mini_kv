@@ -15,14 +15,17 @@ int main() {
     const auto json = precheck::format_candidate_submission_precheck_json();
     assert_contains(json, "\"contract\":\"shard-route-preview-candidate-document-submission-precheck.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTECANDIDATESUBMISSIONPRECHECKJSON\"");
-    assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/v1411-controlled-read-only-shard-preview-candidate-document-submission-precheck-closeout-roadmap.md\"");
+    assert_contains(
+        json, "\"sourceNodePlan\":\"docs/plans3/"
+              "v1411-controlled-read-only-shard-preview-candidate-document-submission-precheck-closeout-roadmap.md\"");
     assert_contains(json, "\"sourceNodeSubmissionPrecheckReleaseVersion\":\"Node v1411\"");
     assert_contains(json, "\"sourceNodeSubmissionCheckpointCount\":25");
     assert_contains(json, "\"sourceNodeSubmissionValidatorCount\":25");
     assert_contains(json, "\"sourceNodeSubmissionGateCount\":40");
     assert_contains(json, "\"sourceCandidateDocumentRequestPackageReleaseVersion\":\"v895\"");
     assert_contains(json, "\"sourceCandidateRequestPackageIntegrityReleaseVersion\":\"v920\"");
-    assert_contains(json, "\"sourceCandidateRequestPackageIntegrityFixturePath\":\"fixtures/release/shard-readiness-v920.json\"");
+    assert_contains(
+        json, "\"sourceCandidateRequestPackageIntegrityFixturePath\":\"fixtures/release/shard-readiness-v920.json\"");
     assert_contains(json, "\"sourceCandidateRequestPackageIntegrityPublishedStageCount\":25");
     assert_contains(json, "\"sourceCandidateRequestPackageIntegrityComplete\":true");
     assert_contains(json, "\"requestedCandidateFieldCount\":20");
@@ -60,4 +63,5 @@ int main() {
     assert(precheck::candidate_submission_precheck_status() ==
            "route-preview-candidate-submission-precheck-closeout-summary-read-only");
     assert(precheck::published_stage_count() == 10);
+    return 0;
 }

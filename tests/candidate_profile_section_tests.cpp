@@ -16,14 +16,16 @@ int main() {
     assert_contains(json, "\"contract\":\"shard-route-preview-candidate-document-profile-section-renderer-split.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTECANDIDATEPROFILESECTIONJSON\"");
     assert_contains(json, "\"sourceNodeProfileSectionReleaseVersion\":\"Node v1481\"");
-    assert_contains(json, "\"sourceNodeCandidateProfileSectionRendererModule\":\"controlledReadOnlyShardPreviewCandidateDocumentProfileSectionRenderer.ts\"");
+    assert_contains(json, "\"sourceNodeCandidateProfileSectionRendererModule\":"
+                          "\"controlledReadOnlyShardPreviewCandidateDocumentProfileSectionRenderer.ts\"");
     assert_contains(json, "\"sourceNodeProfileSectionGroupCount\":5");
     assert_contains(json, "\"sourceNodeMigratedCandidateProfileSectionCount\":5");
     assert_contains(json, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
     assert_contains(json, "\"sourceNodeRouteMarkdownChanged\":false");
     assert_contains(json, "\"sourceNodeRuntimeBehaviorAdded\":false");
     assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityReleaseVersion\":\"v1010\"");
-    assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityFixturePath\":\"fixtures/release/shard-readiness-v1010.json\"");
+    assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityFixturePath\":\"fixtures/release/"
+                          "shard-readiness-v1010.json\"");
     assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityPublishedStageCount\":25");
     assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityComplete\":true");
     assert_contains(json, "\"candidateProfileSectionReleaseVersion\":\"v1035\"");
@@ -58,4 +60,5 @@ int main() {
     assert(profile::candidate_profile_section_status() ==
            "route-preview-candidate-profile-section-closeout-summary-read-only");
     assert(profile::published_stage_count() == 25);
+    return 0;
 }

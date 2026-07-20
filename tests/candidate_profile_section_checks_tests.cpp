@@ -41,4 +41,5 @@ int main() {
         threw = true;
     }
     assert(threw);
+    return 0;
 }

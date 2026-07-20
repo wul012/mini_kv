@@ -20,7 +20,8 @@ int main() {
                                      "\"shard-route-preview-candidate-document-profile-section-renderer-split.v1\"");
     assert_contains(current_fixture, "\"sourceNodeProfileSectionReleaseVersion\":\"Node v1481\"");
     assert_contains(current_fixture, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityReleaseVersion\":\"v1010\"");
-    assert_contains(current_fixture, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityFixturePath\":\"fixtures/release/shard-readiness-v1010.json\"");
+    assert_contains(current_fixture, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityFixturePath\":\"fixtures/"
+                                     "release/shard-readiness-v1010.json\"");
     assert_contains(current_fixture, "\"candidateProfileSectionReleaseVersion\":\"v1035\"");
     assert_contains(current_fixture, "\"candidateProfileSectionCount\":5");
     assert_contains(current_fixture, "\"freshMiniKvEvidenceRequiredByNode\":false");
@@ -33,4 +34,5 @@ int main() {
     assert_contains(current_fixture, "\"touchesWal\":false");
     assert_contains(current_fixture, "\"executionAllowed\":false");
     assert(source_fixture != current_fixture);
+    return 0;
 }

@@ -19,7 +19,8 @@ int main() {
     assert_contains(current_fixture, "\"shardPreviewCandidateIntakePacket\":{\"contract\":"
                                      "\"shard-route-preview-candidate-document-intake-packet.v1\"");
     assert_contains(current_fixture, "\"sourceCandidateSubmissionPrecheckReleaseVersion\":\"v930\"");
-    assert_contains(current_fixture, "\"sourceCandidateSubmissionPrecheckFixturePath\":\"fixtures/release/shard-readiness-v930.json\"");
+    assert_contains(current_fixture,
+                    "\"sourceCandidateSubmissionPrecheckFixturePath\":\"fixtures/release/shard-readiness-v930.json\"");
     assert_contains(current_fixture, "\"candidateIntakePacketReleaseVersion\":\"v955\"");
     assert_contains(current_fixture, "\"additionalIntakeEchoCreated\":false");
     assert_contains(current_fixture, "\"documentIntakeOpened\":false");
@@ -27,4 +28,5 @@ int main() {
     assert_contains(current_fixture, "\"touchesWal\":false");
     assert_contains(current_fixture, "\"executionAllowed\":false");
     assert(source_fixture != current_fixture);
+    return 0;
 }

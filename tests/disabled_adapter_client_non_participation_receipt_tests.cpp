@@ -50,7 +50,8 @@ void assert_source_precheck_shape(const std::string& text) {
     assert_contains(text, "\"source_precheck\":\"Node v252 disabled adapter client precheck\"");
     assert_contains(text, "\"source_shell\":\"Node v253 test-only adapter shell contract\"");
     assert_contains(text, "\"consumer_hint\":\"Node v254 disabled adapter client upstream echo verification\"");
-    assert_contains(text, "\"source_precheck_profile_version\":\"managed-audit-manual-sandbox-connection-disabled-adapter-client-precheck.v1\"");
+    assert_contains(text, "\"source_precheck_profile_version\":\"managed-audit-manual-sandbox-connection-disabled-"
+                          "adapter-client-precheck.v1\"");
     assert_contains(text, "\"source_precheck_state\":\"disabled-adapter-client-precheck-ready\"");
     assert_contains(text, "\"source_adapter_mode\":\"disabled-client-precheck-only\"");
     assert_contains(text, "\"source_required_env_handle_count\":5");
@@ -82,7 +83,8 @@ void assert_source_precheck_shape(const std::string& text) {
 }
 
 void assert_source_shell_shape(const std::string& text) {
-    assert_contains(text, "\"source_shell_profile_version\":\"managed-audit-manual-sandbox-connection-test-only-adapter-shell-contract.v1\"");
+    assert_contains(text, "\"source_shell_profile_version\":\"managed-audit-manual-sandbox-connection-test-only-"
+                          "adapter-shell-contract.v1\"");
     assert_contains(text, "\"source_shell_state\":\"test-only-adapter-shell-contract-ready\"");
     assert_contains(text, "\"source_shell_mode\":\"test-only-fake-transport-contract\"");
     assert_contains(text, "\"source_transport_kind\":\"fake-in-memory\"");
@@ -202,7 +204,9 @@ int main() {
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"disabled_adapter_client_non_participation_receipt\":");
-    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/disabled-adapter-client-non-participation-receipt.json\"");
+    assert_contains(
+        result.response,
+        "\"receipt_fixture_path\":\"fixtures/release/disabled-adapter-client-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v111\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/111/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -212,4 +216,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

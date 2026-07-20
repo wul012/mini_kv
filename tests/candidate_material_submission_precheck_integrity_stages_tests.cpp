@@ -13,7 +13,8 @@ int main() {
     assert(stages::planned_candidate_material_submission_precheck_integrity_stage_count() == 25);
     assert(catalog.front().release_version == std::string_view{"v986"});
     assert(catalog.front().source_frozen_release_version == std::string_view{"v985"});
-    assert(catalog.front().source_frozen_fixture_path == std::string_view{"fixtures/release/shard-readiness-v985.json"});
+    assert(catalog.front().source_frozen_fixture_path ==
+           std::string_view{"fixtures/release/shard-readiness-v985.json"});
     assert(catalog.back().release_version == std::string_view{"v1010"});
     assert(catalog.back().source_frozen_release_version == std::string_view{"v1009"});
     assert(catalog.back().stage ==
@@ -22,4 +23,5 @@ int main() {
     for (std::size_t index = 0; index < catalog.size(); ++index) {
         assert(catalog[index].sequence == static_cast<int>(index + 1));
     }
+    return 0;
 }

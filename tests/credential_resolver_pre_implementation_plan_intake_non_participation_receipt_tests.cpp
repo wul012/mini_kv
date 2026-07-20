@@ -48,19 +48,17 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 
 void assert_source_plan_shape(const std::string& text) {
     assert_contains(text, "\"source_plan_intake\":\"Node v270 credential resolver pre-implementation plan intake\"");
-    assert_contains(
-        text,
-        "\"source_node_v269\":\"Node v269 credential resolver production-readiness blocked-decision upstream echo verification\"");
+    assert_contains(text, "\"source_node_v269\":\"Node v269 credential resolver production-readiness blocked-decision "
+                          "upstream echo verification\"");
     assert_contains(
         text,
         "\"consumer_hint\":\"Node v272 credential resolver pre-implementation intake upstream echo verification\"");
+    assert_contains(text, "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-"
+                          "pre-implementation-plan-intake.v1\"");
     assert_contains(text,
-                    "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-pre-implementation-plan-intake.v1\"");
-    assert_contains(
-        text,
-        "\"source_route_path\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-pre-implementation-plan-intake\"");
-    assert_contains(text,
-                    "\"source_plan_intake_state\":\"credential-resolver-pre-implementation-plan-intake-ready\"");
+                    "\"source_route_path\":\"/api/v1/audit/"
+                    "managed-audit-manual-sandbox-connection-credential-resolver-pre-implementation-plan-intake\"");
+    assert_contains(text, "\"source_plan_intake_state\":\"credential-resolver-pre-implementation-plan-intake-ready\"");
     assert_contains(text, "\"source_ready_for_plan_intake\":true");
     assert_contains(text, "\"source_plan_intake_only\":true");
     assert_contains(text, "\"source_read_only_plan_intake\":true");
@@ -82,12 +80,10 @@ void assert_source_plan_shape(const std::string& text) {
 void assert_source_node_v269_shape(const std::string& text) {
     assert_contains(text, "\"source_node_v269_reference\":");
     assert_contains(text, "\"source_version\":\"Node v269\"");
-    assert_contains(
-        text,
-        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-production-readiness-blocked-decision-upstream-echo-verification.v1\"");
-    assert_contains(
-        text,
-        "\"verification_state\":\"credential-resolver-production-readiness-blocked-decision-upstream-echo-verification-ready\"");
+    assert_contains(text, "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-"
+                          "production-readiness-blocked-decision-upstream-echo-verification.v1\"");
+    assert_contains(text, "\"verification_state\":\"credential-resolver-production-readiness-blocked-decision-upstream-"
+                          "echo-verification-ready\"");
     assert_contains(text, "\"ready_for_blocked_decision_upstream_echo_verification\":true");
     assert_contains(text,
                     "\"verification_digest\":\"6acb216ec39c0abb11b880ee9f968f85cec25faf35c5b13f3fc4b460aee489d0\"");
@@ -254,12 +250,11 @@ int main() {
     assert_path_exists(manifest_path);
 
     const auto receipt = read_fixture_text(receipt_path);
-    assert_contains(
-        receipt,
-        "\"receipt_version\":\"mini-kv-credential-resolver-pre-implementation-plan-intake-non-participation-receipt.v1\"");
+    assert_contains(receipt, "\"receipt_version\":\"mini-kv-credential-resolver-pre-implementation-plan-intake-non-"
+                             "participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v119\"");
-    assert_contains(receipt,
-                    "\"path\":\"fixtures/release/credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json\"");
+    assert_contains(receipt, "\"path\":\"fixtures/release/"
+                             "credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json\"");
     assert_contains(receipt, "\"credential_resolver_pre_implementation_plan_intake_non_participation_receipt\":");
     assert_contains(receipt, "\"current_release_version\":\"v119\"");
     assert_contains(receipt, "\"current_artifact_path_hint\":\"c/119/\"");
@@ -282,16 +277,14 @@ int main() {
     assert_plan_intake_shape(smoke);
     assert_checks_and_summary(smoke);
     assert_non_participation_flags(smoke);
-    assert_contains(smoke,
-                    "Node v272 may verify the mini-kv v119 credential resolver pre-implementation plan intake non-participation receipt");
+    assert_contains(smoke, "Node v272 may verify the mini-kv v119 credential resolver pre-implementation plan intake "
+                           "non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
-    assert_contains(
-        manifest,
-        "\"minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests\"");
-    assert_contains(
-        manifest,
-        "\"path\":\"fixtures/release/credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json\"");
+    assert_contains(manifest,
+                    "\"minikv_credential_resolver_pre_implementation_plan_intake_non_participation_receipt_tests\"");
+    assert_contains(manifest, "\"path\":\"fixtures/release/"
+                              "credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json\"");
     assert_contains(manifest, "\"credential_resolver_pre_implementation_plan_intake_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_contains(
@@ -311,9 +304,9 @@ int main() {
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response,
                     "\"credential_resolver_pre_implementation_plan_intake_non_participation_receipt\":");
-    assert_contains(
-        result.response,
-        "\"receipt_fixture_path\":\"fixtures/release/credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json\"");
+    assert_contains(result.response,
+                    "\"receipt_fixture_path\":\"fixtures/release/"
+                    "credential-resolver-pre-implementation-plan-intake-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v119\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/119/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -325,4 +318,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

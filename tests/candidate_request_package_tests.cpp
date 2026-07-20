@@ -14,10 +14,15 @@ int main() {
 
     const auto json = package::format_candidate_document_request_package_closeout_json();
     assert_contains(json, "\"contract\":\"shard-route-preview-candidate-document-request-package-closeout.v1\"");
-    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUESTPACKAGECLOSEOUTJSON\"");
-    assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/v1386-controlled-read-only-shard-preview-candidate-document-request-package-closeout-roadmap.md\"");
+    assert_contains(json, "\"command\":"
+                          "\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECANDIDATEDOCUMENTREQUEST"
+                          "PACKAGECLOSEOUTJSON\"");
+    assert_contains(
+        json, "\"sourceNodePlan\":\"docs/plans3/"
+              "v1386-controlled-read-only-shard-preview-candidate-document-request-package-closeout-roadmap.md\"");
     assert_contains(json, "\"sourceComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v880\"");
-    assert_contains(json, "\"sourceComparedPackageEvidenceIntakeAuditFixturePath\":\"fixtures/release/shard-readiness-v880.json\"");
+    assert_contains(
+        json, "\"sourceComparedPackageEvidenceIntakeAuditFixturePath\":\"fixtures/release/shard-readiness-v880.json\"");
     assert_contains(json, "\"sourceComparedPackageEvidenceIntakeAuditPublishedStageCount\":20");
     assert_contains(json, "\"sourceComparedPackageEvidenceIntakeAuditChainComplete\":true");
     assert_contains(json, "\"candidateDocumentRequestPackageReleaseVersion\":\"v895\"");
@@ -54,9 +59,12 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = package::candidate_document_request_package_digest_marker();
-    assert(digest.find("v895-route-preview-candidate-document-request-package-archive-closeout-final-summary-15-of-15-stages") !=
-           std::string::npos);
+    assert(
+        digest.find(
+            "v895-route-preview-candidate-document-request-package-archive-closeout-final-summary-15-of-15-stages") !=
+        std::string::npos);
     assert(package::candidate_document_request_package_status() ==
            "route-preview-candidate-document-request-package-archive-closeout-final-summary-read-only");
     assert(package::published_stage_count() == 15);
+    return 0;
 }

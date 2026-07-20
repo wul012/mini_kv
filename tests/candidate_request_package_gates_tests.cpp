@@ -29,4 +29,5 @@ int main() {
     assert_contains(all, "\"gateCode\":\"closeout-read-only-gate\"");
     assert_contains(all, "\"gateBypassed\":false");
     assert_contains(all, "\"executionAllowed\":false");
+    return 0;
 }

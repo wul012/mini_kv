@@ -48,11 +48,17 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 
 void assert_source_contract_shape(const std::string& text) {
     assert_contains(text, "\"source_contract\":\"Node v264 credential resolver test-only shell contract\"");
-    assert_contains(text, "\"source_verification\":\"Node v263 disabled resolver precheck upstream echo verification\"");
+    assert_contains(text,
+                    "\"source_verification\":\"Node v263 disabled resolver precheck upstream echo verification\"");
     assert_contains(text, "\"consumer_hint\":\"Node v265 test-only resolver shell upstream echo verification\"");
-    assert_contains(text, "\"source_contract_profile_version\":\"managed-audit-manual-sandbox-connection-sandbox-endpoint-credential-resolver-test-only-shell-contract.v1\"");
-    assert_contains(text, "\"source_contract_route_path\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-sandbox-endpoint-credential-resolver-test-only-shell-contract\"");
-    assert_contains(text, "\"source_contract_state\":\"sandbox-endpoint-credential-resolver-test-only-shell-contract-ready\"");
+    assert_contains(text, "\"source_contract_profile_version\":\"managed-audit-manual-sandbox-connection-sandbox-"
+                          "endpoint-credential-resolver-test-only-shell-contract.v1\"");
+    assert_contains(
+        text,
+        "\"source_contract_route_path\":\"/api/v1/audit/"
+        "managed-audit-manual-sandbox-connection-sandbox-endpoint-credential-resolver-test-only-shell-contract\"");
+    assert_contains(
+        text, "\"source_contract_state\":\"sandbox-endpoint-credential-resolver-test-only-shell-contract-ready\"");
     assert_contains(text, "\"source_shell_mode\":\"test-only-fake-resolver-contract\"");
     assert_contains(text, "\"source_shell_name\":\"ManagedAuditSandboxEndpointCredentialResolverTestOnlyShell\"");
     assert_contains(text, "\"source_resolver_kind\":\"fake-in-memory\"");
@@ -74,8 +80,10 @@ void assert_source_contract_shape(const std::string& text) {
 
 void assert_source_v263_shape(const std::string& text) {
     assert_contains(text, "\"source_node_v263_ready\":true");
-    assert_contains(text, "\"source_node_v263_verification_state\":\"sandbox-endpoint-credential-resolver-disabled-precheck-upstream-echo-verification-ready\"");
-    assert_contains(text, "\"source_node_v263_verification_mode\":\"java-v106-plus-mini-kv-v115-disabled-credential-resolver-precheck-upstream-echo-verification-only\"");
+    assert_contains(text, "\"source_node_v263_verification_state\":\"sandbox-endpoint-credential-resolver-disabled-"
+                          "precheck-upstream-echo-verification-ready\"");
+    assert_contains(text, "\"source_node_v263_verification_mode\":\"java-v106-plus-mini-kv-v115-disabled-credential-"
+                          "resolver-precheck-upstream-echo-verification-only\"");
     assert_contains(text, "\"source_node_v263_span\":\"Node v262 + Java v106 + mini-kv v115\"");
     assert_contains(text, "\"source_node_v262_ready\":true");
     assert_contains(text, "\"source_java_v106_echo_ready\":true");
@@ -202,8 +210,8 @@ void assert_probe_and_boundary_flags(const std::string& text) {
 } // namespace
 
 int main() {
-    const auto receipt_path = std::filesystem::path{"fixtures"} / "release" /
-                              "test-only-resolver-shell-non-participation-receipt.json";
+    const auto receipt_path =
+        std::filesystem::path{"fixtures"} / "release" / "test-only-resolver-shell-non-participation-receipt.json";
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto manifest_path = std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json";
     const std::vector<std::string> read_commands = {
@@ -212,8 +220,8 @@ int main() {
         "HEALTH",
         "STATSJSON",
     };
-    const auto expected_digest = minikv::runtime_evidence_receipts::
-        test_only_resolver_shell_non_participation_receipt_digest(read_commands);
+    const auto expected_digest =
+        minikv::runtime_evidence_receipts::test_only_resolver_shell_non_participation_receipt_digest(read_commands);
 
     assert_path_exists(receipt_path);
     assert_path_exists(smoke_path);
@@ -247,17 +255,14 @@ int main() {
     assert_source_v263_shape(smoke);
     assert_shell_contract_details(smoke);
     assert_probe_and_boundary_flags(smoke);
-    assert_contains(smoke,
-                    "Node v265 may verify the mini-kv v116 test-only resolver shell non-participation receipt");
+    assert_contains(smoke, "Node v265 may verify the mini-kv v116 test-only resolver shell non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
     assert_contains(manifest, "\"minikv_test_only_resolver_shell_non_participation_receipt_tests\"");
-    assert_contains(manifest,
-                    "\"path\":\"fixtures/release/test-only-resolver-shell-non-participation-receipt.json\"");
+    assert_contains(manifest, "\"path\":\"fixtures/release/test-only-resolver-shell-non-participation-receipt.json\"");
     assert_contains(manifest, "\"test_only_resolver_shell_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
-    assert_contains(manifest,
-                    "SMOKEJSON exposes test_only_resolver_shell_non_participation_receipt for Node v265");
+    assert_contains(manifest, "SMOKEJSON exposes test_only_resolver_shell_non_participation_receipt for Node v265");
     assert_source_contract_shape(manifest);
     assert_source_v263_shape(manifest);
     assert_failure_mapping_and_guards(manifest);
@@ -285,4 +290,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

@@ -15,13 +15,11 @@ int main() {
     assert(records.front().source_frozen_release_version == std::string{"v880"});
     assert(records.back().release_version == std::string{"v895"});
     assert(records.back().source_frozen_release_version == std::string{"v894"});
-    assert(records.back().stage == std::string{
-               "route-preview-candidate-document-request-package-archive-closeout-final-summary"});
+    assert(records.back().stage ==
+           std::string{"route-preview-candidate-document-request-package-archive-closeout-final-summary"});
 
     const auto report = minikv::shard_route_preview_stage_chain::inspect_stage_chain(
-        records,
-        15,
-        stages::planned_candidate_document_request_package_stage_count(),
+        records, 15, stages::planned_candidate_document_request_package_stage_count(),
         stages::first_candidate_document_request_package_release_number());
     assert(report.published_stage_count == 15);
     assert(report.sequences_contiguous);
@@ -29,4 +27,5 @@ int main() {
     assert(report.source_frozen_release_versions_contiguous);
     assert(report.source_frozen_fixture_paths_contiguous);
     assert(report.chain_complete);
+    return 0;
 }

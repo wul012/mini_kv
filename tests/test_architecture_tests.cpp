@@ -17,6 +17,9 @@ namespace {
 constexpr std::size_t test_source_limit = 1000;
 constexpr std::size_t test_target_name_limit = 40;
 constexpr std::size_t object_path_score_limit = 197;
+constexpr std::size_t linked_test_count = 342;
+constexpr std::size_t test_shard_count = 8;
+constexpr std::size_t noarg_main_count = 344;
 
 struct SourceSize {
     std::string path;
@@ -263,6 +266,38 @@ SourceSizes scan_test_sources(const std::filesystem::path& source_root) {
     return sources;
 }
 
+bool has_explicit_main_return(std::string_view source_text) {
+    std::istringstream input{std::string{source_text}};
+    std::string previous;
+    std::string current;
+    std::string line;
+    while (std::getline(input, line)) {
+        auto trimmed = trim_copy(line);
+        if (!trimmed.empty()) {
+            previous = std::move(current);
+            current = std::move(trimmed);
+        }
+    }
+    return previous == "return 0;" && current == "}";
+}
+
+void verify_explicit_main_returns(const std::filesystem::path& source_root, const SourceSizes& sources) {
+    std::size_t observed = 0;
+    for (const auto& source : sources) {
+        const auto source_text = read_text(source_root / source.path);
+        if (count_occurrences(source_text, "int main()") == 0) {
+            continue;
+        }
+        ++observed;
+        if (!has_explicit_main_return(source_text)) {
+            throw std::runtime_error{"no-argument test main must end with explicit return 0: " + source.path};
+        }
+    }
+    if (observed != noarg_main_count) {
+        throw std::runtime_error{"no-argument test main census changed without updating the link-shard contract"};
+    }
+}
+
 void verify_source_sizes(const SourceSizes& sources, const SizeBaseline& baseline) {
     std::map<std::string, std::size_t> oversized;
     for (const auto& source : sources) {
@@ -366,6 +401,37 @@ void verify_red_paths(const std::filesystem::path& source_root) {
                           "object path score");
 }
 
+void require_fragment(std::string_view text, std::string_view fragment, std::string_view source) {
+    if (text.find(fragment) == std::string_view::npos) {
+        throw std::runtime_error{std::string{source} + " is missing test-link fragment: " + std::string{fragment}};
+    }
+}
+
+void verify_link_shards(const std::filesystem::path& source_root, std::string_view cmake_text) {
+    const auto linked_calls = count_occurrences(cmake_text, "minikv_add_linked_test(") +
+                              count_occurrences(cmake_text, "minikv_add_source_dir_test(");
+    if (linked_calls != linked_test_count) {
+        throw std::runtime_error{"linked-test census changed without updating the shard contract"};
+    }
+
+    require_fragment(cmake_text, "option(MINIKV_BUNDLE_TESTS", "CMakeLists.txt");
+    require_fragment(cmake_text, "set(MINIKV_TEST_SHARD_COUNT 8)", "CMakeLists.txt");
+    require_fragment(cmake_text, "instrumented lanes require MINIKV_BUNDLE_TESTS=OFF", "CMakeLists.txt");
+    require_fragment(cmake_text, "minikv_finalize_test_bundle()", "CMakeLists.txt");
+
+    const auto helper_text = read_text(source_root / "cmake" / "MinikvTesting.cmake");
+    require_fragment(helper_text, "string(SHA256 case_digest", "MinikvTesting.cmake");
+    require_fragment(helper_text, "add_library(${target_name} OBJECT", "MinikvTesting.cmake");
+    require_fragment(helper_text, "main=${entry_symbol}", "MinikvTesting.cmake");
+    require_fragment(helper_text, "add_executable(${target_name}", "MinikvTesting.cmake legacy path");
+    require_fragment(helper_text, "minikv_test_shard_${shard_index}", "MinikvTesting.cmake");
+
+    const auto runner_text = read_text(source_root / "cmake" / "minikv_test_runner.cpp.in");
+    require_fragment(runner_text, "if (argc != 2)", "minikv_test_runner.cpp.in");
+    require_fragment(runner_text, "return test.entry();", "minikv_test_runner.cpp.in");
+    require_fragment(runner_text, "unknown bundled test case", "minikv_test_runner.cpp.in");
+}
+
 } // namespace
 
 int main() {
@@ -373,9 +439,12 @@ int main() {
     const auto baseline = read_baseline(source_root / "config" / "test-source-size-baseline.txt");
     const auto sources = scan_test_sources(source_root);
     verify_source_sizes(sources, baseline);
+    verify_explicit_main_returns(source_root, sources);
     const auto target_baseline = read_target_baseline(source_root / "config" / "test-target-name-baseline.txt");
-    const auto registrations = parse_test_registrations(read_text(source_root / "CMakeLists.txt"));
+    const auto cmake_text = read_text(source_root / "CMakeLists.txt");
+    const auto registrations = parse_test_registrations(cmake_text);
     const auto target_metrics = verify_test_targets(source_root, registrations, target_baseline);
+    verify_link_shards(source_root, cmake_text);
     verify_suite(source_root, "config/command-test-parts.txt", "tests/command_tests.cpp", "CommandFixture",
                  {{"assert(", 457}, {"assert_response_contains(", 2447}});
     verify_suite(source_root, "config/shard-test-parts.txt", "tests/shard_readiness_tests.cpp", "ShardFixture",
@@ -387,6 +456,7 @@ int main() {
     std::cout << "test architecture: sources=" << sources.size() << " limit=" << test_source_limit
               << " oversized=" << baseline.size() << " cmake_tests=" << target_metrics.registrations
               << " long_targets=" << target_metrics.long_targets << " max_path_score=" << target_metrics.max_path_score
-              << '\n';
+              << " linked_cases=" << linked_test_count << " shards=" << test_shard_count
+              << " explicit_mains=" << noarg_main_count << '\n';
     return 0;
 }

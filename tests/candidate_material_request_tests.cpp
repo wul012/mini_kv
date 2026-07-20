@@ -63,4 +63,5 @@ int main() {
     assert(material::candidate_material_request_status() ==
            "route-preview-candidate-material-request-closeout-summary-read-only");
     assert(material::published_stage_count() == 10);
+    return 0;
 }

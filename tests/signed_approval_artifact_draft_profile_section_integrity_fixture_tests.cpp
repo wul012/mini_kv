@@ -21,7 +21,8 @@ int main() {
                     "\"shardPreviewSignedApprovalArtifactDraftProfileSectionIntegrity\":{\"contract\":"
                     "\"shard-route-preview-signed-approval-artifact-draft-profile-section-integrity.v1\"");
     assert_contains(current_fixture, "\"sourceProfileSectionReleaseVersion\":\"v1060\"");
-    assert_contains(current_fixture, "\"sourceProfileSectionFixturePath\":\"fixtures/release/shard-readiness-v1060.json\"");
+    assert_contains(current_fixture,
+                    "\"sourceProfileSectionFixturePath\":\"fixtures/release/shard-readiness-v1060.json\"");
     assert_contains(current_fixture, "\"signedApprovalArtifactDraftProfileSectionIntegrityReleaseVersion\":\"v1085\"");
     assert_contains(current_fixture, "\"signedApprovalArtifactDraftProfileSectionIntegrityOnly\":true");
     assert_contains(current_fixture, "\"sourceProfileSectionFrozen\":true");
@@ -36,4 +37,5 @@ int main() {
     assert_contains(current_fixture, "\"touchesWal\":false");
     assert_contains(current_fixture, "\"executionAllowed\":false");
     assert(source_fixture != current_fixture);
+    return 0;
 }

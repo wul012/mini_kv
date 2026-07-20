@@ -13,7 +13,15 @@ The core layers are:
 
 The current default CTest inventory is 354. The original K5/K6 suite has since gained executable orientation, OSFS, receipt-parity/census, documentation-honesty, E1-E10 final-evidence, OSFS resilience, test-architecture, and atomic-file contracts. The count is a navigation aid rather than a quality claim; the focused behavior and failure condition of each gate remain the evidence.
 
-The test-architecture contract scans all test translation units and enforces a 1,000-nonblank-line ceiling with an empty current waiver baseline. Command and shard-readiness suites compile from versioned manifests; every part entry must have one definition and one call in the suite graph. Exact assertion-token censuses, plus explicit dual shard fixture/runtime wrapper calls, make omitted parts and accidental migration shrinkage fail mechanically. The same contract parses all 344 `minikv_add_*_test` registrations, requires every internal target over 40 characters to belong to the 277-entry shrink-only baseline, and caps `target.length + source_path.length` at the exact current maximum of 197. Public CTest names stay independent from shorter private build identities; injected new-long-name, stale-baseline, and over-budget registrations prove all three failure paths.
+The test-architecture contract scans all test translation units and enforces a 1,000-nonblank-line ceiling with an empty current waiver baseline. Command and shard-readiness suites compile from versioned manifests; every part entry must have one definition and one call in the suite graph. Exact assertion-token censuses, plus explicit dual shard fixture/runtime wrapper calls, make omitted parts and accidental migration shrinkage fail mechanically. The same contract parses all 345 `minikv_add_*_test` registrations, requires every internal target over 40 characters to belong to the 277-entry shrink-only baseline, and caps `target.length + source_path.length` at the exact current maximum of 197. Public CTest names stay independent from shorter private build identities; injected new-long-name, stale-baseline, and over-budget registrations prove all three failure paths.
+
+## Test Link Topology
+
+Ordinary builds set `MINIKV_BUNDLE_TESTS=ON` by default. The 342 tests that link `minikv` remain separate object targets, preserving their source lists, private include paths, compile definitions, and suite-part manifests. A stable SHA-256 prefix maps each public CTest name to one of 8 runner executables; each CTest invocation starts a fresh runner process and dispatches exactly one named entry. The three standalone test programs and nine direct CMake-script tests remain outside the bundle, so the public inventory stays at 354.
+
+The architecture contract pins 342 linked cases, 8 shards, 344 no-argument test entries with explicit `return 0`, and the runner's missing-argument and unknown-case red paths. Default and legacy `ctest -N` inventories must contain the same 354 names in the same order. This is link deduplication, not in-process batch execution.
+
+Use `-DMINIKV_BUNDLE_TESTS=OFF` when a debugger or local workflow specifically needs one executable per test. In a fresh build directory, `MINIKV_SANITIZE=ON` and `MINIKV_COVERAGE=ON` default to that legacy topology so gcov sidecars and sanitizer image initialization retain their existing isolation. A reused cache may still contain bundle ON; that combination, or an explicit instrumented-plus-bundle request, is a configuration error rather than a silent precedence rule. Set bundle OFF explicitly or keep instrumented lanes in separate build directories.
 
 Receipt structure has two independent protection layers. The owner census requires 27 builder-backed formatter owners, zero pending owners, and one named no-formatter waiver. Its implementation census scans the receipt `.cpp` files and private receipt support headers, then requires exactly 613 manual `fields.push_back(...)` calls and one canonical `receipt_digest(...)` wrapper. A count above the baseline is regression; a count below it is also a failure until the same change tightens the checked-in baseline. Deliberate 612/614 manual-push probes and 0/2 digest-wrapper probes protect both red paths, so future cleanup cannot claim progress while leaving a stale floor behind or delete a genuinely shared helper merely to reach zero.
 
@@ -52,9 +60,9 @@ The server host default is independently asserted as `127.0.0.1`; tests that nee
 
 GitHub Actions should keep these signals visible:
 
-- Linux, macOS, and Windows CMake build plus CTest.
-- Ubuntu sanitizer lane.
-- Ubuntu coverage lane with a 90% floor for core modules, tightened in v1658 from the fresh 2345-line / 2122-executed / 90% CI result.
+- Linux, macOS, and Windows CMake build plus CTest using the default 8-runner link topology.
+- Ubuntu sanitizer lane using the legacy per-test-executable topology.
+- Ubuntu coverage lane using the legacy per-test-executable topology with a 90% floor for core modules, tightened in v1658 from the fresh 2345-line / 2122-executed / 90% CI result.
 - Changed-file clang-format gate.
 - Archive inventory warning lane.
 
@@ -77,6 +85,6 @@ Those behaviors require separate system-level tests if the project ever chooses 
 
 ## Cross-Project Alignment
 
-The tested state should be described as single-project validation plus cross-project contract alignment unless there is real integration evidence. Valid integration evidence would be a command or test proving Node actually consumes mini-kv runtime output, Java actually preserves order authority, and no side project can trigger mini-kv writes, restore/load/compact execution, service startup, credential reads, deployment, rollback, or managed audit writes.
+The mini-kv CI suite remains single-project validation. Separately, the reviewed env-gated capstone starts a fresh real `minikv_cli` process from Node and consumes `SMOKEJSON` plus `CHECKJSON` while Java retains order authority and the no-write/no-restore boundaries are asserted. That evidence supports only the repository's stated label: verified read-only cross-project integration on one machine, with no execution authority.
 
-Until that exists, mini-kv evidence remains a local C++ proof surface prepared for downstream review, not a live four-project integration guarantee.
+It does not establish production deployment, multi-host behavior, automatic service startup, credential reads, rollback execution, managed-audit writes, or permission for Node/Java to trigger mini-kv writes, restore, load, or compact. Those claims still require separate system-level evidence.

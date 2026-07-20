@@ -14,8 +14,20 @@ set(MINIKV_CURRENT_ARCHIVE_VERSION
 option(MINIKV_SANITIZE "Enable AddressSanitizer and UndefinedBehaviorSanitizer for GCC/Clang Debug checks" OFF)
 option(MINIKV_COVERAGE "Enable gcov-compatible coverage instrumentation for GCC/Clang Debug checks" OFF)
 
+set(_minikv_bundle_tests_default ON)
+if(MINIKV_SANITIZE OR MINIKV_COVERAGE)
+    set(_minikv_bundle_tests_default OFF)
+endif()
+option(MINIKV_BUNDLE_TESTS "Link ordinary tests through stable shared runners" ${_minikv_bundle_tests_default})
+unset(_minikv_bundle_tests_default)
+set(MINIKV_TEST_SHARD_COUNT 8)
+
 if(MINIKV_SANITIZE AND MINIKV_COVERAGE)
     message(FATAL_ERROR "MINIKV_SANITIZE and MINIKV_COVERAGE are separate CI lanes; enable only one at a time")
+endif()
+
+if((MINIKV_SANITIZE OR MINIKV_COVERAGE) AND MINIKV_BUNDLE_TESTS)
+    message(FATAL_ERROR "instrumented lanes require MINIKV_BUNDLE_TESTS=OFF to preserve per-test gcov/sanitizer isolation")
 endif()
 
 if(MINIKV_SANITIZE)
@@ -2580,3 +2592,5 @@ minikv_add_source_dir_test(
     input_hardening_candidate_gate_receipt_tests
     tests/credential_resolver_implementation_candidate_gate_input_hardening_non_participation_receipt_tests.cpp
 )
+
+minikv_finalize_test_bundle()

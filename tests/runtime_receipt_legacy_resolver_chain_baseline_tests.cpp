@@ -129,4 +129,5 @@ int main() {
         }
         assert(*fixture_object == runtime_object);
     }
+    return 0;
 }

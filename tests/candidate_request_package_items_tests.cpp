@@ -29,4 +29,5 @@ int main() {
     assert_contains(all, "\"itemCode\":\"archive_closeout_reference\"");
     assert_contains(all, "\"documentMaterialAccepted\":false");
     assert_contains(all, "\"payloadImported\":false");
+    return 0;
 }

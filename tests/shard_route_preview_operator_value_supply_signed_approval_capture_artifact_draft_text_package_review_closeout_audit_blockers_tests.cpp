@@ -12,14 +12,16 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 } // namespace
 
 int main() {
-    namespace blockers =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_blockers;
+    namespace blockers = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_blockers;
 
     const auto records = blockers::signed_approval_capture_artifact_draft_text_package_review_closeout_audit_blockers();
     assert(records.size() == 25);
     assert(records.front().blocker_code == std::string{"source_freeze_audit_blocker"});
     assert(records.back().blocker_code == std::string{"closeout_audit_summary_blocker"});
-    assert(blockers::planned_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_blocker_count() == 25);
+    assert(
+        blockers::planned_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_blocker_count() ==
+        25);
 
     const auto first =
         blockers::format_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_blockers_json(1);
@@ -33,4 +35,5 @@ int main() {
     assert_contains(all, "\"blockerCode\":\"closeout_audit_summary_blocker\"");
     assert_contains(all, "\"runtimeExecutionBlocked\":true");
     assert_contains(all, "\"writeRouteBlocked\":true");
+    return 0;
 }

@@ -12,8 +12,8 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 int main() {
     namespace validation = minikv::shard_preview_candidate_profile_section_validation;
 
-    const auto json = validation::format_candidate_profile_section_validation_json(
-        25, true, 5, 5, false, false, false, 25, 25, 25, 25);
+    const auto json = validation::format_candidate_profile_section_validation_json(25, true, 5, 5, false, false, false,
+                                                                                   25, 25, 25, 25);
     assert_contains(json, "\"candidateProfileSectionValidationPassed\":true");
     assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityPublishedStageCount\":25");
     assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckIntegrityComplete\":true");
@@ -33,8 +33,9 @@ int main() {
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
 
-    const auto failing = validation::format_candidate_profile_section_validation_json(
-        25, true, 5, 4, false, false, false, 25, 25, 25, 25);
+    const auto failing = validation::format_candidate_profile_section_validation_json(25, true, 5, 4, false, false,
+                                                                                      false, 25, 25, 25, 25);
     assert_contains(failing, "\"candidateProfileSectionValidationPassed\":false");
     assert_contains(failing, "\"rendererSplitScopeAligned\":false");
+    return 0;
 }

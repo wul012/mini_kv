@@ -29,4 +29,5 @@ int main() {
     const auto failed = validation::format_candidate_material_request_validation_json(24, true, 25, 25, 25, 25, 10, 10);
     assert_contains(failed, "\"candidateMaterialRequestValidationPassed\":false");
     assert_contains(failed, "\"sourceIntakePacketFrozen\":false");
+    return 0;
 }

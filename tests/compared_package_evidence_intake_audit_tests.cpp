@@ -10,16 +10,27 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 } // namespace
 
 int main() {
-    namespace audit = minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit;
+    namespace audit = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit;
 
-    const auto json = audit::format_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_json();
-    assert_contains(json, "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-audit.v1\"");
-    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\"");
+    const auto json =
+        audit::format_signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_json();
+    assert_contains(json, "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-"
+                          "draft-text-package-compared-package-evidence-intake-audit.v1\"");
+    assert_contains(
+        json,
+        "\"command\":"
+        "\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPAREDPACKAGEEVIDENCEINTAKEAUDITJSON\"");
     assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v860\"");
-    assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditFixturePath\":\"fixtures/release/shard-readiness-v860.json\"");
+    assert_contains(
+        json,
+        "\"sourceDraftTextPackageComparisonCloseoutAuditFixturePath\":\"fixtures/release/shard-readiness-v860.json\"");
     assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftTextPackageComparisonCloseoutAuditChainComplete\":true");
-    assert_contains(json, "\"draftTextPackageComparedPackageEvidenceIntakeAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-archive-closeout-final-guard-summary\"");
+    assert_contains(
+        json,
+        "\"draftTextPackageComparedPackageEvidenceIntakeAuditStage\":\"route-preview-value-supply-signed-approval-"
+        "capture-artifact-draft-text-package-compared-package-evidence-intake-archive-closeout-final-guard-summary\"");
     assert_contains(json, "\"draftTextPackageComparedPackageEvidenceIntakeAuditReleaseVersion\":\"v880\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v879\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v879.json\"");
@@ -45,7 +56,10 @@ int main() {
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
 
-    const auto digest = audit::signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_digest_marker();
-    assert(digest.find("v880-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-package-evidence-intake-archive-closeout-final-guard-summary") != std::string::npos);
+    const auto digest = audit::
+        signed_approval_capture_artifact_draft_text_package_compared_package_evidence_intake_audit_digest_marker();
+    assert(digest.find("v880-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-compared-"
+                       "package-evidence-intake-archive-closeout-final-guard-summary") != std::string::npos);
     assert(audit::published_stage_count() == 20);
+    return 0;
 }

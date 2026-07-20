@@ -12,7 +12,7 @@ Features:
 - Runtime JSON evidence for commands and snapshots
 - Command execution audit with SMOKEJSON/INFOJSON/KEYSJSON outputs
 - Independent OSFS course-design filesystem with an on-disk image, MFD/UFD directories, persistent users, permissions, descriptor offsets, direct/single-indirect blocks, read-only FSCK, and USERADD/PASSWD
-- CMake builds with 354 registered tests across command, WAL, snapshot, atomic-file, RESP, TCP, OSFS, fixture, archive, and governance evidence suites
+- CMake builds with 354 registered tests across command, WAL, snapshot, atomic-file, RESP, TCP, OSFS, fixture, archive, and governance evidence suites; ordinary builds link 342 cases through 8 stable runners while instrumented builds retain per-test executables
 
 ## Why it matters
 
@@ -44,11 +44,11 @@ Follow the README for detailed command usage and screenshots.
 2. Command dispatch table and planned command-family split
 3. C++20 thread-safe data structures with snapshot/recovery support
 4. OSFS MFD/UFD, indirect-block, FSCK, and user-administration mechanisms with corruption and reopen tests
-5. 354 registered tests plus runtime JSON verification
+5. 354 registered tests with stable 8-runner default linking plus runtime JSON verification
 
 ## Latest version summary
 
-Current focus: **v1670 atomic file writer unification**. WAL compaction and Snapshot save now share one private same-directory temporary-file writer for parent creation, flush/close, platform replacement, and failure cleanup while retaining separate serialization and public APIs. The 354th CTest directly proves success, abandonment, bad-stream, parent-creation, replacement-failure, unique-path, and single-owner architecture paths. WAL2/snapshot formats, fixtures, command responses, and the independent OSFS layer are unchanged.
+Current focus: **v1671 stable test link shards**. The 342 ordinary tests still compile as separate object targets and keep all 354 public CTest names, order, properties, and one-case-per-process isolation, but ordinary builds now perform 8 shard-runner links instead of 342 repeated test links. Core-touch executable links fall from 347 to 13 and total test-binary bytes fall by about 89.6%. Fresh coverage/sanitizer build directories and explicit `MINIKV_BUNDLE_TESTS=OFF` configurations retain the legacy per-test-executable topology; a reused cache that still says bundle ON fails fast. Product sources, fixtures, command responses, WAL/Snapshot formats, and the independent OSFS layer are unchanged.
 
 Version scheme note: the CMake project version is still `0.102.0` because several historical runtime receipts intentionally identify the frozen v102 runtime fixture. Git tags carry the high-level delivery cadence (`v1608`, `v1609`, and later). The generated `minikv/version.hpp` exposes the CMake version plus a configurable archive hint; changing the hint is a contract decision, not a routine tag bump.
 

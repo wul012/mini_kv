@@ -5,8 +5,8 @@
 #include <string>
 
 int main() {
-    namespace stages =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_preflight_stages;
+    namespace stages = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_preflight_stages;
 
     const auto records = stages::signed_approval_capture_artifact_draft_text_package_review_preflight_stages();
     assert(records.size() == 25);
@@ -14,16 +14,15 @@ int main() {
     assert(stages::planned_signed_approval_capture_artifact_draft_text_package_review_preflight_stage_count() == 25);
     assert(records.front().sequence == 1);
     assert(records.front().release_version == std::string{"v786"});
-    assert(records.front().stage == std::string{"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-preflight-package-manifest-criterion"});
+    assert(records.front().stage == std::string{"route-preview-value-supply-signed-approval-capture-artifact-draft-"
+                                                "text-package-review-preflight-package-manifest-criterion"});
     assert(records.front().source_frozen_release_version == std::string{"v785"});
     assert(records.back().sequence == 25);
     assert(records.back().release_version == std::string{"v810"});
     assert(records.back().source_frozen_release_version == std::string{"v809"});
 
     const auto report = minikv::shard_route_preview_stage_chain::inspect_stage_chain(
-        records,
-        1,
-        stages::planned_signed_approval_capture_artifact_draft_text_package_review_preflight_stage_count(),
+        records, 1, stages::planned_signed_approval_capture_artifact_draft_text_package_review_preflight_stage_count(),
         stages::first_signed_approval_capture_artifact_draft_text_package_review_preflight_release_number());
     assert(report.published_stage_count == 1);
     assert(report.sequences_contiguous);
@@ -31,4 +30,5 @@ int main() {
     assert(report.source_frozen_release_versions_contiguous);
     assert(report.source_frozen_fixture_paths_contiguous);
     assert(!report.chain_complete);
+    return 0;
 }

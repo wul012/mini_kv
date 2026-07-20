@@ -28,4 +28,5 @@ int main() {
     const auto failed = validation::format_candidate_intake_packet_validation_json(9, true, 10, 10, 10, 10, 25, 25);
     assert_contains(failed, "\"candidateIntakePacketValidationPassed\":false");
     assert_contains(failed, "\"sourcePrecheckFrozen\":false");
+    return 0;
 }

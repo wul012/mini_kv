@@ -16,18 +16,19 @@ int main() {
         minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight;
 
     const auto json = preflight::format_signed_approval_capture_artifact_draft_instruction_preflight_json();
-    assert_contains(json,
-                    "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-instruction-preflight.v1\"");
+    assert_contains(json, "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-"
+                          "draft-instruction-preflight.v1\"");
     assert_contains(json,
                     "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTINSTRUCTIONPREFLIGHTJSON\"");
-    assert_contains(json,
-                    "\"sourceDraftAuthoringReadinessCommand\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON\"");
+    assert_contains(json, "\"sourceDraftAuthoringReadinessCommand\":"
+                          "\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTAUTHORINGREADINESSJSON\"");
     assert_contains(json, "\"sourceDraftAuthoringReadinessReleaseVersion\":\"v760\"");
-    assert_contains(json, "\"sourceDraftAuthoringReadinessFixturePath\":\"fixtures/release/shard-readiness-v760.json\"");
+    assert_contains(json,
+                    "\"sourceDraftAuthoringReadinessFixturePath\":\"fixtures/release/shard-readiness-v760.json\"");
     assert_contains(json, "\"sourceDraftAuthoringReadinessPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftAuthoringReadinessChainComplete\":true");
-    assert_contains(json,
-                    "\"instructionPreflightStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-closeout\"");
+    assert_contains(json, "\"instructionPreflightStage\":\"route-preview-value-supply-signed-approval-capture-artifact-"
+                          "draft-instruction-preflight-closeout\"");
     assert_contains(json, "\"instructionPreflightReleaseVersion\":\"v785\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v784\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v784.json\"");
@@ -61,15 +62,19 @@ int main() {
     assert_contains(json, "\"instructionPreflightValidationHelperApplied\":true");
     assert_contains(json, "\"instructionSlots\":[{\"sequence\":1,\"slotCode\":\"request_manifest_slot\"");
     assert_contains(json, "\"instructionGuards\":[{\"sequence\":1,\"guardCode\":\"request_manifest_guard\"");
-    assert_contains(json,
-                    "\"instructionProfiles\":[{\"sequence\":1,\"profileCode\":\"instruction_preflight_request_manifest_profile\"");
+    assert_contains(
+        json,
+        "\"instructionProfiles\":[{\"sequence\":1,\"profileCode\":\"instruction_preflight_request_manifest_profile\"");
     assert_contains(json, "\"instructionPreflightValidationPassed\":true");
     assert_contains(json, "\"writeRoutingAllowed\":false");
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = preflight::signed_approval_capture_artifact_draft_instruction_preflight_digest_marker();
-    assert(digest.find("v785-route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-closeout") !=
-           std::string::npos);
+    assert(
+        digest.find(
+            "v785-route-preview-value-supply-signed-approval-capture-artifact-draft-instruction-preflight-closeout") !=
+        std::string::npos);
     assert(preflight::published_stage_count() == 25);
+    return 0;
 }

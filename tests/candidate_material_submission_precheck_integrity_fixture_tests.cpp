@@ -16,10 +16,13 @@ int main() {
 
     const auto current_fixture = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
     assert_contains(current_fixture, "\"releaseVersion\":\"v1035\"");
-    assert_contains(current_fixture, "\"shardPreviewCandidateMaterialSubmissionPrecheckIntegrity\":{\"contract\":"
-                                     "\"shard-route-preview-candidate-material-submission-precheck-fixture-integrity.v1\"");
+    assert_contains(current_fixture,
+                    "\"shardPreviewCandidateMaterialSubmissionPrecheckIntegrity\":{\"contract\":"
+                    "\"shard-route-preview-candidate-material-submission-precheck-fixture-integrity.v1\"");
     assert_contains(current_fixture, "\"sourceCandidateMaterialSubmissionPrecheckReleaseVersion\":\"v985\"");
-    assert_contains(current_fixture, "\"sourceCandidateMaterialSubmissionPrecheckFixturePath\":\"fixtures/release/shard-readiness-v985.json\"");
+    assert_contains(
+        current_fixture,
+        "\"sourceCandidateMaterialSubmissionPrecheckFixturePath\":\"fixtures/release/shard-readiness-v985.json\"");
     assert_contains(current_fixture, "\"candidateMaterialSubmissionPrecheckIntegrityReleaseVersion\":\"v1010\"");
     assert_contains(current_fixture, "\"nodeStopConditionRespected\":true");
     assert_contains(current_fixture, "\"additionalMaterialSubmissionPrecheckEchoCreated\":false");
@@ -31,4 +34,5 @@ int main() {
     assert_contains(current_fixture, "\"touchesWal\":false");
     assert_contains(current_fixture, "\"executionAllowed\":false");
     assert(source_fixture != current_fixture);
+    return 0;
 }

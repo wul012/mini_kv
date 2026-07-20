@@ -12,15 +12,17 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 } // namespace
 
 int main() {
-    namespace profiles =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_profiles;
+    namespace profiles = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_profiles;
 
     const auto records = profiles::signed_approval_capture_artifact_draft_text_package_review_closeout_audit_profiles();
     assert(records.size() == 25);
     assert(records.front().profile_code ==
            std::string{"draft_text_package_review_closeout_audit_source_freeze_profile"});
     assert(records.back().profile_code == std::string{"draft_text_package_review_closeout_audit_summary_profile"});
-    assert(profiles::planned_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_profile_count() == 25);
+    assert(
+        profiles::planned_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_profile_count() ==
+        25);
 
     const auto first =
         profiles::format_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_profiles_json(1);
@@ -35,4 +37,5 @@ int main() {
     assert_contains(all, "\"profileCode\":\"draft_text_package_review_closeout_audit_summary_profile\"");
     assert_contains(all, "\"runtimePayloadAllowed\":false");
     assert_contains(all, "\"executionAllowed\":false");
+    return 0;
 }

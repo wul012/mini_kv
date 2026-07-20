@@ -12,25 +12,32 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 } // namespace
 
 int main() {
-    namespace audit =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit;
+    namespace audit = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit;
 
-    const auto json = audit::format_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_json();
+    const auto json =
+        audit::format_signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_json();
+    assert_contains(json, "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-"
+                          "draft-text-package-comparison-closeout-audit.v1\"");
+    assert_contains(
+        json, "\"command\":"
+              "\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON\"");
     assert_contains(json,
-                    "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-closeout-audit.v1\"");
-    assert_contains(json,
-                    "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGECOMPARISONCLOSEOUTAUDITJSON\"");
-    assert_contains(json,
-                    "\"sourceDraftTextPackageReviewCloseoutAuditCommand\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON\"");
+                    "\"sourceDraftTextPackageReviewCloseoutAuditCommand\":"
+                    "\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON\"");
     assert_contains(json, "\"sourceDraftTextPackageReviewCloseoutAuditReleaseVersion\":\"v835\"");
-    assert_contains(json, "\"sourceDraftTextPackageReviewCloseoutAuditFixturePath\":\"fixtures/release/shard-readiness-v835.json\"");
+    assert_contains(
+        json,
+        "\"sourceDraftTextPackageReviewCloseoutAuditFixturePath\":\"fixtures/release/shard-readiness-v835.json\"");
     assert_contains(json, "\"sourceDraftTextPackageReviewCloseoutAuditPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftTextPackageReviewCloseoutAuditChainComplete\":true");
-    assert_contains(json, "\"draftTextPackageComparisonCloseoutAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-closeout-audit-summary\"");
+    assert_contains(json, "\"draftTextPackageComparisonCloseoutAuditStage\":\"route-preview-value-supply-signed-"
+                          "approval-capture-artifact-draft-text-package-comparison-closeout-audit-summary\"");
     assert_contains(json, "\"draftTextPackageComparisonCloseoutAuditReleaseVersion\":\"v860\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v859\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v859.json\"");
-    assert_contains(json, "\"signedApprovalCaptureArtifactDraftTextPackageComparisonCloseoutAuditReleaseRangeStart\":\"v836\"");
+    assert_contains(
+        json, "\"signedApprovalCaptureArtifactDraftTextPackageComparisonCloseoutAuditReleaseRangeStart\":\"v836\"");
     assert_contains(json, "\"publishedStageCount\":25");
     assert_contains(json, "\"plannedStageCount\":25");
     assert_contains(json, "\"comparisonCheckCount\":25");
@@ -66,7 +73,10 @@ int main() {
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
 
-    const auto digest = audit::signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_digest_marker();
-    assert(digest.find("v860-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-closeout-audit-summary") != std::string::npos);
+    const auto digest =
+        audit::signed_approval_capture_artifact_draft_text_package_comparison_closeout_audit_digest_marker();
+    assert(digest.find("v860-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-comparison-"
+                       "closeout-audit-summary") != std::string::npos);
     assert(audit::published_stage_count() == 25);
+    return 0;
 }

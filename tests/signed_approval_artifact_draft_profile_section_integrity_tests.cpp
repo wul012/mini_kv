@@ -13,11 +13,14 @@ int main() {
     namespace integrity = minikv::shard_preview_signed_approval_artifact_draft_profile_section_integrity;
 
     const auto json = integrity::format_signed_approval_artifact_draft_profile_section_integrity_json();
-    assert_contains(json, "\"contract\":\"shard-route-preview-signed-approval-artifact-draft-profile-section-integrity.v1\"");
-    assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON\"");
+    assert_contains(json,
+                    "\"contract\":\"shard-route-preview-signed-approval-artifact-draft-profile-section-integrity.v1\"");
+    assert_contains(
+        json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONINTEGRITYJSON\"");
     assert_contains(json, "\"sourceNodeSignedApprovalArtifactDraftProfileSectionReleaseVersion\":\"Node v1506\"");
     assert_contains(json, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
-    assert_contains(json, "\"sourceProfileSectionCommand\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON\"");
+    assert_contains(json, "\"sourceProfileSectionCommand\":"
+                          "\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON\"");
     assert_contains(json, "\"sourceProfileSectionReleaseVersion\":\"v1060\"");
     assert_contains(json, "\"sourceProfileSectionFixturePath\":\"fixtures/release/shard-readiness-v1060.json\"");
     assert_contains(json, "\"sourceProfileSectionPublishedStageCount\":25");
@@ -47,9 +50,10 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = integrity::signed_approval_artifact_draft_profile_section_integrity_digest_marker();
-    assert(digest.find("v1085-route-preview-signed-approval-artifact-draft-profile-section-integrity-closeout-summary-25-of-25-stages") !=
-           std::string::npos);
+    assert(digest.find("v1085-route-preview-signed-approval-artifact-draft-profile-section-integrity-closeout-summary-"
+                       "25-of-25-stages") != std::string::npos);
     assert(integrity::signed_approval_artifact_draft_profile_section_integrity_status() ==
            "route-preview-signed-approval-artifact-draft-profile-section-integrity-closeout-summary-read-only");
     assert(integrity::published_stage_count() == 25);
+    return 0;
 }

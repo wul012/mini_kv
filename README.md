@@ -15,7 +15,7 @@ mini-kv is a from-scratch C++20 key-value engine with a thread-safe in-memory st
 
 | 维度 | 当前事实 | 机械证据 |
 |---|---|---|
-| 构建与测试 | **354 registered CTest tests**；Linux、macOS、Windows、sanitizer、coverage、format、archive 共七条 CI job | [`CMakeLists.txt`](CMakeLists.txt)、[CI workflow](.github/workflows/ci.yml)、`ctest --test-dir build -N` |
+| 构建与测试 | **354 registered CTest tests**；普通构建把 342 个链接型测试收口到 8 个稳定 runner，instrumented lane 保留一测试一可执行文件；Linux、macOS、Windows、sanitizer、coverage、format、archive 共七条 CI job | [`MinikvTesting.cmake`](cmake/MinikvTesting.cmake)、[testing guide](docs/TESTING.md)、[CI workflow](.github/workflows/ci.yml) |
 | 核心覆盖率 | v1658 reviewed baseline 为 2345 行、执行 2122 行、90%；当前 filter 另含 atomic-file writer，CI 继续强制 **90% floor** | [`docs/minikv-track-final-evidence.md`](docs/minikv-track-final-evidence.md)、[`ci.yml`](.github/workflows/ci.yml) |
 | 源码体积 | `src/` 与 `include/` 每个源码文件不超过 800 个非空物理行；仅保留一个具名 registry 豁免 | [`check_minikv_track_final_evidence.cmake`](cmake/check_minikv_track_final_evidence.cmake) |
 | Receipt 结构 | 28 个 receipt 源文件中，**27 builder-backed / 0 pending / 1 named no-formatter waiver**；两轮共享布尔 profile 把手工字段追加从 1056 降到 613，本地 digest 转发器从 6 收口到 1，并由精确棘轮保护 | [`check_receipt_builder_census.cmake`](cmake/check_receipt_builder_census.cmake)、[`docs/receipts-consolidation-note.md`](docs/receipts-consolidation-note.md) |
@@ -61,6 +61,8 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build --config Debug --parallel 4
 ctest --test-dir build -C Debug --output-on-failure --timeout 120
 ```
+
+普通配置默认保留 354 个 CTest 名称和一例一进程隔离，但只链接 8 个共享 runner；若需要直接生成每个旧测试可执行文件，可配置 `-DMINIKV_BUNDLE_TESTS=OFF`。Coverage 与 sanitizer 在新构建目录会自动选择旧拓扑；复用曾缓存 bundle ON 的目录或显式同时开启两者会在配置阶段失败，此时应显式关闭 bundle 或使用独立 instrumented build 目录。
 
 执行一个不写 Store、不触碰 WAL 的 CLI smoke：
 
@@ -129,9 +131,9 @@ python scripts/archive_inventory.py --budget-mib 8 --strict
 
 完整历史见 [`docs/CHANGELOG.md`](docs/CHANGELOG.md)。README 只保留对当前展示面有直接解释力的四项：
 
+- v1671: 保留 354 个 CTest 名称、顺序和一例一进程语义，把 342 个普通测试的最终链接稳定收口到 8 个 runner；核心 touch 后 executable link 347→13、增量时间 56.87→21.36 秒，全部测试 exe 由 345 个/3,983,351,060 字节降到 11 个/415,219,566 字节，coverage/sanitizer 与显式 legacy 配置仍使用一测试一 exe。
 - v1670: 以私有 `AtomicFileWriter` 统一 WAL compact 与 Snapshot save 的同目录临时文件、flush/close、平台替换和失败清理；新增成功、放弃、坏流、父目录、replace 失败和 owner 集成证据，第 354 个 CTest 机械拒绝重复实现回流。
 - v1669: 将三份连续 approval receipt 的 201 个重复字段追加改为六段具名 profile，同时删除五个一行式 digest 转发器；精确门收紧到 613/1，四组上下界故障注入、57 项 receipt 组合测试与原有字节 oracle 全部通过。
 - v1668: 为 receipt builder 增加有序 `BooleanField` profile，把四个重复边界族的 242 次命令式追加改为数据声明；新增 814 个手工追加与 6 个本地 digest 包装器的精确 shrink-only 门，增长和 baseline 未及时收紧都会失败。
-- v1667: 保留公开 CTest 名与 v1662 已冻结的长测试源路径，只缩短触发 MinGW 对象路径警告的内部构建 target；新增 277 项 shrink-only baseline、197 路径风险分数门和三条故障注入，干净 CMake 配置不再产生该警告。
 
 维护者入口：[`START_HERE.md`](START_HERE.md) · [`docs/production-excellence-progress.md`](docs/production-excellence-progress.md) · [`治理计划/README.md`](治理计划/README.md)

@@ -47,25 +47,38 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 }
 
 void assert_source_archive_shape(const std::string& text) {
-    assert_contains(text, "\"source_archive_verification\":\"Node v266 credential resolver fake-shell archive verification\"");
+    assert_contains(
+        text, "\"source_archive_verification\":\"Node v266 credential resolver fake-shell archive verification\"");
     assert_contains(text, "\"source_contract\":\"Node v264 credential resolver test-only shell contract\"");
     assert_contains(text, "\"source_upstream_echo\":\"Node v265 test-only resolver shell upstream echo verification\"");
-    assert_contains(text, "\"consumer_hint\":\"Node v267 credential resolver fake-shell archive upstream echo verification\"");
-    assert_contains(text, "\"source_archive_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-fake-shell-archive-verification.v1\"");
-    assert_contains(text, "\"source_archive_route_path\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-fake-shell-archive-verification\"");
-    assert_contains(text, "\"source_archive_verification_state\":\"credential-resolver-fake-shell-archive-verification-ready\"");
+    assert_contains(
+        text, "\"consumer_hint\":\"Node v267 credential resolver fake-shell archive upstream echo verification\"");
+    assert_contains(text, "\"source_archive_profile_version\":\"managed-audit-manual-sandbox-connection-credential-"
+                          "resolver-fake-shell-archive-verification.v1\"");
+    assert_contains(text,
+                    "\"source_archive_route_path\":\"/api/v1/audit/"
+                    "managed-audit-manual-sandbox-connection-credential-resolver-fake-shell-archive-verification\"");
+    assert_contains(
+        text, "\"source_archive_verification_state\":\"credential-resolver-fake-shell-archive-verification-ready\"");
     assert_contains(text, "\"source_ready_for_credential_resolver_fake_shell_archive_verification\":true");
     assert_contains(text, "\"source_read_only_archive_verification\":true");
     assert_contains(text, "\"source_archive_verification_reruns_fake_shell_behavior\":false");
-    assert_contains(text, "\"source_archive_verification_digest\":\"e58e721868c6e2779b78e0e1219c2a5a82c1064660523ed428b8eff7e6123f97\"");
-    assert_contains(text, "\"source_evidence_span\":\"Node v264 credential resolver fake shell contract + Node v265 upstream echo archive\"");
-    assert_contains(text, "\"source_node_v264_contract_digest\":\"12d264c30d3d9a83ab90ac8b0ca6ccfccbe4ff36f5216bb53d13ec42bcccf14b\"");
-    assert_contains(text, "\"source_node_v265_verification_digest\":\"2c15bc316448bf31a7d67633931bff291035cfdb473f11b87e94b610113aa28e\"");
+    assert_contains(
+        text,
+        "\"source_archive_verification_digest\":\"e58e721868c6e2779b78e0e1219c2a5a82c1064660523ed428b8eff7e6123f97\"");
+    assert_contains(text, "\"source_evidence_span\":\"Node v264 credential resolver fake shell contract + Node v265 "
+                          "upstream echo archive\"");
+    assert_contains(
+        text,
+        "\"source_node_v264_contract_digest\":\"12d264c30d3d9a83ab90ac8b0ca6ccfccbe4ff36f5216bb53d13ec42bcccf14b\"");
+    assert_contains(text, "\"source_node_v265_verification_digest\":"
+                          "\"2c15bc316448bf31a7d67633931bff291035cfdb473f11b87e94b610113aa28e\"");
 }
 
 void assert_source_node_summaries(const std::string& text) {
     assert_contains(text, "\"source_node_v264\":");
-    assert_contains(text, "\"shell_contract_state\":\"sandbox-endpoint-credential-resolver-test-only-shell-contract-ready\"");
+    assert_contains(text,
+                    "\"shell_contract_state\":\"sandbox-endpoint-credential-resolver-test-only-shell-contract-ready\"");
     assert_contains(text, "\"shell_mode\":\"test-only-fake-resolver-contract\"");
     assert_contains(text, "\"resolver_kind\":\"fake-in-memory\"");
     assert_contains(text, "\"request_shape_field_count\":9");
@@ -75,8 +88,10 @@ void assert_source_node_summaries(const std::string& text) {
     assert_contains(text, "\"fake_resolver_only\":true");
     assert_contains(text, "\"handle_only_request\":true");
     assert_contains(text, "\"source_node_v265\":");
-    assert_contains(text, "\"verification_state\":\"sandbox-endpoint-credential-resolver-test-only-shell-upstream-echo-verification-ready\"");
-    assert_contains(text, "\"verification_mode\":\"java-v107-plus-mini-kv-v116-test-only-resolver-shell-upstream-echo-verification-only\"");
+    assert_contains(text, "\"verification_state\":\"sandbox-endpoint-credential-resolver-test-only-shell-upstream-echo-"
+                          "verification-ready\"");
+    assert_contains(text, "\"verification_mode\":\"java-v107-plus-mini-kv-v116-test-only-resolver-shell-upstream-echo-"
+                          "verification-only\"");
     assert_contains(text, "\"source_span\":\"Node v264 + Java v107 + mini-kv v116\"");
     assert_contains(text, "\"source_node_v264_ready\":true");
     assert_contains(text, "\"java_v107_echo_ready\":true");
@@ -195,8 +210,9 @@ int main() {
         "HEALTH",
         "STATSJSON",
     };
-    const auto expected_digest = minikv::runtime_evidence_receipts::
-        credential_resolver_fake_shell_archive_non_participation_receipt_digest(read_commands);
+    const auto expected_digest =
+        minikv::runtime_evidence_receipts::credential_resolver_fake_shell_archive_non_participation_receipt_digest(
+            read_commands);
 
     assert_path_exists(receipt_path);
     assert_path_exists(smoke_path);
@@ -204,12 +220,10 @@ int main() {
 
     const auto receipt = read_fixture_text(receipt_path);
     assert_contains(
-        receipt,
-        "\"receipt_version\":\"mini-kv-credential-resolver-fake-shell-archive-non-participation-receipt.v1\"");
+        receipt, "\"receipt_version\":\"mini-kv-credential-resolver-fake-shell-archive-non-participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v117\"");
     assert_contains(
-        receipt,
-        "\"path\":\"fixtures/release/credential-resolver-fake-shell-archive-non-participation-receipt.json\"");
+        receipt, "\"path\":\"fixtures/release/credential-resolver-fake-shell-archive-non-participation-receipt.json\"");
     assert_contains(receipt, "\"credential_resolver_fake_shell_archive_non_participation_receipt\":");
     assert_contains(receipt, "\"current_release_version\":\"v117\"");
     assert_contains(receipt, "\"current_artifact_path_hint\":\"c/117/\"");
@@ -226,15 +240,17 @@ int main() {
     assert_not_contains(receipt, "raw_endpoint_url\":\"");
 
     const auto smoke = read_fixture_text(smoke_path);
-    assert_contains(smoke, "\"consumer_hint\":\"Node v267 credential resolver fake-shell archive upstream echo verification\"");
+    assert_contains(
+        smoke, "\"consumer_hint\":\"Node v267 credential resolver fake-shell archive upstream echo verification\"");
     assert_contains(smoke, "\"credential_resolver_fake_shell_archive_non_participation_receipt\":");
     assert_contains(smoke, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_source_archive_shape(smoke);
     assert_archive_evidence(smoke);
     assert_checks_and_summary(smoke);
     assert_non_participation_flags(smoke);
-    assert_contains(smoke,
-                    "Node v267 may verify the mini-kv v117 credential resolver fake-shell archive non-participation receipt");
+    assert_contains(
+        smoke,
+        "Node v267 may verify the mini-kv v117 credential resolver fake-shell archive non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
     assert_contains(manifest, "\"minikv_credential_resolver_fake_shell_archive_non_participation_receipt_tests\"");
@@ -243,9 +259,8 @@ int main() {
         "\"path\":\"fixtures/release/credential-resolver-fake-shell-archive-non-participation-receipt.json\"");
     assert_contains(manifest, "\"credential_resolver_fake_shell_archive_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
-    assert_contains(
-        manifest,
-        "SMOKEJSON exposes credential_resolver_fake_shell_archive_non_participation_receipt for Node v267");
+    assert_contains(manifest,
+                    "SMOKEJSON exposes credential_resolver_fake_shell_archive_non_participation_receipt for Node v267");
     assert_source_archive_shape(manifest);
     assert_checks_and_summary(manifest);
     assert_non_participation_flags(manifest);
@@ -258,9 +273,8 @@ int main() {
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"credential_resolver_fake_shell_archive_non_participation_receipt\":");
-    assert_contains(
-        result.response,
-        "\"receipt_fixture_path\":\"fixtures/release/credential-resolver-fake-shell-archive-non-participation-receipt.json\"");
+    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/"
+                                     "credential-resolver-fake-shell-archive-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v117\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/117/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -272,4 +286,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

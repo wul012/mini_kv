@@ -24,4 +24,5 @@ int main() {
         assert(catalog[index].source_frozen_fixture_path.find("fixtures/release/shard-readiness-v") !=
                std::string_view::npos);
     }
+    return 0;
 }

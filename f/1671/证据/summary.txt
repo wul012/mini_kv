@@ -1,0 +1,58 @@
+mini-kv v1671 stable test link shards - local closeout evidence
+Date: 2026-07-20
+
+[scope]
+- Product sources: unchanged
+- Public headers: unchanged
+- Frozen fixtures: unchanged
+- Public CTest inventory: 354 names, same order in bundled and legacy configurations
+- Runtime authority: unchanged; no router, write route, credential read, network action, restore/load/compact execution, or order authority added
+
+[legacy baseline]
+- Product translation units: 314
+- Ordinary linked test cases: 342
+- Clean Ninja: 1033 steps, 350 executable links, 151.44 seconds
+- Content-neutral core touch: 349 steps, 347 executable links, 56.87 seconds
+- All test executables: 345 files, 3,983,351,060 bytes
+
+[default v1671 topology]
+- Ordinary test object targets: 342
+- Stable shard runners: 8
+- Shard distribution: 53, 43, 35, 42, 47, 48, 31, 43
+- Clean Ninja: 707 steps, 16 executable links, 130.15 seconds
+- Content-neutral core touch: 15 steps, 13 executable links, 21.36 seconds
+- All test executables: 11 files, 415,219,566 bytes
+- Binary reduction: 89.58 percent
+- Incremental executable-link reduction: 96.25 percent
+- Incremental wall-time reduction: 62.44 percent
+
+[contracts]
+- test_architecture_contract: sources=362, limit=1000, oversized=0, cmake_tests=345, long_targets=277, max_path_score=197, linked_cases=342, shards=8, explicit_mains=344
+- Bundled versus legacy ctest -N: 354 versus 354, name/order delta 0
+- Runner missing argument: exit 2
+- Runner unknown case: exit 2
+- Instrumented plus explicit bundle: configure exit 1 with the expected conflict message
+- Legacy representative CTest: 4/4 passed (architecture, receipt builder, command, atomic file)
+- Changed-file clang-format: 109/109 passed locally
+- Full default CTest: 354/354 passed, 130.96 seconds
+
+[real CLI boundary smoke]
+- Commands: SMOKEJSON; CHECKJSON GET v1671:probe; QUIT
+- Exit: 0
+- read_only=true
+- execution_allowed=false
+- order_authoritative=false
+- write_command=false
+- touches_wal=false
+- Product/fixture/public-header changed paths: 0
+
+[implementation deviations closed before final verify]
+- Replaced formatter-sensitive raw template placeholders with valid comment markers and verified zero generated markers remain.
+- Replaced C++23 string_view::contains with the C++20 find form.
+- Added explicit return 0 to 108 historical no-argument test mains; a 344-entry census now makes this permanent.
+- Repaid changed-file formatting debt in 79 touched historical test files rather than weakening the CI gate.
+- Corrected the smoke verifier from a nonexistent mutates_store field to the actual write_command field; runtime bytes were not changed.
+
+[remote prerequisite]
+- v1670 CI run 29725213320: success
+- v1671 CI: must pass all final jobs after commit/tag/push before the review checkpoint is released

@@ -16,9 +16,11 @@ int main() {
 
     const auto current_fixture = read_fixture_text(minikv::test_support::release_fixture_path("shard-readiness.json"));
     assert_contains(current_fixture, "\"releaseVersion\":\"v1060\"");
-    assert_contains(current_fixture, "\"shardPreviewSignedApprovalArtifactDraftProfileSection\":{\"contract\":"
-                                     "\"shard-route-preview-signed-approval-artifact-draft-profile-section-renderer-split.v1\"");
-    assert_contains(current_fixture, "\"sourceNodeSignedApprovalArtifactDraftProfileSectionReleaseVersion\":\"Node v1506\"");
+    assert_contains(current_fixture,
+                    "\"shardPreviewSignedApprovalArtifactDraftProfileSection\":{\"contract\":"
+                    "\"shard-route-preview-signed-approval-artifact-draft-profile-section-renderer-split.v1\"");
+    assert_contains(current_fixture,
+                    "\"sourceNodeSignedApprovalArtifactDraftProfileSectionReleaseVersion\":\"Node v1506\"");
     assert_contains(current_fixture, "\"sourceCandidateProfileSectionReleaseVersion\":\"v1035\"");
     assert_contains(current_fixture, "\"sourceDraftInstructionPreflightReleaseVersion\":\"v785\"");
     assert_contains(current_fixture, "\"signedApprovalArtifactDraftProfileSectionReleaseVersion\":\"v1060\"");
@@ -34,4 +36,5 @@ int main() {
     assert_contains(current_fixture, "\"touchesWal\":false");
     assert_contains(current_fixture, "\"executionAllowed\":false");
     assert(source_fixture != current_fixture);
+    return 0;
 }

@@ -13,10 +13,12 @@ int main() {
     namespace profile = minikv::shard_preview_signed_approval_artifact_draft_profile_section;
 
     const auto json = profile::format_signed_approval_artifact_draft_profile_section_json();
-    assert_contains(json, "\"contract\":\"shard-route-preview-signed-approval-artifact-draft-profile-section-renderer-split.v1\"");
+    assert_contains(
+        json, "\"contract\":\"shard-route-preview-signed-approval-artifact-draft-profile-section-renderer-split.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTPROFILESECTIONJSON\"");
     assert_contains(json, "\"sourceNodeSignedApprovalArtifactDraftProfileSectionReleaseVersion\":\"Node v1506\"");
-    assert_contains(json, "\"sourceNodeSignedApprovalArtifactDraftProfileSectionRendererModule\":\"controlledReadOnlyShardPreviewSignedApprovalArtifactDraftProfileSectionRenderer.ts\"");
+    assert_contains(json, "\"sourceNodeSignedApprovalArtifactDraftProfileSectionRendererModule\":"
+                          "\"controlledReadOnlyShardPreviewSignedApprovalArtifactDraftProfileSectionRenderer.ts\"");
     assert_contains(json, "\"sourceNodeSignedApprovalArtifactDraftProfileSectionGroupCount\":5");
     assert_contains(json, "\"sourceNodeMigratedSignedApprovalArtifactDraftProfileSectionCount\":5");
     assert_contains(json, "\"sourceNodeRequiresFreshMiniKvEvidence\":false");
@@ -50,9 +52,11 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = profile::signed_approval_artifact_draft_profile_section_digest_marker();
-    assert(digest.find("v1060-route-preview-signed-approval-artifact-draft-profile-section-closeout-summary-25-of-25-stages") !=
+    assert(digest.find(
+               "v1060-route-preview-signed-approval-artifact-draft-profile-section-closeout-summary-25-of-25-stages") !=
            std::string::npos);
     assert(profile::signed_approval_artifact_draft_profile_section_status() ==
            "route-preview-signed-approval-artifact-draft-profile-section-closeout-summary-read-only");
     assert(profile::published_stage_count() == 25);
+    return 0;
 }

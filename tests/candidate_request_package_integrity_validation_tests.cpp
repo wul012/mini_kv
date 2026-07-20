@@ -12,7 +12,8 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 int main() {
     namespace validation = minikv::shard_preview_candidate_request_package_integrity_validation;
 
-    const auto passed = validation::format_candidate_request_package_integrity_validation_json(15, true, 25, 25, 25, 25);
+    const auto passed =
+        validation::format_candidate_request_package_integrity_validation_json(15, true, 25, 25, 25, 25);
     assert_contains(passed, "\"candidateRequestPackageIntegrityValidationPassed\":true");
     assert_contains(passed, "\"sourcePackageFrozen\":true");
     assert_contains(passed, "\"integrityCountsAligned\":true");
@@ -23,7 +24,9 @@ int main() {
     assert_contains(passed, "\"touchesWal\":false");
     assert_contains(passed, "\"executionAllowed\":false");
 
-    const auto failed = validation::format_candidate_request_package_integrity_validation_json(14, true, 25, 25, 25, 25);
+    const auto failed =
+        validation::format_candidate_request_package_integrity_validation_json(14, true, 25, 25, 25, 25);
     assert_contains(failed, "\"candidateRequestPackageIntegrityValidationPassed\":false");
     assert_contains(failed, "\"sourcePackageFrozen\":false");
+    return 0;
 }

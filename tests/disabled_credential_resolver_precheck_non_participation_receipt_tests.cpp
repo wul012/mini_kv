@@ -50,7 +50,8 @@ void assert_source_precheck_shape(const std::string& text) {
     assert_contains(text, "\"source_precheck\":\"Node v262 disabled credential resolver precheck\"");
     assert_contains(text, "\"source_verification\":\"Node v261 credential resolver upstream echo verification\"");
     assert_contains(text, "\"consumer_hint\":\"Node v263 disabled credential resolver upstream echo verification\"");
-    assert_contains(text, "\"source_precheck_profile_version\":\"managed-audit-manual-sandbox-connection-sandbox-endpoint-credential-resolver-disabled-precheck.v1\"");
+    assert_contains(text, "\"source_precheck_profile_version\":\"managed-audit-manual-sandbox-connection-sandbox-"
+                          "endpoint-credential-resolver-disabled-precheck.v1\"");
     assert_contains(text, "\"source_precheck_state\":\"sandbox-endpoint-credential-resolver-disabled-precheck-ready\"");
     assert_contains(text, "\"source_precheck_mode\":\"sandbox-endpoint-credential-resolver-disabled-precheck-only\"");
     assert_contains(text, "\"source_span\":\"Node v260 + Java v105 + mini-kv v114\"");
@@ -210,18 +211,20 @@ int main() {
         "HEALTH",
         "STATSJSON",
     };
-    const auto expected_digest = minikv::runtime_evidence_receipts::
-        disabled_credential_resolver_precheck_non_participation_receipt_digest(read_commands);
+    const auto expected_digest =
+        minikv::runtime_evidence_receipts::disabled_credential_resolver_precheck_non_participation_receipt_digest(
+            read_commands);
 
     assert_path_exists(receipt_path);
     assert_path_exists(smoke_path);
     assert_path_exists(manifest_path);
 
     const auto receipt = read_fixture_text(receipt_path);
-    assert_contains(receipt,
-                    "\"receipt_version\":\"mini-kv-disabled-credential-resolver-precheck-non-participation-receipt.v1\"");
+    assert_contains(
+        receipt, "\"receipt_version\":\"mini-kv-disabled-credential-resolver-precheck-non-participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v115\"");
-    assert_contains(receipt, "\"path\":\"fixtures/release/disabled-credential-resolver-precheck-non-participation-receipt.json\"");
+    assert_contains(
+        receipt, "\"path\":\"fixtures/release/disabled-credential-resolver-precheck-non-participation-receipt.json\"");
     assert_contains(receipt, "\"disabled_credential_resolver_precheck_non_participation_receipt\":");
     assert_contains(receipt, "\"current_release_version\":\"v115\"");
     assert_contains(receipt, "\"current_artifact_path_hint\":\"c/115/\"");
@@ -242,14 +245,13 @@ int main() {
     assert_source_precheck_shape(smoke);
     assert_precheck_shape(smoke);
     assert_checks_and_flags(smoke);
-    assert_contains(smoke,
-                    "Node v263 may verify the mini-kv v115 disabled credential resolver precheck non-participation receipt");
+    assert_contains(
+        smoke, "Node v263 may verify the mini-kv v115 disabled credential resolver precheck non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
-    assert_contains(manifest,
-                    "\"minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests\"");
-    assert_contains(manifest,
-                    "\"path\":\"fixtures/release/disabled-credential-resolver-precheck-non-participation-receipt.json\"");
+    assert_contains(manifest, "\"minikv_disabled_credential_resolver_precheck_non_participation_receipt_tests\"");
+    assert_contains(
+        manifest, "\"path\":\"fixtures/release/disabled-credential-resolver-precheck-non-participation-receipt.json\"");
     assert_contains(manifest, "\"disabled_credential_resolver_precheck_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_contains(manifest,
@@ -266,9 +268,8 @@ int main() {
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"disabled_credential_resolver_precheck_non_participation_receipt\":");
-    assert_contains(
-        result.response,
-        "\"receipt_fixture_path\":\"fixtures/release/disabled-credential-resolver-precheck-non-participation-receipt.json\"");
+    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/"
+                                     "disabled-credential-resolver-precheck-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v115\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/115/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -278,4 +279,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

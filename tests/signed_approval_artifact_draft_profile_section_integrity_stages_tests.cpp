@@ -14,8 +14,7 @@ int main() {
     assert(catalog.front().sequence == 1);
     assert(std::string{catalog.front().release_version} == "v1061");
     assert(std::string{catalog.front().source_frozen_release_version} == "v1060");
-    assert(std::string{catalog.front().source_frozen_fixture_path} ==
-           "fixtures/release/shard-readiness-v1060.json");
+    assert(std::string{catalog.front().source_frozen_fixture_path} == "fixtures/release/shard-readiness-v1060.json");
 
     assert(catalog.back().sequence == 25);
     assert(std::string{catalog.back().release_version} == "v1085");
@@ -26,4 +25,5 @@ int main() {
     for (std::size_t index = 0; index < catalog.size(); ++index) {
         assert(catalog[index].sequence == static_cast<int>(index + 1));
     }
+    return 0;
 }

@@ -5,8 +5,8 @@
 #include <string>
 
 int main() {
-    namespace stages =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_stages;
+    namespace stages = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_stages;
 
     const auto records = stages::signed_approval_capture_artifact_draft_instruction_preflight_stages();
     assert(records.size() == 25);
@@ -20,9 +20,7 @@ int main() {
     assert(records.back().source_frozen_release_version == std::string{"v784"});
 
     const auto report = minikv::shard_route_preview_stage_chain::inspect_stage_chain(
-        records,
-        25,
-        stages::planned_signed_approval_capture_artifact_draft_instruction_preflight_stage_count(),
+        records, 25, stages::planned_signed_approval_capture_artifact_draft_instruction_preflight_stage_count(),
         stages::first_signed_approval_capture_artifact_draft_instruction_preflight_release_number());
     assert(report.published_stage_count == 25);
     assert(report.sequences_contiguous);
@@ -30,4 +28,5 @@ int main() {
     assert(report.source_frozen_release_versions_contiguous);
     assert(report.source_frozen_fixture_paths_contiguous);
     assert(report.chain_complete);
+    return 0;
 }

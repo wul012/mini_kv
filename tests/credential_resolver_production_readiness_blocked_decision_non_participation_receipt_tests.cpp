@@ -47,11 +47,18 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 }
 
 void assert_source_decision_gate_shape(const std::string& text) {
-    assert_contains(text, "\"source_decision_gate\":\"Node v268 credential resolver production readiness decision gate\"");
-    assert_contains(text, "\"source_upstream_echo\":\"Node v267 credential resolver fake-shell archive upstream echo verification\"");
-    assert_contains(text, "\"consumer_hint\":\"Node v269 credential resolver production-readiness blocked-decision upstream echo verification\"");
-    assert_contains(text, "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-production-readiness-decision-gate.v1\"");
-    assert_contains(text, "\"source_route_path\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-production-readiness-decision-gate\"");
+    assert_contains(text,
+                    "\"source_decision_gate\":\"Node v268 credential resolver production readiness decision gate\"");
+    assert_contains(
+        text,
+        "\"source_upstream_echo\":\"Node v267 credential resolver fake-shell archive upstream echo verification\"");
+    assert_contains(text, "\"consumer_hint\":\"Node v269 credential resolver production-readiness blocked-decision "
+                          "upstream echo verification\"");
+    assert_contains(text, "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-"
+                          "production-readiness-decision-gate.v1\"");
+    assert_contains(text,
+                    "\"source_route_path\":\"/api/v1/audit/"
+                    "managed-audit-manual-sandbox-connection-credential-resolver-production-readiness-decision-gate\"");
     assert_contains(text, "\"source_decision_gate_state\":\"blocked\"");
     assert_contains(text, "\"source_readiness_decision\":\"blocked\"");
     assert_contains(text, "\"source_decision_gate_evaluated\":true");
@@ -75,10 +82,13 @@ void assert_source_decision_gate_shape(const std::string& text) {
 void assert_source_node_v267_shape(const std::string& text) {
     assert_contains(text, "\"source_node_v267\":");
     assert_contains(text, "\"source_version\":\"Node v267\"");
-    assert_contains(text, "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-fake-shell-archive-upstream-echo-verification.v1\"");
-    assert_contains(text, "\"verification_state\":\"credential-resolver-fake-shell-archive-upstream-echo-verification-ready\"");
+    assert_contains(text, "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-fake-"
+                          "shell-archive-upstream-echo-verification.v1\"");
+    assert_contains(
+        text, "\"verification_state\":\"credential-resolver-fake-shell-archive-upstream-echo-verification-ready\"");
     assert_contains(text, "\"ready_for_upstream_echo_verification\":true");
-    assert_contains(text, "\"verification_digest\":\"cfd4ff6b893469476d122647f082f590ae381407d697f40f7378a0b4b31e7a39\"");
+    assert_contains(text,
+                    "\"verification_digest\":\"cfd4ff6b893469476d122647f082f590ae381407d697f40f7378a0b4b31e7a39\"");
     assert_contains(text, "\"source_span\":\"Node v266 + Java v110 + mini-kv v117\"");
     assert_contains(text, "\"source_node_v266_ready\":true");
     assert_contains(text, "\"java_v110_echo_ready\":true");
@@ -167,7 +177,8 @@ void assert_checks_summary_and_blockers(const std::string& text) {
 }
 
 void assert_non_participation_flags(const std::string& text) {
-    assert_contains(text, "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt_only\":true");
+    assert_contains(
+        text, "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt_only\":true");
     assert_contains(text, "\"blocked_decision_only\":true");
     assert_contains(text, "\"production_readiness_gate_only\":true");
     assert_contains(text, "\"read_only_decision_gate\":true");
@@ -210,8 +221,9 @@ void assert_non_participation_flags(const std::string& text) {
 } // namespace
 
 int main() {
-    const auto receipt_path = std::filesystem::path{"fixtures"} / "release" /
-                              "credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json";
+    const auto receipt_path =
+        std::filesystem::path{"fixtures"} / "release" /
+        "credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json";
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto manifest_path = std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json";
     const std::vector<std::string> read_commands = {
@@ -228,13 +240,12 @@ int main() {
     assert_path_exists(manifest_path);
 
     const auto receipt = read_fixture_text(receipt_path);
-    assert_contains(
-        receipt,
-        "\"receipt_version\":\"mini-kv-credential-resolver-production-readiness-blocked-decision-non-participation-receipt.v1\"");
+    assert_contains(receipt, "\"receipt_version\":\"mini-kv-credential-resolver-production-readiness-blocked-decision-"
+                             "non-participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v118\"");
-    assert_contains(
-        receipt,
-        "\"path\":\"fixtures/release/credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json\"");
+    assert_contains(receipt,
+                    "\"path\":\"fixtures/release/"
+                    "credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json\"");
     assert_contains(receipt,
                     "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\":");
     assert_contains(receipt, "\"current_release_version\":\"v118\"");
@@ -246,34 +257,34 @@ int main() {
     assert_blocked_decision_shape(receipt);
     assert_checks_summary_and_blockers(receipt);
     assert_non_participation_flags(receipt);
-    assert_contains(receipt, "credential resolver production-readiness blocked-decision non-participation receipt only");
+    assert_contains(receipt,
+                    "credential resolver production-readiness blocked-decision non-participation receipt only");
     assert_not_contains(receipt, "credential_value\":\"");
     assert_not_contains(receipt, "raw_endpoint_url\":\"");
 
     const auto smoke = read_fixture_text(smoke_path);
-    assert_contains(smoke,
-                    "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\":");
+    assert_contains(smoke, "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\":");
     assert_contains(smoke, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_source_decision_gate_shape(smoke);
     assert_blocked_decision_shape(smoke);
     assert_checks_summary_and_blockers(smoke);
     assert_non_participation_flags(smoke);
-    assert_contains(smoke,
-                    "Node v269 may verify the mini-kv v118 credential resolver production-readiness blocked-decision non-participation receipt");
+    assert_contains(smoke, "Node v269 may verify the mini-kv v118 credential resolver production-readiness "
+                           "blocked-decision non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
     assert_contains(
         manifest,
         "\"minikv_credential_resolver_production_readiness_blocked_decision_non_participation_receipt_tests\"");
-    assert_contains(
-        manifest,
-        "\"path\":\"fixtures/release/credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json\"");
+    assert_contains(manifest,
+                    "\"path\":\"fixtures/release/"
+                    "credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json\"");
     assert_contains(manifest,
                     "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_contains(
-        manifest,
-        "SMOKEJSON exposes credential_resolver_production_readiness_blocked_decision_non_participation_receipt for Node v269");
+        manifest, "SMOKEJSON exposes "
+                  "credential_resolver_production_readiness_blocked_decision_non_participation_receipt for Node v269");
     assert_source_decision_gate_shape(manifest);
     assert_checks_summary_and_blockers(manifest);
     assert_non_participation_flags(manifest);
@@ -285,12 +296,11 @@ int main() {
 
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(
-        result.response,
-        "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\":");
-    assert_contains(
-        result.response,
-        "\"receipt_fixture_path\":\"fixtures/release/credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_production_readiness_blocked_decision_non_participation_receipt\":");
+    assert_contains(result.response,
+                    "\"receipt_fixture_path\":\"fixtures/release/"
+                    "credential-resolver-production-readiness-blocked-decision-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v118\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/118/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -302,4 +312,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

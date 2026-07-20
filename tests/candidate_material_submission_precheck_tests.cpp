@@ -26,7 +26,8 @@ int main() {
     assert_contains(json, "\"materialSubmissionGateCount\":41");
     assert_contains(json, "\"sourceCandidateMaterialRequestReleaseVersion\":\"v965\"");
     assert_contains(json, "\"sourceCandidateMaterialRequestIntegrityReleaseVersion\":\"v975\"");
-    assert_contains(json, "\"sourceCandidateMaterialRequestIntegrityFixturePath\":\"fixtures/release/shard-readiness-v975.json\"");
+    assert_contains(
+        json, "\"sourceCandidateMaterialRequestIntegrityFixturePath\":\"fixtures/release/shard-readiness-v975.json\"");
     assert_contains(json, "\"sourceCandidateMaterialRequestIntegrityPublishedStageCount\":10");
     assert_contains(json, "\"sourceCandidateMaterialRequestIntegrityComplete\":true");
     assert_contains(json, "\"candidateMaterialSubmissionPrecheckReleaseVersion\":\"v985\"");
@@ -60,9 +61,12 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = precheck::candidate_material_submission_precheck_digest_marker();
-    assert(digest.find("v985-route-preview-candidate-material-submission-precheck-closeout-archive-checkpoint-10-of-10-stages") !=
-           std::string::npos);
+    assert(
+        digest.find(
+            "v985-route-preview-candidate-material-submission-precheck-closeout-archive-checkpoint-10-of-10-stages") !=
+        std::string::npos);
     assert(precheck::candidate_material_submission_precheck_status() ==
            "route-preview-candidate-material-submission-precheck-closeout-archive-checkpoint-read-only");
     assert(precheck::published_stage_count() == 10);
+    return 0;
 }

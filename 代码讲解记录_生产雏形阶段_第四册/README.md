@@ -223,3 +223,7 @@ D:\nodeproj\orderops-node\代码讲解记录\107-production-readiness-summary-v3
 ## v1670 补充索引
 
 - v1670: [1038-v1670-atomic-file-writer.md](1038-v1670-atomic-file-writer.md) - 从 WAL compact 与 Snapshot save 的重复提交协议出发，讲清私有 `AtomicFileWriter` 的状态机、同目录临时路径、平台替换、失败清理和 owner 边界，并解释为什么单文件原子替换仍不能被包装成多文件事务或完整掉电耐久承诺。
+
+## v1671 补充索引
+
+- v1671: [1039-v1671-test-link-shards.md](1039-v1671-test-link-shards.md) - 从 342 个普通测试重复链接同一静态库的量化基线出发，解释 object target 与 8 个稳定 shard runner 如何分离编译身份和最终链接身份，为什么 354 个 CTest 仍逐项同名同序且一例一进程，instrumented lane 为何保留 legacy 拓扑，以及 108 个显式返回和 changed-files 格式清偿如何由机械门长期保护。

@@ -25,4 +25,5 @@ int main() {
         25, true, 4, 5, false, false, false, false, false, 25, 25, 25, 25);
     assert_contains(bad, "\"signedApprovalArtifactDraftProfileSectionIntegrityValidationPassed\":false");
     assert_contains(bad, "\"profileScopeAligned\":false");
+    return 0;
 }

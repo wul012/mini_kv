@@ -38,4 +38,5 @@ int main() {
         25, true, 24, true, 5, 5, false, false, false, 25, 25, 25, 25);
     assert_contains(failing, "\"signedApprovalArtifactDraftProfileSectionValidationPassed\":false");
     assert_contains(failing, "\"sourcesFrozen\":false");
+    return 0;
 }

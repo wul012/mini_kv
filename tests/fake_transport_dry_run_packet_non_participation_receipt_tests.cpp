@@ -50,7 +50,8 @@ void assert_source_packet_shape(const std::string& text) {
     assert_contains(text, "\"source_packet\":\"Node v255 fake transport adapter dry-run verification packet\"");
     assert_contains(text, "\"source_archive_verification\":\"Node v256 fake transport packet archive verification\"");
     assert_contains(text, "\"consumer_hint\":\"Node v257 fake transport packet upstream echo verification\"");
-    assert_contains(text, "\"source_packet_profile_version\":\"managed-audit-manual-sandbox-connection-fake-transport-adapter-dry-run-verification-packet.v1\"");
+    assert_contains(text, "\"source_packet_profile_version\":\"managed-audit-manual-sandbox-connection-fake-transport-"
+                          "adapter-dry-run-verification-packet.v1\"");
     assert_contains(text, "\"source_packet_state\":\"fake-transport-adapter-dry-run-verification-packet-ready\"");
     assert_contains(text, "\"source_archive_state\":\"fake-transport-packet-archive-verification-ready\"");
     assert_contains(text, "\"source_archive_reruns_fake_transport_behavior\":false");
@@ -144,8 +145,8 @@ void assert_non_participation_flags(const std::string& text) {
 } // namespace
 
 int main() {
-    const auto receipt_path = std::filesystem::path{"fixtures"} / "release" /
-                              "fake-transport-dry-run-packet-non-participation-receipt.json";
+    const auto receipt_path =
+        std::filesystem::path{"fixtures"} / "release" / "fake-transport-dry-run-packet-non-participation-receipt.json";
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto manifest_path = std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json";
     const std::vector<std::string> read_commands = {
@@ -163,9 +164,11 @@ int main() {
     assert_path_exists(manifest_path);
 
     const auto receipt = read_fixture_text(receipt_path);
-    assert_contains(receipt, "\"receipt_version\":\"mini-kv-fake-transport-dry-run-packet-non-participation-receipt.v1\"");
+    assert_contains(receipt,
+                    "\"receipt_version\":\"mini-kv-fake-transport-dry-run-packet-non-participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v112\"");
-    assert_contains(receipt, "\"path\":\"fixtures/release/fake-transport-dry-run-packet-non-participation-receipt.json\"");
+    assert_contains(receipt,
+                    "\"path\":\"fixtures/release/fake-transport-dry-run-packet-non-participation-receipt.json\"");
     assert_contains(receipt, "\"current_release_version\":\"v112\"");
     assert_contains(receipt, "\"current_artifact_path_hint\":\"c/112/\"");
     assert_contains(receipt, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -185,14 +188,17 @@ int main() {
     assert_source_packet_shape(smoke);
     assert_request_response_shape(smoke);
     assert_non_participation_flags(smoke);
-    assert_contains(smoke, "Node v257 may verify the mini-kv v112 fake transport dry-run packet non-participation receipt");
+    assert_contains(smoke,
+                    "Node v257 may verify the mini-kv v112 fake transport dry-run packet non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
     assert_contains(manifest, "\"minikv_fake_transport_dry_run_packet_non_participation_receipt_tests\"");
-    assert_contains(manifest, "\"path\":\"fixtures/release/fake-transport-dry-run-packet-non-participation-receipt.json\"");
+    assert_contains(manifest,
+                    "\"path\":\"fixtures/release/fake-transport-dry-run-packet-non-participation-receipt.json\"");
     assert_contains(manifest, "\"fake_transport_dry_run_packet_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
-    assert_contains(manifest, "SMOKEJSON exposes fake_transport_dry_run_packet_non_participation_receipt for Node v257");
+    assert_contains(manifest,
+                    "SMOKEJSON exposes fake_transport_dry_run_packet_non_participation_receipt for Node v257");
     assert_source_packet_shape(manifest);
     assert_request_response_shape(manifest);
     assert_non_participation_flags(manifest);
@@ -205,7 +211,9 @@ int main() {
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"fake_transport_dry_run_packet_non_participation_receipt\":");
-    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/fake-transport-dry-run-packet-non-participation-receipt.json\"");
+    assert_contains(
+        result.response,
+        "\"receipt_fixture_path\":\"fixtures/release/fake-transport-dry-run-packet-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v112\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/112/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -215,4 +223,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

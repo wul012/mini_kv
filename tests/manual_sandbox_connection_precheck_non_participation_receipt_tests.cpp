@@ -48,9 +48,12 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 
 void assert_precheck_packet_shape(const std::string& text) {
     assert_contains(text, "\"source_packet\":\"Node v245 manual sandbox connection precheck packet\"");
-    assert_contains(text, "\"source_verification\":\"Node v244 manual sandbox dry-run command upstream echo verification\"");
-    assert_contains(text, "\"consumer_hint\":\"Node v246 manual sandbox connection precheck upstream receipt verification\"");
-    assert_contains(text, "\"source_precheck_profile_version\":\"managed-audit-manual-sandbox-connection-precheck-packet.v1\"");
+    assert_contains(text,
+                    "\"source_verification\":\"Node v244 manual sandbox dry-run command upstream echo verification\"");
+    assert_contains(text,
+                    "\"consumer_hint\":\"Node v246 manual sandbox connection precheck upstream receipt verification\"");
+    assert_contains(
+        text, "\"source_precheck_profile_version\":\"managed-audit-manual-sandbox-connection-precheck-packet.v1\"");
     assert_contains(text, "\"source_precheck_state\":\"manual-sandbox-connection-precheck-packet-ready\"");
     assert_contains(text, "\"source_precheck_packet_mode\":\"manual-sandbox-connection-precheck-packet-only\"");
     assert_contains(text, "\"source_precheck_source_span\":\"Node v244 upstream echo verification\"");
@@ -134,17 +137,19 @@ int main() {
         "STATSJSON",
     };
     const auto expected_digest =
-        minikv::runtime_evidence_receipts::
-            manual_sandbox_connection_precheck_non_participation_receipt_digest(read_commands);
+        minikv::runtime_evidence_receipts::manual_sandbox_connection_precheck_non_participation_receipt_digest(
+            read_commands);
 
     assert_path_exists(receipt_path);
     assert_path_exists(smoke_path);
     assert_path_exists(manifest_path);
 
     const auto receipt = read_fixture_text(receipt_path);
-    assert_contains(receipt, "\"receipt_version\":\"mini-kv-manual-sandbox-connection-precheck-non-participation-receipt.v1\"");
+    assert_contains(receipt,
+                    "\"receipt_version\":\"mini-kv-manual-sandbox-connection-precheck-non-participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v108\"");
-    assert_contains(receipt, "\"path\":\"fixtures/release/manual-sandbox-connection-precheck-non-participation-receipt.json\"");
+    assert_contains(receipt,
+                    "\"path\":\"fixtures/release/manual-sandbox-connection-precheck-non-participation-receipt.json\"");
     assert_contains(receipt, "\"current_release_version\":\"v108\"");
     assert_contains(receipt, "\"current_artifact_path_hint\":\"c/108/\"");
     assert_contains(receipt, "\"current_runtime_fixture_release_version\":\"v102\"");
@@ -160,7 +165,8 @@ int main() {
     assert_not_contains(receipt, "credential_value\":\"");
 
     const auto smoke = read_fixture_text(smoke_path);
-    assert_contains(smoke, "\"consumer_hint\":\"Node v246 manual sandbox connection precheck upstream receipt verification\"");
+    assert_contains(smoke,
+                    "\"consumer_hint\":\"Node v246 manual sandbox connection precheck upstream receipt verification\"");
     assert_contains(smoke, "\"manual_sandbox_connection_precheck_non_participation_receipt\":");
     assert_contains(smoke, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_precheck_packet_shape(smoke);
@@ -168,10 +174,12 @@ int main() {
 
     const auto manifest = read_fixture_text(manifest_path);
     assert_contains(manifest, "\"minikv_manual_sandbox_connection_precheck_non_participation_receipt_tests\"");
-    assert_contains(manifest, "\"path\":\"fixtures/release/manual-sandbox-connection-precheck-non-participation-receipt.json\"");
+    assert_contains(manifest,
+                    "\"path\":\"fixtures/release/manual-sandbox-connection-precheck-non-participation-receipt.json\"");
     assert_contains(manifest, "\"manual_sandbox_connection_precheck_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
-    assert_contains(manifest, "SMOKEJSON exposes manual_sandbox_connection_precheck_non_participation_receipt for Node v246");
+    assert_contains(manifest,
+                    "SMOKEJSON exposes manual_sandbox_connection_precheck_non_participation_receipt for Node v246");
     assert_precheck_packet_shape(manifest);
     assert_non_participation_flags(manifest);
 
@@ -183,7 +191,8 @@ int main() {
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"manual_sandbox_connection_precheck_non_participation_receipt\":");
-    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/manual-sandbox-connection-precheck-non-participation-receipt.json\"");
+    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/"
+                                     "manual-sandbox-connection-precheck-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v108\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/108/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -192,4 +201,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

@@ -1,0 +1,35 @@
+#include <iostream>
+#include <string_view>
+
+/*MINIKV_TEST_DECLARATIONS*/
+
+namespace {
+
+using TestEntry = int (*)();
+
+struct TestCase {
+    std::string_view name;
+    TestEntry entry;
+};
+
+constexpr TestCase test_cases[] = {
+    /*MINIKV_TEST_CASES*/};
+
+} // namespace
+
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        std::cerr << "usage: minikv_test_shard_<n> <test-name>\n";
+        return 2;
+    }
+
+    const std::string_view requested{argv[1]};
+    for (const auto& test : test_cases) {
+        if (test.name == requested) {
+            return test.entry();
+        }
+    }
+
+    std::cerr << "unknown bundled test case: " << requested << '\n';
+    return 2;
+}

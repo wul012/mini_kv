@@ -92,12 +92,10 @@ void assert_no_start_no_write_flags(const std::string& text) {
 } // namespace
 
 int main() {
-    const auto receipt_path = std::filesystem::path{"fixtures"} / "release" /
-                              "operator-window-no-start-no-write-receipt.json";
-    const auto smoke_path = std::filesystem::path{"fixtures"} / "release" /
-                            "runtime-smoke-evidence.json";
-    const auto manifest_path = std::filesystem::path{"fixtures"} / "release" /
-                               "verification-manifest.json";
+    const auto receipt_path =
+        std::filesystem::path{"fixtures"} / "release" / "operator-window-no-start-no-write-receipt.json";
+    const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
+    const auto manifest_path = std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json";
 
     assert_path_exists(receipt_path);
     assert_path_exists(smoke_path);
@@ -106,7 +104,8 @@ int main() {
     const auto receipt = read_fixture_text(receipt_path);
     assert_contains(receipt, "\"receipt_version\":\"mini-kv-operator-window-no-start-no-write-receipt.v1\"");
     assert_contains(receipt, "\"path\":\"fixtures/release/operator-window-no-start-no-write-receipt.json\"");
-    assert_contains(receipt, "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
+    assert_contains(receipt,
+                    "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
     assert_contains(receipt, "\"producer\":\"Node v238 manual sandbox connection operator window checklist\"");
     assert_contains(receipt, "\"checklist_state\":\"manual-sandbox-connection-operator-window-checklist-ready\"");
     assert_contains(receipt, "\"approval_item_count\":3");
@@ -150,11 +149,14 @@ int main() {
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"operator_window_no_start_no_write_receipt\":");
-    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/operator-window-no-start-no-write-receipt.json\"");
-    assert_contains(result.response, "\"source_checklist\":\"Node v238 manual sandbox connection operator window checklist\"");
+    assert_contains(result.response,
+                    "\"receipt_fixture_path\":\"fixtures/release/operator-window-no-start-no-write-receipt.json\"");
+    assert_contains(result.response,
+                    "\"source_checklist\":\"Node v238 manual sandbox connection operator window checklist\"");
     assert_current_digest_set(result.response);
     assert_no_start_no_write_flags(result.response);
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

@@ -12,8 +12,8 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 } // namespace
 
 int main() {
-    namespace guards =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_guards;
+    namespace guards = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_guards;
 
     const auto records = guards::signed_approval_capture_artifact_draft_instruction_preflight_guards();
     assert(records.size() == 25);
@@ -28,4 +28,5 @@ int main() {
     assert_contains(first, "\"writeRouteBlocked\":true");
     assert_contains(first, "\"siblingMutationBlocked\":true");
     assert(first.find("\"guardCode\":\"artifact_preflight_digest_guard\"") == std::string::npos);
+    return 0;
 }

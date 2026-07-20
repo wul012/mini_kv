@@ -49,7 +49,8 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 void assert_source_decision_shape(const std::string& text) {
     assert_contains(text, "\"source_decision\":\"Node v260 sandbox endpoint credential resolver decision record\"");
     assert_contains(text, "\"consumer_hint\":\"Node v261 credential resolver upstream echo verification\"");
-    assert_contains(text, "\"source_decision_profile_version\":\"managed-audit-manual-sandbox-connection-sandbox-endpoint-credential-resolver-decision-record.v1\"");
+    assert_contains(text, "\"source_decision_profile_version\":\"managed-audit-manual-sandbox-connection-sandbox-"
+                          "endpoint-credential-resolver-decision-record.v1\"");
     assert_contains(text, "\"source_decision_state\":\"sandbox-endpoint-credential-resolver-decision-record-ready\"");
     assert_contains(text, "\"source_record_mode\":\"sandbox-endpoint-credential-resolver-decision-record-only\"");
     assert_contains(text, "\"source_decision_scope\":\"managed-audit-sandbox-endpoint-credential-resolver\"");
@@ -93,7 +94,8 @@ void assert_source_decision_shape(const std::string& text) {
 void assert_decision_record_shape(const std::string& text) {
     assert_contains(text, "\"endpoint_handle\":\"ORDEROPS_MANAGED_AUDIT_SANDBOX_ENDPOINT_HANDLE\"");
     assert_contains(text, "\"credential_handle\":\"ORDEROPS_MANAGED_AUDIT_SANDBOX_CREDENTIAL_HANDLE\"");
-    assert_contains(text, "\"resolver_policy_handle\":\"ORDEROPS_MANAGED_AUDIT_SANDBOX_CREDENTIAL_RESOLVER_POLICY_HANDLE\"");
+    assert_contains(text,
+                    "\"resolver_policy_handle\":\"ORDEROPS_MANAGED_AUDIT_SANDBOX_CREDENTIAL_RESOLVER_POLICY_HANDLE\"");
     assert_contains(text, "\"approval_marker\":\"ORDEROPS_MANAGED_AUDIT_CREDENTIAL_RESOLVER_APPROVAL_MARKER\"");
     assert_contains(text, "\"operator_identity_required\":true");
     assert_contains(text, "\"approval_correlation_required\":true");
@@ -168,8 +170,8 @@ void assert_non_participation_flags(const std::string& text) {
 } // namespace
 
 int main() {
-    const auto receipt_path = std::filesystem::path{"fixtures"} / "release" /
-                              "credential-resolver-non-participation-receipt.json";
+    const auto receipt_path =
+        std::filesystem::path{"fixtures"} / "release" / "credential-resolver-non-participation-receipt.json";
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto manifest_path = std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json";
     const std::vector<std::string> read_commands = {
@@ -241,4 +243,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

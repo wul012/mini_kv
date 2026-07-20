@@ -12,8 +12,8 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 } // namespace
 
 int main() {
-    namespace slots =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_slots;
+    namespace slots = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_instruction_preflight_slots;
 
     const auto records = slots::signed_approval_capture_artifact_draft_instruction_preflight_slots();
     assert(records.size() == 25);
@@ -31,4 +31,5 @@ int main() {
     assert_contains(all, "\"slotCode\":\"closeout_slot\"");
     assert_contains(all, "\"acceptsSignatureMaterial\":false");
     assert_contains(all, "\"importsOperatorValue\":false");
+    return 0;
 }

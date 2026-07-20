@@ -18,13 +18,13 @@ int main() {
     const std::string json = minikv::shard_readiness::format_json();
 
     assert_contains(json, "\"version\":\"" + std::string{minikv::version} + "\",\"releaseVersion\":\"v");
-    assert_contains(json,
-                    "\"sourceNodePlan\":\"docs/plans3/"
-                    "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-route-archive-verification-roadmap.md\"");
+    assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/"
+                          "v549-post-java-mini-kv-route-catalog-cleanup-latest-sibling-live-smoke-archive-verification-"
+                          "route-archive-verification-roadmap.md\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v360\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v360.json\"");
-    assert_contains(json,
-                    "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-closeout-release-package\"");
+    assert_contains(json, "\"continuityStage\":\"feature-read-only-shard-route-preview-verification-report-archive-"
+                          "closeout-release-package\"");
     assert_contains(json, "\"stageSequence\":180");
     assert_contains(json, "\"stageReleaseVersion\":\"v380\"");
     assert_contains(json, "\"trackedPostCloseoutRangeEnd\":\"v380\"");
@@ -53,4 +53,5 @@ int main() {
     assert_not_contains(result.response, "\"executionAllowed\":true");
     assert_not_contains(result.response, "\"routerActivationAllowed\":true");
     assert_not_contains(result.response, "\"writeRoutingAllowed\":true");
+    return 0;
 }

@@ -23,7 +23,8 @@ int main() {
     assert_contains(json, "\"sourceNodeCoveredSubmissionValidatorCount\":25");
     assert_contains(json, "\"sourceNodeIntakeGateCount\":35");
     assert_contains(json, "\"sourceCandidateSubmissionPrecheckReleaseVersion\":\"v930\"");
-    assert_contains(json, "\"sourceCandidateSubmissionPrecheckFixturePath\":\"fixtures/release/shard-readiness-v930.json\"");
+    assert_contains(json,
+                    "\"sourceCandidateSubmissionPrecheckFixturePath\":\"fixtures/release/shard-readiness-v930.json\"");
     assert_contains(json, "\"sourceCandidateSubmissionPrecheckPublishedStageCount\":10");
     assert_contains(json, "\"sourceCandidateSubmissionPrecheckComplete\":true");
     assert_contains(json, "\"candidateIntakePacketReleaseVersion\":\"v955\"");
@@ -58,4 +59,5 @@ int main() {
     assert(intake::candidate_intake_packet_status() ==
            "route-preview-candidate-intake-packet-closeout-summary-read-only");
     assert(intake::published_stage_count() == 25);
+    return 0;
 }

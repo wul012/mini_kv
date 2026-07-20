@@ -26,4 +26,5 @@ int main() {
     assert_contains(all, "\"passed\":true");
     assert_contains(all, "\"documentAccepted\":false");
     assert_contains(all, "\"executionAllowed\":false");
+    return 0;
 }

@@ -12,21 +12,24 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 } // namespace
 
 int main() {
-    namespace audit =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit;
+    namespace audit = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit;
 
     const auto json = audit::format_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_json();
-    assert_contains(json,
-                    "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit.v1\"");
-    assert_contains(json,
-                    "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON\"");
-    assert_contains(json,
-                    "\"sourceDraftTextPackageReviewPreflightCommand\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON\"");
+    assert_contains(json, "\"contract\":\"shard-route-preview-operator-value-supply-signed-approval-capture-artifact-"
+                          "draft-text-package-review-closeout-audit.v1\"");
+    assert_contains(
+        json,
+        "\"command\":\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWCLOSEOUTAUDITJSON\"");
+    assert_contains(json, "\"sourceDraftTextPackageReviewPreflightCommand\":"
+                          "\"SHARDROUTEVALUESUPPLYSIGNEDAPPROVALCAPTUREARTIFACTDRAFTTEXTPACKAGEREVIEWPREFLIGHTJSON\"");
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightReleaseVersion\":\"v810\"");
-    assert_contains(json, "\"sourceDraftTextPackageReviewPreflightFixturePath\":\"fixtures/release/shard-readiness-v810.json\"");
+    assert_contains(
+        json, "\"sourceDraftTextPackageReviewPreflightFixturePath\":\"fixtures/release/shard-readiness-v810.json\"");
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightPublishedStageCount\":25");
     assert_contains(json, "\"sourceDraftTextPackageReviewPreflightChainComplete\":true");
-    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditStage\":\"route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-summary\"");
+    assert_contains(json, "\"draftTextPackageReviewCloseoutAuditStage\":\"route-preview-value-supply-signed-approval-"
+                          "capture-artifact-draft-text-package-review-closeout-audit-summary\"");
     assert_contains(json, "\"draftTextPackageReviewCloseoutAuditReleaseVersion\":\"v835\"");
     assert_contains(json, "\"sourceFrozenReleaseVersion\":\"v834\"");
     assert_contains(json, "\"sourceFrozenFixturePath\":\"fixtures/release/shard-readiness-v834.json\"");
@@ -61,7 +64,10 @@ int main() {
     assert_contains(json, "\"touchesWal\":false");
     assert_contains(json, "\"executionAllowed\":false");
 
-    const auto digest = audit::signed_approval_capture_artifact_draft_text_package_review_closeout_audit_digest_marker();
-    assert(digest.find("v835-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-closeout-audit-summary") != std::string::npos);
+    const auto digest =
+        audit::signed_approval_capture_artifact_draft_text_package_review_closeout_audit_digest_marker();
+    assert(digest.find("v835-route-preview-value-supply-signed-approval-capture-artifact-draft-text-package-review-"
+                       "closeout-audit-summary") != std::string::npos);
     assert(audit::published_stage_count() == 25);
+    return 0;
 }

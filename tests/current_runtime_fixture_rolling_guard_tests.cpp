@@ -71,12 +71,10 @@ void assert_historical_consumed_digest_anchors(const std::string& text) {
 } // namespace
 
 int main() {
-    const auto guard_path = std::filesystem::path{"fixtures"} / "release" /
-                            "current-runtime-fixture-rolling-guard.json";
-    const auto smoke_path = std::filesystem::path{"fixtures"} / "release" /
-                            "runtime-smoke-evidence.json";
-    const auto manifest_path = std::filesystem::path{"fixtures"} / "release" /
-                               "verification-manifest.json";
+    const auto guard_path =
+        std::filesystem::path{"fixtures"} / "release" / "current-runtime-fixture-rolling-guard.json";
+    const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
+    const auto manifest_path = std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json";
 
     assert_path_exists(guard_path);
     assert_path_exists(smoke_path);
@@ -90,13 +88,15 @@ int main() {
     assert_contains(guard, "\"execution_allowed\":false");
     assert_contains(guard, "\"restore_execution_allowed\":false");
     assert_contains(guard, "\"order_authoritative\":false");
-    assert_contains(guard, "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
+    assert_contains(guard,
+                    "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
     assert_contains(guard, "current runtime fixture rolling evidence guard");
     assert_contains(guard, "\"source_fixture\":\"fixtures/release/runtime-smoke-evidence.json\"");
     assert_contains(guard, "\"release_manifest\":\"fixtures/release/verification-manifest.json\"");
     assert_contains(guard, "\"historical_receipt_retention\":[");
     assert_contains(guard, "\"must_remain_stable\":true");
-    assert_contains(guard, "historical consumed release versions, artifact path hints, and consumed digests remain fixed");
+    assert_contains(guard,
+                    "historical consumed release versions, artifact path hints, and consumed digests remain fixed");
     assert_contains(guard, "\"guard fixture only\"");
     assert_contains(guard, "\"read-only rolling evidence check only\"");
     assert_contains(guard, "\"current runtime fixture may roll by release\"");
@@ -115,11 +115,13 @@ int main() {
     const auto smoke = read_fixture_text(smoke_path);
     assert_contains(smoke, "\"project_version\":\"0.102.0\"");
     assert_contains(smoke, "\"release_version\":\"v102\"");
-    assert_contains(smoke, "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
+    assert_contains(smoke,
+                    "\"consumer_hint\":\"Node v239 manual sandbox connection operator window evidence verification\"");
     assert_contains(smoke, "\"current_runtime_fixture_rolling_guard\":");
     assert_contains(smoke, "\"guard_fixture_path\":\"fixtures/release/current-runtime-fixture-rolling-guard.json\"");
     assert_contains(smoke, "\"historical_consumed_digest_count\":9");
-    assert_contains(smoke, "Current runtime fixture rolling evidence guard lets Node v239 verify the v102 current fixture while preserving historical consumed digest anchors");
+    assert_contains(smoke, "Current runtime fixture rolling evidence guard lets Node v239 verify the v102 current "
+                           "fixture while preserving historical consumed digest anchors");
     assert_current_rolling_digest_set(smoke);
     assert_contains(smoke, "fnv1a64:f92fcba55feb26a2");
     assert_historical_consumed_digest_anchors(smoke);
@@ -130,7 +132,8 @@ int main() {
     assert_contains(manifest, "\"current_runtime_fixture_rolling_guard\":");
     assert_contains(manifest, "\"historical_consumed_digest_count\":9");
     assert_contains(manifest, "\"current runtime fixture rolling guard only\"");
-    assert_contains(manifest, "\"current fixture evidence may roll while historical consumed digest anchors remain fixed\"");
+    assert_contains(manifest,
+                    "\"current fixture evidence may roll while historical consumed digest anchors remain fixed\"");
     assert_current_rolling_digest_set(manifest);
     assert_historical_consumed_digest_anchors(manifest);
 
@@ -152,4 +155,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

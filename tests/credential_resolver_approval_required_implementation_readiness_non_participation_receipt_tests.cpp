@@ -47,18 +47,20 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 }
 
 void assert_source_node_v281_shape(const std::string& text) {
-    assert_contains(text, "\"source_review\":\"Node v281 credential resolver approval-required implementation readiness review\"");
-    assert_contains(text, "\"source_verification\":\"Node v275 credential resolver approval-required boundary upstream echo verification\"");
+    assert_contains(
+        text, "\"source_review\":\"Node v281 credential resolver approval-required implementation readiness review\"");
+    assert_contains(text, "\"source_verification\":\"Node v275 credential resolver approval-required boundary upstream "
+                          "echo verification\"");
+    assert_contains(text, "\"consumer_hint\":\"Node v282 credential resolver approval-required implementation "
+                          "readiness upstream echo verification\"");
+    assert_contains(text, "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-"
+                          "approval-required-implementation-readiness-review.v1\"");
+    assert_contains(text, "\"source_route_path\":\"/api/v1/audit/"
+                          "managed-audit-manual-sandbox-connection-credential-resolver-approval-required-"
+                          "implementation-readiness-review\"");
     assert_contains(
         text,
-        "\"consumer_hint\":\"Node v282 credential resolver approval-required implementation readiness upstream echo verification\"");
-    assert_contains(
-        text,
-        "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review.v1\"");
-    assert_contains(
-        text,
-        "\"source_route_path\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-approval-required-implementation-readiness-review\"");
-    assert_contains(text, "\"source_review_state\":\"credential-resolver-approval-required-implementation-readiness-review-ready\"");
+        "\"source_review_state\":\"credential-resolver-approval-required-implementation-readiness-review-ready\"");
     assert_contains(text, "\"source_ready_for_approval_required_implementation_readiness_review\":true");
     assert_contains(text, "\"source_read_only_implementation_readiness_review\":true");
     assert_contains(text, "\"source_ready_for_java_v116_mini_kv_v122_echo\":true");
@@ -80,7 +82,9 @@ void assert_source_node_v281_shape(const std::string& text) {
 void assert_source_node_v275_shape(const std::string& text) {
     assert_contains(text, "\"source_node_v275\":");
     assert_contains(text, "\"source_version\":\"Node v275\"");
-    assert_contains(text, "\"verification_state\":\"credential-resolver-approval-required-boundary-upstream-echo-verification-ready\"");
+    assert_contains(
+        text,
+        "\"verification_state\":\"credential-resolver-approval-required-boundary-upstream-echo-verification-ready\"");
     assert_contains(text, "\"source_span\":\"Node v274 + Java v115 + mini-kv v121\"");
     assert_contains(text, "\"source_check_count\":26");
     assert_contains(text, "\"source_passed_check_count\":26");
@@ -114,9 +118,8 @@ void assert_readiness_review_and_boundaries(const std::string& text) {
     assert_contains(text, "\"echo_ready_boundary_count\":6");
     assert_contains(text, "\"blocked_for_implementation_boundary_count\":6");
     assert_contains(text, "\"required_artifact_count\":18");
-    assert_contains(
-        text,
-        "\"boundary_codes\":[\"CREDENTIAL_HANDLE\",\"ENDPOINT_HANDLE\",\"OPERATOR_APPROVAL\",\"ROLLBACK_BOUNDARY\",\"SCHEMA_MIGRATION_POLICY\",\"AUDIT_LEDGER_WRITE_POLICY\"]");
+    assert_contains(text, "\"boundary_codes\":[\"CREDENTIAL_HANDLE\",\"ENDPOINT_HANDLE\",\"OPERATOR_APPROVAL\","
+                          "\"ROLLBACK_BOUNDARY\",\"SCHEMA_MIGRATION_POLICY\",\"AUDIT_LEDGER_WRITE_POLICY\"]");
     assert_contains(text, "\"credential-handle-review-id\"");
     assert_contains(text, "\"credential-value-redaction-contract\"");
     assert_contains(text, "\"operator-visible-secret-value-prohibition\"");
@@ -138,8 +141,11 @@ void assert_readiness_review_and_boundaries(const std::string& text) {
     assert_contains(text, "\"mini_kv_v122_receipt_hint\":\"Confirm no credential value load/store/include behavior.\"");
     assert_contains(text, "\"mini_kv_v122_receipt_hint\":\"Confirm no raw endpoint parse/include/connect behavior.\"");
     assert_contains(text, "\"mini_kv_v122_receipt_hint\":\"Confirm no auto-start and no approval side effects.\"");
-    assert_contains(text, "\"mini_kv_v122_receipt_hint\":\"Confirm no LOAD/RESTORE/COMPACT and no authority over rollback state.\"");
-    assert_contains(text, "\"mini_kv_v122_receipt_hint\":\"Confirm no admin command or schema/storage mutation participates.\"");
+    assert_contains(
+        text,
+        "\"mini_kv_v122_receipt_hint\":\"Confirm no LOAD/RESTORE/COMPACT and no authority over rollback state.\"");
+    assert_contains(
+        text, "\"mini_kv_v122_receipt_hint\":\"Confirm no admin command or schema/storage mutation participates.\"");
     assert_contains(text, "\"mini_kv_v122_receipt_hint\":\"Confirm no storage/backend/write participation.\"");
     assert_contains(text, "\"ready_for_runtime_implementation\":false");
 }
@@ -234,24 +240,21 @@ int main() {
         "STATSJSON",
     };
     const auto expected_digest = minikv::runtime_evidence_receipts::
-        credential_resolver_approval_required_implementation_readiness_non_participation_receipt_digest(
-            read_commands);
+        credential_resolver_approval_required_implementation_readiness_non_participation_receipt_digest(read_commands);
 
     assert_path_exists(receipt_path);
     assert_path_exists(smoke_path);
     assert_path_exists(manifest_path);
 
     const auto receipt = read_fixture_text(receipt_path);
-    assert_contains(
-        receipt,
-        "\"receipt_version\":\"mini-kv-credential-resolver-approval-required-implementation-readiness-non-participation-receipt.v1\"");
+    assert_contains(receipt, "\"receipt_version\":\"mini-kv-credential-resolver-approval-required-implementation-"
+                             "readiness-non-participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v122\"");
-    assert_contains(
-        receipt,
-        "\"path\":\"fixtures/release/credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json\"");
-    assert_contains(
-        receipt,
-        "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
+    assert_contains(receipt,
+                    "\"path\":\"fixtures/release/"
+                    "credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json\"");
+    assert_contains(receipt,
+                    "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
     assert_contains(receipt, "\"current_release_version\":\"v122\"");
     assert_contains(receipt, "\"current_artifact_path_hint\":\"d/122/\"");
     assert_contains(receipt, "\"previous_mini_kv_release_version\":\"v121\"");
@@ -263,36 +266,35 @@ int main() {
     assert_readiness_review_and_boundaries(receipt);
     assert_checks_and_summary(receipt);
     assert_non_participation_flags(receipt);
-    assert_contains(receipt, "credential resolver approval-required implementation readiness non-participation receipt only");
+    assert_contains(receipt,
+                    "credential resolver approval-required implementation readiness non-participation receipt only");
     assert_not_contains(receipt, "credential_value\":\"");
     assert_not_contains(receipt, "raw_endpoint_url\":\"");
 
     const auto smoke = read_fixture_text(smoke_path);
-    assert_contains(
-        smoke,
-        "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
+    assert_contains(smoke,
+                    "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
     assert_contains(smoke, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_source_node_v281_shape(smoke);
     assert_source_node_v275_shape(smoke);
     assert_readiness_review_and_boundaries(smoke);
     assert_checks_and_summary(smoke);
     assert_non_participation_flags(smoke);
-    assert_contains(
-        smoke,
-        "Node v282 may verify the mini-kv v122 credential resolver approval-required implementation readiness non-participation receipt");
+    assert_contains(smoke, "Node v282 may verify the mini-kv v122 credential resolver approval-required implementation "
+                           "readiness non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
     assert_contains(manifest, "\"minikv_credential_resolver_impl_readiness_receipt_tests\"");
-    assert_contains(
-        manifest,
-        "\"path\":\"fixtures/release/credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json\"");
-    assert_contains(
-        manifest,
-        "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
+    assert_contains(manifest,
+                    "\"path\":\"fixtures/release/"
+                    "credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json\"");
+    assert_contains(manifest,
+                    "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
     assert_contains(
         manifest,
-        "SMOKEJSON exposes credential_resolver_approval_required_implementation_readiness_non_participation_receipt for Node v282");
+        "SMOKEJSON exposes credential_resolver_approval_required_implementation_readiness_non_participation_receipt "
+        "for Node v282");
     assert_source_node_v281_shape(manifest);
     assert_source_node_v275_shape(manifest);
     assert_readiness_review_and_boundaries(manifest);
@@ -306,12 +308,11 @@ int main() {
 
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
-    assert_contains(
-        result.response,
-        "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
-    assert_contains(
-        result.response,
-        "\"receipt_fixture_path\":\"fixtures/release/credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json\"");
+    assert_contains(result.response,
+                    "\"credential_resolver_approval_required_implementation_readiness_non_participation_receipt\":");
+    assert_contains(result.response,
+                    "\"receipt_fixture_path\":\"fixtures/release/"
+                    "credential-resolver-approval-required-implementation-readiness-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v122\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"d/122/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -323,4 +324,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

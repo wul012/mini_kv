@@ -201,4 +201,5 @@ int main() {
     assert(exact_candidates == 11);
     assert(resolver_order_rules == 1);
     assert(metadata_field_rules == 1);
+    return 0;
 }

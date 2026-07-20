@@ -47,17 +47,23 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 }
 
 void assert_source_node_v274_shape(const std::string& text) {
-    assert_contains(text, "\"source_verification\":\"Node v274 credential resolver disabled candidate upstream echo verification\"");
-    assert_contains(text, "\"source_review\":\"Node v273 credential resolver disabled implementation candidate review\"");
+    assert_contains(
+        text,
+        "\"source_verification\":\"Node v274 credential resolver disabled candidate upstream echo verification\"");
     assert_contains(text,
-                    "\"consumer_hint\":\"Node v275 credential resolver approval-required boundary upstream echo verification\"");
+                    "\"source_review\":\"Node v273 credential resolver disabled implementation candidate review\"");
     assert_contains(
         text,
-        "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-disabled-candidate-upstream-echo-verification.v1\"");
+        "\"consumer_hint\":\"Node v275 credential resolver approval-required boundary upstream echo verification\"");
+    assert_contains(text, "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-"
+                          "disabled-candidate-upstream-echo-verification.v1\"");
     assert_contains(
         text,
-        "\"source_route_path\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-disabled-candidate-upstream-echo-verification\"");
-    assert_contains(text, "\"source_verification_state\":\"credential-resolver-disabled-candidate-upstream-echo-verification-ready\"");
+        "\"source_route_path\":\"/api/v1/audit/"
+        "managed-audit-manual-sandbox-connection-credential-resolver-disabled-candidate-upstream-echo-verification\"");
+    assert_contains(
+        text,
+        "\"source_verification_state\":\"credential-resolver-disabled-candidate-upstream-echo-verification-ready\"");
     assert_contains(text, "\"source_ready_for_disabled_candidate_upstream_echo_verification\":true");
     assert_contains(text, "\"source_read_only_upstream_echo_verification\":true");
     assert_contains(text, "\"source_disabled_candidate_echo_verification_only\":true");
@@ -93,21 +99,27 @@ void assert_source_node_v274_shape(const std::string& text) {
 void assert_boundary_details(const std::string& text) {
     assert_contains(text, "\"approval_required_boundaries\":");
     assert_contains(text, "\"boundary_count\":6");
+    assert_contains(text, "\"boundary_codes\":[\"CREDENTIAL_HANDLE\",\"ENDPOINT_HANDLE\",\"OPERATOR_APPROVAL\","
+                          "\"ROLLBACK_BOUNDARY\",\"SCHEMA_MIGRATION_POLICY\",\"AUDIT_LEDGER_WRITE_POLICY\"]");
+    assert_contains(text, "\"code\":\"CREDENTIAL_HANDLE\"");
+    assert_contains(text, "\"prohibited_runtime_actions\":[\"read-credential-value\",\"store-credential-value\","
+                          "\"render-credential-value\"]");
+    assert_contains(text, "\"code\":\"ENDPOINT_HANDLE\"");
+    assert_contains(text, "\"prohibited_runtime_actions\":[\"parse-raw-endpoint-url\",\"render-raw-endpoint-url\","
+                          "\"connect-managed-audit\"]");
+    assert_contains(text, "\"code\":\"OPERATOR_APPROVAL\"");
+    assert_contains(text, "\"prohibited_runtime_actions\":[\"execute-without-operator-marker\",\"auto-approve-"
+                          "operation\",\"auto-start-upstream\"]");
+    assert_contains(text, "\"code\":\"ROLLBACK_BOUNDARY\"");
+    assert_contains(text, "\"prohibited_runtime_actions\":[\"execute-rollback\",\"deploy-resolver-without-abort-"
+                          "marker\",\"write-production-record\"]");
+    assert_contains(text, "\"code\":\"SCHEMA_MIGRATION_POLICY\"");
+    assert_contains(text, "\"prohibited_runtime_actions\":[\"execute-schema-migration\",\"execute-sql\",\"mutate-"
+                          "managed-audit-schema\"]");
+    assert_contains(text, "\"code\":\"AUDIT_LEDGER_WRITE_POLICY\"");
     assert_contains(
         text,
-        "\"boundary_codes\":[\"CREDENTIAL_HANDLE\",\"ENDPOINT_HANDLE\",\"OPERATOR_APPROVAL\",\"ROLLBACK_BOUNDARY\",\"SCHEMA_MIGRATION_POLICY\",\"AUDIT_LEDGER_WRITE_POLICY\"]");
-    assert_contains(text, "\"code\":\"CREDENTIAL_HANDLE\"");
-    assert_contains(text, "\"prohibited_runtime_actions\":[\"read-credential-value\",\"store-credential-value\",\"render-credential-value\"]");
-    assert_contains(text, "\"code\":\"ENDPOINT_HANDLE\"");
-    assert_contains(text, "\"prohibited_runtime_actions\":[\"parse-raw-endpoint-url\",\"render-raw-endpoint-url\",\"connect-managed-audit\"]");
-    assert_contains(text, "\"code\":\"OPERATOR_APPROVAL\"");
-    assert_contains(text, "\"prohibited_runtime_actions\":[\"execute-without-operator-marker\",\"auto-approve-operation\",\"auto-start-upstream\"]");
-    assert_contains(text, "\"code\":\"ROLLBACK_BOUNDARY\"");
-    assert_contains(text, "\"prohibited_runtime_actions\":[\"execute-rollback\",\"deploy-resolver-without-abort-marker\",\"write-production-record\"]");
-    assert_contains(text, "\"code\":\"SCHEMA_MIGRATION_POLICY\"");
-    assert_contains(text, "\"prohibited_runtime_actions\":[\"execute-schema-migration\",\"execute-sql\",\"mutate-managed-audit-schema\"]");
-    assert_contains(text, "\"code\":\"AUDIT_LEDGER_WRITE_POLICY\"");
-    assert_contains(text, "\"prohibited_runtime_actions\":[\"write-approval-ledger\",\"write-managed-audit-state\",\"write-storage\"]");
+        "\"prohibited_runtime_actions\":[\"write-approval-ledger\",\"write-managed-audit-state\",\"write-storage\"]");
     assert_contains(text, "\"approval_required\":true");
     assert_contains(text, "\"mini_kv_participates\":false");
 }
@@ -208,11 +220,13 @@ int main() {
     assert_path_exists(manifest_path);
 
     const auto receipt = read_fixture_text(receipt_path);
-    assert_contains(receipt,
-                    "\"receipt_version\":\"mini-kv-credential-resolver-approval-required-boundary-non-participation-receipt.v1\"");
+    assert_contains(
+        receipt,
+        "\"receipt_version\":\"mini-kv-credential-resolver-approval-required-boundary-non-participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v121\"");
-    assert_contains(receipt,
-                    "\"path\":\"fixtures/release/credential-resolver-approval-required-boundary-non-participation-receipt.json\"");
+    assert_contains(
+        receipt,
+        "\"path\":\"fixtures/release/credential-resolver-approval-required-boundary-non-participation-receipt.json\"");
     assert_contains(receipt, "\"credential_resolver_approval_required_boundary_non_participation_receipt\":");
     assert_contains(receipt, "\"current_release_version\":\"v121\"");
     assert_contains(receipt, "\"current_artifact_path_hint\":\"c/121/\"");
@@ -235,14 +249,12 @@ int main() {
     assert_boundary_details(smoke);
     assert_checks_and_summary(smoke);
     assert_non_participation_flags(smoke);
-    assert_contains(
-        smoke,
-        "Node v275 may verify the mini-kv v121 credential resolver approval-required boundary non-participation receipt");
+    assert_contains(smoke, "Node v275 may verify the mini-kv v121 credential resolver approval-required boundary "
+                           "non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
-    assert_contains(
-        manifest,
-        "\"minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests\"");
+    assert_contains(manifest,
+                    "\"minikv_credential_resolver_approval_required_boundary_non_participation_receipt_tests\"");
     assert_contains(
         manifest,
         "\"path\":\"fixtures/release/credential-resolver-approval-required-boundary-non-participation-receipt.json\"");
@@ -264,9 +276,8 @@ int main() {
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"credential_resolver_approval_required_boundary_non_participation_receipt\":");
-    assert_contains(
-        result.response,
-        "\"receipt_fixture_path\":\"fixtures/release/credential-resolver-approval-required-boundary-non-participation-receipt.json\"");
+    assert_contains(result.response, "\"receipt_fixture_path\":\"fixtures/release/"
+                                     "credential-resolver-approval-required-boundary-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v121\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/121/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -277,4 +288,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

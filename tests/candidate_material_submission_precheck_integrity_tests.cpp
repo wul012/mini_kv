@@ -13,11 +13,14 @@ int main() {
     namespace integrity = minikv::shard_preview_candidate_material_submission_precheck_integrity;
 
     const auto json = integrity::format_candidate_material_submission_precheck_integrity_json();
-    assert_contains(json, "\"contract\":\"shard-route-preview-candidate-material-submission-precheck-fixture-integrity.v1\"");
+    assert_contains(json,
+                    "\"contract\":\"shard-route-preview-candidate-material-submission-precheck-fixture-integrity.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTECANDIDATEMATERIALSUBMISSIONPRECHECKINTEGRITYJSON\"");
     assert_contains(json, "\"sourceNodeMaterialSubmissionPrecheckReleaseVersion\":\"Node v1456\"");
     assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckReleaseVersion\":\"v985\"");
-    assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckFixturePath\":\"fixtures/release/shard-readiness-v985.json\"");
+    assert_contains(
+        json,
+        "\"sourceCandidateMaterialSubmissionPrecheckFixturePath\":\"fixtures/release/shard-readiness-v985.json\"");
     assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckPublishedStageCount\":10");
     assert_contains(json, "\"sourceCandidateMaterialSubmissionPrecheckChainComplete\":true");
     assert_contains(json, "\"sourceMaterialSubmissionPrecheckCheckpointCount\":10");
@@ -54,9 +57,12 @@ int main() {
     assert_contains(json, "\"executionAllowed\":false");
 
     const auto digest = integrity::candidate_material_submission_precheck_integrity_digest_marker();
-    assert(digest.find("v1010-route-preview-candidate-material-submission-precheck-integrity-closeout-summary-25-of-25-stages") !=
-           std::string::npos);
+    assert(
+        digest.find(
+            "v1010-route-preview-candidate-material-submission-precheck-integrity-closeout-summary-25-of-25-stages") !=
+        std::string::npos);
     assert(integrity::candidate_material_submission_precheck_integrity_status() ==
            "route-preview-candidate-material-submission-precheck-integrity-closeout-summary-read-only");
     assert(integrity::published_stage_count() == 25);
+    return 0;
 }

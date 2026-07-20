@@ -15,9 +15,12 @@ int main() {
     const auto json = integrity::format_candidate_request_package_integrity_json();
     assert_contains(json, "\"contract\":\"shard-route-preview-candidate-request-package-fixture-integrity.v1\"");
     assert_contains(json, "\"command\":\"SHARDROUTECANDIDATEREQUESTPACKAGEINTEGRITYJSON\"");
-    assert_contains(json, "\"sourceNodePlan\":\"docs/plans3/v1386-controlled-read-only-shard-preview-candidate-document-request-package-closeout-roadmap.md\"");
+    assert_contains(
+        json, "\"sourceNodePlan\":\"docs/plans3/"
+              "v1386-controlled-read-only-shard-preview-candidate-document-request-package-closeout-roadmap.md\"");
     assert_contains(json, "\"sourceCandidateDocumentRequestPackageReleaseVersion\":\"v895\"");
-    assert_contains(json, "\"sourceCandidateDocumentRequestPackageFixturePath\":\"fixtures/release/shard-readiness-v895.json\"");
+    assert_contains(
+        json, "\"sourceCandidateDocumentRequestPackageFixturePath\":\"fixtures/release/shard-readiness-v895.json\"");
     assert_contains(json, "\"sourceCandidateDocumentRequestPackagePublishedStageCount\":15");
     assert_contains(json, "\"sourceCandidateDocumentRequestPackageChainComplete\":true");
     assert_contains(json, "\"sourceCandidateDocumentRequestPackageRequestItemCount\":15");
@@ -53,4 +56,5 @@ int main() {
     assert(integrity::candidate_request_package_integrity_status() ==
            "route-preview-candidate-request-package-integrity-closeout-summary-read-only");
     assert(integrity::published_stage_count() == 25);
+    return 0;
 }

@@ -33,4 +33,5 @@ int main() {
         9, true, 25, 25, 20, 20, 41, 10, 10, 10, 10, 10, 10);
     assert_contains(failing, "\"candidateMaterialSubmissionPrecheckValidationPassed\":false");
     assert_contains(failing, "\"sourceIntegrityFrozen\":false");
+    return 0;
 }

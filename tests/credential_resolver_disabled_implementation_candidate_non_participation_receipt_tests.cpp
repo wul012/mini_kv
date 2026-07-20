@@ -47,19 +47,19 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 }
 
 void assert_source_review_shape(const std::string& text) {
-    assert_contains(text, "\"source_review\":\"Node v273 credential resolver disabled implementation candidate review\"");
     assert_contains(text,
-                    "\"source_node_v272\":\"Node v272 credential resolver pre-implementation plan intake upstream echo verification\"");
-    assert_contains(text,
-                    "\"consumer_hint\":\"Node v274 credential resolver disabled candidate upstream echo verification\"");
-    assert_contains(text,
-                    "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-disabled-implementation-candidate-review.v1\"");
+                    "\"source_review\":\"Node v273 credential resolver disabled implementation candidate review\"");
+    assert_contains(text, "\"source_node_v272\":\"Node v272 credential resolver pre-implementation plan intake "
+                          "upstream echo verification\"");
     assert_contains(
-        text,
-        "\"source_route_path\":\"/api/v1/audit/managed-audit-manual-sandbox-connection-credential-resolver-disabled-implementation-candidate-review\"");
+        text, "\"consumer_hint\":\"Node v274 credential resolver disabled candidate upstream echo verification\"");
+    assert_contains(text, "\"source_profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-"
+                          "disabled-implementation-candidate-review.v1\"");
     assert_contains(
-        text,
-        "\"source_review_state\":\"credential-resolver-disabled-implementation-candidate-review-ready\"");
+        text, "\"source_route_path\":\"/api/v1/audit/"
+              "managed-audit-manual-sandbox-connection-credential-resolver-disabled-implementation-candidate-review\"");
+    assert_contains(text,
+                    "\"source_review_state\":\"credential-resolver-disabled-implementation-candidate-review-ready\"");
     assert_contains(text, "\"source_ready_for_disabled_implementation_candidate_review\":true");
     assert_contains(text, "\"source_disabled_implementation_candidate_review_only\":true");
     assert_contains(text, "\"source_read_only_candidate_review\":true");
@@ -82,12 +82,10 @@ void assert_source_review_shape(const std::string& text) {
 void assert_source_node_v272_shape(const std::string& text) {
     assert_contains(text, "\"source_node_v272_reference\":");
     assert_contains(text, "\"source_version\":\"Node v272\"");
-    assert_contains(
-        text,
-        "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-pre-implementation-plan-intake-upstream-echo-verification.v1\"");
-    assert_contains(
-        text,
-        "\"verification_state\":\"credential-resolver-pre-implementation-plan-intake-upstream-echo-verification-ready\"");
+    assert_contains(text, "\"profile_version\":\"managed-audit-manual-sandbox-connection-credential-resolver-pre-"
+                          "implementation-plan-intake-upstream-echo-verification.v1\"");
+    assert_contains(text, "\"verification_state\":\"credential-resolver-pre-implementation-plan-intake-upstream-echo-"
+                          "verification-ready\"");
     assert_contains(text, "\"ready_for_plan_intake_upstream_echo_verification\":true");
     assert_contains(text,
                     "\"verification_digest\":\"af7613ac0245fbc1b1ed709b5ea73d7907ab3b84918939c54f57e194446df6f1\"");
@@ -128,32 +126,31 @@ void assert_source_node_v272_shape(const std::string& text) {
 
 void assert_candidate_shape(const std::string& text) {
     assert_contains(text, "\"disabled_implementation_candidate\":");
-    assert_contains(text,
-                    "\"candidate_version\":\"node-v273-credential-resolver-disabled-implementation-candidate-review.v1\"");
+    assert_contains(
+        text, "\"candidate_version\":\"node-v273-credential-resolver-disabled-implementation-candidate-review.v1\"");
     assert_contains(text, "\"candidate_mode\":\"disabled-interface-and-fake-wiring-review-only\"");
     assert_contains(text, "\"candidate_digest\":\"12862fa65cad3a8db92f88fba86b74c25e584f35614c7a47367d441358b8b7d7\"");
     assert_contains(text, "\"candidate_decision_count\":10");
     assert_contains(text, "\"candidate_ready_decision_count\":4");
     assert_contains(text, "\"approval_required_decision_count\":6");
+    assert_contains(text, "\"candidate_ready_boundary_codes\":[\"PLAN_DOCUMENT\",\"DISABLED_SECRET_PROVIDER_STUB\","
+                          "\"REDACTION_POLICY\",\"EXTERNAL_REQUEST_SIMULATION\"]");
     assert_contains(text,
-                    "\"candidate_ready_boundary_codes\":[\"PLAN_DOCUMENT\",\"DISABLED_SECRET_PROVIDER_STUB\",\"REDACTION_POLICY\",\"EXTERNAL_REQUEST_SIMULATION\"]");
-    assert_contains(
-        text,
-        "\"approval_required_boundary_codes\":[\"CREDENTIAL_HANDLE\",\"ENDPOINT_HANDLE\",\"OPERATOR_APPROVAL\",\"ROLLBACK_BOUNDARY\",\"SCHEMA_MIGRATION_POLICY\",\"AUDIT_LEDGER_WRITE_POLICY\"]");
+                    "\"approval_required_boundary_codes\":[\"CREDENTIAL_HANDLE\",\"ENDPOINT_HANDLE\",\"OPERATOR_"
+                    "APPROVAL\",\"ROLLBACK_BOUNDARY\",\"SCHEMA_MIGRATION_POLICY\",\"AUDIT_LEDGER_WRITE_POLICY\"]");
     assert_contains(text, "\"disposition\":\"disabled-candidate-ready\"");
     assert_contains(text, "\"disposition\":\"approval-required\"");
     assert_contains(text, "\"prohibited_runtime_actions\":[\"read-credential-value\",\"store-credential-value\"]");
     assert_contains(text, "\"prohibited_runtime_actions\":[\"parse-raw-endpoint-url\",\"render-raw-endpoint-url\"]");
     assert_contains(text, "\"prohibited_runtime_actions\":[\"send-external-request\",\"connect-managed-audit\"]");
     assert_contains(text, "\"interface_version\":\"disabled-credential-resolver-interface-candidate.v1\"");
+    assert_contains(text, "\"request_fields\":[\"credentialHandle\",\"endpointHandle\",\"resolverPolicyHandle\","
+                          "\"operatorIdentity\",\"approvalCorrelationId\",\"manualWindowMarker\"]");
+    assert_contains(text, "\"response_fields\":[\"resolverState\",\"resolvedCredentialValue\",\"rawEndpointUrl\","
+                          "\"redactionApplied\",\"externalRequestSent\",\"failureClass\",\"auditDigest\"]");
     assert_contains(text,
-                    "\"request_fields\":[\"credentialHandle\",\"endpointHandle\",\"resolverPolicyHandle\",\"operatorIdentity\",\"approvalCorrelationId\",\"manualWindowMarker\"]");
-    assert_contains(
-        text,
-        "\"response_fields\":[\"resolverState\",\"resolvedCredentialValue\",\"rawEndpointUrl\",\"redactionApplied\",\"externalRequestSent\",\"failureClass\",\"auditDigest\"]");
-    assert_contains(
-        text,
-        "\"failure_classes\":[\"disabled-by-config\",\"missing-credential-handle\",\"missing-endpoint-handle\",\"operator-approval-required\",\"manual-window-required\",\"real-runtime-forbidden\"]");
+                    "\"failure_classes\":[\"disabled-by-config\",\"missing-credential-handle\",\"missing-endpoint-"
+                    "handle\",\"operator-approval-required\",\"manual-window-required\",\"real-runtime-forbidden\"]");
     assert_contains(text, "\"request_field_count\":6");
     assert_contains(text, "\"response_field_count\":7");
     assert_contains(text, "\"failure_class_count\":6");
@@ -192,9 +189,8 @@ void assert_checks_and_summary(const std::string& text) {
     assert_contains(text, "\"upstream_actions_still_disabled\":true");
     assert_contains(text, "\"production_audit_still_blocked\":true");
     assert_contains(text, "\"production_window_still_blocked\":true");
-    assert_contains(
-        text,
-        "\"ready_for_managed_audit_manual_sandbox_connection_credential_resolver_disabled_implementation_candidate_review\":true");
+    assert_contains(text, "\"ready_for_managed_audit_manual_sandbox_connection_credential_resolver_disabled_"
+                          "implementation_candidate_review\":true");
     assert_contains(text, "\"check_count\":21");
     assert_contains(text, "\"passed_check_count\":21");
     assert_contains(text, "\"production_blocker_count\":0");
@@ -273,13 +269,11 @@ int main() {
     assert_path_exists(manifest_path);
 
     const auto receipt = read_fixture_text(receipt_path);
-    assert_contains(
-        receipt,
-        "\"receipt_version\":\"mini-kv-credential-resolver-disabled-implementation-candidate-non-participation-receipt.v1\"");
+    assert_contains(receipt, "\"receipt_version\":\"mini-kv-credential-resolver-disabled-implementation-candidate-non-"
+                             "participation-receipt.v1\"");
     assert_contains(receipt, "\"release_version\":\"v120\"");
-    assert_contains(
-        receipt,
-        "\"path\":\"fixtures/release/credential-resolver-disabled-implementation-candidate-non-participation-receipt.json\"");
+    assert_contains(receipt, "\"path\":\"fixtures/release/"
+                             "credential-resolver-disabled-implementation-candidate-non-participation-receipt.json\"");
     assert_contains(receipt, "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\":");
     assert_contains(receipt, "\"current_release_version\":\"v120\"");
     assert_contains(receipt, "\"current_artifact_path_hint\":\"c/120/\"");
@@ -302,22 +296,19 @@ int main() {
     assert_candidate_shape(smoke);
     assert_checks_and_summary(smoke);
     assert_non_participation_flags(smoke);
-    assert_contains(
-        smoke,
-        "Node v274 may verify the mini-kv v120 credential resolver disabled implementation candidate non-participation receipt");
+    assert_contains(smoke, "Node v274 may verify the mini-kv v120 credential resolver disabled implementation "
+                           "candidate non-participation receipt");
 
     const auto manifest = read_fixture_text(manifest_path);
-    assert_contains(
-        manifest,
-        "\"minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests\"");
-    assert_contains(
-        manifest,
-        "\"path\":\"fixtures/release/credential-resolver-disabled-implementation-candidate-non-participation-receipt.json\"");
+    assert_contains(manifest,
+                    "\"minikv_credential_resolver_disabled_implementation_candidate_non_participation_receipt_tests\"");
+    assert_contains(manifest, "\"path\":\"fixtures/release/"
+                              "credential-resolver-disabled-implementation-candidate-non-participation-receipt.json\"");
     assert_contains(manifest, "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\":");
     assert_contains(manifest, "\"receipt_digest\":\"" + expected_digest + "\"");
-    assert_contains(
-        manifest,
-        "SMOKEJSON exposes credential_resolver_disabled_implementation_candidate_non_participation_receipt for Node v274");
+    assert_contains(manifest,
+                    "SMOKEJSON exposes credential_resolver_disabled_implementation_candidate_non_participation_receipt "
+                    "for Node v274");
     assert_source_review_shape(manifest);
     assert_source_node_v272_shape(manifest);
     assert_candidate_shape(manifest);
@@ -333,9 +324,9 @@ int main() {
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response,
                     "\"credential_resolver_disabled_implementation_candidate_non_participation_receipt\":");
-    assert_contains(
-        result.response,
-        "\"receipt_fixture_path\":\"fixtures/release/credential-resolver-disabled-implementation-candidate-non-participation-receipt.json\"");
+    assert_contains(result.response,
+                    "\"receipt_fixture_path\":\"fixtures/release/"
+                    "credential-resolver-disabled-implementation-candidate-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v120\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/120/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -347,4 +338,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }

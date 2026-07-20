@@ -12,16 +12,12 @@ void assert_contains(const std::string& text, const std::string& fragment) {
 } // namespace
 
 int main() {
-    namespace validation =
-        minikv::shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_validation;
+    namespace validation = minikv::
+        shard_route_preview_operator_value_supply_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_validation;
 
     const auto passed =
         validation::format_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_validation_json(
-            25,
-            25,
-            25,
-            true,
-            1);
+            25, 25, 25, true, 1);
     assert_contains(passed, "\"draftTextPackageReviewCloseoutAuditValidationPassed\":true");
     assert_contains(passed, "\"sourceReviewPreflightChainComplete\":true");
     assert_contains(passed, "\"auditCatalogsAligned\":true");
@@ -32,11 +28,8 @@ int main() {
 
     const auto failed =
         validation::format_signed_approval_capture_artifact_draft_text_package_review_closeout_audit_validation_json(
-            25,
-            24,
-            25,
-            true,
-            1);
+            25, 24, 25, true, 1);
     assert_contains(failed, "\"draftTextPackageReviewCloseoutAuditValidationPassed\":false");
     assert_contains(failed, "\"auditCatalogsAligned\":false");
+    return 0;
 }

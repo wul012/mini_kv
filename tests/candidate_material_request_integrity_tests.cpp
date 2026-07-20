@@ -19,7 +19,8 @@ int main() {
     assert_contains(json, "\"sourceNodeIntakePacketReleaseVersion\":\"Node v1421\"");
     assert_contains(json, "\"sourceCandidateMaterialRequestCommand\":\"SHARDROUTECANDIDATEMATERIALREQUESTJSON\"");
     assert_contains(json, "\"sourceCandidateMaterialRequestReleaseVersion\":\"v965\"");
-    assert_contains(json, "\"sourceCandidateMaterialRequestFixturePath\":\"fixtures/release/shard-readiness-v965.json\"");
+    assert_contains(json,
+                    "\"sourceCandidateMaterialRequestFixturePath\":\"fixtures/release/shard-readiness-v965.json\"");
     assert_contains(json, "\"sourceCandidateMaterialRequestPublishedStageCount\":10");
     assert_contains(json, "\"sourceCandidateMaterialRequestComplete\":true");
     assert_contains(json, "\"sourceMaterialRequestItemCount\":25");
@@ -59,4 +60,5 @@ int main() {
     assert(integrity::candidate_material_request_integrity_status() ==
            "route-preview-candidate-material-request-integrity-closeout-summary-read-only");
     assert(integrity::published_stage_count() == 10);
+    return 0;
 }

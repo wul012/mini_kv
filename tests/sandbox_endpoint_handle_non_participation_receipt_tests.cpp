@@ -49,7 +49,8 @@ void assert_path_exists(const std::filesystem::path& relative_path) {
 void assert_source_preflight_shape(const std::string& text) {
     assert_contains(text, "\"source_preflight\":\"Node v258 sandbox endpoint handle preflight review\"");
     assert_contains(text, "\"consumer_hint\":\"Node v259 sandbox endpoint handle upstream echo verification\"");
-    assert_contains(text, "\"source_preflight_profile_version\":\"managed-audit-manual-sandbox-connection-sandbox-endpoint-handle-preflight-review.v1\"");
+    assert_contains(text, "\"source_preflight_profile_version\":\"managed-audit-manual-sandbox-connection-sandbox-"
+                          "endpoint-handle-preflight-review.v1\"");
     assert_contains(text, "\"source_review_state\":\"sandbox-endpoint-handle-preflight-review-ready\"");
     assert_contains(text, "\"source_review_mode\":\"sandbox-endpoint-handle-preflight-review-only\"");
     assert_contains(text, "\"source_span\":\"Node v257\"");
@@ -155,8 +156,8 @@ void assert_non_participation_flags(const std::string& text) {
 } // namespace
 
 int main() {
-    const auto receipt_path = std::filesystem::path{"fixtures"} / "release" /
-                              "sandbox-endpoint-handle-non-participation-receipt.json";
+    const auto receipt_path =
+        std::filesystem::path{"fixtures"} / "release" / "sandbox-endpoint-handle-non-participation-receipt.json";
     const auto smoke_path = std::filesystem::path{"fixtures"} / "release" / "runtime-smoke-evidence.json";
     const auto manifest_path = std::filesystem::path{"fixtures"} / "release" / "verification-manifest.json";
     const std::vector<std::string> read_commands = {
@@ -216,8 +217,9 @@ int main() {
     const auto result = processor.execute("SMOKEJSON");
     assert_contains(result.response, "\"version\":\"" + std::string{minikv::version} + "\"");
     assert_contains(result.response, "\"sandbox_endpoint_handle_non_participation_receipt\":");
-    assert_contains(result.response,
-                    "\"receipt_fixture_path\":\"fixtures/release/sandbox-endpoint-handle-non-participation-receipt.json\"");
+    assert_contains(
+        result.response,
+        "\"receipt_fixture_path\":\"fixtures/release/sandbox-endpoint-handle-non-participation-receipt.json\"");
     assert_contains(result.response, "\"current_release_version\":\"v113\"");
     assert_contains(result.response, "\"current_artifact_path_hint\":\"c/113/\"");
     assert_contains(result.response, "\"receipt_digest\":\"" + expected_digest + "\"");
@@ -227,4 +229,5 @@ int main() {
 
     const auto restore_token = processor.execute("GET restore:real-read-token");
     assert(restore_token.response == "(nil)");
+    return 0;
 }
