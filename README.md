@@ -1,5 +1,65 @@
 # mini-kv
 
+**C++20 键值存储引擎**：从内存数据结构到日志重放、快照和 TCP 协议，展示存储机制如何工作。
+
+![mini-kv — STORAGE SYSTEMS](docs/assets/project-banner.svg)
+
+[![CI](https://github.com/wul012/mini_kv/actions/workflows/ci.yml/badge.svg)](https://github.com/wul012/mini_kv/actions/workflows/ci.yml)
+**C++20 · CMake · CTest · WAL · RESP / TCP**
+
+A from-scratch key-value engine with TTL, WAL recovery, snapshots and RESP/TCP.
+
+[快速开始](#快速开始) · [代码入口](#代码入口) · [验证与范围](#验证与范围) · [完整历史](#engineering-history)
+
+## 核心能力
+
+- **存储核心** — 线程安全内存 KV、TTL、条件写入，以及显式的命令处理接口。
+- **持久化与恢复** — WAL 追加与重放、损坏/截断处理、Snapshot 保存恢复和原子文件替换。
+- **两个实验入口** — CLI / RESP-TCP 用于 KV；独立 OSFS 子系统展示二级目录、inode 与只读 FSCK。
+
+## 快速开始
+
+需要 CMake 3.20+ 与 C++20 编译器。CLI 路径取决于生成器：单配置通常为 `build/minikv_cli`，Visual Studio 为 `build/Debug/minikv_cli.exe`。
+
+```powershell
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --config Debug --parallel 4
+ctest --test-dir build -C Debug --output-on-failure
+```
+
+## 代码入口
+
+[内存 Store](src/store.cpp) · [WAL 恢复](src/wal.cpp) · [OSFS 教程](OSFS课程设计通俗教程/README.md)
+
+## 验证与范围
+
+当前登记 [354 项 CTest](docs/project-docs-honesty-matrix.md)；[CI](.github/workflows/ci.yml)配置多平台、sanitizer 和核心代码覆盖率门。登记数量不等于本次全量实测。
+
+默认只监听 loopback，但协议本身没有认证或 TLS；not a hardened production database。快照原子替换不等于掉电零丢失，OSFS 也不是 KV 的持久化后端。
+
+<details>
+<summary>展开更多验证 / 实验命令</summary>
+
+```powershell
+"SMOKEJSON`nCHECKJSON GET demo`nHEALTH`nQUIT" | .\build\Debug\minikv_cli.exe
+```
+
+</details>
+
+## 关联项目
+
+四个独立工程，各自可读、可运行；不是把四种语言放进一个目录的演示。
+
+[Order Platform](https://github.com/wul012/javaproject) · [OrderOps Console](https://github.com/wul012/nodeproj) · [MiniGPT Lab](https://github.com/wul012/aiproj)
+
+<a id="engineering-history"></a>
+<details>
+<summary>历史证据与完整维护手册（点击展开）</summary>
+
+以下保留原始文档。版本号、测试数量和研究结论沿用其原始时点，不是本次门面整理的实测结果。
+
+# mini-kv
+
 [![CI](https://github.com/wul012/mini_kv/actions/workflows/ci.yml/badge.svg)](https://github.com/wul012/mini_kv/actions/workflows/ci.yml)
 [![Core coverage floor](https://img.shields.io/badge/core%20coverage-90%25-brightgreen)](docs/TESTING.md)
 [![CTest](https://img.shields.io/badge/CTest-354-blue)](docs/project-docs-honesty-matrix.md)
@@ -137,3 +197,5 @@ python scripts/archive_inventory.py --budget-mib 8 --strict
 - v1671: 保留 354 个 CTest 名称、顺序和一例一进程语义，把 342 个普通测试的最终链接稳定收口到 8 个 runner；核心 touch 后 executable link 347→13、增量时间 56.87→21.36 秒，全部测试 exe 由 345 个/3,983,351,060 字节降到 11 个/415,219,566 字节，coverage/sanitizer 与显式 legacy 配置仍使用一测试一 exe。
 
 维护者入口：[`START_HERE.md`](START_HERE.md) · [`docs/production-excellence-progress.md`](docs/production-excellence-progress.md) · [`治理计划/README.md`](治理计划/README.md)
+
+</details>
