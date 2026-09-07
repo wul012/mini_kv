@@ -46,11 +46,11 @@ ctest --test-dir build -C Debug --output-on-failure
 
 </details>
 
-## 关联项目
+## 三项目协作
 
-四个独立工程，各自可读、可运行；不是把四种语言放进一个目录的演示。
+Java 提供订单业务，Node 提供运维预检与只读诊断，mini-kv 是存储基础设施实验。三者各有独立运行入口。
 
-[Order Platform](https://github.com/wul012/javaproject) · [OrderOps Console](https://github.com/wul012/nodeproj) · [MiniGPT Lab](https://github.com/wul012/aiproj)
+[Java 订单核心](https://github.com/wul012/javaproject) · [Node 运维控制台](https://github.com/wul012/nodeproj)
 
 <a id="engineering-history"></a>
 <details>

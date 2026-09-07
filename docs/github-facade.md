@@ -30,3 +30,5 @@ cmake -DSOURCE_DIR=D:/C/mini-kv -P cmake/check_project_docs_honesty.cmake 退出
 新增代码入口链接均能定位；原 HEAD README 逐字保留；SVG XML 校验通过。
 GitHub GFM 渲染后的 1200px 与 390px 视口检查：横向溢出为 false，封面加载成功，历史区默认折叠。
 完整业务测试和训练未在这次文档任务中重跑。
+
+关系校准：Java / Node / mini-kv 为三项目协作；AI 为独立研究项目。统一封面仅代表同一作者的作品，不代表四者共同构成系统。历史原文中的制品校验关系不作为新的架构主张。
